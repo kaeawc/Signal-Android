@@ -17,6 +17,7 @@ plugins {
   id("com.squareup.wire")
   id("translations")
   id("licenses")
+//  id("org.jetbrains.kotlin.plugin.compose")
 }
 
 apply(from = "static-ips.gradle.kts")
@@ -164,11 +165,7 @@ android {
 
   buildFeatures {
     viewBinding = true
-    compose = true
-  }
-
-  composeOptions {
-    kotlinCompilerExtensionVersion = "1.5.4"
+//    compose = true
   }
 
   defaultConfig {

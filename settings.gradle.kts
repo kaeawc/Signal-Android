@@ -3,11 +3,17 @@ pluginManagement {
     google()
     mavenCentral()
     gradlePluginPortal()
+    maven {
+      url = uri("https://plugins.gradle.org/m2/")
+//      content {
+//        includeGroupByRegex("org\\.jlleitschuh\\.gradle.*")
+//      }
+    }
   }
   includeBuild("build-logic")
 }
 dependencyResolutionManagement {
-  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+  //repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
     google()
     mavenCentral()
@@ -17,6 +23,9 @@ dependencyResolutionManagement {
       content {
         includeGroupByRegex("org\\.signal.*")
       }
+    }
+    maven {
+      url = uri("https://plugins.gradle.org/m2/")
     }
     maven {
       url = uri("https://dl.cloudsmith.io/qxAgwaeEE1vN8aLU/mobilecoin/mobilecoin/maven/")

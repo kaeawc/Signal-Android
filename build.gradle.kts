@@ -1,34 +1,33 @@
 buildscript {
-  rootProject.extra["kotlin_version"] = "1.9.20"
-  repositories {
-    google()
-    mavenCentral()
-    maven {
-      url = uri("https://plugins.gradle.org/m2/")
-      content {
-        includeGroupByRegex("org\\.jlleitschuh\\.gradle.*")
-      }
-    }
-  }
-
   dependencies {
-    classpath("com.android.tools.build:gradle:8.4.1")
-    classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3")
-    classpath("com.google.protobuf:protobuf-gradle-plugin:0.9.0")
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${rootProject.extra["kotlin_version"] as String}")
-    classpath(libs.ktlint)
-    classpath("app.cash.exhaustive:exhaustive-gradle:0.1.1")
-    classpath("com.squareup.wire:wire-gradle-plugin:4.4.3") {
-      exclude(group = "com.squareup.wire", module = "wire-swift-generator")
-      exclude(group = "com.squareup.wire", module = "wire-grpc-client")
-      exclude(group = "com.squareup.wire", module = "wire-grpc-jvm")
-      exclude(group = "com.squareup.wire", module = "wire-grpc-server-generator")
-      exclude(group = "io.outfoxx", module = "swiftpoet")
-    }
-    classpath("androidx.benchmark:benchmark-gradle-plugin:1.1.0-beta04")
+    classpath(libs.agp)
+    classpath(libs.kgp)
+    classpath(libs.plugins.androidx.navigation.safe.args)
+    classpath(libs.plugins.protobuf)
+    classpath(libs.plugins.ktlint)
+    classpath(libs.plugins.exhaustive)
+    classpath(libs.plugins.wire)
+//    {
+//      exclude(group = "com.squareup.wire", module = "wire-swift-generator")
+//      exclude(group = "com.squareup.wire", module = "wire-grpc-client")
+//      exclude(group = "com.squareup.wire", module = "wire-grpc-jvm")
+//      exclude(group = "com.squareup.wire", module = "wire-grpc-server-generator")
+//      exclude(group = "io.outfoxx", module = "swiftpoet")
+//    }
+    classpath(libs.plugins.androidx.benchmark)
     classpath(files("$rootDir/wire-handler/wire-handler-1.0.0.jar"))
-    classpath("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.9.20-1.0.14")
+    classpath(libs.plugins.ksp)
   }
+}
+
+plugins {
+  `version-catalog`
+  // alias(libs.plugins.spotless)
+  // alias(libs.plugins.doctor)
+  alias(libs.plugins.dependencyAnalysis)
+  alias(libs.plugins.kotlin.android) apply false
+  alias(libs.plugins.android.library) apply false
+  alias(libs.plugins.android.application) apply false
 }
 
 tasks.withType<Wrapper> {
@@ -87,7 +86,7 @@ tasks.register("qa") {
 }
 
 tasks.register("clean", Delete::class) {
-  delete(rootProject.buildDir)
+  delete(layout.buildDirectory)
 }
 
 tasks.register("format") {

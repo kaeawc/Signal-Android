@@ -4,14 +4,6 @@ plugins {
 
 android {
   namespace = "org.signal.core.ui"
-
-  buildFeatures {
-    compose = true
-  }
-
-  composeOptions {
-    kotlinCompilerExtensionVersion = "1.5.4"
-  }
 }
 
 dependencies {
