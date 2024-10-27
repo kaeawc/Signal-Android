@@ -95,9 +95,7 @@ class PlaybackSpeedToggleTextView @JvmOverloads constructor(
       .scaleY(1f)
   }
 
-  override fun setOnClickListener(l: OnClickListener?) {
-    throw UnsupportedOperationException()
-  }
+  override fun setOnClickListener(l: OnClickListener?): Unit = throw UnsupportedOperationException()
 
   interface PlaybackSpeedListener {
     fun onPlaybackSpeedChanged(speed: Float)

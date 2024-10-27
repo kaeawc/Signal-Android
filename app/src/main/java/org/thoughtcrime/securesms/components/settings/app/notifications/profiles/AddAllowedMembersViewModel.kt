@@ -11,40 +11,28 @@ import org.thoughtcrime.securesms.recipients.RecipientId
 
 class AddAllowedMembersViewModel(private val profileId: Long, private val repository: NotificationProfilesRepository) : ViewModel() {
 
-  fun getProfile(): Observable<NotificationProfileAndRecipients> {
-    return repository.getProfile(profileId)
-      .map { profile ->
-        NotificationProfileAndRecipients(profile, profile.allowedMembers.map { Recipient.resolved(it) })
-      }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getProfile(): Observable<NotificationProfileAndRecipients> = repository.getProfile(profileId)
+    .map { profile ->
+      NotificationProfileAndRecipients(profile, profile.allowedMembers.map { Recipient.resolved(it) })
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun addMember(id: RecipientId): Single<NotificationProfile> {
-    return repository.addMember(profileId, id)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun addMember(id: RecipientId): Single<NotificationProfile> = repository.addMember(profileId, id)
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun removeMember(id: RecipientId): Single<Recipient> {
-    return repository.removeMember(profileId, id)
-      .map { Recipient.resolved(id) }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun removeMember(id: RecipientId): Single<Recipient> = repository.removeMember(profileId, id)
+    .map { Recipient.resolved(id) }
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun toggleAllowAllMentions(): Single<NotificationProfile> {
-    return repository.toggleAllowAllMentions(profileId)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun toggleAllowAllMentions(): Single<NotificationProfile> = repository.toggleAllowAllMentions(profileId)
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun toggleAllowAllCalls(): Single<NotificationProfile> {
-    return repository.toggleAllowAllCalls(profileId)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun toggleAllowAllCalls(): Single<NotificationProfile> = repository.toggleAllowAllCalls(profileId)
+    .observeOn(AndroidSchedulers.mainThread())
 
   data class NotificationProfileAndRecipients(val profile: NotificationProfile, val recipients: List<Recipient>)
 
   class Factory(private val profileId: Long) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(AddAllowedMembersViewModel(profileId, NotificationProfilesRepository()))!!
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(AddAllowedMembersViewModel(profileId, NotificationProfilesRepository()))!!
   }
 }

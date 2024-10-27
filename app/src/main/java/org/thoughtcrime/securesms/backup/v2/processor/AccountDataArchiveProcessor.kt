@@ -230,47 +230,39 @@ object AccountDataArchiveProcessor {
     }
   }
 
-  private fun PhoneNumberPrivacyValues.PhoneNumberSharingMode.toRemotePhoneNumberSharingMode(): AccountData.PhoneNumberSharingMode {
-    return when (this) {
-      PhoneNumberPrivacyValues.PhoneNumberSharingMode.DEFAULT -> AccountData.PhoneNumberSharingMode.EVERYBODY
-      PhoneNumberPrivacyValues.PhoneNumberSharingMode.EVERYBODY -> AccountData.PhoneNumberSharingMode.EVERYBODY
-      PhoneNumberPrivacyValues.PhoneNumberSharingMode.NOBODY -> AccountData.PhoneNumberSharingMode.NOBODY
-    }
+  private fun PhoneNumberPrivacyValues.PhoneNumberSharingMode.toRemotePhoneNumberSharingMode(): AccountData.PhoneNumberSharingMode = when (this) {
+    PhoneNumberPrivacyValues.PhoneNumberSharingMode.DEFAULT -> AccountData.PhoneNumberSharingMode.EVERYBODY
+    PhoneNumberPrivacyValues.PhoneNumberSharingMode.EVERYBODY -> AccountData.PhoneNumberSharingMode.EVERYBODY
+    PhoneNumberPrivacyValues.PhoneNumberSharingMode.NOBODY -> AccountData.PhoneNumberSharingMode.NOBODY
   }
 
-  private fun AccountData.PhoneNumberSharingMode.toLocalPhoneNumberMode(): PhoneNumberPrivacyValues.PhoneNumberSharingMode {
-    return when (this) {
-      AccountData.PhoneNumberSharingMode.UNKNOWN -> PhoneNumberPrivacyValues.PhoneNumberSharingMode.EVERYBODY
-      AccountData.PhoneNumberSharingMode.EVERYBODY -> PhoneNumberPrivacyValues.PhoneNumberSharingMode.EVERYBODY
-      AccountData.PhoneNumberSharingMode.NOBODY -> PhoneNumberPrivacyValues.PhoneNumberSharingMode.NOBODY
-    }
+  private fun AccountData.PhoneNumberSharingMode.toLocalPhoneNumberMode(): PhoneNumberPrivacyValues.PhoneNumberSharingMode = when (this) {
+    AccountData.PhoneNumberSharingMode.UNKNOWN -> PhoneNumberPrivacyValues.PhoneNumberSharingMode.EVERYBODY
+    AccountData.PhoneNumberSharingMode.EVERYBODY -> PhoneNumberPrivacyValues.PhoneNumberSharingMode.EVERYBODY
+    AccountData.PhoneNumberSharingMode.NOBODY -> PhoneNumberPrivacyValues.PhoneNumberSharingMode.NOBODY
   }
 
-  private fun AccountData.UsernameLink.Color?.toLocalUsernameColor(): UsernameQrCodeColorScheme {
-    return when (this) {
-      AccountData.UsernameLink.Color.BLUE -> UsernameQrCodeColorScheme.Blue
-      AccountData.UsernameLink.Color.WHITE -> UsernameQrCodeColorScheme.White
-      AccountData.UsernameLink.Color.GREY -> UsernameQrCodeColorScheme.Grey
-      AccountData.UsernameLink.Color.OLIVE -> UsernameQrCodeColorScheme.Tan
-      AccountData.UsernameLink.Color.GREEN -> UsernameQrCodeColorScheme.Green
-      AccountData.UsernameLink.Color.ORANGE -> UsernameQrCodeColorScheme.Orange
-      AccountData.UsernameLink.Color.PINK -> UsernameQrCodeColorScheme.Pink
-      AccountData.UsernameLink.Color.PURPLE -> UsernameQrCodeColorScheme.Purple
-      else -> UsernameQrCodeColorScheme.Blue
-    }
+  private fun AccountData.UsernameLink.Color?.toLocalUsernameColor(): UsernameQrCodeColorScheme = when (this) {
+    AccountData.UsernameLink.Color.BLUE -> UsernameQrCodeColorScheme.Blue
+    AccountData.UsernameLink.Color.WHITE -> UsernameQrCodeColorScheme.White
+    AccountData.UsernameLink.Color.GREY -> UsernameQrCodeColorScheme.Grey
+    AccountData.UsernameLink.Color.OLIVE -> UsernameQrCodeColorScheme.Tan
+    AccountData.UsernameLink.Color.GREEN -> UsernameQrCodeColorScheme.Green
+    AccountData.UsernameLink.Color.ORANGE -> UsernameQrCodeColorScheme.Orange
+    AccountData.UsernameLink.Color.PINK -> UsernameQrCodeColorScheme.Pink
+    AccountData.UsernameLink.Color.PURPLE -> UsernameQrCodeColorScheme.Purple
+    else -> UsernameQrCodeColorScheme.Blue
   }
 
-  private fun UsernameQrCodeColorScheme.toRemoteUsernameColor(): AccountData.UsernameLink.Color {
-    return when (this) {
-      UsernameQrCodeColorScheme.Blue -> AccountData.UsernameLink.Color.BLUE
-      UsernameQrCodeColorScheme.White -> AccountData.UsernameLink.Color.WHITE
-      UsernameQrCodeColorScheme.Grey -> AccountData.UsernameLink.Color.GREY
-      UsernameQrCodeColorScheme.Tan -> AccountData.UsernameLink.Color.OLIVE
-      UsernameQrCodeColorScheme.Green -> AccountData.UsernameLink.Color.GREEN
-      UsernameQrCodeColorScheme.Orange -> AccountData.UsernameLink.Color.ORANGE
-      UsernameQrCodeColorScheme.Pink -> AccountData.UsernameLink.Color.PINK
-      UsernameQrCodeColorScheme.Purple -> AccountData.UsernameLink.Color.PURPLE
-    }
+  private fun UsernameQrCodeColorScheme.toRemoteUsernameColor(): AccountData.UsernameLink.Color = when (this) {
+    UsernameQrCodeColorScheme.Blue -> AccountData.UsernameLink.Color.BLUE
+    UsernameQrCodeColorScheme.White -> AccountData.UsernameLink.Color.WHITE
+    UsernameQrCodeColorScheme.Grey -> AccountData.UsernameLink.Color.GREY
+    UsernameQrCodeColorScheme.Tan -> AccountData.UsernameLink.Color.OLIVE
+    UsernameQrCodeColorScheme.Green -> AccountData.UsernameLink.Color.GREEN
+    UsernameQrCodeColorScheme.Orange -> AccountData.UsernameLink.Color.ORANGE
+    UsernameQrCodeColorScheme.Pink -> AccountData.UsernameLink.Color.PINK
+    UsernameQrCodeColorScheme.Purple -> AccountData.UsernameLink.Color.PURPLE
   }
 
   private fun InAppPaymentSubscriberRecord.toSubscriberData(manuallyCancelled: Boolean): AccountData.SubscriberData {
@@ -279,27 +271,25 @@ object AccountDataArchiveProcessor {
     return AccountData.SubscriberData(subscriberId = subscriberId, currencyCode = currencyCode, manuallyCancelled = manuallyCancelled)
   }
 
-  private fun List<ChatColors>.toRemoteChatColors(): List<ChatStyle.CustomChatColor> {
-    return this
-      .mapNotNull { local ->
-        if (local.linearGradient != null) {
-          ChatStyle.CustomChatColor(
-            id = local.id.longValue,
-            gradient = ChatStyle.Gradient(
-              angle = local.linearGradient.degrees.toInt(),
-              colors = local.linearGradient.colors.toList(),
-              positions = local.linearGradient.positions.toList()
-            )
+  private fun List<ChatColors>.toRemoteChatColors(): List<ChatStyle.CustomChatColor> = this
+    .mapNotNull { local ->
+      if (local.linearGradient != null) {
+        ChatStyle.CustomChatColor(
+          id = local.id.longValue,
+          gradient = ChatStyle.Gradient(
+            angle = local.linearGradient.degrees.toInt(),
+            colors = local.linearGradient.colors.toList(),
+            positions = local.linearGradient.positions.toList()
           )
-        } else if (local.singleColor != null) {
-          ChatStyle.CustomChatColor(
-            id = local.id.longValue,
-            solid = local.singleColor
-          )
-        } else {
-          Log.w(TAG, "Invalid custom color (id = ${local.id}, no gradient or solid color!")
-          null
-        }
+        )
+      } else if (local.singleColor != null) {
+        ChatStyle.CustomChatColor(
+          id = local.id.longValue,
+          solid = local.singleColor
+        )
+      } else {
+        Log.w(TAG, "Invalid custom color (id = ${local.id}, no gradient or solid color!")
+        null
       }
-  }
+    }
 }

@@ -25,16 +25,12 @@ object GroupDescriptionPreference {
     val onEditGroupDescription: () -> Unit,
     val onViewGroupDescription: () -> Unit
   ) : PreferenceModel<Model>() {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return groupId == newItem.groupId
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = groupId == newItem.groupId
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) &&
-        groupDescription == newItem.groupDescription &&
-        descriptionShouldLinkify == newItem.descriptionShouldLinkify &&
-        canEditGroupAttributes == newItem.canEditGroupAttributes
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) &&
+      groupDescription == newItem.groupDescription &&
+      descriptionShouldLinkify == newItem.descriptionShouldLinkify &&
+      canEditGroupAttributes == newItem.canEditGroupAttributes
   }
 
   class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

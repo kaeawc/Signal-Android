@@ -36,8 +36,6 @@ internal class WallpaperCleanupMigrationJob(parameters: Parameters = Parameters.
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<WallpaperCleanupMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): WallpaperCleanupMigrationJob {
-      return WallpaperCleanupMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): WallpaperCleanupMigrationJob = WallpaperCleanupMigrationJob(parameters)
   }
 }

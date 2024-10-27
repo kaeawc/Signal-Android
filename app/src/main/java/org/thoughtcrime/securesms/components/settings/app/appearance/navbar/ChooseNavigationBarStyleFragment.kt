@@ -57,9 +57,7 @@ class ChooseNavigationBarStyleFragment : DialogFragment(R.layout.choose_navigati
   ) {
 
     @DrawableRes
-    fun getImageResource(isCompact: Boolean): Int {
-      return if (isCompact) compact else normal
-    }
+    fun getImageResource(isCompact: Boolean): Int = if (isCompact) compact else normal
 
     private object ThreeButtons : PreviewImages(
       compact = R.drawable.navbar_compact,
@@ -73,9 +71,7 @@ class ChooseNavigationBarStyleFragment : DialogFragment(R.layout.choose_navigati
 
     companion object {
       @DrawableRes
-      fun getImageResourceId(isCompact: Boolean): Int {
-        return ThreeButtons.getImageResource(isCompact)
-      }
+      fun getImageResourceId(isCompact: Boolean): Int = ThreeButtons.getImageResource(isCompact)
     }
   }
 

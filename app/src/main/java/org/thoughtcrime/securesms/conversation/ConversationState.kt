@@ -11,9 +11,7 @@ data class ConversationState(
 ) {
   companion object {
     @JvmStatic
-    fun create(): ConversationState {
-      return ConversationState()
-    }
+    fun create(): ConversationState = ConversationState()
   }
 
   fun withMmsEnabled(isMmsEnabled: Boolean) = copy(isMmsEnabled = isMmsEnabled)

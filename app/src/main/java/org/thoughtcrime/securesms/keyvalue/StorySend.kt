@@ -10,12 +10,10 @@ data class StorySend(
 ) {
   companion object {
     @JvmStatic
-    fun newSend(recipient: Recipient): StorySend {
-      return if (recipient.isGroup) {
-        StorySend(System.currentTimeMillis(), Identifier.Group(recipient.requireGroupId()))
-      } else {
-        StorySend(System.currentTimeMillis(), Identifier.DistributionList(recipient.requireDistributionListId()))
-      }
+    fun newSend(recipient: Recipient): StorySend = if (recipient.isGroup) {
+      StorySend(System.currentTimeMillis(), Identifier.Group(recipient.requireGroupId()))
+    } else {
+      StorySend(System.currentTimeMillis(), Identifier.DistributionList(recipient.requireDistributionListId()))
     }
   }
 

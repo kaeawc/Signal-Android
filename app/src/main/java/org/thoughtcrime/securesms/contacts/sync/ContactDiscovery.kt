@@ -122,9 +122,7 @@ object ContactDiscovery {
    */
   @Throws(IOException::class)
   @WorkerThread
-  fun lookupE164(e164: String): LookupResult? {
-    return ContactDiscoveryRefreshV2.lookupE164(e164)
-  }
+  fun lookupE164(e164: String): LookupResult? = ContactDiscoveryRefreshV2.lookupE164(e164)
 
   @JvmStatic
   @WorkerThread
@@ -141,9 +139,7 @@ object ContactDiscovery {
     )
   }
 
-  private fun phoneNumberFormatter(context: Context): (String) -> String {
-    return { PhoneNumberFormatter.get(context).format(it) }
-  }
+  private fun phoneNumberFormatter(context: Context): (String) -> String = { PhoneNumberFormatter.get(context).format(it) }
 
   private fun refreshRecipients(
     context: Context,
@@ -225,9 +221,7 @@ object ContactDiscovery {
       }
   }
 
-  private fun hasContactsPermissions(context: Context): Boolean {
-    return Permissions.hasAll(context, Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
-  }
+  private fun hasContactsPermissions(context: Context): Boolean = Permissions.hasAll(context, Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
 
   /**
    * Synchronizes info from the system contacts (name, avatar, etc)

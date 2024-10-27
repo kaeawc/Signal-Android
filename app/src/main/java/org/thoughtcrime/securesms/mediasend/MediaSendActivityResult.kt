@@ -43,9 +43,7 @@ class MediaSendActivityResult(
     const val EXTRA_RESULT = "result"
 
     @JvmStatic
-    fun fromData(data: Intent): MediaSendActivityResult {
-      return data.getParcelableExtraCompat(EXTRA_RESULT, MediaSendActivityResult::class.java) ?: throw IllegalArgumentException()
-    }
+    fun fromData(data: Intent): MediaSendActivityResult = data.getParcelableExtraCompat(EXTRA_RESULT, MediaSendActivityResult::class.java) ?: throw IllegalArgumentException()
   }
 }
 

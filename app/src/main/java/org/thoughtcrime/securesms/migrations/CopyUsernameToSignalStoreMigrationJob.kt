@@ -47,8 +47,6 @@ internal class CopyUsernameToSignalStoreMigrationJob(
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<CopyUsernameToSignalStoreMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): CopyUsernameToSignalStoreMigrationJob {
-      return CopyUsernameToSignalStoreMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): CopyUsernameToSignalStoreMigrationJob = CopyUsernameToSignalStoreMigrationJob(parameters)
   }
 }

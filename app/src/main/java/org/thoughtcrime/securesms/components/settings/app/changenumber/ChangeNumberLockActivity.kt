@@ -31,10 +31,8 @@ class ChangeNumberLockActivity : PassphraseRequiredActivity() {
     private val TAG: String = Log.tag(ChangeNumberLockActivity::class.java)
 
     @JvmStatic
-    fun createIntent(context: Context): Intent {
-      return Intent(context, ChangeNumberLockActivity::class.java).apply {
-        flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-      }
+    fun createIntent(context: Context): Intent = Intent(context, ChangeNumberLockActivity::class.java).apply {
+      flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
     }
   }
 

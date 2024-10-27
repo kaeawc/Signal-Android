@@ -17,11 +17,12 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * Toast-style notification used in the media review flow. This exists so we can specify the location and animation of how it appears.
  */
-class MediaReviewToastPopupWindow private constructor(parent: ViewGroup, iconResource: Int, descriptionText: String) : PopupWindow(
-  LayoutInflater.from(parent.context).inflate(R.layout.v2_media_review_quality_popup_window, parent, false),
-  ViewGroup.LayoutParams.WRAP_CONTENT,
-  ViewGroup.LayoutParams.WRAP_CONTENT
-) {
+class MediaReviewToastPopupWindow private constructor(parent: ViewGroup, iconResource: Int, descriptionText: String) :
+  PopupWindow(
+    LayoutInflater.from(parent.context).inflate(R.layout.v2_media_review_quality_popup_window, parent, false),
+    ViewGroup.LayoutParams.WRAP_CONTENT,
+    ViewGroup.LayoutParams.WRAP_CONTENT
+  ) {
 
   private val icon: ImageView = contentView.findViewById(R.id.media_review_toast_popup_icon)
   private val description: TextView = contentView.findViewById(R.id.media_review_toast_popup_description)

@@ -87,17 +87,11 @@ class SpoilerRenderer(
     spoilerDrawable.draw(canvas)
   }
 
-  private fun getLineTop(layout: Layout, line: Int): Int {
-    return LayoutUtil.getLineTopWithoutPadding(layout, line)
-  }
+  private fun getLineTop(layout: Layout, line: Int): Int = LayoutUtil.getLineTopWithoutPadding(layout, line)
 
-  private fun getLineBottom(layout: Layout, line: Int): Int {
-    return LayoutUtil.getLineBottomWithoutPadding(layout, line)
-  }
+  private fun getLineBottom(layout: Layout, line: Int): Int = LayoutUtil.getLineBottomWithoutPadding(layout, line)
 
-  private inline fun MutableMap<Int, Int>.get(line: Int, layout: Layout, default: () -> Int): Int {
-    return getOrPut(line * 31 + layout.hashCode() * 31, default)
-  }
+  private inline fun MutableMap<Int, Int>.get(line: Int, layout: Layout, default: () -> Int): Int = getOrPut(line * 31 + layout.hashCode() * 31, default)
 
   private fun Canvas.drawComposeBackground(start: Int, top: Int, end: Int, bottom: Int) {
     drawRoundRect(

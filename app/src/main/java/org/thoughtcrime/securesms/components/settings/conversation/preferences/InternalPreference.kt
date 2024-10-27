@@ -19,9 +19,7 @@ object InternalPreference {
     val onInternalDetailsClicked: () -> Unit
   ) : PreferenceModel<Model>() {
 
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return recipient == newItem.recipient
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = recipient == newItem.recipient
   }
 
   private class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

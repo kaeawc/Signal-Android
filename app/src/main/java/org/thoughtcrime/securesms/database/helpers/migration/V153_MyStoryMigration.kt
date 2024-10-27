@@ -80,48 +80,42 @@ object V153_MyStoryMigration : SignalDatabaseMigration {
     )
   }
 
-  private fun createMyStoryRecipientId(db: SQLiteDatabase): Long {
-    return db.insert(
-      "recipient",
-      null,
-      contentValuesOf(
-        "group_type" to 4,
-        "distribution_list_id" to MY_STORY_DISTRIBUTION_LIST_ID,
-        "storage_service_key" to Base64.encodeWithPadding(StorageSyncHelper.generateKey()),
-        "profile_sharing" to 1
-      )
+  private fun createMyStoryRecipientId(db: SQLiteDatabase): Long = db.insert(
+    "recipient",
+    null,
+    contentValuesOf(
+      "group_type" to 4,
+      "distribution_list_id" to MY_STORY_DISTRIBUTION_LIST_ID,
+      "storage_service_key" to Base64.encodeWithPadding(StorageSyncHelper.generateKey()),
+      "profile_sharing" to 1
     )
-  }
+  )
 
-  private fun getMyStoryRecipientId(db: SQLiteDatabase): Long? {
-    return db.query(
-      "recipient",
-      arrayOf("_id"),
-      "distribution_list_id = ?",
-      SqlUtil.buildArgs(MY_STORY_DISTRIBUTION_LIST_ID),
-      null,
-      null,
+  private fun getMyStoryRecipientId(db: SQLiteDatabase): Long? = db.query(
+    "recipient",
+    arrayOf("_id"),
+    "distribution_list_id = ?",
+    SqlUtil.buildArgs(MY_STORY_DISTRIBUTION_LIST_ID),
+    null,
+    null,
+    null
+  ).use {
+    if (it.moveToNext()) {
+      CursorUtil.requireLong(it, "_id")
+    } else {
       null
-    ).use {
-      if (it.moveToNext()) {
-        CursorUtil.requireLong(it, "_id")
-      } else {
-        null
-      }
     }
   }
 
-  private fun getMyStoryCursor(db: SQLiteDatabase): Cursor {
-    return db.query(
-      TABLE_NAME,
-      arrayOf(DISTRIBUTION_ID),
-      "$DISTRIBUTION_LIST_ID = ?",
-      arrayOf(MY_STORY_DISTRIBUTION_LIST_ID.toString()),
-      null,
-      null,
-      null
-    )
-  }
+  private fun getMyStoryCursor(db: SQLiteDatabase): Cursor = db.query(
+    TABLE_NAME,
+    arrayOf(DISTRIBUTION_ID),
+    "$DISTRIBUTION_LIST_ID = ?",
+    arrayOf(MY_STORY_DISTRIBUTION_LIST_ID.toString()),
+    null,
+    null,
+    null
+  )
 
   private enum class MyStoryExistsResult {
     REQUIRES_DISTRIBUTION_ID_UPDATE,

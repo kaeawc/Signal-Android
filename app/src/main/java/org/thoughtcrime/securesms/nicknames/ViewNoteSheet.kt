@@ -52,12 +52,10 @@ class ViewNoteSheet : ComposeBottomSheetDialogFragment() {
     private const val RECIPIENT_ID = "recipient_id"
 
     @JvmStatic
-    fun create(recipientId: RecipientId): ViewNoteSheet {
-      return ViewNoteSheet().apply {
-        arguments = bundleOf(
-          RECIPIENT_ID to recipientId
-        )
-      }
+    fun create(recipientId: RecipientId): ViewNoteSheet = ViewNoteSheet().apply {
+      arguments = bundleOf(
+        RECIPIENT_ID to recipientId
+      )
     }
   }
 

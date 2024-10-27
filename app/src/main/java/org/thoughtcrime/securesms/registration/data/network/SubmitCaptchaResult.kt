@@ -13,13 +13,11 @@ sealed class SubmitCaptchaResult(cause: Throwable?) : RegistrationResult(cause) 
   companion object {
     private val TAG = Log.tag(SubmitCaptchaResult::class.java)
 
-    fun from(networkResult: NetworkResult<RegistrationSessionMetadataResponse>): SubmitCaptchaResult {
-      return when (networkResult) {
-        is NetworkResult.Success -> Success()
-        is NetworkResult.ApplicationError -> UnknownError(networkResult.throwable)
-        is NetworkResult.NetworkError -> UnknownError(networkResult.exception)
-        is NetworkResult.StatusCodeError -> UnknownError(networkResult.exception)
-      }
+    fun from(networkResult: NetworkResult<RegistrationSessionMetadataResponse>): SubmitCaptchaResult = when (networkResult) {
+      is NetworkResult.Success -> Success()
+      is NetworkResult.ApplicationError -> UnknownError(networkResult.throwable)
+      is NetworkResult.NetworkError -> UnknownError(networkResult.exception)
+      is NetworkResult.StatusCodeError -> UnknownError(networkResult.exception)
     }
   }
 

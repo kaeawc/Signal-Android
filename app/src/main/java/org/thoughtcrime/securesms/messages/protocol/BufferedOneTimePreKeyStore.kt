@@ -19,10 +19,8 @@ class BufferedOneTimePreKeyStore(private val selfServiceId: ServiceId) : PreKeyS
   private val removed: MutableList<Int> = mutableListOf()
 
   @kotlin.jvm.Throws(InvalidKeyIdException::class)
-  override fun loadPreKey(id: Int): PreKeyRecord {
-    return store.computeIfAbsent(id) {
-      SignalDatabase.oneTimePreKeys.get(selfServiceId, id) ?: throw InvalidKeyIdException("Missing one-time prekey with ID: $id")
-    }
+  override fun loadPreKey(id: Int): PreKeyRecord = store.computeIfAbsent(id) {
+    SignalDatabase.oneTimePreKeys.get(selfServiceId, id) ?: throw InvalidKeyIdException("Missing one-time prekey with ID: $id")
   }
 
   override fun storePreKey(id: Int, record: PreKeyRecord) {

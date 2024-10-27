@@ -26,21 +26,19 @@ class RetryableInitAudioSink(
 
   private var retriesLeft = INITIAL_RETRY_COUNT
 
-  override fun handleBuffer(buffer: ByteBuffer, presentationTimeUs: Long, encodedAccessUnitCount: Int): Boolean {
-    return try {
-      val bufferHandled = delegate.handleBuffer(buffer, presentationTimeUs, encodedAccessUnitCount)
-      if (bufferHandled) {
-        retriesLeft = INITIAL_RETRY_COUNT
-      }
-      bufferHandled
-    } catch (e: AudioSink.InitializationException) {
-      Log.w(TAG, "Could not handle this buffer due to an initialization exception. $retriesLeft retries remaining.", e)
-      if (retriesLeft > 0) {
-        retriesLeft--
-        false
-      } else {
-        throw e
-      }
+  override fun handleBuffer(buffer: ByteBuffer, presentationTimeUs: Long, encodedAccessUnitCount: Int): Boolean = try {
+    val bufferHandled = delegate.handleBuffer(buffer, presentationTimeUs, encodedAccessUnitCount)
+    if (bufferHandled) {
+      retriesLeft = INITIAL_RETRY_COUNT
+    }
+    bufferHandled
+  } catch (e: AudioSink.InitializationException) {
+    Log.w(TAG, "Could not handle this buffer due to an initialization exception. $retriesLeft retries remaining.", e)
+    if (retriesLeft > 0) {
+      retriesLeft--
+      false
+    } else {
+      throw e
     }
   }
 

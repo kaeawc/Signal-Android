@@ -19,17 +19,15 @@ class ScheduledMessagesRepository {
   /**
    * Get all the scheduled messages for the specified thread, ordered by scheduled time
    */
-  fun getScheduledMessages(context: Context, threadId: Long): Observable<List<ConversationMessage>> {
-    return Observable.create { emitter ->
-      val databaseObserver: DatabaseObserver = AppDependencies.databaseObserver
-      val observer = DatabaseObserver.Observer { emitter.onNext(getScheduledMessagesSync(context, threadId)) }
+  fun getScheduledMessages(context: Context, threadId: Long): Observable<List<ConversationMessage>> = Observable.create { emitter ->
+    val databaseObserver: DatabaseObserver = AppDependencies.databaseObserver
+    val observer = DatabaseObserver.Observer { emitter.onNext(getScheduledMessagesSync(context, threadId)) }
 
-      databaseObserver.registerScheduledMessageObserver(threadId, observer)
+    databaseObserver.registerScheduledMessageObserver(threadId, observer)
 
-      emitter.setCancellable { databaseObserver.unregisterObserver(observer) }
-      emitter.onNext(getScheduledMessagesSync(context, threadId))
-    }.subscribeOn(Schedulers.io())
-  }
+    emitter.setCancellable { databaseObserver.unregisterObserver(observer) }
+    emitter.onNext(getScheduledMessagesSync(context, threadId))
+  }.subscribeOn(Schedulers.io())
 
   @WorkerThread
   private fun getScheduledMessagesSync(context: Context, threadId: Long): List<ConversationMessage> {
@@ -53,17 +51,15 @@ class ScheduledMessagesRepository {
   /**
    * Get the number of scheduled messages for a given thread
    */
-  fun getScheduledMessageCount(threadId: Long): Observable<Int> {
-    return Observable.create { emitter ->
-      val databaseObserver: DatabaseObserver = AppDependencies.databaseObserver
-      val observer = DatabaseObserver.Observer { emitter.onNext(SignalDatabase.messages.getScheduledMessageCountForThread(threadId)) }
+  fun getScheduledMessageCount(threadId: Long): Observable<Int> = Observable.create { emitter ->
+    val databaseObserver: DatabaseObserver = AppDependencies.databaseObserver
+    val observer = DatabaseObserver.Observer { emitter.onNext(SignalDatabase.messages.getScheduledMessageCountForThread(threadId)) }
 
-      databaseObserver.registerScheduledMessageObserver(threadId, observer)
+    databaseObserver.registerScheduledMessageObserver(threadId, observer)
 
-      emitter.setCancellable { databaseObserver.unregisterObserver(observer) }
-      emitter.onNext(SignalDatabase.messages.getScheduledMessageCountForThread(threadId))
-    }.subscribeOn(Schedulers.io())
-  }
+    emitter.setCancellable { databaseObserver.unregisterObserver(observer) }
+    emitter.onNext(SignalDatabase.messages.getScheduledMessageCountForThread(threadId))
+  }.subscribeOn(Schedulers.io())
 
   fun rescheduleMessage(threadId: Long, messageId: Long, scheduleTime: Long) {
     SignalDatabase.messages.rescheduleMessage(threadId, messageId, scheduleTime)

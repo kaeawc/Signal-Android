@@ -25,14 +25,10 @@ object SharedMediaPreference {
     val mediaIds: List<Long>,
     val onMediaRecordClick: (View, MediaTable.MediaRecord, Boolean) -> Unit
   ) : PreferenceModel<Model>() {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return true
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = true
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) &&
-        mediaIds == newItem.mediaIds
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) &&
+      mediaIds == newItem.mediaIds
   }
 
   private class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

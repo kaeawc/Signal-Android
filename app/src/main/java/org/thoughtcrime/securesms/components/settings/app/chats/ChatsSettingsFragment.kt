@@ -29,81 +29,79 @@ class ChatsSettingsFragment : DSLSettingsFragment(R.string.preferences_chats__ch
     }
   }
 
-  private fun getConfiguration(state: ChatsSettingsState): DSLConfiguration {
-    return configure {
-      switchPref(
-        title = DSLSettingsText.from(R.string.preferences__generate_link_previews),
-        summary = DSLSettingsText.from(R.string.preferences__retrieve_link_previews_from_websites_for_messages),
-        isChecked = state.generateLinkPreviews,
-        onClick = {
-          viewModel.setGenerateLinkPreviewsEnabled(!state.generateLinkPreviews)
-        }
-      )
+  private fun getConfiguration(state: ChatsSettingsState): DSLConfiguration = configure {
+    switchPref(
+      title = DSLSettingsText.from(R.string.preferences__generate_link_previews),
+      summary = DSLSettingsText.from(R.string.preferences__retrieve_link_previews_from_websites_for_messages),
+      isChecked = state.generateLinkPreviews,
+      onClick = {
+        viewModel.setGenerateLinkPreviewsEnabled(!state.generateLinkPreviews)
+      }
+    )
 
-      switchPref(
-        title = DSLSettingsText.from(R.string.preferences__pref_use_address_book_photos),
-        summary = DSLSettingsText.from(R.string.preferences__display_contact_photos_from_your_address_book_if_available),
-        isChecked = state.useAddressBook,
-        onClick = {
-          viewModel.setUseAddressBook(!state.useAddressBook)
-        }
-      )
+    switchPref(
+      title = DSLSettingsText.from(R.string.preferences__pref_use_address_book_photos),
+      summary = DSLSettingsText.from(R.string.preferences__display_contact_photos_from_your_address_book_if_available),
+      isChecked = state.useAddressBook,
+      onClick = {
+        viewModel.setUseAddressBook(!state.useAddressBook)
+      }
+    )
 
-      switchPref(
-        title = DSLSettingsText.from(R.string.preferences__pref_keep_muted_chats_archived),
-        summary = DSLSettingsText.from(R.string.preferences__muted_chats_that_are_archived_will_remain_archived),
-        isChecked = state.keepMutedChatsArchived,
+    switchPref(
+      title = DSLSettingsText.from(R.string.preferences__pref_keep_muted_chats_archived),
+      summary = DSLSettingsText.from(R.string.preferences__muted_chats_that_are_archived_will_remain_archived),
+      isChecked = state.keepMutedChatsArchived,
+      onClick = {
+        viewModel.setKeepMutedChatsArchived(!state.keepMutedChatsArchived)
+      }
+    )
+
+    dividerPref()
+
+    if (RemoteConfig.showChatFolders) {
+      sectionHeaderPref(R.string.ChatsSettingsFragment__chat_folders)
+
+      clickPref(
+        title = DSLSettingsText.from(R.string.ChatsSettingsFragment__add_chat_folder),
         onClick = {
-          viewModel.setKeepMutedChatsArchived(!state.keepMutedChatsArchived)
+          Navigation.findNavController(requireView()).safeNavigate(R.id.action_chatsSettingsFragment_to_chatFoldersFragment)
         }
       )
 
       dividerPref()
+    }
 
-      if (RemoteConfig.showChatFolders) {
-        sectionHeaderPref(R.string.ChatsSettingsFragment__chat_folders)
+    sectionHeaderPref(R.string.ChatsSettingsFragment__keyboard)
 
-        clickPref(
-          title = DSLSettingsText.from(R.string.ChatsSettingsFragment__add_chat_folder),
-          onClick = {
-            Navigation.findNavController(requireView()).safeNavigate(R.id.action_chatsSettingsFragment_to_chatFoldersFragment)
-          }
-        )
-
-        dividerPref()
+    switchPref(
+      title = DSLSettingsText.from(R.string.preferences_advanced__use_system_emoji),
+      isChecked = state.useSystemEmoji,
+      onClick = {
+        viewModel.setUseSystemEmoji(!state.useSystemEmoji)
       }
+    )
 
-      sectionHeaderPref(R.string.ChatsSettingsFragment__keyboard)
+    switchPref(
+      title = DSLSettingsText.from(R.string.ChatsSettingsFragment__send_with_enter),
+      isChecked = state.enterKeySends,
+      onClick = {
+        viewModel.setEnterKeySends(!state.enterKeySends)
+      }
+    )
 
-      switchPref(
-        title = DSLSettingsText.from(R.string.preferences_advanced__use_system_emoji),
-        isChecked = state.useSystemEmoji,
+    if (!RemoteConfig.messageBackups) {
+      dividerPref()
+
+      sectionHeaderPref(R.string.preferences_chats__backups)
+
+      clickPref(
+        title = DSLSettingsText.from(R.string.preferences_chats__chat_backups),
+        summary = DSLSettingsText.from(if (state.localBackupsEnabled) R.string.arrays__enabled else R.string.arrays__disabled),
         onClick = {
-          viewModel.setUseSystemEmoji(!state.useSystemEmoji)
+          Navigation.findNavController(requireView()).safeNavigate(R.id.action_chatsSettingsFragment_to_backupsPreferenceFragment)
         }
       )
-
-      switchPref(
-        title = DSLSettingsText.from(R.string.ChatsSettingsFragment__send_with_enter),
-        isChecked = state.enterKeySends,
-        onClick = {
-          viewModel.setEnterKeySends(!state.enterKeySends)
-        }
-      )
-
-      if (!RemoteConfig.messageBackups) {
-        dividerPref()
-
-        sectionHeaderPref(R.string.preferences_chats__backups)
-
-        clickPref(
-          title = DSLSettingsText.from(R.string.preferences_chats__chat_backups),
-          summary = DSLSettingsText.from(if (state.localBackupsEnabled) R.string.arrays__enabled else R.string.arrays__disabled),
-          onClick = {
-            Navigation.findNavController(requireView()).safeNavigate(R.id.action_chatsSettingsFragment_to_backupsPreferenceFragment)
-          }
-        )
-      }
     }
   }
 }

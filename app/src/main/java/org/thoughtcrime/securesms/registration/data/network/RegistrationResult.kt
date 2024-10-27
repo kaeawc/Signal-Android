@@ -15,9 +15,7 @@ import org.signal.core.util.logging.Log
  *
  */
 abstract class RegistrationResult(private val errorCause: Throwable?) {
-  fun isSuccess(): Boolean {
-    return errorCause == null
-  }
+  fun isSuccess(): Boolean = errorCause == null
 
   fun getCause(): Throwable {
     if (errorCause == null) {

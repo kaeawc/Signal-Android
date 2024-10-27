@@ -14,9 +14,7 @@ data class GroupUpdateResult(val updateStatus: UpdateStatus, val latestServer: D
   companion object {
     val CONSISTENT_OR_AHEAD = GroupUpdateResult(UpdateStatus.GROUP_CONSISTENT_OR_AHEAD, null)
 
-    fun updated(updatedGroupState: DecryptedGroup): GroupUpdateResult {
-      return GroupUpdateResult(UpdateStatus.GROUP_UPDATED, updatedGroupState)
-    }
+    fun updated(updatedGroupState: DecryptedGroup): GroupUpdateResult = GroupUpdateResult(UpdateStatus.GROUP_UPDATED, updatedGroupState)
   }
 
   enum class UpdateStatus {

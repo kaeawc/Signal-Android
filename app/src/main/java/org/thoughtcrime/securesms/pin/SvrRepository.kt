@@ -233,63 +233,61 @@ object SvrRepository {
    */
   @WorkerThread
   @JvmStatic
-  fun setPin(userPin: String, keyboardType: PinKeyboardType): BackupResponse {
-    return operationLock.withLock {
-      val masterKey: MasterKey = SignalStore.svr.getOrCreateMasterKey()
+  fun setPin(userPin: String, keyboardType: PinKeyboardType): BackupResponse = operationLock.withLock {
+    val masterKey: MasterKey = SignalStore.svr.getOrCreateMasterKey()
 
-      val writeTargets = writeImplementations
+    val writeTargets = writeImplementations
 
-      val responses: List<BackupResponse> = writeTargets
-        .map { it.setPin(userPin, masterKey) }
-        .map { it.execute() }
+    val responses: List<BackupResponse> = writeTargets
+      .map { it.setPin(userPin, masterKey) }
+      .map { it.execute() }
 
-      Log.i(TAG, "[setPin] Responses: $responses", true)
+    Log.i(TAG, "[setPin] Responses: $responses", true)
 
-      val error: BackupResponse? = responses.map {
-        when (it) {
-          is BackupResponse.ApplicationError -> it
-          BackupResponse.ExposeFailure -> it
-          is BackupResponse.NetworkError -> it
-          BackupResponse.ServerRejected -> it
-          BackupResponse.EnclaveNotFound -> null
-          is BackupResponse.Success -> null
-        }
-      }.firstOrNull()
-
-      val overallResponse = error
-        ?: responses.firstOrNull { it is BackupResponse.Success }
-        ?: responses[0]
-
-      if (overallResponse is BackupResponse.Success) {
-        Log.i(TAG, "[setPin] Success!", true)
-
-        SignalStore.svr.setMasterKey(masterKey, userPin)
-        SignalStore.svr.isPinForgottenOrSkipped = false
-        responses
-          .filterIsInstance<BackupResponse.Success>()
-          .forEach {
-            when (it.svrVersion) {
-              SvrVersion.SVR2 -> SignalStore.svr.appendSvr2AuthTokenToList(it.authorization.asBasic())
-              SvrVersion.SVR3 -> SignalStore.svr.appendSvr3AuthTokenToList(it.authorization.asBasic())
-            }
-          }
-
-        SignalStore.pin.keyboardType = keyboardType
-        SignalStore.pin.resetPinReminders()
-
-        AppDependencies.megaphoneRepository.markFinished(Megaphones.Event.PINS_FOR_ALL)
-
-        AppDependencies.jobManager.add(RefreshAttributesJob())
-      } else {
-        Log.w(TAG, "[setPin] Failed to set PIN! $overallResponse", true)
-
-        if (hasNoRegistrationLock) {
-          SignalStore.svr.onPinCreateFailure()
-        }
+    val error: BackupResponse? = responses.map {
+      when (it) {
+        is BackupResponse.ApplicationError -> it
+        BackupResponse.ExposeFailure -> it
+        is BackupResponse.NetworkError -> it
+        BackupResponse.ServerRejected -> it
+        BackupResponse.EnclaveNotFound -> null
+        is BackupResponse.Success -> null
       }
+    }.firstOrNull()
 
-      overallResponse
+    val overallResponse = error
+      ?: responses.firstOrNull { it is BackupResponse.Success }
+      ?: responses[0]
+
+    if (overallResponse is BackupResponse.Success) {
+      Log.i(TAG, "[setPin] Success!", true)
+
+      SignalStore.svr.setMasterKey(masterKey, userPin)
+      SignalStore.svr.isPinForgottenOrSkipped = false
+      responses
+        .filterIsInstance<BackupResponse.Success>()
+        .forEach {
+          when (it.svrVersion) {
+            SvrVersion.SVR2 -> SignalStore.svr.appendSvr2AuthTokenToList(it.authorization.asBasic())
+            SvrVersion.SVR3 -> SignalStore.svr.appendSvr3AuthTokenToList(it.authorization.asBasic())
+          }
+        }
+
+      SignalStore.pin.keyboardType = keyboardType
+      SignalStore.pin.resetPinReminders()
+
+      AppDependencies.megaphoneRepository.markFinished(Megaphones.Event.PINS_FOR_ALL)
+
+      AppDependencies.jobManager.add(RefreshAttributesJob())
+    } else {
+      Log.w(TAG, "[setPin] Failed to set PIN! $overallResponse", true)
+
+      if (hasNoRegistrationLock) {
+        SignalStore.svr.onPinCreateFailure()
+      }
     }
+
+    overallResponse
   }
 
   /**
@@ -401,12 +399,13 @@ object SvrRepository {
         false
       }
 
-      newToken = newToken || if (Svr3Migration.shouldWriteToSvr2) {
-        val credentials: AuthCredentials = svr2.authorization()
-        SignalStore.svr.appendSvr2AuthTokenToList(credentials.asBasic())
-      } else {
-        false
-      }
+      newToken = newToken ||
+        if (Svr3Migration.shouldWriteToSvr2) {
+          val credentials: AuthCredentials = svr2.authorization()
+          SignalStore.svr.appendSvr2AuthTokenToList(credentials.asBasic())
+        } else {
+          false
+        }
 
       if (newToken && SignalStore.svr.hasPin()) {
         BackupManager(AppDependencies.application).dataChanged()
@@ -422,22 +421,18 @@ object SvrRepository {
 
   @WorkerThread
   @VisibleForTesting
-  fun restoreMasterKeyPreRegistrationFromV2(svr: SecureValueRecovery, credentials: AuthCredentials?, userPin: String): RestoreResponse {
-    return if (credentials == null) {
-      RestoreResponse.Missing
-    } else {
-      svr.restoreDataPreRegistration(credentials, shareSet = null, userPin)
-    }
+  fun restoreMasterKeyPreRegistrationFromV2(svr: SecureValueRecovery, credentials: AuthCredentials?, userPin: String): RestoreResponse = if (credentials == null) {
+    RestoreResponse.Missing
+  } else {
+    svr.restoreDataPreRegistration(credentials, shareSet = null, userPin)
   }
 
   @WorkerThread
   @VisibleForTesting
-  fun restoreMasterKeyPreRegistrationFromV3(credentials: Svr3Credentials?, userPin: String): RestoreResponse {
-    return if (credentials?.shareSet == null) {
-      RestoreResponse.Missing
-    } else {
-      svr3.restoreDataPreRegistration(credentials.authCredentials, credentials.shareSet, userPin)
-    }
+  fun restoreMasterKeyPreRegistrationFromV3(credentials: Svr3Credentials?, userPin: String): RestoreResponse = if (credentials?.shareSet == null) {
+    RestoreResponse.Missing
+  } else {
+    svr3.restoreDataPreRegistration(credentials.authCredentials, credentials.shareSet, userPin)
   }
 
   @WorkerThread

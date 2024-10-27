@@ -185,9 +185,7 @@ class StoryPostFragment : Fragment(R.layout.stories_post_fragment) {
     storyTextLoader?.load()
   }
 
-  fun requireCallback(): Callback {
-    return requireListener()
-  }
+  fun requireCallback(): Callback = requireListener()
 
   interface Callback {
     fun onContentReady()

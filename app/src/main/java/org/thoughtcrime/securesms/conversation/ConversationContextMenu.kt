@@ -15,11 +15,12 @@ import org.thoughtcrime.securesms.components.menu.ContextMenuList
 /**
  * The context menu shown after long pressing a message in ConversationActivity.
  */
-class ConversationContextMenu(private val anchor: View, items: List<ActionItem>) : PopupWindow(
-  LayoutInflater.from(anchor.context).inflate(R.layout.signal_context_menu, null),
-  ViewGroup.LayoutParams.WRAP_CONTENT,
-  ViewGroup.LayoutParams.WRAP_CONTENT
-) {
+class ConversationContextMenu(private val anchor: View, items: List<ActionItem>) :
+  PopupWindow(
+    LayoutInflater.from(anchor.context).inflate(R.layout.signal_context_menu, null),
+    ViewGroup.LayoutParams.WRAP_CONTENT,
+    ViewGroup.LayoutParams.WRAP_CONTENT
+  ) {
 
   val context: Context = anchor.context
 

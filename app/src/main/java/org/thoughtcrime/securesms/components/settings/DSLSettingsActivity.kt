@@ -52,14 +52,12 @@ open class DSLSettingsActivity : PassphraseRequiredActivity() {
     dynamicTheme.onResume(this)
   }
 
-  override fun onNavigateUp(): Boolean {
-    return if (!Navigation.findNavController(this, R.id.nav_host_fragment).popBackStack()) {
-      onWillFinish()
-      finish()
-      true
-    } else {
-      false
-    }
+  override fun onNavigateUp(): Boolean = if (!Navigation.findNavController(this, R.id.nav_host_fragment).popBackStack()) {
+    onWillFinish()
+    finish()
+    true
+  } else {
+    false
   }
 
   protected open fun onWillFinish() {}

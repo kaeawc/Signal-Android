@@ -32,12 +32,8 @@ object IBANVisualTransformation : VisualTransformation {
   }
 
   private object IBANOffsetMapping : OffsetMapping {
-    override fun originalToTransformed(offset: Int): Int {
-      return offset + (offset / 4)
-    }
+    override fun originalToTransformed(offset: Int): Int = offset + (offset / 4)
 
-    override fun transformedToOriginal(offset: Int): Int {
-      return offset - (offset / 4)
-    }
+    override fun transformedToOriginal(offset: Int): Int = offset - (offset / 4)
   }
 }

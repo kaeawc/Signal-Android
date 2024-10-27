@@ -266,24 +266,22 @@ class IncomingMessageObserver(private val context: Application) {
   }
 
   @VisibleForTesting
-  fun processEnvelope(bufferedProtocolStore: BufferedProtocolStore, envelope: Envelope, serverDeliveredTimestamp: Long): List<FollowUpOperation>? {
-    return when (envelope.type) {
-      Envelope.Type.RECEIPT -> {
-        processReceipt(envelope)
-        null
-      }
+  fun processEnvelope(bufferedProtocolStore: BufferedProtocolStore, envelope: Envelope, serverDeliveredTimestamp: Long): List<FollowUpOperation>? = when (envelope.type) {
+    Envelope.Type.RECEIPT -> {
+      processReceipt(envelope)
+      null
+    }
 
-      Envelope.Type.PREKEY_BUNDLE,
-      Envelope.Type.CIPHERTEXT,
-      Envelope.Type.UNIDENTIFIED_SENDER,
-      Envelope.Type.PLAINTEXT_CONTENT -> {
-        processMessage(bufferedProtocolStore, envelope, serverDeliveredTimestamp)
-      }
+    Envelope.Type.PREKEY_BUNDLE,
+    Envelope.Type.CIPHERTEXT,
+    Envelope.Type.UNIDENTIFIED_SENDER,
+    Envelope.Type.PLAINTEXT_CONTENT -> {
+      processMessage(bufferedProtocolStore, envelope, serverDeliveredTimestamp)
+    }
 
-      else -> {
-        Log.w(TAG, "Received envelope of unknown type: " + envelope.type)
-        null
-      }
+    else -> {
+      Log.w(TAG, "Received envelope of unknown type: " + envelope.type)
+      null
     }
   }
 
@@ -334,26 +332,24 @@ class IncomingMessageObserver(private val context: Application) {
     SignalDatabase.messageLog.deleteEntryForRecipient(envelope.timestamp!!, senderId, envelope.sourceDevice!!)
   }
 
-  private fun MessageDecryptor.Result.toMessageState(): MessageState {
-    return when (this) {
-      is MessageDecryptor.Result.DecryptionError -> MessageState.DECRYPTION_ERROR
-      is MessageDecryptor.Result.Ignore -> MessageState.NOOP
-      is MessageDecryptor.Result.InvalidVersion -> MessageState.INVALID_VERSION
-      is MessageDecryptor.Result.LegacyMessage -> MessageState.LEGACY_MESSAGE
-      is MessageDecryptor.Result.Success -> MessageState.DECRYPTED_OK
-      is MessageDecryptor.Result.UnsupportedDataMessage -> MessageState.UNSUPPORTED_DATA_MESSAGE
-    }
+  private fun MessageDecryptor.Result.toMessageState(): MessageState = when (this) {
+    is MessageDecryptor.Result.DecryptionError -> MessageState.DECRYPTION_ERROR
+    is MessageDecryptor.Result.Ignore -> MessageState.NOOP
+    is MessageDecryptor.Result.InvalidVersion -> MessageState.INVALID_VERSION
+    is MessageDecryptor.Result.LegacyMessage -> MessageState.LEGACY_MESSAGE
+    is MessageDecryptor.Result.Success -> MessageState.DECRYPTED_OK
+    is MessageDecryptor.Result.UnsupportedDataMessage -> MessageState.UNSUPPORTED_DATA_MESSAGE
   }
 
-  private fun MessageDecryptor.ErrorMetadata.toExceptionMetadata(): ExceptionMetadata {
-    return ExceptionMetadata(
-      this.sender,
-      this.senderDevice,
-      this.groupId
-    )
-  }
+  private fun MessageDecryptor.ErrorMetadata.toExceptionMetadata(): ExceptionMetadata = ExceptionMetadata(
+    this.sender,
+    this.senderDevice,
+    this.groupId
+  )
 
-  private inner class MessageRetrievalThread : Thread("MessageRetrievalService"), Thread.UncaughtExceptionHandler {
+  private inner class MessageRetrievalThread :
+    Thread("MessageRetrievalService"),
+    Thread.UncaughtExceptionHandler {
 
     private var sleepTimer: SleepTimer
 
@@ -472,9 +468,7 @@ class IncomingMessageObserver(private val context: Application) {
   }
 
   class ForegroundService : Service() {
-    override fun onBind(intent: Intent?): IBinder? {
-      return null
-    }
+    override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onCreate() {
       postForegroundNotification()

@@ -120,10 +120,8 @@ class OneTimePreKeyTable(context: Context, databaseHelper: SignalDatabase) : Dat
     writableDatabase.deleteAll(TABLE_NAME)
   }
 
-  private fun ServiceId.toAccountId(): String {
-    return when (this) {
-      is ServiceId.ACI -> this.toString()
-      is ServiceId.PNI -> PNI_ACCOUNT_ID
-    }
+  private fun ServiceId.toAccountId(): String = when (this) {
+    is ServiceId.ACI -> this.toString()
+    is ServiceId.PNI -> PNI_ACCOUNT_ID
   }
 }

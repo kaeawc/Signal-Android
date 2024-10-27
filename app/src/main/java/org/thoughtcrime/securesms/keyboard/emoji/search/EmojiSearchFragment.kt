@@ -21,7 +21,9 @@ import org.thoughtcrime.securesms.util.ThemedFragment.themedInflate
 import org.thoughtcrime.securesms.util.ViewUtil
 import org.thoughtcrime.securesms.util.fragments.requireListener
 
-class EmojiSearchFragment : Fragment(), EmojiPageViewGridAdapter.VariationSelectorListener {
+class EmojiSearchFragment :
+  Fragment(),
+  EmojiPageViewGridAdapter.VariationSelectorListener {
 
   private lateinit var viewModel: EmojiSearchViewModel
   private lateinit var callback: Callback
@@ -32,9 +34,7 @@ class EmojiSearchFragment : Fragment(), EmojiPageViewGridAdapter.VariationSelect
     callback = requireListener()
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return themedInflate(R.layout.emoji_search_fragment, inflater, container)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = themedInflate(R.layout.emoji_search_fragment, inflater, container)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     val repository = EmojiSearchRepository(requireContext())

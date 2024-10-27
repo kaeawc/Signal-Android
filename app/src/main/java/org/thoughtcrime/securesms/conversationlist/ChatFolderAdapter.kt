@@ -58,12 +58,10 @@ class ChatFolderAdapter(val callbacks: Callbacks) : MappingAdapter() {
       }
     }
 
-    private fun getName(context: Context, folder: ChatFolderRecord): String {
-      return if (folder.folderType == ChatFolderRecord.FolderType.ALL) {
-        context.getString(R.string.ChatFoldersFragment__all_chats)
-      } else {
-        folder.name
-      }
+    private fun getName(context: Context, folder: ChatFolderRecord): String = if (folder.folderType == ChatFolderRecord.FolderType.ALL) {
+      context.getString(R.string.ChatFoldersFragment__all_chats)
+    } else {
+      folder.name
     }
   }
 

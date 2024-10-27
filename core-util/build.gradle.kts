@@ -13,9 +13,9 @@ dependencies {
   implementation(libs.androidx.sqlite)
   implementation(libs.androidx.documentfile)
 
-  testImplementation(testLibs.junit.junit)
-  testImplementation(testLibs.mockito.core)
-  testImplementation(testLibs.robolectric.robolectric)
+  testImplementation(libs.junit)
+  testImplementation(libs.mockito.core)
+  testImplementation(libs.robolectric)
 }
 
 wire {

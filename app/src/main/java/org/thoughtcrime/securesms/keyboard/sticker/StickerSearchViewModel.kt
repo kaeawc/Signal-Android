@@ -22,8 +22,6 @@ class StickerSearchViewModel(private val searchRepository: StickerSearchReposito
   class Factory : ViewModelProvider.Factory {
     val repository = StickerSearchRepository()
 
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(StickerSearchViewModel(repository)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(StickerSearchViewModel(repository)))
   }
 }

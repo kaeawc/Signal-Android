@@ -46,11 +46,7 @@ class LogSectionMemory : LogSection {
     return base
   }
 
-  private fun Long.byteDisplay(): String {
-    return "$this bytes (${bytes.inMebiBytes.roundedString(2)} MiB)"
-  }
+  private fun Long.byteDisplay(): String = "$this bytes (${bytes.inMebiBytes.roundedString(2)} MiB)"
 
-  private fun Long.kbDisplay(): String {
-    return "$this KiB (${kibiBytes.inMebiBytes.roundedString(2)} MiB)"
-  }
+  private fun Long.kbDisplay(): String = "$this KiB (${kibiBytes.inMebiBytes.roundedString(2)} MiB)"
 }

@@ -22,11 +22,7 @@ data class IdentityRecordsState(
 ) {
   val isUnverified: Boolean = identityRecords.isUnverified
 
-  fun hasRecentSafetyNumberChange(): Boolean {
-    return identityRecords.isUnverified(true) || identityRecords.isUntrusted(true)
-  }
+  fun hasRecentSafetyNumberChange(): Boolean = identityRecords.isUnverified(true) || identityRecords.isUntrusted(true)
 
-  fun getRecentSafetyNumberChangeRecords(): List<IdentityRecord> {
-    return identityRecords.unverifiedRecords + identityRecords.untrustedRecords
-  }
+  fun getRecentSafetyNumberChangeRecords(): List<IdentityRecord> = identityRecords.unverifiedRecords + identityRecords.untrustedRecords
 }

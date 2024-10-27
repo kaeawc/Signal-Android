@@ -19,9 +19,7 @@ class AnalyzeDatabaseAlarmListener : PersistentAlarmManagerListener() {
     }
   }
 
-  override fun shouldScheduleExact(): Boolean {
-    return true
-  }
+  override fun shouldScheduleExact(): Boolean = true
 
   override fun getNextScheduledExecutionTime(context: Context): Long {
     var nextTime = SignalStore.misc.nextDatabaseAnalysisTime

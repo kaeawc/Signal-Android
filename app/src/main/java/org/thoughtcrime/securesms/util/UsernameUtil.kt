@@ -39,14 +39,10 @@ object UsernameUtil {
   )
 
   @JvmStatic
-  fun isValidUsernameForSearch(value: String): Boolean {
-    return value.isNotEmpty() && SEARCH_PATTERN.matcher(value).matches()
-  }
+  fun isValidUsernameForSearch(value: String): Boolean = value.isNotEmpty() && SEARCH_PATTERN.matcher(value).matches()
 
   @JvmStatic
-  fun sanitizeUsernameFromSearch(value: String): String {
-    return value.replace("[^a-zA-Z0-9_.]".toRegex(), "")
-  }
+  fun sanitizeUsernameFromSearch(value: String): String = value.replace("[^a-zA-Z0-9_.]".toRegex(), "")
 
   @JvmStatic
   fun checkNickname(value: String?): InvalidReason? {

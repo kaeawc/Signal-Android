@@ -26,17 +26,15 @@ class SafetyNumberBottomSheetRepository {
   /**
    * Retrieves the IdentityRecord for a given recipient from the protocol store (if present)
    */
-  fun getIdentityRecord(recipientId: RecipientId): Maybe<IdentityRecord> {
-    return Single.fromCallable {
-      AppDependencies.protocolStore.aci().identities().getIdentityRecord(recipientId)
-    }.flatMapMaybe {
-      if (it.isPresent) {
-        Maybe.just(it.get())
-      } else {
-        Maybe.empty()
-      }
-    }.subscribeOn(Schedulers.io())
-  }
+  fun getIdentityRecord(recipientId: RecipientId): Maybe<IdentityRecord> = Single.fromCallable {
+    AppDependencies.protocolStore.aci().identities().getIdentityRecord(recipientId)
+  }.flatMapMaybe {
+    if (it.isPresent) {
+      Maybe.just(it.get())
+    } else {
+      Maybe.empty()
+    }
+  }.subscribeOn(Schedulers.io())
 
   /**
    * Builds out the list of UntrustedRecipients to display in either the bottom sheet or review fragment. This list will be automatically
@@ -86,55 +84,45 @@ class SafetyNumberBottomSheetRepository {
   /**
    * Removes the given recipient from all stories they're a member of in destinations.
    */
-  fun removeFromStories(recipientId: RecipientId, destinations: List<ContactSearchKey.RecipientSearchKey>): Completable {
-    return filterForDistributionLists(destinations).flatMapCompletable { distributionRecipients ->
-      Completable.fromAction {
-        distributionRecipients
-          .mapNotNull { SignalDatabase.distributionLists.getList(it.requireDistributionListId()) }
-          .filter { it.members.contains(recipientId) }
-          .forEach {
-            SignalDatabase.distributionLists.excludeFromStory(recipientId, it)
-            Stories.onStorySettingsChanged(it.id)
-          }
-      }
-    }.subscribeOn(Schedulers.io())
-  }
+  fun removeFromStories(recipientId: RecipientId, destinations: List<ContactSearchKey.RecipientSearchKey>): Completable = filterForDistributionLists(destinations).flatMapCompletable { distributionRecipients ->
+    Completable.fromAction {
+      distributionRecipients
+        .mapNotNull { SignalDatabase.distributionLists.getList(it.requireDistributionListId()) }
+        .filter { it.members.contains(recipientId) }
+        .forEach {
+          SignalDatabase.distributionLists.excludeFromStory(recipientId, it)
+          Stories.onStorySettingsChanged(it.id)
+        }
+    }
+  }.subscribeOn(Schedulers.io())
 
   /**
    * Removes the given set of recipients from the specified distribution list
    */
-  fun removeAllFromStory(recipientIds: List<RecipientId>, distributionList: DistributionListId): Completable {
-    return Completable.fromAction {
-      val record = SignalDatabase.distributionLists.getList(distributionList)
-      if (record != null) {
-        SignalDatabase.distributionLists.excludeAllFromStory(recipientIds, record)
-        Stories.onStorySettingsChanged(distributionList)
-      }
-    }.subscribeOn(Schedulers.io())
-  }
+  fun removeAllFromStory(recipientIds: List<RecipientId>, distributionList: DistributionListId): Completable = Completable.fromAction {
+    val record = SignalDatabase.distributionLists.getList(distributionList)
+    if (record != null) {
+      SignalDatabase.distributionLists.excludeAllFromStory(recipientIds, record)
+      Stories.onStorySettingsChanged(distributionList)
+    }
+  }.subscribeOn(Schedulers.io())
 
   private fun insert(map: MutableMap<SafetyNumberBucket, List<SafetyNumberRecipient>>, bucket: SafetyNumberBucket, safetyNumberRecipient: SafetyNumberRecipient) {
     val bucketList = map.getOrDefault(bucket, emptyList())
     map[bucket] = bucketList + safetyNumberRecipient
   }
 
-  private fun filterForDistributionLists(destinations: List<ContactSearchKey.RecipientSearchKey>): Single<List<Recipient>> {
-    return Single.fromCallable {
-      val recipients = Recipient.resolvedList(destinations.map { it.recipientId })
-      recipients.filter { it.isDistributionList }
-    }
+  private fun filterForDistributionLists(destinations: List<ContactSearchKey.RecipientSearchKey>): Single<List<Recipient>> = Single.fromCallable {
+    val recipients = Recipient.resolvedList(destinations.map { it.recipientId })
+    recipients.filter { it.isDistributionList }
   }
 
-  private fun filterForGroups(destinations: List<ContactSearchKey.RecipientSearchKey>): Single<List<Recipient>> {
-    return Single.fromCallable {
-      val recipients = Recipient.resolvedList(destinations.map { it.recipientId })
-      recipients.filter { it.isGroup }
-    }
+  private fun filterForGroups(destinations: List<ContactSearchKey.RecipientSearchKey>): Single<List<Recipient>> = Single.fromCallable {
+    val recipients = Recipient.resolvedList(destinations.map { it.recipientId })
+    recipients.filter { it.isGroup }
   }
 
-  private fun observeDistributionList(recipient: Recipient): Observable<DistributionListRecord> {
-    return Recipient.observable(recipient.id).map { SignalDatabase.distributionLists.getList(it.requireDistributionListId())!! }
-  }
+  private fun observeDistributionList(recipient: Recipient): Observable<DistributionListRecord> = Recipient.observable(recipient.id).map { SignalDatabase.distributionLists.getList(it.requireDistributionListId())!! }
 
   private fun getDistributionLists(destinations: List<ContactSearchKey.RecipientSearchKey>): Observable<List<DistributionListRecord>> {
     val distributionListRecipients: Single<List<Recipient>> = filterForDistributionLists(destinations)
@@ -182,13 +170,9 @@ class SafetyNumberBottomSheetRepository {
     }
   }
 
-  private fun getDistributionMemberships(recipient: Recipient, distributionLists: List<DistributionListRecord>): List<DistributionListRecord> {
-    return distributionLists.filter { it.members.contains(recipient.id) }
-  }
+  private fun getDistributionMemberships(recipient: Recipient, distributionLists: List<DistributionListRecord>): List<DistributionListRecord> = distributionLists.filter { it.members.contains(recipient.id) }
 
-  private fun getGroupMemberships(recipient: Recipient, groups: List<Recipient>): List<Recipient> {
-    return groups.filter { it.participantIds.contains(recipient.id) }
-  }
+  private fun getGroupMemberships(recipient: Recipient, groups: List<Recipient>): List<Recipient> = groups.filter { it.participantIds.contains(recipient.id) }
 
   data class ResolvedIdentity(val recipient: Recipient, val identityRecord: Optional<IdentityRecord>)
 }

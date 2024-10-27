@@ -59,7 +59,7 @@ public final class GroupDescriptionDialog extends DialogFragment {
 
   @Override
   public @NonNull Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-    View      dialogView          = LayoutInflater.from(getContext()).inflate(R.layout.group_description_dialog, null, false);
+    View      dialogView          = getLayoutInflater().inflate(R.layout.group_description_dialog, null, false);
     String    argumentTitle       = requireArguments().getString(ARGUMENT_TITLE, null);
     String    argumentDescription = requireArguments().getString(ARGUMENT_DESCRIPTION, null);
     GroupId   argumentGroupId     = ParcelableGroupId.get(requireArguments().getParcelable(ARGUMENT_GROUP_ID));

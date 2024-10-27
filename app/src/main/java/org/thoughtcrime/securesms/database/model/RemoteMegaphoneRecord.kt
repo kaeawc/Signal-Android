@@ -37,14 +37,12 @@ data class RemoteMegaphoneRecord(
   @get:JvmName("hasSecondaryAction")
   val hasSecondaryAction = secondaryActionId != null && secondaryActionText != null
 
-  fun getDataForAction(actionId: ActionId): JSONObject? {
-    return if (primaryActionId == actionId) {
-      primaryActionData
-    } else if (secondaryActionId == actionId) {
-      secondaryActionData
-    } else {
-      null
-    }
+  fun getDataForAction(actionId: ActionId): JSONObject? = if (primaryActionId == actionId) {
+    primaryActionData
+  } else if (secondaryActionId == actionId) {
+    secondaryActionData
+  } else {
+    null
   }
 
   enum class ActionId(val id: String, val isDonateAction: Boolean = false) {
@@ -54,9 +52,7 @@ data class RemoteMegaphoneRecord(
     DONATE_FOR_FRIEND("donate_friend", true);
 
     companion object {
-      fun from(id: String?): ActionId? {
-        return values().firstOrNull { it.id == id }
-      }
+      fun from(id: String?): ActionId? = values().firstOrNull { it.id == id }
     }
   }
 }

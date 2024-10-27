@@ -22,19 +22,17 @@ object ConversationMessageComputeWorkers {
   fun recomputeFormattedDate(
     context: Context,
     items: List<ConversationMessageElement>
-  ): Single<Boolean> {
-    return Single.fromCallable {
-      var hasUpdatedProperties = false
-      for (item in items) {
-        val oldDate = item.conversationMessage.computedProperties.formattedDate
-        if (oldDate.isRelative) {
-          val newDate = ConversationMessage.getFormattedDate(context, item.conversationMessage.messageRecord)
-          item.conversationMessage.computedProperties.formattedDate = newDate
-          hasUpdatedProperties = true
-        }
+  ): Single<Boolean> = Single.fromCallable {
+    var hasUpdatedProperties = false
+    for (item in items) {
+      val oldDate = item.conversationMessage.computedProperties.formattedDate
+      if (oldDate.isRelative) {
+        val newDate = ConversationMessage.getFormattedDate(context, item.conversationMessage.messageRecord)
+        item.conversationMessage.computedProperties.formattedDate = newDate
+        hasUpdatedProperties = true
       }
+    }
 
-      hasUpdatedProperties
-    }.subscribeOn(Schedulers.from(executor))
-  }
+    hasUpdatedProperties
+  }.subscribeOn(Schedulers.from(executor))
 }

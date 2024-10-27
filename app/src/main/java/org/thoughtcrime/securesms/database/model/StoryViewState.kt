@@ -42,23 +42,21 @@ enum class StoryViewState {
     }
 
     @JvmStatic
-    private fun getState(recipientId: RecipientId): Observable<StoryViewState> {
-      return Observable.create<StoryViewState> { emitter ->
-        fun refresh() {
-          emitter.onNext(SignalDatabase.messages.getStoryViewState(recipientId))
-        }
+    private fun getState(recipientId: RecipientId): Observable<StoryViewState> = Observable.create<StoryViewState> { emitter ->
+      fun refresh() {
+        emitter.onNext(SignalDatabase.messages.getStoryViewState(recipientId))
+      }
 
-        val storyObserver = DatabaseObserver.Observer {
-          refresh()
-        }
-
-        AppDependencies.databaseObserver.registerStoryObserver(recipientId, storyObserver)
-        emitter.setCancellable {
-          AppDependencies.databaseObserver.unregisterObserver(storyObserver)
-        }
-
+      val storyObserver = DatabaseObserver.Observer {
         refresh()
-      }.observeOn(Schedulers.io())
-    }
+      }
+
+      AppDependencies.databaseObserver.registerStoryObserver(recipientId, storyObserver)
+      emitter.setCancellable {
+        AppDependencies.databaseObserver.unregisterObserver(storyObserver)
+      }
+
+      refresh()
+    }.observeOn(Schedulers.io())
   }
 }

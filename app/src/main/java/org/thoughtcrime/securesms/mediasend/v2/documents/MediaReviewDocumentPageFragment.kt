@@ -52,11 +52,9 @@ class MediaReviewDocumentPageFragment : Fragment(R.layout.fragment_container) {
   companion object {
     private const val ARG_MEDIA = "arg.media"
 
-    fun newInstance(media: Media): Fragment {
-      return MediaReviewDocumentPageFragment().apply {
-        arguments = Bundle().apply {
-          putParcelable(ARG_MEDIA, media)
-        }
+    fun newInstance(media: Media): Fragment = MediaReviewDocumentPageFragment().apply {
+      arguments = Bundle().apply {
+        putParcelable(ARG_MEDIA, media)
       }
     }
   }

@@ -44,9 +44,7 @@ class RestoreViewModel : ViewModel() {
     }
   }
 
-  fun getBackupRestorationType(): BackupRestorationType {
-    return store.value.restorationType
-  }
+  fun getBackupRestorationType(): BackupRestorationType = store.value.restorationType
 
   fun setBackupFileUri(backupFileUri: Uri) {
     store.update {

@@ -33,8 +33,6 @@ internal class PaymentsAddMoneyViewModel(paymentsAddMoneyRepository: PaymentsAdd
   }
 
   class Factory : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(PaymentsAddMoneyViewModel(PaymentsAddMoneyRepository()))!!
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(PaymentsAddMoneyViewModel(PaymentsAddMoneyRepository()))!!
   }
 }

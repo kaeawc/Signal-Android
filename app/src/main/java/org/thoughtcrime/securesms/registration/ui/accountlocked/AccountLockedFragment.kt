@@ -57,11 +57,7 @@ class AccountLockedFragment : LoggingFragment(R.layout.account_locked_fragment) 
     requireActivity().finish()
   }
 
-  private fun durationToDays(duration: Long): Long {
-    return if (duration != 0L) getLockoutDays(duration).toLong() else 7
-  }
+  private fun durationToDays(duration: Long): Long = if (duration != 0L) getLockoutDays(duration).toLong() else 7
 
-  private fun getLockoutDays(timeRemainingMs: Long): Int {
-    return timeRemainingMs.milliseconds.inWholeDays.toInt() + 1
-  }
+  private fun getLockoutDays(timeRemainingMs: Long): Int = timeRemainingMs.milliseconds.inWholeDays.toInt() + 1
 }

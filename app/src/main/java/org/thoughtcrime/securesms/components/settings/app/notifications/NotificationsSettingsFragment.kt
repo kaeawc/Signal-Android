@@ -98,203 +98,201 @@ class NotificationsSettingsFragment : DSLSettingsFragment(R.string.preferences__
     }
   }
 
-  private fun getConfiguration(state: NotificationsSettingsState): DSLConfiguration {
-    return configure {
-      if (!state.messageNotificationsState.canEnableNotifications) {
-        customPref(
-          Banner.Model(
-            textId = R.string.NotificationSettingsFragment__to_enable_notifications,
-            actionId = R.string.NotificationSettingsFragment__turn_on,
-            onClick = {
-              TurnOnNotificationsBottomSheet.turnOnSystemNotificationsFragment(requireContext()).show(childFragmentManager, BottomSheetUtil.STANDARD_BOTTOM_SHEET_FRAGMENT_TAG)
-            }
-          )
-        )
-      }
-
-      sectionHeaderPref(R.string.NotificationsSettingsFragment__messages)
-
-      switchPref(
-        title = DSLSettingsText.from(R.string.preferences__notifications),
-        isEnabled = state.messageNotificationsState.canEnableNotifications,
-        isChecked = state.messageNotificationsState.notificationsEnabled,
-        onClick = {
-          viewModel.setMessageNotificationsEnabled(!state.messageNotificationsState.notificationsEnabled)
-        }
-      )
-
-      if (Build.VERSION.SDK_INT >= 30) {
-        clickPref(
-          title = DSLSettingsText.from(R.string.preferences__customize),
-          summary = DSLSettingsText.from(R.string.preferences__change_sound_and_vibration),
-          isEnabled = state.messageNotificationsState.notificationsEnabled,
+  private fun getConfiguration(state: NotificationsSettingsState): DSLConfiguration = configure {
+    if (!state.messageNotificationsState.canEnableNotifications) {
+      customPref(
+        Banner.Model(
+          textId = R.string.NotificationSettingsFragment__to_enable_notifications,
+          actionId = R.string.NotificationSettingsFragment__turn_on,
           onClick = {
-            NotificationChannels.getInstance().openChannelSettings(requireActivity(), NotificationChannels.getInstance().messagesChannel, null)
+            TurnOnNotificationsBottomSheet.turnOnSystemNotificationsFragment(requireContext()).show(childFragmentManager, BottomSheetUtil.STANDARD_BOTTOM_SHEET_FRAGMENT_TAG)
           }
         )
-      } else {
-        clickPref(
-          title = DSLSettingsText.from(R.string.preferences__sound),
-          summary = DSLSettingsText.from(getRingtoneSummary(state.messageNotificationsState.sound)),
-          isEnabled = state.messageNotificationsState.notificationsEnabled,
-          onClick = {
-            launchMessageSoundSelectionIntent()
-          }
-        )
+      )
+    }
 
-        switchPref(
-          title = DSLSettingsText.from(R.string.preferences__vibrate),
-          isChecked = state.messageNotificationsState.vibrateEnabled,
-          isEnabled = state.messageNotificationsState.notificationsEnabled,
-          onClick = {
-            viewModel.setMessageNotificationVibration(!state.messageNotificationsState.vibrateEnabled)
-          }
-        )
+    sectionHeaderPref(R.string.NotificationsSettingsFragment__messages)
 
-        customPref(
-          LedColorPreference(
-            colorValues = ledColorValues,
-            radioListPreference = RadioListPreference(
-              title = DSLSettingsText.from(R.string.preferences__led_color),
-              listItems = ledColorLabels,
-              selected = ledColorValues.indexOf(state.messageNotificationsState.ledColor),
-              isEnabled = state.messageNotificationsState.notificationsEnabled,
-              onSelected = {
-                viewModel.setMessageNotificationLedColor(ledColorValues[it])
-              }
-            )
-          )
-        )
-
-        if (!NotificationChannels.supported()) {
-          radioListPref(
-            title = DSLSettingsText.from(R.string.preferences__pref_led_blink_title),
-            listItems = ledBlinkLabels,
-            selected = ledBlinkValues.indexOf(state.messageNotificationsState.ledBlink),
-            isEnabled = state.messageNotificationsState.notificationsEnabled,
-            onSelected = {
-              viewModel.setMessageNotificationLedBlink(ledBlinkValues[it])
-            }
-          )
-        }
+    switchPref(
+      title = DSLSettingsText.from(R.string.preferences__notifications),
+      isEnabled = state.messageNotificationsState.canEnableNotifications,
+      isChecked = state.messageNotificationsState.notificationsEnabled,
+      onClick = {
+        viewModel.setMessageNotificationsEnabled(!state.messageNotificationsState.notificationsEnabled)
       }
+    )
 
-      switchPref(
-        title = DSLSettingsText.from(R.string.preferences_notifications__in_chat_sounds),
-        isChecked = state.messageNotificationsState.inChatSoundsEnabled,
-        isEnabled = state.messageNotificationsState.notificationsEnabled,
-        onClick = {
-          viewModel.setMessageNotificationInChatSoundsEnabled(!state.messageNotificationsState.inChatSoundsEnabled)
-        }
-      )
-
-      radioListPref(
-        title = DSLSettingsText.from(R.string.preferences__repeat_alerts),
-        listItems = repeatAlertsLabels,
-        selected = repeatAlertsValues.indexOf(state.messageNotificationsState.repeatAlerts.toString()),
-        isEnabled = state.messageNotificationsState.notificationsEnabled,
-        onSelected = {
-          viewModel.setMessageRepeatAlerts(repeatAlertsValues[it].toInt())
-        }
-      )
-
-      radioListPref(
-        title = DSLSettingsText.from(R.string.preferences_notifications__show),
-        listItems = notificationPrivacyLabels,
-        selected = notificationPrivacyValues.indexOf(state.messageNotificationsState.messagePrivacy),
-        isEnabled = state.messageNotificationsState.notificationsEnabled,
-        onSelected = {
-          viewModel.setMessageNotificationPrivacy(notificationPrivacyValues[it])
-        }
-      )
-
-      if (Build.VERSION.SDK_INT >= 23 && state.messageNotificationsState.troubleshootNotifications) {
-        clickPref(
-          title = DSLSettingsText.from(R.string.preferences_notifications__troubleshoot),
-          isEnabled = true,
-          onClick = {
-            PromptBatterySaverDialogFragment.show(childFragmentManager)
-          }
-        )
-      }
-
-      if (Build.VERSION.SDK_INT < 30) {
-        if (NotificationChannels.supported()) {
-          clickPref(
-            title = DSLSettingsText.from(R.string.preferences_notifications__priority),
-            isEnabled = state.messageNotificationsState.notificationsEnabled,
-            onClick = {
-              launchNotificationPriorityIntent()
-            }
-          )
-        } else {
-          radioListPref(
-            title = DSLSettingsText.from(R.string.preferences_notifications__priority),
-            listItems = notificationPriorityLabels,
-            selected = notificationPriorityValues.indexOf(state.messageNotificationsState.priority.toString()),
-            isEnabled = state.messageNotificationsState.notificationsEnabled,
-            onSelected = {
-              viewModel.setMessageNotificationPriority(notificationPriorityValues[it].toInt())
-            }
-          )
-        }
-      }
-
-      dividerPref()
-
-      sectionHeaderPref(R.string.NotificationsSettingsFragment__calls)
-
-      switchPref(
-        title = DSLSettingsText.from(R.string.preferences__notifications),
-        isEnabled = state.callNotificationsState.canEnableNotifications,
-        isChecked = state.callNotificationsState.notificationsEnabled,
-        onClick = {
-          viewModel.setCallNotificationsEnabled(!state.callNotificationsState.notificationsEnabled)
-        }
-      )
-
+    if (Build.VERSION.SDK_INT >= 30) {
       clickPref(
-        title = DSLSettingsText.from(R.string.preferences_notifications__ringtone),
-        summary = DSLSettingsText.from(getRingtoneSummary(state.callNotificationsState.ringtone)),
-        isEnabled = state.callNotificationsState.notificationsEnabled,
+        title = DSLSettingsText.from(R.string.preferences__customize),
+        summary = DSLSettingsText.from(R.string.preferences__change_sound_and_vibration),
+        isEnabled = state.messageNotificationsState.notificationsEnabled,
         onClick = {
-          launchCallRingtoneSelectionIntent()
+          NotificationChannels.getInstance().openChannelSettings(requireActivity(), NotificationChannels.getInstance().messagesChannel, null)
+        }
+      )
+    } else {
+      clickPref(
+        title = DSLSettingsText.from(R.string.preferences__sound),
+        summary = DSLSettingsText.from(getRingtoneSummary(state.messageNotificationsState.sound)),
+        isEnabled = state.messageNotificationsState.notificationsEnabled,
+        onClick = {
+          launchMessageSoundSelectionIntent()
         }
       )
 
       switchPref(
         title = DSLSettingsText.from(R.string.preferences__vibrate),
-        isChecked = state.callNotificationsState.vibrateEnabled,
-        isEnabled = state.callNotificationsState.notificationsEnabled,
+        isChecked = state.messageNotificationsState.vibrateEnabled,
+        isEnabled = state.messageNotificationsState.notificationsEnabled,
         onClick = {
-          viewModel.setCallVibrateEnabled(!state.callNotificationsState.vibrateEnabled)
+          viewModel.setMessageNotificationVibration(!state.messageNotificationsState.vibrateEnabled)
         }
       )
 
-      dividerPref()
+      customPref(
+        LedColorPreference(
+          colorValues = ledColorValues,
+          radioListPreference = RadioListPreference(
+            title = DSLSettingsText.from(R.string.preferences__led_color),
+            listItems = ledColorLabels,
+            selected = ledColorValues.indexOf(state.messageNotificationsState.ledColor),
+            isEnabled = state.messageNotificationsState.notificationsEnabled,
+            onSelected = {
+              viewModel.setMessageNotificationLedColor(ledColorValues[it])
+            }
+          )
+        )
+      )
 
-      sectionHeaderPref(R.string.NotificationsSettingsFragment__notification_profiles)
+      if (!NotificationChannels.supported()) {
+        radioListPref(
+          title = DSLSettingsText.from(R.string.preferences__pref_led_blink_title),
+          listItems = ledBlinkLabels,
+          selected = ledBlinkValues.indexOf(state.messageNotificationsState.ledBlink),
+          isEnabled = state.messageNotificationsState.notificationsEnabled,
+          onSelected = {
+            viewModel.setMessageNotificationLedBlink(ledBlinkValues[it])
+          }
+        )
+      }
+    }
 
+    switchPref(
+      title = DSLSettingsText.from(R.string.preferences_notifications__in_chat_sounds),
+      isChecked = state.messageNotificationsState.inChatSoundsEnabled,
+      isEnabled = state.messageNotificationsState.notificationsEnabled,
+      onClick = {
+        viewModel.setMessageNotificationInChatSoundsEnabled(!state.messageNotificationsState.inChatSoundsEnabled)
+      }
+    )
+
+    radioListPref(
+      title = DSLSettingsText.from(R.string.preferences__repeat_alerts),
+      listItems = repeatAlertsLabels,
+      selected = repeatAlertsValues.indexOf(state.messageNotificationsState.repeatAlerts.toString()),
+      isEnabled = state.messageNotificationsState.notificationsEnabled,
+      onSelected = {
+        viewModel.setMessageRepeatAlerts(repeatAlertsValues[it].toInt())
+      }
+    )
+
+    radioListPref(
+      title = DSLSettingsText.from(R.string.preferences_notifications__show),
+      listItems = notificationPrivacyLabels,
+      selected = notificationPrivacyValues.indexOf(state.messageNotificationsState.messagePrivacy),
+      isEnabled = state.messageNotificationsState.notificationsEnabled,
+      onSelected = {
+        viewModel.setMessageNotificationPrivacy(notificationPrivacyValues[it])
+      }
+    )
+
+    if (Build.VERSION.SDK_INT >= 23 && state.messageNotificationsState.troubleshootNotifications) {
       clickPref(
-        title = DSLSettingsText.from(R.string.NotificationsSettingsFragment__profiles),
-        summary = DSLSettingsText.from(R.string.NotificationsSettingsFragment__create_a_profile_to_receive_notifications_only_from_people_and_groups_you_choose),
+        title = DSLSettingsText.from(R.string.preferences_notifications__troubleshoot),
+        isEnabled = true,
         onClick = {
-          findNavController().safeNavigate(R.id.action_notificationsSettingsFragment_to_notificationProfilesFragment)
-        }
-      )
-
-      dividerPref()
-
-      sectionHeaderPref(R.string.NotificationsSettingsFragment__notify_when)
-
-      switchPref(
-        title = DSLSettingsText.from(R.string.NotificationsSettingsFragment__contact_joins_signal),
-        isChecked = state.notifyWhenContactJoinsSignal,
-        onClick = {
-          viewModel.setNotifyWhenContactJoinsSignal(!state.notifyWhenContactJoinsSignal)
+          PromptBatterySaverDialogFragment.show(childFragmentManager)
         }
       )
     }
+
+    if (Build.VERSION.SDK_INT < 30) {
+      if (NotificationChannels.supported()) {
+        clickPref(
+          title = DSLSettingsText.from(R.string.preferences_notifications__priority),
+          isEnabled = state.messageNotificationsState.notificationsEnabled,
+          onClick = {
+            launchNotificationPriorityIntent()
+          }
+        )
+      } else {
+        radioListPref(
+          title = DSLSettingsText.from(R.string.preferences_notifications__priority),
+          listItems = notificationPriorityLabels,
+          selected = notificationPriorityValues.indexOf(state.messageNotificationsState.priority.toString()),
+          isEnabled = state.messageNotificationsState.notificationsEnabled,
+          onSelected = {
+            viewModel.setMessageNotificationPriority(notificationPriorityValues[it].toInt())
+          }
+        )
+      }
+    }
+
+    dividerPref()
+
+    sectionHeaderPref(R.string.NotificationsSettingsFragment__calls)
+
+    switchPref(
+      title = DSLSettingsText.from(R.string.preferences__notifications),
+      isEnabled = state.callNotificationsState.canEnableNotifications,
+      isChecked = state.callNotificationsState.notificationsEnabled,
+      onClick = {
+        viewModel.setCallNotificationsEnabled(!state.callNotificationsState.notificationsEnabled)
+      }
+    )
+
+    clickPref(
+      title = DSLSettingsText.from(R.string.preferences_notifications__ringtone),
+      summary = DSLSettingsText.from(getRingtoneSummary(state.callNotificationsState.ringtone)),
+      isEnabled = state.callNotificationsState.notificationsEnabled,
+      onClick = {
+        launchCallRingtoneSelectionIntent()
+      }
+    )
+
+    switchPref(
+      title = DSLSettingsText.from(R.string.preferences__vibrate),
+      isChecked = state.callNotificationsState.vibrateEnabled,
+      isEnabled = state.callNotificationsState.notificationsEnabled,
+      onClick = {
+        viewModel.setCallVibrateEnabled(!state.callNotificationsState.vibrateEnabled)
+      }
+    )
+
+    dividerPref()
+
+    sectionHeaderPref(R.string.NotificationsSettingsFragment__notification_profiles)
+
+    clickPref(
+      title = DSLSettingsText.from(R.string.NotificationsSettingsFragment__profiles),
+      summary = DSLSettingsText.from(R.string.NotificationsSettingsFragment__create_a_profile_to_receive_notifications_only_from_people_and_groups_you_choose),
+      onClick = {
+        findNavController().safeNavigate(R.id.action_notificationsSettingsFragment_to_notificationProfilesFragment)
+      }
+    )
+
+    dividerPref()
+
+    sectionHeaderPref(R.string.NotificationsSettingsFragment__notify_when)
+
+    switchPref(
+      title = DSLSettingsText.from(R.string.NotificationsSettingsFragment__contact_joins_signal),
+      isChecked = state.notifyWhenContactJoinsSignal,
+      onClick = {
+        viewModel.setNotifyWhenContactJoinsSignal(!state.notifyWhenContactJoinsSignal)
+      }
+    )
   }
 
   private fun getRingtoneSummary(uri: Uri): String {
@@ -375,13 +373,10 @@ class NotificationsSettingsFragment : DSLSettingsFragment(R.string.preferences__
     icon = radioListPreference.icon,
     summary = radioListPreference.summary
   ) {
-    override fun areContentsTheSame(newItem: LedColorPreference): Boolean {
-      return super.areContentsTheSame(newItem) && radioListPreference.areContentsTheSame(newItem.radioListPreference)
-    }
+    override fun areContentsTheSame(newItem: LedColorPreference): Boolean = super.areContentsTheSame(newItem) && radioListPreference.areContentsTheSame(newItem.radioListPreference)
   }
 
-  private class LedColorPreferenceViewHolder(itemView: View) :
-    PreferenceViewHolder<LedColorPreference>(itemView) {
+  private class LedColorPreferenceViewHolder(itemView: View) : PreferenceViewHolder<LedColorPreference>(itemView) {
 
     val radioListPreferenceViewHolder = RadioListPreferenceViewHolder(itemView)
 

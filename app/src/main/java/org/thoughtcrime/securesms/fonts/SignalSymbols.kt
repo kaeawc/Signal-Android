@@ -61,34 +61,28 @@ object SignalSymbols {
     }
   }
 
-  private fun getTypeface(context: Context, weight: Weight): Typeface {
-    return when (weight) {
-      Weight.BOLD -> getBoldWeightedFont(context)
-      Weight.REGULAR -> getRegularWeightedFont(context)
-      else -> error("Unsupported weight: $weight")
-    }
+  private fun getTypeface(context: Context, weight: Weight): Typeface = when (weight) {
+    Weight.BOLD -> getBoldWeightedFont(context)
+    Weight.REGULAR -> getRegularWeightedFont(context)
+    else -> error("Unsupported weight: $weight")
   }
 
-  private fun getBoldWeightedFont(context: Context): Typeface {
-    return cache.getOrPut(
-      Weight.BOLD
-    ) {
-      Typeface.createFromAsset(
-        context.assets,
-        "fonts/SignalSymbols-Bold.otf"
-      )
-    }
+  private fun getBoldWeightedFont(context: Context): Typeface = cache.getOrPut(
+    Weight.BOLD
+  ) {
+    Typeface.createFromAsset(
+      context.assets,
+      "fonts/SignalSymbols-Bold.otf"
+    )
   }
 
-  private fun getRegularWeightedFont(context: Context): Typeface {
-    return cache.getOrPut(
-      Weight.REGULAR
-    ) {
-      Typeface.createFromAsset(
-        context.assets,
-        "fonts/SignalSymbols-Regular.otf"
-      )
-    }
+  private fun getRegularWeightedFont(context: Context): Typeface = cache.getOrPut(
+    Weight.REGULAR
+  ) {
+    Typeface.createFromAsset(
+      context.assets,
+      "fonts/SignalSymbols-Regular.otf"
+    )
   }
 
   /**

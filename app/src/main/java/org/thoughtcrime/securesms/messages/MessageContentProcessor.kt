@@ -71,9 +71,7 @@ open class MessageContentProcessor(private val context: Context) {
 
     @JvmStatic
     @JvmOverloads
-    fun create(context: Context = AppDependencies.application): MessageContentProcessor {
-      return MessageContentProcessor(context)
-    }
+    fun create(context: Context = AppDependencies.application): MessageContentProcessor = MessageContentProcessor(context)
 
     fun debug(message: String) {
       Log.d(TAG, message)
@@ -117,29 +115,23 @@ open class MessageContentProcessor(private val context: Context) {
       Log.w(TAG, extraLog + message, t)
     }
 
-    fun formatSender(recipientId: RecipientId, serviceId: ServiceId, device: Int): String {
-      return "$recipientId ($serviceId.$device)"
-    }
+    fun formatSender(recipientId: RecipientId, serviceId: ServiceId, device: Int): String = "$recipientId ($serviceId.$device)"
 
     @Throws(BadGroupIdException::class)
-    private fun getMessageDestination(content: Content, sender: Recipient): Recipient {
-      return if (content.storyMessage != null && content.storyMessage!!.group.isValid) {
-        getGroupRecipient(content.storyMessage?.group, sender)
-      } else if (content.dataMessage.hasGroupContext) {
-        getGroupRecipient(content.dataMessage?.groupV2, sender)
-      } else if (content.editMessage?.dataMessage.hasGroupContext) {
-        getGroupRecipient(content.editMessage?.dataMessage?.groupV2, sender)
-      } else {
-        sender
-      }
+    private fun getMessageDestination(content: Content, sender: Recipient): Recipient = if (content.storyMessage != null && content.storyMessage!!.group.isValid) {
+      getGroupRecipient(content.storyMessage?.group, sender)
+    } else if (content.dataMessage.hasGroupContext) {
+      getGroupRecipient(content.dataMessage?.groupV2, sender)
+    } else if (content.editMessage?.dataMessage.hasGroupContext) {
+      getGroupRecipient(content.editMessage?.dataMessage?.groupV2, sender)
+    } else {
+      sender
     }
 
-    private fun getGroupRecipient(groupContextV2: GroupContextV2?, senderRecipient: Recipient): Recipient {
-      return if (groupContextV2 != null) {
-        Recipient.externalPossiblyMigratedGroup(GroupId.v2(groupContextV2.groupMasterKey))
-      } else {
-        senderRecipient
-      }
+    private fun getGroupRecipient(groupContextV2: GroupContextV2?, senderRecipient: Recipient): Recipient = if (groupContextV2 != null) {
+      Recipient.externalPossiblyMigratedGroup(GroupId.v2(groupContextV2.groupMasterKey))
+    } else {
+      senderRecipient
     }
 
     @Throws(BadGroupIdException::class)
@@ -276,20 +268,18 @@ open class MessageContentProcessor(private val context: Context) {
       localRecord: Optional<GroupRecord>,
       groupSecretParams: GroupSecretParams? = null,
       serverGuid: String? = null
-    ): GroupUpdateResult? {
-      return try {
-        val signedGroupChange: ByteArray? = if (groupV2.hasSignedGroupChange) groupV2.signedGroupChange else null
-        val updatedTimestamp = if (signedGroupChange != null) timestamp else timestamp - 1
-        if (groupV2.revision != null) {
-          GroupManager.updateGroupFromServer(context, groupV2.groupMasterKey, localRecord, groupSecretParams, groupV2.revision!!, updatedTimestamp, signedGroupChange, serverGuid)
-        } else {
-          warn(timestamp, "Ignore group update message without a revision")
-          null
-        }
-      } catch (e: GroupNotAMemberException) {
-        warn(timestamp, "Ignoring message for a group we're not in")
+    ): GroupUpdateResult? = try {
+      val signedGroupChange: ByteArray? = if (groupV2.hasSignedGroupChange) groupV2.signedGroupChange else null
+      val updatedTimestamp = if (signedGroupChange != null) timestamp else timestamp - 1
+      if (groupV2.revision != null) {
+        GroupManager.updateGroupFromServer(context, groupV2.groupMasterKey, localRecord, groupSecretParams, groupV2.revision!!, updatedTimestamp, signedGroupChange, serverGuid)
+      } else {
+        warn(timestamp, "Ignore group update message without a revision")
         null
       }
+    } catch (e: GroupNotAMemberException) {
+      warn(timestamp, "Ignoring message for a group we're not in")
+      null
     }
 
     private fun insertErrorMessage(context: Context, sender: Recipient, timestamp: Long, groupId: Optional<GroupId>, marker: (Long) -> Unit) {
@@ -691,13 +681,11 @@ open class MessageContentProcessor(private val context: Context) {
     }
   }
 
-  private fun findRetryReceiptRelatedMessage(messageLogEntry: MessageLogEntry?, sentTimestamp: Long): MessageRecord? {
-    return if (messageLogEntry != null && messageLogEntry.hasRelatedMessage) {
-      val id = messageLogEntry.relatedMessages[0].id
-      SignalDatabase.messages.getMessageRecordOrNull(id)
-    } else {
-      SignalDatabase.messages.getMessageFor(sentTimestamp, Recipient.self().id)
-    }
+  private fun findRetryReceiptRelatedMessage(messageLogEntry: MessageLogEntry?, sentTimestamp: Long): MessageRecord? = if (messageLogEntry != null && messageLogEntry.hasRelatedMessage) {
+    val id = messageLogEntry.relatedMessages[0].id
+    SignalDatabase.messages.getMessageRecordOrNull(id)
+  } else {
+    SignalDatabase.messages.getMessageFor(sentTimestamp, Recipient.self().id)
   }
 
   private fun ratchetKeyMatches(recipient: Recipient, deviceId: Int, ratchetKey: ECPublicKey): Boolean {

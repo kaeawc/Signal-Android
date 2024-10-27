@@ -287,9 +287,7 @@ class InAppPaymentValues internal constructor(store: KeyValueStore) : SignalStor
     putBlob("$KEY_LEVEL_OPERATION_PREFIX${levelUpdateOperation.level}", levelUpdateOperation.idempotencyKey.bytes)
   }
 
-  private fun getLevelHistory(): Set<String> {
-    return getString(KEY_LEVEL_HISTORY, "").split(",").toSet()
-  }
+  private fun getLevelHistory(): Set<String> = getString(KEY_LEVEL_HISTORY, "").split(",").toSet()
 
   private fun addLevelToHistory(level: String) {
     val levels = getLevelHistory() + level
@@ -333,9 +331,7 @@ class InAppPaymentValues internal constructor(store: KeyValueStore) : SignalStor
     return Badges.fromDatabaseBadge(BadgeList.Badge.ADAPTER.decode(badgeBytes))
   }
 
-  fun getLastKeepAliveLaunchTime(): Long {
-    return getLong(KEY_LAST_KEEP_ALIVE_LAUNCH, 0L)
-  }
+  fun getLastKeepAliveLaunchTime(): Long = getLong(KEY_LAST_KEEP_ALIVE_LAUNCH, 0L)
 
   fun setLastKeepAliveLaunchTime(timestamp: Long) {
     putLong(KEY_LAST_KEEP_ALIVE_LAUNCH, timestamp)
@@ -344,9 +340,7 @@ class InAppPaymentValues internal constructor(store: KeyValueStore) : SignalStor
   /**
    * Returns the last end-of-period we have tried to redeem for a badge subscription
    */
-  fun getLastEndOfPeriod(): Long {
-    return getLong(KEY_LAST_END_OF_PERIOD_SECONDS, 0L)
-  }
+  fun getLastEndOfPeriod(): Long = getLong(KEY_LAST_END_OF_PERIOD_SECONDS, 0L)
 
   fun setLastEndOfPeriod(timestamp: Long) {
     putLong(KEY_LAST_END_OF_PERIOD_SECONDS, timestamp)
@@ -356,29 +350,19 @@ class InAppPaymentValues internal constructor(store: KeyValueStore) : SignalStor
    * True if the local user is likely a sustainer, otherwise false. Note the term 'likely', because this is based on cached data. Any serious decisions that
    * rely on this should make a network request to determine subscription status.
    */
-  fun isLikelyASustainer(): Boolean {
-    return TimeUnit.SECONDS.toMillis(getLastEndOfPeriod()) > System.currentTimeMillis()
-  }
+  fun isLikelyASustainer(): Boolean = TimeUnit.SECONDS.toMillis(getLastEndOfPeriod()) > System.currentTimeMillis()
 
-  fun isDonationSubscriptionManuallyCancelled(): Boolean {
-    return getBoolean(USER_MANUALLY_CANCELLED_DONATION, false)
-  }
+  fun isDonationSubscriptionManuallyCancelled(): Boolean = getBoolean(USER_MANUALLY_CANCELLED_DONATION, false)
 
-  fun isBackupSubscriptionManuallyCancelled(): Boolean {
-    return getBoolean(USER_MANUALLY_CANCELLED_BACKUPS, false)
-  }
+  fun isBackupSubscriptionManuallyCancelled(): Boolean = getBoolean(USER_MANUALLY_CANCELLED_BACKUPS, false)
 
   fun setDisplayBadgesOnProfile(enabled: Boolean) {
     putBoolean(DISPLAY_BADGES_ON_PROFILE, enabled)
   }
 
-  fun getDisplayBadgesOnProfile(): Boolean {
-    return getBoolean(DISPLAY_BADGES_ON_PROFILE, false)
-  }
+  fun getDisplayBadgesOnProfile(): Boolean = getBoolean(DISPLAY_BADGES_ON_PROFILE, false)
 
-  fun getSubscriptionRedemptionFailed(): Boolean {
-    return getBoolean(SUBSCRIPTION_REDEMPTION_FAILED, false)
-  }
+  fun getSubscriptionRedemptionFailed(): Boolean = getBoolean(SUBSCRIPTION_REDEMPTION_FAILED, false)
 
   fun markSubscriptionRedemptionFailed() {
     Log.w(TAG, "markSubscriptionRedemptionFailed()", Throwable(), true)
@@ -560,9 +544,7 @@ class InAppPaymentValues internal constructor(store: KeyValueStore) : SignalStor
   }
 
   @Deprecated("This information is now stored in InAppPaymentTable")
-  fun getSubscriptionPaymentSourceType(): PaymentSourceType {
-    return PaymentSourceType.fromCode(getString(SUBSCRIPTION_PAYMENT_SOURCE_TYPE, null))
-  }
+  fun getSubscriptionPaymentSourceType(): PaymentSourceType = PaymentSourceType.fromCode(getString(SUBSCRIPTION_PAYMENT_SOURCE_TYPE, null))
 
   var subscriptionEndOfPeriodConversionStarted by longValue(SUBSCRIPTION_EOP_STARTED_TO_CONVERT, 0L)
   var subscriptionEndOfPeriodRedemptionStarted by longValue(SUBSCRIPTION_EOP_STARTED_TO_REDEEM, 0L)
@@ -592,10 +574,8 @@ class InAppPaymentValues internal constructor(store: KeyValueStore) : SignalStor
     }
   }
 
-  fun getPendingOneTimeDonation(): PendingOneTimeDonation? {
-    return synchronized(this) {
-      _pendingOneTimeDonation.takeUnless { it?.isExpired == true }
-    }
+  fun getPendingOneTimeDonation(): PendingOneTimeDonation? = synchronized(this) {
+    _pendingOneTimeDonation.takeUnless { it?.isExpired == true }
   }
 
   fun setPendingOneTimeDonation(pendingOneTimeDonation: PendingOneTimeDonation?) {
@@ -648,17 +628,13 @@ class InAppPaymentValues internal constructor(store: KeyValueStore) : SignalStor
     }
   }
 
-  private fun markBackupSubscriptionpManuallyCancelled() {
-    return putBoolean(USER_MANUALLY_CANCELLED_BACKUPS, true)
-  }
+  private fun markBackupSubscriptionpManuallyCancelled() = putBoolean(USER_MANUALLY_CANCELLED_BACKUPS, true)
 
   private fun clearBackupSubscriptionManuallyCancelled() {
     remove(USER_MANUALLY_CANCELLED_BACKUPS)
   }
 
-  private fun markDonationManuallyCancelled() {
-    return putBoolean(USER_MANUALLY_CANCELLED_DONATION, true)
-  }
+  private fun markDonationManuallyCancelled() = putBoolean(USER_MANUALLY_CANCELLED_DONATION, true)
 
   private fun clearDonationManuallyCancelled() {
     remove(USER_MANUALLY_CANCELLED_DONATION)

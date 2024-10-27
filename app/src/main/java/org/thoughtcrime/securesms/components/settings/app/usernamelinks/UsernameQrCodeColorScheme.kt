@@ -64,17 +64,13 @@ enum class UsernameQrCodeColorScheme(
     key = "purple"
   );
 
-  fun serialize(): String {
-    return key
-  }
+  fun serialize(): String = key
 
   companion object {
     /**
      * Returns the [UsernameQrCodeColorScheme] based on the serialized string. If no match is found, the default of [Blue] is returned.
      */
     @JvmStatic
-    fun deserialize(serialized: String?): UsernameQrCodeColorScheme {
-      return values().firstOrNull { it.key == serialized } ?: Blue
-    }
+    fun deserialize(serialized: String?): UsernameQrCodeColorScheme = values().firstOrNull { it.key == serialized } ?: Blue
   }
 }

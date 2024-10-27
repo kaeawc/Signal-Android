@@ -65,40 +65,38 @@ class DonationReceiptDetailFragment : DSLSettingsFragment(layoutId = R.layout.do
     }
   }
 
-  private fun getConfiguration(record: InAppPaymentReceiptRecord, subscriptionName: String?): DSLConfiguration {
-    return configure {
-      customPref(
-        SplashImage.Model(
-          splashImageResId = R.drawable.ic_signal_logo_type
-        )
+  private fun getConfiguration(record: InAppPaymentReceiptRecord, subscriptionName: String?): DSLConfiguration = configure {
+    customPref(
+      SplashImage.Model(
+        splashImageResId = R.drawable.ic_signal_logo_type
       )
+    )
 
-      textPref(
-        title = DSLSettingsText.from(
-          charSequence = FiatMoneyUtil.format(resources, record.amount),
-          DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_Giant),
-          DSLSettingsText.CenterModifier
-        )
+    textPref(
+      title = DSLSettingsText.from(
+        charSequence = FiatMoneyUtil.format(resources, record.amount),
+        DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_Giant),
+        DSLSettingsText.CenterModifier
       )
+    )
 
-      dividerPref()
+    dividerPref()
 
-      textPref(
-        title = DSLSettingsText.from(R.string.DonationReceiptDetailsFragment__donation_type),
-        summary = DSLSettingsText.from(
-          when (record.type) {
-            InAppPaymentReceiptRecord.Type.RECURRING_DONATION -> getString(R.string.DonationReceiptDetailsFragment__s_dash_s, subscriptionName, getString(R.string.DonationReceiptListFragment__recurring))
-            InAppPaymentReceiptRecord.Type.ONE_TIME_DONATION -> getString(R.string.DonationReceiptListFragment__one_time)
-            InAppPaymentReceiptRecord.Type.ONE_TIME_GIFT -> getString(R.string.DonationReceiptListFragment__donation_for_a_friend)
-            InAppPaymentReceiptRecord.Type.RECURRING_BACKUP -> error("Not supported in this fragment.")
-          }
-        )
+    textPref(
+      title = DSLSettingsText.from(R.string.DonationReceiptDetailsFragment__donation_type),
+      summary = DSLSettingsText.from(
+        when (record.type) {
+          InAppPaymentReceiptRecord.Type.RECURRING_DONATION -> getString(R.string.DonationReceiptDetailsFragment__s_dash_s, subscriptionName, getString(R.string.DonationReceiptListFragment__recurring))
+          InAppPaymentReceiptRecord.Type.ONE_TIME_DONATION -> getString(R.string.DonationReceiptListFragment__one_time)
+          InAppPaymentReceiptRecord.Type.ONE_TIME_GIFT -> getString(R.string.DonationReceiptListFragment__donation_for_a_friend)
+          InAppPaymentReceiptRecord.Type.RECURRING_BACKUP -> error("Not supported in this fragment.")
+        }
       )
+    )
 
-      textPref(
-        title = DSLSettingsText.from(R.string.DonationReceiptDetailsFragment__date_paid),
-        summary = record.let { DSLSettingsText.from(DateUtils.formatDateWithYear(Locale.getDefault(), it.timestamp)) }
-      )
-    }
+    textPref(
+      title = DSLSettingsText.from(R.string.DonationReceiptDetailsFragment__date_paid),
+      summary = record.let { DSLSettingsText.from(DateUtils.formatDateWithYear(Locale.getDefault(), it.timestamp)) }
+    )
   }
 }

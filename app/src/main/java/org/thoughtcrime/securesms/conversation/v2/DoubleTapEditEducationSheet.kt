@@ -23,9 +23,7 @@ class DoubleTapEditEducationSheet(private val conversationMessage: ConversationM
 
   override val peekHeightPercentage: Float = 1f
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.conversation_item_double_tap_edit_education_sheet, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.conversation_item_double_tap_edit_education_sheet, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     SignalStore.uiHints.hasSeenDoubleTapEditEducationSheet = true

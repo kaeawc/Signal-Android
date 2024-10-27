@@ -381,27 +381,17 @@ class ConversationViewModel(
     }
   }
 
-  fun getQuotedMessagePosition(quote: Quote): Single<Int> {
-    return repository.getQuotedMessagePosition(threadId, quote)
-  }
+  fun getQuotedMessagePosition(quote: Quote): Single<Int> = repository.getQuotedMessagePosition(threadId, quote)
 
-  fun moveToDate(receivedTimestamp: Long): Single<Int> {
-    return repository.getMessageResultPosition(threadId, receivedTimestamp)
-  }
+  fun moveToDate(receivedTimestamp: Long): Single<Int> = repository.getMessageResultPosition(threadId, receivedTimestamp)
 
-  fun getNextMentionPosition(): Single<Int> {
-    return repository.getNextMentionPosition(threadId)
-  }
+  fun getNextMentionPosition(): Single<Int> = repository.getNextMentionPosition(threadId)
 
-  fun moveToMessage(dateReceived: Long, author: RecipientId): Single<Int> {
-    return repository.getMessagePosition(threadId, dateReceived, author)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun moveToMessage(dateReceived: Long, author: RecipientId): Single<Int> = repository.getMessagePosition(threadId, dateReceived, author)
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun moveToMessage(messageRecord: MessageRecord): Single<Int> {
-    return repository.getMessagePosition(threadId, messageRecord.dateReceived, messageRecord.fromRecipient.id)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun moveToMessage(messageRecord: MessageRecord): Single<Int> = repository.getMessagePosition(threadId, messageRecord.dateReceived, messageRecord.fromRecipient.id)
+    .observeOn(AndroidSchedulers.mainThread())
 
   fun setLastScrolled(lastScrolledTimestamp: Long) {
     repository.setLastVisibleMessageTimestamp(
@@ -424,10 +414,8 @@ class ConversationViewModel(
       .addTo(disposables)
   }
 
-  fun getContactPhotoIcon(context: Context, requestManager: RequestManager): Single<ShortcutInfoCompat> {
-    return recipient.firstOrError().flatMap {
-      repository.getRecipientContactPhotoBitmap(context, requestManager, it)
-    }
+  fun getContactPhotoIcon(context: Context, requestManager: RequestManager): Single<ShortcutInfoCompat> = recipient.firstOrError().flatMap {
+    repository.getRecipientContactPhotoBitmap(context, requestManager, it)
   }
 
   fun startExpirationTimeout(messageRecord: MessageRecord) {
@@ -464,13 +452,9 @@ class ConversationViewModel(
     }
   }
 
-  fun getKeyboardImageDetails(uri: Uri): Maybe<KeyboardUtil.ImageDetails> {
-    return repository.getKeyboardImageDetails(uri)
-  }
+  fun getKeyboardImageDetails(uri: Uri): Maybe<KeyboardUtil.ImageDetails> = repository.getKeyboardImageDetails(uri)
 
-  private fun MessageRecord.oldReactionRecord(): ReactionRecord? {
-    return reactions.firstOrNull { it.author == Recipient.self().id }
-  }
+  private fun MessageRecord.oldReactionRecord(): ReactionRecord? = reactions.firstOrNull { it.author == Recipient.self().id }
 
   fun sendMessage(
     metricId: String?,
@@ -486,24 +470,22 @@ class ConversationViewModel(
     linkPreviews: List<LinkPreview>,
     preUploadResults: List<MessageSender.PreUploadResult>,
     isViewOnce: Boolean
-  ): Completable {
-    return repository.sendMessage(
-      threadId = threadId,
-      threadRecipient = threadRecipient,
-      metricId = metricId,
-      body = body,
-      slideDeck = slideDeck,
-      scheduledDate = scheduledDate,
-      messageToEdit = messageToEdit,
-      quote = quote,
-      mentions = mentions,
-      bodyRanges = bodyRanges,
-      contacts = contacts,
-      linkPreviews = linkPreviews,
-      preUploadResults = preUploadResults,
-      isViewOnce = isViewOnce
-    ).observeOn(AndroidSchedulers.mainThread())
-  }
+  ): Completable = repository.sendMessage(
+    threadId = threadId,
+    threadRecipient = threadRecipient,
+    metricId = metricId,
+    body = body,
+    slideDeck = slideDeck,
+    scheduledDate = scheduledDate,
+    messageToEdit = messageToEdit,
+    quote = quote,
+    mentions = mentions,
+    bodyRanges = bodyRanges,
+    contacts = contacts,
+    linkPreviews = linkPreviews,
+    preUploadResults = preUploadResults,
+    isViewOnce = isViewOnce
+  ).observeOn(AndroidSchedulers.mainThread())
 
   fun resetVerifiedStatusToDefault(unverifiedIdentities: List<IdentityRecord>) {
     disposables += repository.resetVerifiedStatusToDefault(unverifiedIdentities)
@@ -530,38 +512,24 @@ class ConversationViewModel(
       .observeOn(AndroidSchedulers.mainThread())
   }
 
-  fun getTemporaryViewOnceUri(mmsMessageRecord: MmsMessageRecord): Maybe<Uri> {
-    return repository.getTemporaryViewOnceUri(mmsMessageRecord).observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getTemporaryViewOnceUri(mmsMessageRecord: MmsMessageRecord): Maybe<Uri> = repository.getTemporaryViewOnceUri(mmsMessageRecord).observeOn(AndroidSchedulers.mainThread())
 
-  fun canShowAsBubble(context: Context): Observable<Boolean> {
-    return recipient
-      .map { Build.VERSION.SDK_INT >= ConversationUtil.CONVERSATION_SUPPORT_VERSION && BubbleUtil.canBubble(context, it, threadId) }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun canShowAsBubble(context: Context): Observable<Boolean> = recipient
+    .map { Build.VERSION.SDK_INT >= ConversationUtil.CONVERSATION_SUPPORT_VERSION && BubbleUtil.canBubble(context, it, threadId) }
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun copyToClipboard(context: Context, messageParts: Set<MultiselectPart>): Maybe<CharSequence> {
-    return repository.copyToClipboard(context, messageParts)
-  }
+  fun copyToClipboard(context: Context, messageParts: Set<MultiselectPart>): Maybe<CharSequence> = repository.copyToClipboard(context, messageParts)
 
-  fun resendMessage(conversationMessage: ConversationMessage): Completable {
-    return repository.resendMessage(conversationMessage.messageRecord)
-  }
+  fun resendMessage(conversationMessage: ConversationMessage): Completable = repository.resendMessage(conversationMessage.messageRecord)
 
-  fun getRequestReviewState(): Observable<RequestReviewState> {
-    return _inputReadyState
-      .flatMapSingle { state -> repository.getRequestReviewState(state.conversationRecipient, state.groupRecord, state.messageRequestState) }
-      .distinctUntilChanged()
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getRequestReviewState(): Observable<RequestReviewState> = _inputReadyState
+    .flatMapSingle { state -> repository.getRequestReviewState(state.conversationRecipient, state.groupRecord, state.messageRequestState) }
+    .distinctUntilChanged()
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun getSlideDeckAndBodyForReply(context: Context, conversationMessage: ConversationMessage): Pair<SlideDeck, CharSequence> {
-    return repository.getSlideDeckAndBodyForReply(context, conversationMessage)
-  }
+  fun getSlideDeckAndBodyForReply(context: Context, conversationMessage: ConversationMessage): Pair<SlideDeck, CharSequence> = repository.getSlideDeckAndBodyForReply(context, conversationMessage)
 
-  fun resolveMessageToEdit(conversationMessage: ConversationMessage): Single<ConversationMessage> {
-    return repository.resolveMessageToEdit(conversationMessage)
-  }
+  fun resolveMessageToEdit(conversationMessage: ConversationMessage): Single<ConversationMessage> = repository.resolveMessageToEdit(conversationMessage)
 
   fun deleteSlideData(slides: List<Slide>) {
     repository.deleteSlideData(slides)
@@ -571,11 +539,9 @@ class ConversationViewModel(
     repository.updateStickerLastUsedTime(stickerRecord, timestamp)
   }
 
-  fun getScheduledMessagesCount(): Observable<Int> {
-    return scheduledMessagesRepository
-      .getScheduledMessageCount(threadId)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getScheduledMessagesCount(): Observable<Int> = scheduledMessagesRepository
+    .getScheduledMessageCount(threadId)
+    .observeOn(AndroidSchedulers.mainThread())
 
   fun markLastSeen() {
     repository.markLastSeen(threadId)
@@ -586,9 +552,7 @@ class ConversationViewModel(
     _jumpToDateValidator
   }
 
-  fun getEarliestMessageSentDate(): Single<Long> {
-    return repository
-      .getEarliestMessageSentDate(threadId)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getEarliestMessageSentDate(): Single<Long> = repository
+    .getEarliestMessageSentDate(threadId)
+    .observeOn(AndroidSchedulers.mainThread())
 }

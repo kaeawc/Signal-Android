@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/*
+/**
  * Copyright 2013 Phil Brown
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

@@ -25,15 +25,11 @@ class AllExceptFragment : ChangeMyStoryMembershipFragment() {
   override val checkboxResource: Int = R.drawable.contact_selection_exclude_checkbox
 
   class Dialog : WrapperDialogFragment() {
-    override fun getWrappedFragment(): Fragment {
-      return AllExceptFragment()
-    }
+    override fun getWrappedFragment(): Fragment = AllExceptFragment()
   }
 
   companion object {
-    fun createAsDialog(): DialogFragment {
-      return Dialog()
-    }
+    fun createAsDialog(): DialogFragment = Dialog()
   }
 }
 
@@ -44,14 +40,10 @@ class OnlyShareWithFragment : ChangeMyStoryMembershipFragment() {
   override val toolbarTitleId: Int = R.string.ChangeMyStoryMembershipFragment__only_share_with
 
   class Dialog : WrapperDialogFragment() {
-    override fun getWrappedFragment(): Fragment {
-      return OnlyShareWithFragment()
-    }
+    override fun getWrappedFragment(): Fragment = OnlyShareWithFragment()
   }
 
   companion object {
-    fun createAsDialog(): DialogFragment {
-      return Dialog()
-    }
+    fun createAsDialog(): DialogFragment = Dialog()
   }
 }

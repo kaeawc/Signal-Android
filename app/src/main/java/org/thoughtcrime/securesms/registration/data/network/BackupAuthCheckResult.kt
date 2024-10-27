@@ -17,39 +17,35 @@ import org.whispersystems.signalservice.internal.push.BackupV3AuthCheckResponse
 sealed class BackupAuthCheckResult(cause: Throwable?) : RegistrationResult(cause) {
   companion object {
     @JvmStatic
-    fun fromV2(networkResult: NetworkResult<BackupV2AuthCheckResponse>): BackupAuthCheckResult {
-      return when (networkResult) {
-        is NetworkResult.Success -> {
-          val match = networkResult.result.match
-          if (match != null) {
-            SuccessWithCredentials(svr2Credentials = match, svr3Credentials = null)
-          } else {
-            SuccessWithoutCredentials()
-          }
+    fun fromV2(networkResult: NetworkResult<BackupV2AuthCheckResponse>): BackupAuthCheckResult = when (networkResult) {
+      is NetworkResult.Success -> {
+        val match = networkResult.result.match
+        if (match != null) {
+          SuccessWithCredentials(svr2Credentials = match, svr3Credentials = null)
+        } else {
+          SuccessWithoutCredentials()
         }
-
-        is NetworkResult.ApplicationError -> UnknownError(networkResult.throwable)
-        is NetworkResult.NetworkError -> UnknownError(networkResult.exception)
-        is NetworkResult.StatusCodeError -> UnknownError(networkResult.exception)
       }
+
+      is NetworkResult.ApplicationError -> UnknownError(networkResult.throwable)
+      is NetworkResult.NetworkError -> UnknownError(networkResult.exception)
+      is NetworkResult.StatusCodeError -> UnknownError(networkResult.exception)
     }
 
     @JvmStatic
-    fun fromV3(networkResult: NetworkResult<BackupV3AuthCheckResponse>): BackupAuthCheckResult {
-      return when (networkResult) {
-        is NetworkResult.Success -> {
-          val match = networkResult.result.match
-          if (match != null) {
-            SuccessWithCredentials(svr2Credentials = null, svr3Credentials = match)
-          } else {
-            SuccessWithoutCredentials()
-          }
+    fun fromV3(networkResult: NetworkResult<BackupV3AuthCheckResponse>): BackupAuthCheckResult = when (networkResult) {
+      is NetworkResult.Success -> {
+        val match = networkResult.result.match
+        if (match != null) {
+          SuccessWithCredentials(svr2Credentials = null, svr3Credentials = match)
+        } else {
+          SuccessWithoutCredentials()
         }
-
-        is NetworkResult.ApplicationError -> UnknownError(networkResult.throwable)
-        is NetworkResult.NetworkError -> UnknownError(networkResult.exception)
-        is NetworkResult.StatusCodeError -> UnknownError(networkResult.exception)
       }
+
+      is NetworkResult.ApplicationError -> UnknownError(networkResult.throwable)
+      is NetworkResult.NetworkError -> UnknownError(networkResult.exception)
+      is NetworkResult.StatusCodeError -> UnknownError(networkResult.exception)
     }
   }
 

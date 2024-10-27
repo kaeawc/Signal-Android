@@ -53,9 +53,7 @@ class EnterPhoneNumberViewModel : ViewModel() {
       it.copy(mode = value)
     }
 
-  fun countryPrefix(): CountryPrefix {
-    return supportedCountryPrefixes[store.value.countryPrefixIndex]
-  }
+  fun countryPrefix(): CountryPrefix = supportedCountryPrefixes[store.value.countryPrefixIndex]
 
   fun setPhoneNumber(phoneNumber: String?) {
     store.update { it.copy(phoneNumber = phoneNumber ?: "") }
@@ -85,16 +83,12 @@ class EnterPhoneNumberViewModel : ViewModel() {
     }
   }
 
-  fun parsePhoneNumber(state: EnterPhoneNumberState): PhoneNumber {
-    return PhoneNumberUtil.getInstance().parse(state.phoneNumber, supportedCountryPrefixes[state.countryPrefixIndex].regionCode)
-  }
+  fun parsePhoneNumber(state: EnterPhoneNumberState): PhoneNumber = PhoneNumberUtil.getInstance().parse(state.phoneNumber, supportedCountryPrefixes[state.countryPrefixIndex].regionCode)
 
-  fun isEnteredNumberPossible(state: EnterPhoneNumberState): Boolean {
-    return try {
-      PhoneNumberUtil.getInstance().isPossibleNumber(parsePhoneNumber(state))
-    } catch (ex: NumberParseException) {
-      false
-    }
+  fun isEnteredNumberPossible(state: EnterPhoneNumberState): Boolean = try {
+    PhoneNumberUtil.getInstance().isPossibleNumber(parsePhoneNumber(state))
+  } catch (ex: NumberParseException) {
+    false
   }
 
   fun restoreState(value: PhoneNumber) {
@@ -109,9 +103,7 @@ class EnterPhoneNumberViewModel : ViewModel() {
     }
   }
 
-  private fun countryCodeToAdapterIndex(countryCode: Int): Int {
-    return supportedCountryPrefixes.indexOfFirst { prefix -> prefix.digits == countryCode }
-  }
+  private fun countryCodeToAdapterIndex(countryCode: Int): Int = supportedCountryPrefixes.indexOfFirst { prefix -> prefix.digits == countryCode }
 
   fun clearError() {
     setError(EnterPhoneNumberState.Error.NONE)

@@ -75,16 +75,12 @@ class UploadDependencyGraph private constructor(
     /**
      * Allows representation of a unique database attachment by its internal id and its transform properties.
      */
-    private fun DatabaseAttachment.asDatabaseAttachmentKey(): AttachmentKey<DatabaseAttachment> {
-      return AttachmentKey(this, this.transformProperties ?: TransformProperties.empty())
-    }
+    private fun DatabaseAttachment.asDatabaseAttachmentKey(): AttachmentKey<DatabaseAttachment> = AttachmentKey(this, this.transformProperties ?: TransformProperties.empty())
 
     /**
      * Allows representation of a unique URI attachment by its internal Uri and its transform properties.
      */
-    private fun UriAttachment.asUriAttachmentKey(): AttachmentKey<UriAttachment> {
-      return AttachmentKey(this, transformProperties ?: TransformProperties.empty())
-    }
+    private fun UriAttachment.asUriAttachmentKey(): AttachmentKey<UriAttachment> = AttachmentKey(this, transformProperties ?: TransformProperties.empty())
 
     /**
      * Given a list of outgoing media messages, give me a mapping of those messages to their dependent attachments and set of deferred
@@ -103,9 +99,7 @@ class UploadDependencyGraph private constructor(
       messages: List<OutgoingMessage>,
       jobManager: JobManager,
       insertAttachmentForPreUpload: (Attachment) -> DatabaseAttachment
-    ): UploadDependencyGraph {
-      return buildDependencyGraph(buildAttachmentMap(messages, insertAttachmentForPreUpload), jobManager, insertAttachmentForPreUpload)
-    }
+    ): UploadDependencyGraph = buildDependencyGraph(buildAttachmentMap(messages, insertAttachmentForPreUpload), jobManager, insertAttachmentForPreUpload)
 
     /**
      * Produce a mapping of AttachmentKey{DatabaseAttachment,TransformProperties} -> Set<OutgoingMediaMessage>

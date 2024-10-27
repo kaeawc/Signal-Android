@@ -58,9 +58,7 @@ class ExpireTimerSettingsViewModel(val config: Config, private val repository: E
   class Factory(context: Context, private val config: Config) : ViewModelProvider.Factory {
     val repository = ExpireTimerSettingsRepository(context.applicationContext)
 
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(ExpireTimerSettingsViewModel(config, repository)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(ExpireTimerSettingsViewModel(config, repository)))
   }
 
   data class Config(

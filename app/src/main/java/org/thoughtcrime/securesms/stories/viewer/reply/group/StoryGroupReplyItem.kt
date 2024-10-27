@@ -88,12 +88,10 @@ object StoryGroupReplyItem {
       }
     }
 
-    private fun areNonPayloadPropertiesTheSame(newItem: Model<*>): Boolean {
-      return replyBody.hasSameContent(newItem.replyBody) &&
-        isPending == newItem.isPending &&
-        isFailure == newItem.isFailure &&
-        sentAtMillis == newItem.sentAtMillis
-    }
+    private fun areNonPayloadPropertiesTheSame(newItem: Model<*>): Boolean = replyBody.hasSameContent(newItem.replyBody) &&
+      isPending == newItem.isPending &&
+      isFailure == newItem.isFailure &&
+      sentAtMillis == newItem.sentAtMillis
   }
 
   class TextModel(
@@ -279,11 +277,9 @@ object StoryGroupReplyItem {
     }
   }
 
-  private fun resolveName(context: Context, recipient: Recipient): String {
-    return if (recipient.isSelf) {
-      context.getString(R.string.StoryViewerPageFragment__you)
-    } else {
-      recipient.getDisplayName(context)
-    }
+  private fun resolveName(context: Context, recipient: Recipient): String = if (recipient.isSelf) {
+    context.getString(R.string.StoryViewerPageFragment__you)
+  } else {
+    recipient.getDisplayName(context)
   }
 }

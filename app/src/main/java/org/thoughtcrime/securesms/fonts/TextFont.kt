@@ -16,15 +16,13 @@ enum class TextFont(@DrawableRes val icon: Int, val fallbackFamily: String, val 
   CONDENSED(R.drawable.ic_font_condensed, "sans-serif", Typeface.BOLD, true);
 
   companion object {
-    fun fromStyle(style: StoryTextPost.Style): TextFont {
-      return when (style) {
-        StoryTextPost.Style.DEFAULT -> REGULAR
-        StoryTextPost.Style.REGULAR -> REGULAR
-        StoryTextPost.Style.BOLD -> BOLD
-        StoryTextPost.Style.SERIF -> SERIF
-        StoryTextPost.Style.SCRIPT -> SCRIPT
-        StoryTextPost.Style.CONDENSED -> CONDENSED
-      }
+    fun fromStyle(style: StoryTextPost.Style): TextFont = when (style) {
+      StoryTextPost.Style.DEFAULT -> REGULAR
+      StoryTextPost.Style.REGULAR -> REGULAR
+      StoryTextPost.Style.BOLD -> BOLD
+      StoryTextPost.Style.SERIF -> SERIF
+      StoryTextPost.Style.SCRIPT -> SCRIPT
+      StoryTextPost.Style.CONDENSED -> CONDENSED
     }
   }
 }

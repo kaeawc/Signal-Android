@@ -49,7 +49,11 @@ import org.thoughtcrime.securesms.util.views.Stub
 import org.thoughtcrime.securesms.util.visible
 import org.whispersystems.signalservice.api.websocket.WebSocketConnectionState
 
-class MainActivityListHostFragment : Fragment(R.layout.main_activity_list_host_fragment), ConversationListFragment.Callback, Material3OnScrollHelperBinder, CallLogFragment.Callback {
+class MainActivityListHostFragment :
+  Fragment(R.layout.main_activity_list_host_fragment),
+  ConversationListFragment.Callback,
+  Material3OnScrollHelperBinder,
+  CallLogFragment.Callback {
 
   companion object {
     private val TAG = Log.tag(MainActivityListHostFragment::class.java)
@@ -219,25 +223,15 @@ class MainActivityListHostFragment : Fragment(R.layout.main_activity_list_host_f
     super.onDestroyView()
   }
 
-  override fun getToolbar(): Toolbar {
-    return _toolbar
-  }
+  override fun getToolbar(): Toolbar = _toolbar
 
-  override fun getSearchAction(): ImageView {
-    return _searchAction
-  }
+  override fun getSearchAction(): ImageView = _searchAction
 
-  override fun getSearchToolbar(): Stub<Material3SearchToolbar> {
-    return _searchToolbar
-  }
+  override fun getSearchToolbar(): Stub<Material3SearchToolbar> = _searchToolbar
 
-  override fun getUnreadPaymentsDot(): View {
-    return _unreadPaymentsDot
-  }
+  override fun getUnreadPaymentsDot(): View = _unreadPaymentsDot
 
-  override fun getBasicToolbar(): Stub<Toolbar> {
-    return _basicToolbar
-  }
+  override fun getBasicToolbar(): Stub<Toolbar> = _basicToolbar
 
   override fun onSearchOpened() {
     conversationListTabsViewModel.onSearchOpened()
@@ -344,9 +338,7 @@ class MainActivityListHostFragment : Fragment(R.layout.main_activity_list_host_f
     }
   }
 
-  private fun findOverflowMenuButton(viewGroup: Toolbar): View? {
-    return viewGroup.children.find { it is ActionMenuView }
-  }
+  private fun findOverflowMenuButton(viewGroup: Toolbar): View? = viewGroup.children.find { it is ActionMenuView }
 
   private fun presentToolbarForDestination(destination: NavDestination) {
     when (destination.id) {

@@ -25,60 +25,46 @@ class Colorizer {
   private val groupMembers: LinkedHashSet<ServiceId> = linkedSetOf()
 
   @ColorInt
-  fun getOutgoingBodyTextColor(context: Context): Int {
-    return ContextCompat.getColor(context, R.color.conversation_outgoing_body_color)
+  fun getOutgoingBodyTextColor(context: Context): Int = ContextCompat.getColor(context, R.color.conversation_outgoing_body_color)
+
+  @ColorInt
+  fun getOutgoingFooterTextColor(context: Context): Int = ContextCompat.getColor(context, R.color.conversation_outgoing_footer_color)
+
+  @ColorInt
+  fun getOutgoingFooterIconColor(context: Context): Int = ContextCompat.getColor(context, R.color.conversation_outgoing_footer_color)
+
+  @ColorInt
+  fun getIncomingBodyTextColor(context: Context, hasWallpaper: Boolean): Int = if (hasWallpaper) {
+    ContextCompat.getColor(context, R.color.signal_colorNeutralInverse)
+  } else {
+    ContextCompat.getColor(context, R.color.signal_colorOnSurface)
   }
 
   @ColorInt
-  fun getOutgoingFooterTextColor(context: Context): Int {
-    return ContextCompat.getColor(context, R.color.conversation_outgoing_footer_color)
+  fun getIncomingFooterTextColor(context: Context, hasWallpaper: Boolean): Int = if (hasWallpaper) {
+    ContextCompat.getColor(context, R.color.signal_colorNeutralVariantInverse)
+  } else {
+    ContextCompat.getColor(context, R.color.signal_colorOnSurfaceVariant)
   }
 
   @ColorInt
-  fun getOutgoingFooterIconColor(context: Context): Int {
-    return ContextCompat.getColor(context, R.color.conversation_outgoing_footer_color)
+  fun getIncomingFooterIconColor(context: Context, hasWallpaper: Boolean): Int = if (hasWallpaper) {
+    ContextCompat.getColor(context, R.color.signal_colorNeutralVariantInverse)
+  } else {
+    ContextCompat.getColor(context, R.color.signal_colorOnSurfaceVariant)
   }
 
   @ColorInt
-  fun getIncomingBodyTextColor(context: Context, hasWallpaper: Boolean): Int {
-    return if (hasWallpaper) {
-      ContextCompat.getColor(context, R.color.signal_colorNeutralInverse)
+  fun getIncomingGroupSenderColor(context: Context, recipient: Recipient): Int = if (groupMembers.isEmpty()) {
+    groupSenderColors[recipient.id]?.getColor(context) ?: getDefaultColor(context, recipient)
+  } else {
+    val memberPosition = groupMembers.indexOf(recipient.requireServiceId())
+
+    if (memberPosition >= 0) {
+      val colorPosition = memberPosition % ChatColorsPalette.Names.all.size
+      ChatColorsPalette.Names.all[colorPosition].getColor(context)
     } else {
-      ContextCompat.getColor(context, R.color.signal_colorOnSurface)
-    }
-  }
-
-  @ColorInt
-  fun getIncomingFooterTextColor(context: Context, hasWallpaper: Boolean): Int {
-    return if (hasWallpaper) {
-      ContextCompat.getColor(context, R.color.signal_colorNeutralVariantInverse)
-    } else {
-      ContextCompat.getColor(context, R.color.signal_colorOnSurfaceVariant)
-    }
-  }
-
-  @ColorInt
-  fun getIncomingFooterIconColor(context: Context, hasWallpaper: Boolean): Int {
-    return if (hasWallpaper) {
-      ContextCompat.getColor(context, R.color.signal_colorNeutralVariantInverse)
-    } else {
-      ContextCompat.getColor(context, R.color.signal_colorOnSurfaceVariant)
-    }
-  }
-
-  @ColorInt
-  fun getIncomingGroupSenderColor(context: Context, recipient: Recipient): Int {
-    return if (groupMembers.isEmpty()) {
-      groupSenderColors[recipient.id]?.getColor(context) ?: getDefaultColor(context, recipient)
-    } else {
-      val memberPosition = groupMembers.indexOf(recipient.requireServiceId())
-
-      if (memberPosition >= 0) {
-        val colorPosition = memberPosition % ChatColorsPalette.Names.all.size
-        ChatColorsPalette.Names.all[colorPosition].getColor(context)
-      } else {
-        getDefaultColor(context, recipient)
-      }
+      getDefaultColor(context, recipient)
     }
   }
 

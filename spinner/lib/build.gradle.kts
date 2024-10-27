@@ -14,5 +14,5 @@ dependencies {
   implementation(libs.nanohttpd.websocket)
   implementation(libs.androidx.sqlite)
 
-  testImplementation(testLibs.junit.junit)
+  testImplementation(libs.junit)
 }

@@ -7,7 +7,5 @@ data class AccountSettingsState(
   val userUnregistered: Boolean,
   val clientDeprecated: Boolean
 ) {
-  fun isDeprecatedOrUnregistered(): Boolean {
-    return !(userUnregistered || clientDeprecated)
-  }
+  fun isDeprecatedOrUnregistered(): Boolean = !(userUnregistered || clientDeprecated)
 }

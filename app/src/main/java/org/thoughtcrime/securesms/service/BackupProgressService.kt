@@ -64,23 +64,19 @@ class BackupProgressService : SafeForegroundService() {
       }
     }
 
-    private fun getForegroundNotification(context: Context): Notification {
-      return NotificationCompat.Builder(context, NotificationChannels.getInstance().OTHER)
-        .setSmallIcon(R.drawable.ic_notification)
-        .setContentTitle(title)
-        .setProgress(100, (progress * 100).toInt(), indeterminate)
-        .setContentIntent(PendingIntent.getActivity(context, 0, MainActivity.clearTop(context), PendingIntentFlags.mutable()))
-        .setVibrate(longArrayOf(0))
-        .build()
-    }
+    private fun getForegroundNotification(context: Context): Notification = NotificationCompat.Builder(context, NotificationChannels.getInstance().OTHER)
+      .setSmallIcon(R.drawable.ic_notification)
+      .setContentTitle(title)
+      .setProgress(100, (progress * 100).toInt(), indeterminate)
+      .setContentIntent(PendingIntent.getActivity(context, 0, MainActivity.clearTop(context), PendingIntentFlags.mutable()))
+      .setVibrate(longArrayOf(0))
+      .build()
   }
 
   override val tag: String = TAG
   override val notificationId: Int = NotificationIds.BACKUP_PROGRESS
 
-  override fun getForegroundNotification(intent: Intent): Notification {
-    return getForegroundNotification(this)
-  }
+  override fun getForegroundNotification(intent: Intent): Notification = getForegroundNotification(this)
 
   /**
    * Use to update notification progress/state.
@@ -93,6 +89,7 @@ class BackupProgressService : SafeForegroundService() {
       indeterminate = true
     }
 
+    @SuppressLint("MissingPermission")
     fun update(title: String, progress: Float, indeterminate: Boolean) {
       controllerLock.withLock {
         if (this != controller) {

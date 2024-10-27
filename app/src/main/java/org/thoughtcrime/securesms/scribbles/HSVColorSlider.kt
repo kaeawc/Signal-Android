@@ -61,13 +61,9 @@ object HSVColorSlider {
   }.toIntArray()
 
   @ColorInt
-  fun getLastColor(): Int {
-    return colors.last()
-  }
+  fun getLastColor(): Int = colors.last()
 
-  fun AppCompatSeekBar.getColor(): Int {
-    return colors[progress]
-  }
+  fun AppCompatSeekBar.getColor(): Int = colors[progress]
 
   fun AppCompatSeekBar.setColor(color: Int) {
     val index = colors.indexOf(color)
@@ -109,13 +105,9 @@ object HSVColorSlider {
     (thumb as ThumbDrawable).setColor(colors[progress])
   }
 
-  fun createThumbDrawable(@ColorInt borderColor: Int): Drawable {
-    return ThumbDrawable(borderColor)
-  }
+  fun createThumbDrawable(@ColorInt borderColor: Int): Drawable = ThumbDrawable(borderColor)
 
-  private fun createColorProgressDrawable(): Drawable {
-    return GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors).forSeekBar()
-  }
+  private fun createColorProgressDrawable(): Drawable = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors).forSeekBar()
 
   private fun calculateLightness(hue: Float, valueFor60To80: Float = 0.3f): Float {
     val point1 = PointF()
@@ -142,13 +134,9 @@ object HSVColorSlider {
     return interpolate(point1, point2, hue)
   }
 
-  private fun interpolate(point1: PointF, point2: PointF, x: Float): Float {
-    return ((point1.y * (point2.x - x)) + (point2.y * (x - point1.x))) / (point2.x - point1.x)
-  }
+  private fun interpolate(point1: PointF, point2: PointF, x: Float): Float = ((point1.y * (point2.x - x)) + (point2.y * (x - point1.x))) / (point2.x - point1.x)
 
-  private fun Number.toHue(max: Number): Float {
-    return Util.clamp(toFloat() * (MAX_HUE / max.toFloat()), 0f, MAX_HUE.toFloat())
-  }
+  private fun Number.toHue(max: Number): Float = Util.clamp(toFloat() * (MAX_HUE / max.toFloat()), 0f, MAX_HUE.toFloat())
 
   private fun Drawable.forSeekBar(): Drawable {
     val height: Int = ViewUtil.dpToPx(1)

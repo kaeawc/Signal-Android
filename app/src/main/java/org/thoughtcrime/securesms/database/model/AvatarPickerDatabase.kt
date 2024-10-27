@@ -36,13 +36,9 @@ class AvatarPickerDatabase(context: Context, databaseHelper: SignalDatabase) : D
     """
   }
 
-  fun saveAvatarForSelf(avatar: Avatar): Avatar {
-    return saveAvatar(avatar, null)
-  }
+  fun saveAvatarForSelf(avatar: Avatar): Avatar = saveAvatar(avatar, null)
 
-  fun saveAvatarForGroup(avatar: Avatar, groupId: GroupId): Avatar {
-    return saveAvatar(avatar, groupId)
-  }
+  fun saveAvatarForGroup(avatar: Avatar, groupId: GroupId): Avatar = saveAvatar(avatar, groupId)
 
   fun markUsage(avatar: Avatar) {
     val databaseId = avatar.databaseId
@@ -134,13 +130,9 @@ class AvatarPickerDatabase(context: Context, databaseHelper: SignalDatabase) : D
     return results
   }
 
-  fun getAvatarsForSelf(): List<Avatar> {
-    return getAvatars(null)
-  }
+  fun getAvatarsForSelf(): List<Avatar> = getAvatars(null)
 
-  fun getAvatarsForGroup(groupId: GroupId): List<Avatar> {
-    return getAvatars(groupId)
-  }
+  fun getAvatarsForGroup(groupId: GroupId): List<Avatar> = getAvatars(groupId)
 
   private fun getAvatars(groupId: GroupId?): List<Avatar> {
     val db = databaseHelper.signalReadableDatabase
@@ -165,21 +157,17 @@ class AvatarPickerDatabase(context: Context, databaseHelper: SignalDatabase) : D
     return results
   }
 
-  private fun Avatar.toProto(): CustomAvatar {
-    return when (this) {
-      is Avatar.Photo -> CustomAvatar(photo = CustomAvatar.Photo(uri = this.uri.toString()))
-      is Avatar.Text -> CustomAvatar(text = CustomAvatar.Text(text = this.text, colors = this.color.code))
-      is Avatar.Vector -> CustomAvatar(vector = CustomAvatar.Vector(key = this.key, colors = this.color.code))
-      else -> throw AssertionError()
-    }
+  private fun Avatar.toProto(): CustomAvatar = when (this) {
+    is Avatar.Photo -> CustomAvatar(photo = CustomAvatar.Photo(uri = this.uri.toString()))
+    is Avatar.Text -> CustomAvatar(text = CustomAvatar.Text(text = this.text, colors = this.color.code))
+    is Avatar.Vector -> CustomAvatar(vector = CustomAvatar.Vector(key = this.key, colors = this.color.code))
+    else -> throw AssertionError()
   }
 
-  private fun CustomAvatar.toAvatar(id: Long): Avatar {
-    return when {
-      photo != null -> Avatar.Photo(Uri.parse(photo.uri), photo.size, Avatar.DatabaseId.Saved(id))
-      text != null -> Avatar.Text(text.text, Avatars.colorMap[text.colors] ?: Avatars.colors[0], Avatar.DatabaseId.Saved(id))
-      vector != null -> Avatar.Vector(vector.key, Avatars.colorMap[vector.colors] ?: Avatars.colors[0], Avatar.DatabaseId.Saved(id))
-      else -> throw AssertionError()
-    }
+  private fun CustomAvatar.toAvatar(id: Long): Avatar = when {
+    photo != null -> Avatar.Photo(Uri.parse(photo.uri), photo.size, Avatar.DatabaseId.Saved(id))
+    text != null -> Avatar.Text(text.text, Avatars.colorMap[text.colors] ?: Avatars.colors[0], Avatar.DatabaseId.Saved(id))
+    vector != null -> Avatar.Vector(vector.key, Avatars.colorMap[vector.colors] ?: Avatars.colors[0], Avatar.DatabaseId.Saved(id))
+    else -> throw AssertionError()
   }
 }

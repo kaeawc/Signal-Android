@@ -92,9 +92,7 @@ class VoiceNotePlayerCallback(val context: Context, val player: VoiceNotePlayer)
   private var canLoadMore = false
   private var latestUri = Uri.EMPTY
 
-  override fun onConnect(session: MediaSession, controller: MediaSession.ControllerInfo): MediaSession.ConnectionResult {
-    return MediaSession.ConnectionResult.accept(CUSTOM_COMMANDS, SUPPORTED_ACTIONS)
-  }
+  override fun onConnect(session: MediaSession, controller: MediaSession.ControllerInfo): MediaSession.ConnectionResult = MediaSession.ConnectionResult.accept(CUSTOM_COMMANDS, SUPPORTED_ACTIONS)
 
   override fun onPostConnect(session: MediaSession, controller: MediaSession.ControllerInfo) {
     if (customLayout.isNotEmpty() && controller.controllerVersion != 0) {
@@ -167,12 +165,10 @@ class VoiceNotePlayerCallback(val context: Context, val player: VoiceNotePlayer)
     }
   }
 
-  override fun onCustomCommand(session: MediaSession, controller: MediaSession.ControllerInfo, customCommand: SessionCommand, args: Bundle): ListenableFuture<SessionResult> {
-    return when (customCommand.customAction) {
-      VoiceNotePlaybackService.ACTION_NEXT_PLAYBACK_SPEED -> incrementPlaybackSpeed(args)
-      VoiceNotePlaybackService.ACTION_SET_AUDIO_STREAM -> setAudioStream(args)
-      else -> super.onCustomCommand(session, controller, customCommand, args)
-    }
+  override fun onCustomCommand(session: MediaSession, controller: MediaSession.ControllerInfo, customCommand: SessionCommand, args: Bundle): ListenableFuture<SessionResult> = when (customCommand.customAction) {
+    VoiceNotePlaybackService.ACTION_NEXT_PLAYBACK_SPEED -> incrementPlaybackSpeed(args)
+    VoiceNotePlaybackService.ACTION_SET_AUDIO_STREAM -> setAudioStream(args)
+    else -> super.onCustomCommand(session, controller, customCommand, args)
   }
 
   private fun incrementPlaybackSpeed(extras: Bundle): ListenableFuture<SessionResult> {
@@ -242,30 +238,22 @@ class VoiceNotePlayerCallback(val context: Context, val player: VoiceNotePlayer)
     }
   }
 
-  private fun loadMediaItemsForDraftPlayback(threadId: Long, draftUri: Uri): List<MediaItem> {
-    return listOf<MediaItem>(VoiceNoteMediaItemFactory.buildMediaItem(context, threadId, draftUri))
-  }
+  private fun loadMediaItemsForDraftPlayback(threadId: Long, draftUri: Uri): List<MediaItem> = listOf<MediaItem>(VoiceNoteMediaItemFactory.buildMediaItem(context, threadId, draftUri))
 
-  private fun loadMediaItemsForSinglePlayback(messageId: Long): List<MediaItem> {
-    return try {
-      listOf(messages.getMessageRecord(messageId)).messageRecordsToVoiceNoteMediaItems()
-    } catch (e: NoSuchMessageException) {
-      Log.w(TAG, "Could not find message.", e)
-      emptyList()
-    }
+  private fun loadMediaItemsForSinglePlayback(messageId: Long): List<MediaItem> = try {
+    listOf(messages.getMessageRecord(messageId)).messageRecordsToVoiceNoteMediaItems()
+  } catch (e: NoSuchMessageException) {
+    Log.w(TAG, "Could not find message.", e)
+    emptyList()
   }
 
   @WorkerThread
-  private fun loadMediaItemsForConsecutivePlayback(messageId: Long): List<MediaItem> {
-    return try {
-      messages.getMessagesAfterVoiceNoteInclusive(messageId, LIMIT).messageRecordsToVoiceNoteMediaItems()
-    } catch (e: NoSuchMessageException) {
-      Log.w(TAG, "Could not find message.", e)
-      emptyList()
-    }
+  private fun loadMediaItemsForConsecutivePlayback(messageId: Long): List<MediaItem> = try {
+    messages.getMessagesAfterVoiceNoteInclusive(messageId, LIMIT).messageRecordsToVoiceNoteMediaItems()
+  } catch (e: NoSuchMessageException) {
+    Log.w(TAG, "Could not find message.", e)
+    emptyList()
   }
 
-  private fun List<MessageRecord>.messageRecordsToVoiceNoteMediaItems(): List<MediaItem> {
-    return this.takeWhile { it.hasAudio() }.mapNotNull { VoiceNoteMediaItemFactory.buildMediaItem(context, it) }
-  }
+  private fun List<MessageRecord>.messageRecordsToVoiceNoteMediaItems(): List<MediaItem> = this.takeWhile { it.hasAudio() }.mapNotNull { VoiceNoteMediaItemFactory.buildMediaItem(context, it) }
 }

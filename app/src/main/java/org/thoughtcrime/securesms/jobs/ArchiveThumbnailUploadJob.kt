@@ -63,11 +63,9 @@ class ArchiveThumbnailUploadJob private constructor(
     attachmentId
   )
 
-  override fun serialize(): ByteArray {
-    return ArchiveThumbnailUploadJobData(
-      attachmentId = attachmentId.id
-    ).encode()
-  }
+  override fun serialize(): ByteArray = ArchiveThumbnailUploadJobData(
+    attachmentId = attachmentId.id
+  ).encode()
 
   override fun getFactoryKey(): String = KEY
 
@@ -174,17 +172,15 @@ class ArchiveThumbnailUploadJob private constructor(
     }
   }
 
-  private fun buildSignalServiceAttachmentStream(result: ImageCompressionUtil.Result, uploadSpec: ResumableUpload): SignalServiceAttachmentStream {
-    return SignalServiceAttachment.newStreamBuilder()
-      .withStream(ByteArrayInputStream(result.data))
-      .withContentType(result.mimeType)
-      .withLength(result.data.size.toLong())
-      .withWidth(result.width)
-      .withHeight(result.height)
-      .withUploadTimestamp(System.currentTimeMillis())
-      .withResumableUploadSpec(ResumableUploadSpec.from(uploadSpec))
-      .build()
-  }
+  private fun buildSignalServiceAttachmentStream(result: ImageCompressionUtil.Result, uploadSpec: ResumableUpload): SignalServiceAttachmentStream = SignalServiceAttachment.newStreamBuilder()
+    .withStream(ByteArrayInputStream(result.data))
+    .withContentType(result.mimeType)
+    .withLength(result.data.size.toLong())
+    .withWidth(result.width)
+    .withHeight(result.height)
+    .withUploadTimestamp(System.currentTimeMillis())
+    .withResumableUploadSpec(ResumableUploadSpec.from(uploadSpec))
+    .build()
 
   class Factory : Job.Factory<ArchiveThumbnailUploadJob> {
     override fun create(parameters: Parameters, serializedData: ByteArray?): ArchiveThumbnailUploadJob {

@@ -58,15 +58,11 @@ class RefreshSvrCredentialsJob private constructor(parameters: Parameters) : Bas
     SvrRepository.refreshAndStoreAuthorization()
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return e is IOException && e !is NonSuccessfulResponseCodeException
-  }
+  override fun onShouldRetry(e: Exception): Boolean = e is IOException && e !is NonSuccessfulResponseCodeException
 
   override fun onFailure() = Unit
 
   class Factory : Job.Factory<RefreshSvrCredentialsJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): RefreshSvrCredentialsJob {
-      return RefreshSvrCredentialsJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): RefreshSvrCredentialsJob = RefreshSvrCredentialsJob(parameters)
   }
 }

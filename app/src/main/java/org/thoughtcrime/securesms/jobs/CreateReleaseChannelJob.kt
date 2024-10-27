@@ -27,15 +27,13 @@ class CreateReleaseChannelJob private constructor(parameters: Parameters) : Base
 
     private val TAG = Log.tag(CreateReleaseChannelJob::class.java)
 
-    fun create(): CreateReleaseChannelJob {
-      return CreateReleaseChannelJob(
-        Parameters.Builder()
-          .setQueue("CreateReleaseChannelJob")
-          .setMaxInstancesForFactory(1)
-          .setMaxAttempts(3)
-          .build()
-      )
-    }
+    fun create(): CreateReleaseChannelJob = CreateReleaseChannelJob(
+      Parameters.Builder()
+        .setQueue("CreateReleaseChannelJob")
+        .setMaxInstancesForFactory(1)
+        .setMaxAttempts(3)
+        .build()
+    )
   }
 
   override fun serialize(): ByteArray? = null
@@ -101,8 +99,6 @@ class CreateReleaseChannelJob private constructor(parameters: Parameters) : Base
   override fun onShouldRetry(e: Exception): Boolean = e is RetryLaterException
 
   class Factory : Job.Factory<CreateReleaseChannelJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): CreateReleaseChannelJob {
-      return CreateReleaseChannelJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): CreateReleaseChannelJob = CreateReleaseChannelJob(parameters)
   }
 }

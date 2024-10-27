@@ -11,13 +11,9 @@ import org.thoughtcrime.securesms.util.adapter.mapping.MappingViewHolder
 object ExpiredBadge {
 
   class Model(val badge: Badge) : PreferenceModel<Model>() {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return newItem.badge.id == badge.id
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = newItem.badge.id == badge.id
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) && newItem.badge == badge
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) && newItem.badge == badge
   }
 
   class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

@@ -47,9 +47,7 @@ class StoriesPrivacySettingsFragment :
   private val lifecycleDisposable = LifecycleDisposable()
   private val progressDisplayManager = DialogFragmentDisplayManager { ProgressCardDialogFragment.create() }
 
-  override fun createAdapters(): Array<MappingAdapter> {
-    return arrayOf(DSLSettingsAdapter(), PagingMappingAdapter<ContactSearchKey>(), DSLSettingsAdapter())
-  }
+  override fun createAdapters(): Array<MappingAdapter> = arrayOf(DSLSettingsAdapter(), PagingMappingAdapter<ContactSearchKey>(), DSLSettingsAdapter())
 
   override fun bindAdapters(adapter: ConcatAdapter) {
     lifecycleDisposable.bindTo(viewLifecycleOwner)
@@ -103,89 +101,83 @@ class StoriesPrivacySettingsFragment :
     }
   }
 
-  private fun getTopConfiguration(state: StoriesPrivacySettingsState): DSLConfiguration {
-    return configure {
-      if (state.areStoriesEnabled) {
-        space(16.dp)
+  private fun getTopConfiguration(state: StoriesPrivacySettingsState): DSLConfiguration = configure {
+    if (state.areStoriesEnabled) {
+      space(16.dp)
 
-        noPadTextPref(
-          title = DSLSettingsText.from(
-            R.string.StoriesPrivacySettingsFragment__story_updates_automatically_disappear,
-            DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_BodyMedium),
-            DSLSettingsText.ColorModifier(ContextCompat.getColor(requireContext(), R.color.signal_colorOnSurfaceVariant))
-          )
+      noPadTextPref(
+        title = DSLSettingsText.from(
+          R.string.StoriesPrivacySettingsFragment__story_updates_automatically_disappear,
+          DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_BodyMedium),
+          DSLSettingsText.ColorModifier(ContextCompat.getColor(requireContext(), R.color.signal_colorOnSurfaceVariant))
         )
+      )
 
-        space(20.dp)
+      space(20.dp)
 
-        sectionHeaderPref(R.string.StoriesPrivacySettingsFragment__stories)
+      sectionHeaderPref(R.string.StoriesPrivacySettingsFragment__stories)
 
-        customPref(
-          NewStoryItem.Model {
-            ChooseStoryTypeBottomSheet().show(childFragmentManager, BottomSheetUtil.STANDARD_BOTTOM_SHEET_FRAGMENT_TAG)
-          }
-        )
-      } else {
-        clickPref(
-          title = DSLSettingsText.from(R.string.StoriesPrivacySettingsFragment__turn_on_stories),
-          summary = DSLSettingsText.from(R.string.StoriesPrivacySettingsFragment__share_and_view),
-          onClick = {
-            viewModel.setStoriesEnabled(true)
-          }
-        )
-      }
-    }
-  }
-
-  private fun getMiddleConfiguration(state: StoriesPrivacySettingsState): DSLConfiguration {
-    return if (state.areStoriesEnabled) {
-      configure {
-        ContactSearchAdapter.toMappingModelList(
-          state.storyContactItems,
-          emptySet(),
-          null
-        ).forEach {
-          customPref(it)
+      customPref(
+        NewStoryItem.Model {
+          ChooseStoryTypeBottomSheet().show(childFragmentManager, BottomSheetUtil.STANDARD_BOTTOM_SHEET_FRAGMENT_TAG)
         }
-      }
+      )
     } else {
-      configure { }
+      clickPref(
+        title = DSLSettingsText.from(R.string.StoriesPrivacySettingsFragment__turn_on_stories),
+        summary = DSLSettingsText.from(R.string.StoriesPrivacySettingsFragment__share_and_view),
+        onClick = {
+          viewModel.setStoriesEnabled(true)
+        }
+      )
     }
   }
 
-  private fun getBottomConfiguration(state: StoriesPrivacySettingsState): DSLConfiguration {
-    return if (state.areStoriesEnabled) {
-      configure {
-        dividerPref()
-
-        switchPref(
-          title = DSLSettingsText.from(R.string.StoriesPrivacySettingsFragment__view_receipts),
-          summary = DSLSettingsText.from(R.string.StoriesPrivacySettingsFragment__see_and_share),
-          isChecked = state.areViewReceiptsEnabled,
-          onClick = {
-            viewModel.toggleViewReceipts()
-          }
-        )
-
-        dividerPref()
-
-        clickPref(
-          title = DSLSettingsText.from(R.string.StoriesPrivacySettingsFragment__turn_off_stories),
-          summary = DSLSettingsText.from(
-            R.string.StoriesPrivacySettingsFragment__if_you_opt_out,
-            DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_BodyMedium),
-            DSLSettingsText.ColorModifier(ContextCompat.getColor(requireContext(), R.color.signal_colorOnSurfaceVariant))
-          ),
-          onClick = {
-            StoryDialogs.disableStories(requireContext(), viewModel.userHasActiveStories) {
-              viewModel.setStoriesEnabled(false)
-            }
-          }
-        )
+  private fun getMiddleConfiguration(state: StoriesPrivacySettingsState): DSLConfiguration = if (state.areStoriesEnabled) {
+    configure {
+      ContactSearchAdapter.toMappingModelList(
+        state.storyContactItems,
+        emptySet(),
+        null
+      ).forEach {
+        customPref(it)
       }
-    } else {
-      configure { }
     }
+  } else {
+    configure { }
+  }
+
+  private fun getBottomConfiguration(state: StoriesPrivacySettingsState): DSLConfiguration = if (state.areStoriesEnabled) {
+    configure {
+      dividerPref()
+
+      switchPref(
+        title = DSLSettingsText.from(R.string.StoriesPrivacySettingsFragment__view_receipts),
+        summary = DSLSettingsText.from(R.string.StoriesPrivacySettingsFragment__see_and_share),
+        isChecked = state.areViewReceiptsEnabled,
+        onClick = {
+          viewModel.toggleViewReceipts()
+        }
+      )
+
+      dividerPref()
+
+      clickPref(
+        title = DSLSettingsText.from(R.string.StoriesPrivacySettingsFragment__turn_off_stories),
+        summary = DSLSettingsText.from(
+          R.string.StoriesPrivacySettingsFragment__if_you_opt_out,
+          DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_BodyMedium),
+          DSLSettingsText.ColorModifier(ContextCompat.getColor(requireContext(), R.color.signal_colorOnSurfaceVariant))
+        ),
+        onClick = {
+          StoryDialogs.disableStories(requireContext(), viewModel.userHasActiveStories) {
+            viewModel.setStoriesEnabled(false)
+          }
+        }
+      )
+    }
+  } else {
+    configure { }
   }
 
   override fun onGroupStoryClicked() {

@@ -27,10 +27,8 @@ object ExpandHeader {
   ) : PreferenceModel<Model>() {
     override fun areItemsTheSame(newItem: Model): Boolean = true
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) &&
-        isExpanded == newItem.isExpanded
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) &&
+      isExpanded == newItem.isExpanded
   }
 
   private class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

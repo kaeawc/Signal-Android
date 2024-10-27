@@ -117,19 +117,17 @@ class AdvancedPrivacySettingsViewModel(
     }
   }
 
-  private fun getCensorshipCircumventionEnabled(state: CensorshipCircumventionState): Boolean {
-    return when (state) {
-      CensorshipCircumventionState.UNAVAILABLE_CONNECTED,
-      CensorshipCircumventionState.UNAVAILABLE_NO_INTERNET,
-      CensorshipCircumventionState.AVAILABLE_MANUALLY_DISABLED -> {
-        false
-      }
-      CensorshipCircumventionState.AVAILABLE_AUTOMATICALLY_ENABLED -> {
-        true
-      }
-      else -> {
-        SignalStore.settings.censorshipCircumventionEnabled == SettingsValues.CensorshipCircumventionEnabled.ENABLED
-      }
+  private fun getCensorshipCircumventionEnabled(state: CensorshipCircumventionState): Boolean = when (state) {
+    CensorshipCircumventionState.UNAVAILABLE_CONNECTED,
+    CensorshipCircumventionState.UNAVAILABLE_NO_INTERNET,
+    CensorshipCircumventionState.AVAILABLE_MANUALLY_DISABLED -> {
+      false
+    }
+    CensorshipCircumventionState.AVAILABLE_AUTOMATICALLY_ENABLED -> {
+      true
+    }
+    else -> {
+      SignalStore.settings.censorshipCircumventionEnabled == SettingsValues.CensorshipCircumventionEnabled.ENABLED
     }
   }
 
@@ -141,15 +139,13 @@ class AdvancedPrivacySettingsViewModel(
     private val sharedPreferences: SharedPreferences,
     private val repository: AdvancedPrivacySettingsRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(
-        modelClass.cast(
-          AdvancedPrivacySettingsViewModel(
-            sharedPreferences,
-            repository
-          )
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(
+      modelClass.cast(
+        AdvancedPrivacySettingsViewModel(
+          sharedPreferences,
+          repository
         )
       )
-    }
+    )
   }
 }

@@ -8,7 +8,9 @@ package org.thoughtcrime.securesms.backup.v2.stream
 import org.thoughtcrime.securesms.backup.v2.proto.BackupInfo
 import org.thoughtcrime.securesms.backup.v2.proto.Frame
 
-interface BackupImportReader : Iterator<Frame>, AutoCloseable {
+interface BackupImportReader :
+  Iterator<Frame>,
+  AutoCloseable {
   fun getHeader(): BackupInfo?
   fun getBytesRead(): Long
   fun getStreamLength(): Long

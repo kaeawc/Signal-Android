@@ -55,13 +55,9 @@ fun List<BodyRange>?.toBodyRangeList(): BodyRangeList? {
   return builder.build()
 }
 
-fun PendingOneTimeDonation?.isPending(): Boolean {
-  return this != null && this.error == null && !this.isExpired
-}
+fun PendingOneTimeDonation?.isPending(): Boolean = this != null && this.error == null && !this.isExpired
 
-fun PendingOneTimeDonation?.isLongRunning(): Boolean {
-  return isPending() && this!!.paymentMethodType == PendingOneTimeDonation.PaymentMethodType.SEPA_DEBIT
-}
+fun PendingOneTimeDonation?.isLongRunning(): Boolean = isPending() && this!!.paymentMethodType == PendingOneTimeDonation.PaymentMethodType.SEPA_DEBIT
 
 val PendingOneTimeDonation.isExpired: Boolean
   get() {

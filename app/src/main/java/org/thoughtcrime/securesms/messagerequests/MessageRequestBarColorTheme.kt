@@ -38,8 +38,6 @@ enum class MessageRequestBarColorTheme(
 
   companion object {
     @JvmStatic
-    fun resolveTheme(hasWallpaper: Boolean): MessageRequestBarColorTheme {
-      return if (hasWallpaper) WALLPAPER else NORMAL
-    }
+    fun resolveTheme(hasWallpaper: Boolean): MessageRequestBarColorTheme = if (hasWallpaper) WALLPAPER else NORMAL
   }
 }

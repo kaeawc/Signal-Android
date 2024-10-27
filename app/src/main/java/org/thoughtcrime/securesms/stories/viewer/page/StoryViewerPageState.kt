@@ -54,14 +54,12 @@ data class StoryViewerPageState(
     SENDING;
 
     companion object {
-      fun resolve(isFromSelf: Boolean, isToGroup: Boolean): ReplyState {
-        return when {
-          isFromSelf && isToGroup -> GROUP_SELF
-          isFromSelf && !isToGroup -> SELF
-          !isFromSelf && isToGroup -> GROUP
-          !isFromSelf && !isToGroup -> PRIVATE
-          else -> NONE
-        }
+      fun resolve(isFromSelf: Boolean, isToGroup: Boolean): ReplyState = when {
+        isFromSelf && isToGroup -> GROUP_SELF
+        isFromSelf && !isToGroup -> SELF
+        !isFromSelf && isToGroup -> GROUP
+        !isFromSelf && !isToGroup -> PRIVATE
+        else -> NONE
       }
     }
   }

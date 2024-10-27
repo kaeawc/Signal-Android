@@ -13,19 +13,15 @@ import org.thoughtcrime.securesms.fonts.TextToScript
 import org.thoughtcrime.securesms.fonts.TypefaceCache
 
 class StoryTextPostRepository {
-  fun getRecord(recordId: Long): Single<MmsMessageRecord> {
-    return Single.fromCallable {
-      SignalDatabase.messages.getMessageRecord(recordId) as MmsMessageRecord
-    }.subscribeOn(Schedulers.io())
-  }
+  fun getRecord(recordId: Long): Single<MmsMessageRecord> = Single.fromCallable {
+    SignalDatabase.messages.getMessageRecord(recordId) as MmsMessageRecord
+  }.subscribeOn(Schedulers.io())
 
-  fun getTypeface(recordId: Long): Single<Typeface> {
-    return getRecord(recordId).flatMap {
-      val model = StoryTextPost.ADAPTER.decode(Base64.decode(it.body))
-      val textFont = TextFont.fromStyle(model.style)
-      val script = TextToScript.guessScript(model.body)
+  fun getTypeface(recordId: Long): Single<Typeface> = getRecord(recordId).flatMap {
+    val model = StoryTextPost.ADAPTER.decode(Base64.decode(it.body))
+    val textFont = TextFont.fromStyle(model.style)
+    val script = TextToScript.guessScript(model.body)
 
-      TypefaceCache.get(AppDependencies.application, textFont, script)
-    }
+    TypefaceCache.get(AppDependencies.application, textFont, script)
   }
 }

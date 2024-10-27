@@ -14,13 +14,9 @@ data class LargeBadge(
 ) {
 
   class Model(val largeBadge: LargeBadge, val shortName: String, val maxLines: Int) : MappingModel<Model> {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return newItem.largeBadge.badge.id == largeBadge.badge.id
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = newItem.largeBadge.badge.id == largeBadge.badge.id
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return newItem.largeBadge == largeBadge && newItem.shortName == shortName && newItem.maxLines == maxLines
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = newItem.largeBadge == largeBadge && newItem.shortName == shortName && newItem.maxLines == maxLines
   }
 
   class EmptyModel : MappingModel<EmptyModel> {

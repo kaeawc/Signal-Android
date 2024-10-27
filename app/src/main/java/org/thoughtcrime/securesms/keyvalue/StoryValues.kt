@@ -81,9 +81,7 @@ class StoryValues(store: KeyValueStore) : SignalStoreValues(store) {
 
   var userHasSeenGroupStoryEducationSheet: Boolean by booleanValue(USER_HAS_SEEN_GROUP_STORY_EDUCATION_SHEET, false)
 
-  fun isViewedReceiptsStateSet(): Boolean {
-    return store.containsKey(STORY_VIEWED_RECEIPTS)
-  }
+  fun isViewedReceiptsStateSet(): Boolean = store.containsKey(STORY_VIEWED_RECEIPTS)
 
   fun setLatestStorySend(storySend: StorySend) {
     synchronized(this) {
@@ -100,13 +98,11 @@ class StoryValues(store: KeyValueStore) : SignalStoreValues(store) {
 
   private object StorySendSerializer : StringSerializer<StorySend> {
 
-    override fun serialize(data: StorySend): String {
-      return JSONObject()
-        .put("timestamp", data.timestamp)
-        .put("groupId", if (data.identifier is StorySend.Identifier.Group) data.identifier.groupId.toString() else null)
-        .put("distributionListId", if (data.identifier is StorySend.Identifier.DistributionList) data.identifier.distributionListId.serialize() else null)
-        .toString()
-    }
+    override fun serialize(data: StorySend): String = JSONObject()
+      .put("timestamp", data.timestamp)
+      .put("groupId", if (data.identifier is StorySend.Identifier.Group) data.identifier.groupId.toString() else null)
+      .put("distributionListId", if (data.identifier is StorySend.Identifier.DistributionList) data.identifier.distributionListId.serialize() else null)
+      .toString()
 
     override fun deserialize(data: String): StorySend {
       val jsonData = JSONObject(data)

@@ -75,13 +75,11 @@ open class ContactSearchCollection<ContactRecord>(
     return results
   }
 
-  open fun getItemAtCorrectedIndex(correctedIndex: Int): ContactSearchData {
-    return if (recordPredicate == null) {
-      records.moveToPosition(correctedIndex - 1)
-      recordMapper.invoke(records.next())
-    } else {
-      aggregateData.get(correctedIndex)!!
-    }
+  open fun getItemAtCorrectedIndex(correctedIndex: Int): ContactSearchData = if (recordPredicate == null) {
+    records.moveToPosition(correctedIndex - 1)
+    recordMapper.invoke(records.next())
+  } else {
+    aggregateData.get(correctedIndex)!!
   }
 
   open fun fillDataWindow(offset: Int, limit: Int) {
@@ -105,9 +103,7 @@ open class ContactSearchCollection<ContactRecord>(
     }
   }
 
-  private fun isAggregateDataFilled(startOffset: Int, limit: Int): Boolean {
-    return (startOffset until (startOffset + limit)).all { aggregateData.containsKey(it) }
-  }
+  private fun isAggregateDataFilled(startOffset: Int, limit: Int): Boolean = (startOffset until (startOffset + limit)).all { aggregateData.containsKey(it) }
 
   private fun shouldDisplayExpandRow(): Boolean {
     val expandConfig = section.expandConfig

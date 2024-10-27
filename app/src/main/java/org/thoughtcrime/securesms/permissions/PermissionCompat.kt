@@ -14,36 +14,28 @@ import android.os.Build
  */
 object PermissionCompat {
   @JvmStatic
-  fun forImages(): Array<String> {
-    return if (Build.VERSION.SDK_INT >= 34) {
-      arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED)
-    } else if (Build.VERSION.SDK_INT == 33) {
-      arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
-    } else {
-      arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-    }
+  fun forImages(): Array<String> = if (Build.VERSION.SDK_INT >= 34) {
+    arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED)
+  } else if (Build.VERSION.SDK_INT == 33) {
+    arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
+  } else {
+    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
   }
 
-  private fun forVideos(): Array<String> {
-    return if (Build.VERSION.SDK_INT >= 34) {
-      arrayOf(Manifest.permission.READ_MEDIA_VIDEO, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED)
-    } else if (Build.VERSION.SDK_INT == 33) {
-      arrayOf(Manifest.permission.READ_MEDIA_VIDEO)
-    } else {
-      arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-    }
+  private fun forVideos(): Array<String> = if (Build.VERSION.SDK_INT >= 34) {
+    arrayOf(Manifest.permission.READ_MEDIA_VIDEO, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED)
+  } else if (Build.VERSION.SDK_INT == 33) {
+    arrayOf(Manifest.permission.READ_MEDIA_VIDEO)
+  } else {
+    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
   }
 
   @JvmStatic
-  fun forImagesAndVideos(): Array<String> {
-    return setOf(*(forImages() + forVideos())).toTypedArray()
-  }
+  fun forImagesAndVideos(): Array<String> = setOf(*(forImages() + forVideos())).toTypedArray()
 
-  fun getRequiredPermissionsForDenial(): Array<String> {
-    return if (Build.VERSION.SDK_INT >= 34) {
-      arrayOf(Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED)
-    } else {
-      forImagesAndVideos()
-    }
+  fun getRequiredPermissionsForDenial(): Array<String> = if (Build.VERSION.SDK_INT >= 34) {
+    arrayOf(Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED)
+  } else {
+    forImagesAndVideos()
   }
 }

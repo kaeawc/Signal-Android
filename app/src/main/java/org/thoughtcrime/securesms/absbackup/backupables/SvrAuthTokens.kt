@@ -12,9 +12,7 @@ import java.io.IOException
 object SvrAuthTokens : AndroidBackupItem {
   private const val TAG = "KbsAuthTokens"
 
-  override fun getKey(): String {
-    return TAG
-  }
+  override fun getKey(): String = TAG
 
   override fun getDataForBackup(): ByteArray {
     val proto = SvrAuthToken(svr2Tokens = SignalStore.svr.svr2AuthTokens)

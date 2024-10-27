@@ -44,9 +44,7 @@ abstract class OnScrollAnimationHelper : RecyclerView.OnScrollListener() {
     lastAnimationState = newAnimationState
   }
 
-  protected open fun getAnimationState(recyclerView: RecyclerView): AnimationState {
-    return if (recyclerView.canScrollVertically(-1)) AnimationState.SHOW else AnimationState.HIDE
-  }
+  protected open fun getAnimationState(recyclerView: RecyclerView): AnimationState = if (recyclerView.canScrollVertically(-1)) AnimationState.SHOW else AnimationState.HIDE
 
   /**
    * Fired when the RecyclerView is able to be scrolled up

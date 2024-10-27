@@ -246,9 +246,7 @@ class ControlsAndInfoController private constructor(
     callInfoComposeView.translationY = INFO_TRANSLATION_DISTANCE
   }
 
-  fun addVisibilityListener(listener: BottomSheetVisibilityListener): Boolean {
-    return bottomSheetVisibilityListeners.add(listener)
-  }
+  fun addVisibilityListener(listener: BottomSheetVisibilityListener): Boolean = bottomSheetVisibilityListeners.add(listener)
 
   fun onStateRestored() {
     when (behavior.state) {
@@ -428,11 +426,9 @@ class ControlsAndInfoController private constructor(
       .addTo(disposables)
   }
 
-  private fun handleError(method: String): (throwable: Throwable) -> Unit {
-    return {
-      Log.w(TAG, "Failure during $method", it)
-      toastFailure()
-    }
+  private fun handleError(method: String): (throwable: Throwable) -> Unit = {
+    Log.w(TAG, "Failure during $method", it)
+    toastFailure()
   }
 
   private fun toastFailure() {
@@ -445,36 +441,30 @@ class ControlsAndInfoController private constructor(
     setMargin(viewId, ConstraintSet.END, horizontalMargins)
   }
 
-  private fun WebRtcControls.controlVisibilitiesChanged(previousState: WebRtcControls): Boolean {
-    return displayAudioToggle() != previousState.displayAudioToggle() ||
-      displayCameraToggle() != previousState.displayCameraToggle() ||
-      displayVideoToggle() != previousState.displayVideoToggle() ||
-      displayMuteAudio() != previousState.displayMuteAudio() ||
-      displayRingToggle() != previousState.displayRingToggle() ||
-      displayOverflow() != previousState.displayOverflow() ||
-      displayEndCall() != previousState.displayEndCall() ||
-      displayWaitingToBeLetIn() != previousState.displayWaitingToBeLetIn() ||
-      (previousState == WebRtcControls.PIP && this != WebRtcControls.PIP)
+  private fun WebRtcControls.controlVisibilitiesChanged(previousState: WebRtcControls): Boolean = displayAudioToggle() != previousState.displayAudioToggle() ||
+    displayCameraToggle() != previousState.displayCameraToggle() ||
+    displayVideoToggle() != previousState.displayVideoToggle() ||
+    displayMuteAudio() != previousState.displayMuteAudio() ||
+    displayRingToggle() != previousState.displayRingToggle() ||
+    displayOverflow() != previousState.displayOverflow() ||
+    displayEndCall() != previousState.displayEndCall() ||
+    displayWaitingToBeLetIn() != previousState.displayWaitingToBeLetIn() ||
+    (previousState == WebRtcControls.PIP && this != WebRtcControls.PIP)
+
+  private fun alphaControls(slideOffset: Float): Float = if (slideOffset <= CONTROL_FADE_OUT_START) {
+    1f
+  } else if (slideOffset >= CONTROL_FADE_OUT_DONE) {
+    0f
+  } else {
+    1f - (1f * (slideOffset - CONTROL_FADE_OUT_START) / (CONTROL_FADE_OUT_DONE - CONTROL_FADE_OUT_START))
   }
 
-  private fun alphaControls(slideOffset: Float): Float {
-    return if (slideOffset <= CONTROL_FADE_OUT_START) {
-      1f
-    } else if (slideOffset >= CONTROL_FADE_OUT_DONE) {
-      0f
-    } else {
-      1f - (1f * (slideOffset - CONTROL_FADE_OUT_START) / (CONTROL_FADE_OUT_DONE - CONTROL_FADE_OUT_START))
-    }
-  }
-
-  private fun alphaCallInfo(slideOffset: Float): Float {
-    return if (slideOffset >= INFO_FADE_IN_DONE) {
-      1f
-    } else if (slideOffset <= INFO_FADE_IN_START) {
-      0f
-    } else {
-      (1f * (slideOffset - INFO_FADE_IN_START) / (INFO_FADE_IN_DONE - INFO_FADE_IN_START))
-    }
+  private fun alphaCallInfo(slideOffset: Float): Float = if (slideOffset >= INFO_FADE_IN_DONE) {
+    1f
+  } else if (slideOffset <= INFO_FADE_IN_START) {
+    0f
+  } else {
+    (1f * (slideOffset - INFO_FADE_IN_START) / (INFO_FADE_IN_DONE - INFO_FADE_IN_START))
   }
 
   @Parcelize
@@ -482,9 +472,7 @@ class ControlsAndInfoController private constructor(
     val controlHeight: Int = 0,
     val coordinatorHeight: Int = 0
   ) : Parcelable {
-    fun hasChanged(controlHeight: Int, coordinatorHeight: Int): Boolean {
-      return controlHeight != this.controlHeight || coordinatorHeight != this.coordinatorHeight
-    }
+    fun hasChanged(controlHeight: Int, coordinatorHeight: Int): Boolean = controlHeight != this.controlHeight || coordinatorHeight != this.coordinatorHeight
   }
 
   interface BottomSheetVisibilityListener {

@@ -71,36 +71,33 @@ class ChangeNumberRepository(
     private val TAG = Log.tag(ChangeNumberRepository::class.java)
   }
 
-  fun whoAmI(): WhoAmIResponse {
-    return accountManager.whoAmI
-  }
+  fun whoAmI(): WhoAmIResponse = accountManager.whoAmI
 
-  suspend fun ensureDecryptionsDrained(timeout: Duration = 15.seconds) =
-    withTimeoutOrNull(timeout) {
-      suspendCancellableCoroutine {
-        val drainedListener = object : Runnable {
-          override fun run() {
-            AppDependencies
-              .incomingMessageObserver
-              .removeDecryptionDrainedListener(this)
-            Log.d(TAG, "Decryptions drained.")
-            it.resume(true)
-          }
-        }
-
-        it.invokeOnCancellation { cancellationCause ->
+  suspend fun ensureDecryptionsDrained(timeout: Duration = 15.seconds) = withTimeoutOrNull(timeout) {
+    suspendCancellableCoroutine {
+      val drainedListener = object : Runnable {
+        override fun run() {
           AppDependencies
             .incomingMessageObserver
-            .removeDecryptionDrainedListener(drainedListener)
-          Log.d(TAG, "Decryptions draining canceled.", cancellationCause)
+            .removeDecryptionDrainedListener(this)
+          Log.d(TAG, "Decryptions drained.")
+          it.resume(true)
         }
+      }
 
+      it.invokeOnCancellation { cancellationCause ->
         AppDependencies
           .incomingMessageObserver
-          .addDecryptionDrainedListener(drainedListener)
-        Log.d(TAG, "Waiting for decryption drain.")
+          .removeDecryptionDrainedListener(drainedListener)
+        Log.d(TAG, "Decryptions draining canceled.", cancellationCause)
       }
+
+      AppDependencies
+        .incomingMessageObserver
+        .addDecryptionDrainedListener(drainedListener)
+      Log.d(TAG, "Waiting for decryption drain.")
     }
+  }
 
   @WorkerThread
   fun changeLocalNumber(e164: String, pni: ServiceId.PNI) {
@@ -216,13 +213,9 @@ class ChangeNumberRepository(
     }
   }
 
-  suspend fun changeNumberWithRecoveryPassword(recoveryPassword: String, newE164: String): ChangeNumberResult {
-    return changeNumberInternal(recoveryPassword = recoveryPassword, newE164 = newE164)
-  }
+  suspend fun changeNumberWithRecoveryPassword(recoveryPassword: String, newE164: String): ChangeNumberResult = changeNumberInternal(recoveryPassword = recoveryPassword, newE164 = newE164)
 
-  suspend fun changeNumberWithoutRegistrationLock(sessionId: String, newE164: String): ChangeNumberResult {
-    return changeNumberInternal(sessionId = sessionId, newE164 = newE164)
-  }
+  suspend fun changeNumberWithoutRegistrationLock(sessionId: String, newE164: String): ChangeNumberResult = changeNumberInternal(sessionId = sessionId, newE164 = newE164)
 
   suspend fun changeNumberWithRegistrationLock(
     sessionId: String,

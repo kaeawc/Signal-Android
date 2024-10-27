@@ -72,9 +72,7 @@ class DebugLogsPromptDialogFragment : FixedRoundedCornerBottomSheetDialogFragmen
 
   private val disposables: LifecycleDisposable = LifecycleDisposable()
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-    return inflater.inflate(R.layout.prompt_logs_bottom_sheet, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.prompt_logs_bottom_sheet, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     disposables.bindTo(viewLifecycleOwner)
@@ -157,28 +155,22 @@ class DebugLogsPromptDialogFragment : FixedRoundedCornerBottomSheetDialogFragmen
     )
   }
 
-  private fun batteryOptimizationsString(): String {
-    return if (Build.VERSION.SDK_INT < 23) {
-      "N/A (API < 23)"
-    } else {
-      PowerManagerCompat.isIgnoringBatteryOptimizations(requireContext()).toString()
-    }
+  private fun batteryOptimizationsString(): String = if (Build.VERSION.SDK_INT < 23) {
+    "N/A (API < 23)"
+  } else {
+    PowerManagerCompat.isIgnoringBatteryOptimizations(requireContext()).toString()
   }
 
-  private fun backgroundRestrictedString(): String {
-    return if (Build.VERSION.SDK_INT < 28) {
-      "N/A (API < 28)"
-    } else {
-      DeviceProperties.isBackgroundRestricted(requireContext()).toString()
-    }
+  private fun backgroundRestrictedString(): String = if (Build.VERSION.SDK_INT < 28) {
+    "N/A (API < 28)"
+  } else {
+    DeviceProperties.isBackgroundRestricted(requireContext()).toString()
   }
 
-  private fun dataSaverString(): String {
-    return if (Build.VERSION.SDK_INT < 24) {
-      "N/A (API < 24)"
-    } else {
-      DeviceProperties.getDataSaverState(requireContext()).toString()
-    }
+  private fun dataSaverString(): String = if (Build.VERSION.SDK_INT < 24) {
+    "N/A (API < 24)"
+  } else {
+    DeviceProperties.getDataSaverState(requireContext()).toString()
   }
 
   enum class Purpose(val serialized: Int) {
@@ -188,9 +180,7 @@ class DebugLogsPromptDialogFragment : FixedRoundedCornerBottomSheetDialogFragmen
     CONNECTIVITY_WARNING(3);
 
     companion object {
-      fun deserialize(serialized: Int): Purpose {
-        return entries.firstOrNull { it.serialized == serialized } ?: throw IllegalArgumentException("Invalid value: $serialized")
-      }
+      fun deserialize(serialized: Int): Purpose = entries.firstOrNull { it.serialized == serialized } ?: throw IllegalArgumentException("Invalid value: $serialized")
     }
   }
 }

@@ -24,35 +24,25 @@ object SafetyNumberBucketRowItem {
   fun createModel(
     safetyNumberBucket: SafetyNumberBucket,
     actionItemsProvider: (SafetyNumberBucket) -> List<ActionItem>
-  ): MappingModel<*> {
-    return when (safetyNumberBucket) {
-      SafetyNumberBucket.ContactsBucket -> ContactsModel()
-      is SafetyNumberBucket.DistributionListBucket -> DistributionListModel(safetyNumberBucket, actionItemsProvider)
-      is SafetyNumberBucket.GroupBucket -> GroupModel(safetyNumberBucket)
-    }
+  ): MappingModel<*> = when (safetyNumberBucket) {
+    SafetyNumberBucket.ContactsBucket -> ContactsModel()
+    is SafetyNumberBucket.DistributionListBucket -> DistributionListModel(safetyNumberBucket, actionItemsProvider)
+    is SafetyNumberBucket.GroupBucket -> GroupModel(safetyNumberBucket)
   }
 
   private class DistributionListModel(
     val distributionListBucket: SafetyNumberBucket.DistributionListBucket,
     val actionItemsProvider: (SafetyNumberBucket) -> List<ActionItem>
   ) : MappingModel<DistributionListModel> {
-    override fun areItemsTheSame(newItem: DistributionListModel): Boolean {
-      return distributionListBucket.distributionListId == newItem.distributionListBucket.distributionListId
-    }
+    override fun areItemsTheSame(newItem: DistributionListModel): Boolean = distributionListBucket.distributionListId == newItem.distributionListBucket.distributionListId
 
-    override fun areContentsTheSame(newItem: DistributionListModel): Boolean {
-      return distributionListBucket == newItem.distributionListBucket
-    }
+    override fun areContentsTheSame(newItem: DistributionListModel): Boolean = distributionListBucket == newItem.distributionListBucket
   }
 
   private class GroupModel(val groupBucket: SafetyNumberBucket.GroupBucket) : MappingModel<GroupModel> {
-    override fun areItemsTheSame(newItem: GroupModel): Boolean {
-      return groupBucket.recipient.id == newItem.groupBucket.recipient.id
-    }
+    override fun areItemsTheSame(newItem: GroupModel): Boolean = groupBucket.recipient.id == newItem.groupBucket.recipient.id
 
-    override fun areContentsTheSame(newItem: GroupModel): Boolean {
-      return groupBucket.recipient.hasSameContent(newItem.groupBucket.recipient)
-    }
+    override fun areContentsTheSame(newItem: GroupModel): Boolean = groupBucket.recipient.hasSameContent(newItem.groupBucket.recipient)
   }
 
   private class ContactsModel : MappingModel<ContactsModel> {
@@ -62,12 +52,10 @@ object SafetyNumberBucketRowItem {
   }
 
   private class DistributionListViewHolder(itemView: View) : BaseViewHolder<DistributionListModel>(itemView) {
-    override fun getTitle(model: DistributionListModel): String {
-      return if (model.distributionListBucket.distributionListId == DistributionListId.MY_STORY) {
-        context.getString(R.string.Recipient_my_story)
-      } else {
-        model.distributionListBucket.name
-      }
+    override fun getTitle(model: DistributionListModel): String = if (model.distributionListBucket.distributionListId == DistributionListId.MY_STORY) {
+      context.getString(R.string.Recipient_my_story)
+    } else {
+      model.distributionListBucket.name
     }
 
     override fun bindMenuListener(model: DistributionListModel, menuView: View) {
@@ -81,9 +69,7 @@ object SafetyNumberBucketRowItem {
   }
 
   private class GroupViewHolder(itemView: View) : BaseViewHolder<GroupModel>(itemView) {
-    override fun getTitle(model: GroupModel): String {
-      return model.groupBucket.recipient.getDisplayName(context)
-    }
+    override fun getTitle(model: GroupModel): String = model.groupBucket.recipient.getDisplayName(context)
 
     override fun bindMenuListener(model: GroupModel, menuView: View) {
       menuView.visible = false
@@ -91,9 +77,7 @@ object SafetyNumberBucketRowItem {
   }
 
   private class ContactsViewHolder(itemView: View) : BaseViewHolder<ContactsModel>(itemView) {
-    override fun getTitle(model: ContactsModel): String {
-      return context.getString(R.string.SafetyNumberBucketRowItem__contacts)
-    }
+    override fun getTitle(model: ContactsModel): String = context.getString(R.string.SafetyNumberBucketRowItem__contacts)
 
     override fun bindMenuListener(model: ContactsModel, menuView: View) {
       menuView.visible = false

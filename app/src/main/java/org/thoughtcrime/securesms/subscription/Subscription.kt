@@ -44,7 +44,9 @@ data class Subscription(
     override fun areItemsTheSame(newItem: LoaderModel): Boolean = true
   }
 
-  class LoaderViewHolder(itemView: View) : MappingViewHolder<LoaderModel>(itemView), DefaultLifecycleObserver {
+  class LoaderViewHolder(itemView: View) :
+    MappingViewHolder<LoaderModel>(itemView),
+    DefaultLifecycleObserver {
 
     private val animator: Animator = AnimatorSet().apply {
       val fadeTo25Animator = ObjectAnimator.ofFloat(itemView, "alpha", 0.8f, 0.25f).apply {
@@ -91,26 +93,20 @@ data class Subscription(
     val selectedCurrency: Currency
   ) : PreferenceModel<Model>(isEnabled = isEnabled) {
 
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return subscription.id == newItem.subscription.id
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = subscription.id == newItem.subscription.id
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) &&
-        newItem.subscription == subscription &&
-        newItem.isSelected == isSelected &&
-        newItem.isActive == isActive &&
-        newItem.renewalTimestamp == renewalTimestamp &&
-        newItem.willRenew == willRenew &&
-        newItem.selectedCurrency == selectedCurrency
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) &&
+      newItem.subscription == subscription &&
+      newItem.isSelected == isSelected &&
+      newItem.isActive == isActive &&
+      newItem.renewalTimestamp == renewalTimestamp &&
+      newItem.willRenew == willRenew &&
+      newItem.selectedCurrency == selectedCurrency
 
-    override fun getChangePayload(newItem: Model): Any? {
-      return if (newItem.subscription.badge == subscription.badge) {
-        Unit
-      } else {
-        null
-      }
+    override fun getChangePayload(newItem: Model): Any? = if (newItem.subscription.badge == subscription.badge) {
+      Unit
+    } else {
+      null
     }
   }
 

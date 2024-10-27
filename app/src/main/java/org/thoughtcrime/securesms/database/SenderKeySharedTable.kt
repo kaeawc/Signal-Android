@@ -61,19 +61,17 @@ class SenderKeySharedTable internal constructor(context: Context?, databaseHelpe
   /**
    * Get the set of recipientIds that know about the distributionId in question.
    */
-  fun getSharedWith(distributionId: DistributionId): Set<SignalProtocolAddress> {
-    return readableDatabase
-      .select(ADDRESS, DEVICE)
-      .from(TABLE_NAME)
-      .where("$DISTRIBUTION_ID = ?", distributionId)
-      .run()
-      .readToSet { cursor ->
-        SignalProtocolAddress(
-          cursor.requireString(ADDRESS),
-          cursor.requireInt(DEVICE)
-        )
-      }
-  }
+  fun getSharedWith(distributionId: DistributionId): Set<SignalProtocolAddress> = readableDatabase
+    .select(ADDRESS, DEVICE)
+    .from(TABLE_NAME)
+    .where("$DISTRIBUTION_ID = ?", distributionId)
+    .run()
+    .readToSet { cursor ->
+      SignalProtocolAddress(
+        cursor.requireString(ADDRESS),
+        cursor.requireInt(DEVICE)
+      )
+    }
 
   /**
    * Clear the shared statuses for all provided addresses.
@@ -144,7 +142,5 @@ class SenderKeySharedTable internal constructor(context: Context?, databaseHelpe
   /**
    * Gets the shared state of all of our sender keys. Used for debugging.
    */
-  fun getAllSharedWithCursor(): Cursor {
-    return readableDatabase.query(TABLE_NAME, null, null, null, null, null, "$DISTRIBUTION_ID, $ADDRESS, $DEVICE")
-  }
+  fun getAllSharedWithCursor(): Cursor = readableDatabase.query(TABLE_NAME, null, null, null, null, null, "$DISTRIBUTION_ID, $ADDRESS, $DEVICE")
 }

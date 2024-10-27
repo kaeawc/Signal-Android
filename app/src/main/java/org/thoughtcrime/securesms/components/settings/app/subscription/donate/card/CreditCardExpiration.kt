@@ -5,9 +5,7 @@ data class CreditCardExpiration(
   val year: String = ""
 ) {
 
-  fun isEmpty(): Boolean {
-    return month.isEmpty() && year.isEmpty()
-  }
+  fun isEmpty(): Boolean = month.isEmpty() && year.isEmpty()
 
   companion object {
     fun fromInput(expiration: String): CreditCardExpiration {

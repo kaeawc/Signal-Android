@@ -28,13 +28,9 @@ class TextAvatarCreationViewModel(initialText: Avatar.Text) : ViewModel() {
     }
   }
 
-  fun getCurrentAvatar(): Avatar.Text {
-    return store.state.currentAvatar
-  }
+  fun getCurrentAvatar(): Avatar.Text = store.state.currentAvatar
 
   class Factory(private val initialText: Avatar.Text) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(TextAvatarCreationViewModel(initialText)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(TextAvatarCreationViewModel(initialText)))
   }
 }

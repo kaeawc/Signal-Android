@@ -25,9 +25,7 @@ class StatusBarColorNestedScrollConnection(
 
   private var contentOffset = 0f
 
-  override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-    return Velocity.Zero
-  }
+  override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity = Velocity.Zero
 
   override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
     val oldContentOffset = contentOffset

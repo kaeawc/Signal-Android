@@ -95,7 +95,5 @@ object ExternalNavigationHelper {
     Toast.makeText(context, R.string.CommunicationActions_no_browser_found, Toast.LENGTH_SHORT).show()
   }
 
-  private fun looksLikeAMarketLink(uri: Uri?): Boolean {
-    return uri != null && uri.host == "play.google.com" && uri.getQueryParameter("id") != null
-  }
+  private fun looksLikeAMarketLink(uri: Uri?): Boolean = uri != null && uri.host == "play.google.com" && uri.getQueryParameter("id") != null
 }

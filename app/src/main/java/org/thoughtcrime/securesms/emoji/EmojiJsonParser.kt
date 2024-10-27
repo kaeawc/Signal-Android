@@ -25,12 +25,10 @@ object EmojiJsonParser {
     parse(body) { _, _ -> Uri.EMPTY }.getOrThrow()
   }
 
-  fun parse(body: InputStream, uriFactory: UriFactory): Result<ParsedEmojiData> {
-    return try {
-      Result.success(buildEmojiSourceFromNode(OBJECT_MAPPER.readTree(body), uriFactory))
-    } catch (e: Exception) {
-      Result.failure(e)
-    }
+  fun parse(body: InputStream, uriFactory: UriFactory): Result<ParsedEmojiData> = try {
+    Result.success(buildEmojiSourceFromNode(OBJECT_MAPPER.readTree(body), uriFactory))
+  } catch (e: Exception) {
+    Result.failure(e)
   }
 
   private fun buildEmojiSourceFromNode(node: JsonNode, uriFactory: UriFactory): ParsedEmojiData {
@@ -45,26 +43,24 @@ object EmojiJsonParser {
     return ParsedEmojiData(metrics, densities, format, displayPages, dataPages, jumboPages, obsolete)
   }
 
-  private fun getDataPages(format: String, emoji: JsonNode, uriFactory: UriFactory): List<EmojiPageModel> {
-    return emoji.fields()
-      .asSequence()
-      .sortedWith { lhs, rhs ->
-        val lhsCategory = EmojiCategory.forKey(lhs.key.asCategoryKey())
-        val rhsCategory = EmojiCategory.forKey(rhs.key.asCategoryKey())
-        val comp = lhsCategory.priority.compareTo(rhsCategory.priority)
+  private fun getDataPages(format: String, emoji: JsonNode, uriFactory: UriFactory): List<EmojiPageModel> = emoji.fields()
+    .asSequence()
+    .sortedWith { lhs, rhs ->
+      val lhsCategory = EmojiCategory.forKey(lhs.key.asCategoryKey())
+      val rhsCategory = EmojiCategory.forKey(rhs.key.asCategoryKey())
+      val comp = lhsCategory.priority.compareTo(rhsCategory.priority)
 
-        if (comp == 0) {
-          val lhsIndex = lhs.key.getPageIndex()
-          val rhsIndex = rhs.key.getPageIndex()
+      if (comp == 0) {
+        val lhsIndex = lhs.key.getPageIndex()
+        val rhsIndex = rhs.key.getPageIndex()
 
-          lhsIndex.compareTo(rhsIndex)
-        } else {
-          comp
-        }
+        lhsIndex.compareTo(rhsIndex)
+      } else {
+        comp
       }
-      .map { createPage(it.key, format, it.value, uriFactory) }
-      .toList()
-  }
+    }
+    .map { createPage(it.key, format, it.value, uriFactory) }
+    .toList()
 
   private fun getJumboPages(jumbo: JsonNode?): Map<String, String> {
     if (jumbo != null) {
@@ -99,29 +95,21 @@ object EmojiJsonParser {
     return StaticEmojiPageModel(category, pageList, uriFactory(pageName, format))
   }
 
-  private fun mergeToDisplayPages(dataPages: List<EmojiPageModel>): List<EmojiPageModel> {
-    return dataPages.groupBy { it.iconAttr }
-      .map { (icon, pages) -> if (pages.size <= 1) pages.first() else CompositeEmojiPageModel(icon, pages) }
-  }
+  private fun mergeToDisplayPages(dataPages: List<EmojiPageModel>): List<EmojiPageModel> = dataPages.groupBy { it.iconAttr }
+    .map { (icon, pages) -> if (pages.size <= 1) pages.first() else CompositeEmojiPageModel(icon, pages) }
 }
 
-private fun JsonNode?.toObseleteList(): List<ObsoleteEmoji> {
-  return if (this == null) {
-    listOf()
-  } else {
-    map { node ->
-      ObsoleteEmoji(node["obsoleted"].textValue().encodeAsUtf16(), node["replace_with"].textValue().encodeAsUtf16())
-    }.toList()
-  }
+private fun JsonNode?.toObseleteList(): List<ObsoleteEmoji> = if (this == null) {
+  listOf()
+} else {
+  map { node ->
+    ObsoleteEmoji(node["obsoleted"].textValue().encodeAsUtf16(), node["replace_with"].textValue().encodeAsUtf16())
+  }.toList()
 }
 
-private fun JsonNode.toEmojiMetrics(): EmojiMetrics {
-  return EmojiMetrics(this["raw_width"].asInt(), this["raw_height"].asInt(), this["per_row"].asInt())
-}
+private fun JsonNode.toEmojiMetrics(): EmojiMetrics = EmojiMetrics(this["raw_width"].asInt(), this["raw_height"].asInt(), this["per_row"].asInt())
 
-private fun JsonNode.toDensityList(): List<String> {
-  return map { it.textValue() }
-}
+private fun JsonNode.toDensityList(): List<String> = map { it.textValue() }
 
 private fun String.encodeAsUtf16() = String(Hex.fromStringCondensed(this), Charset.forName("UTF-16"))
 private fun String.asCategoryKey() = replace("(_\\d+)*$".toRegex(), "")

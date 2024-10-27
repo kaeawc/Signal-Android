@@ -21,9 +21,7 @@ object SplashImage {
   }
 
   class Model(@DrawableRes val splashImageResId: Int, @ColorRes val splashImageTintResId: Int = -1) : PreferenceModel<Model>() {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return newItem.splashImageResId == splashImageResId && newItem.splashImageTintResId == splashImageTintResId
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = newItem.splashImageResId == splashImageResId && newItem.splashImageTintResId == splashImageTintResId
   }
 
   private class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

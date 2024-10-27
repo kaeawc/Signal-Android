@@ -20,14 +20,10 @@ object CurrencySelection {
     override val isEnabled: Boolean,
     val onClick: () -> Unit
   ) : PreferenceModel<Model>(isEnabled = isEnabled) {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return true
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = true
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) &&
-        newItem.selectedCurrency == selectedCurrency
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) &&
+      newItem.selectedCurrency == selectedCurrency
   }
 
   class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

@@ -17,25 +17,17 @@ data class IdealTransferDetailsState(
   val emailFocusState: FocusState = FocusState.NOT_FOCUSED
 ) {
 
-  fun showNameError(): Boolean {
-    return nameFocusState == FocusState.LOST_FOCUS && !BankDetailsValidator.validName(name)
-  }
+  fun showNameError(): Boolean = nameFocusState == FocusState.LOST_FOCUS && !BankDetailsValidator.validName(name)
 
-  fun showEmailError(): Boolean {
-    return emailFocusState == FocusState.LOST_FOCUS && !BankDetailsValidator.validEmail(email)
-  }
+  fun showEmailError(): Boolean = emailFocusState == FocusState.LOST_FOCUS && !BankDetailsValidator.validEmail(email)
 
-  fun asIDEALData(): StripeApi.IDEALData {
-    return StripeApi.IDEALData(
-      bank = idealBank!!.code,
-      name = name.trim(),
-      email = email.trim()
-    )
-  }
+  fun asIDEALData(): StripeApi.IDEALData = StripeApi.IDEALData(
+    bank = idealBank!!.code,
+    name = name.trim(),
+    email = email.trim()
+  )
 
-  fun canProceed(): Boolean {
-    return idealBank != null && BankDetailsValidator.validName(name) && (!isMonthly || BankDetailsValidator.validEmail(email))
-  }
+  fun canProceed(): Boolean = idealBank != null && BankDetailsValidator.validName(name) && (!isMonthly || BankDetailsValidator.validEmail(email))
 
   enum class FocusState {
     NOT_FOCUSED,

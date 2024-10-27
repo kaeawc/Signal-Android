@@ -41,13 +41,9 @@ class CheckServiceReachabilityJob private constructor(params: Parameters) : Base
     }
   }
 
-  override fun serialize(): ByteArray? {
-    return null
-  }
+  override fun serialize(): ByteArray? = null
 
-  override fun getFactoryKey(): String {
-    return KEY
-  }
+  override fun getFactoryKey(): String = KEY
 
   override fun onRun() {
     if (!SignalStore.account.isRegistered) {
@@ -105,16 +101,12 @@ class CheckServiceReachabilityJob private constructor(params: Parameters) : Base
     }
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return false
-  }
+  override fun onShouldRetry(e: Exception): Boolean = false
 
   override fun onFailure() {
   }
 
   class Factory : Job.Factory<CheckServiceReachabilityJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): CheckServiceReachabilityJob {
-      return CheckServiceReachabilityJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): CheckServiceReachabilityJob = CheckServiceReachabilityJob(parameters)
   }
 }

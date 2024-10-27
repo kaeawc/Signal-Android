@@ -93,17 +93,13 @@ class ChatColors(
     return builder.build()
   }
 
-  fun getColors(): IntArray {
-    return linearGradient?.colors ?: if (singleColor != null) {
-      intArrayOf(singleColor)
-    } else {
-      throw AssertionError()
-    }
+  fun getColors(): IntArray = linearGradient?.colors ?: if (singleColor != null) {
+    intArrayOf(singleColor)
+  } else {
+    throw AssertionError()
   }
 
-  fun getDegrees(): Float {
-    return linearGradient?.degrees ?: 180f
-  }
+  fun getDegrees(): Float = linearGradient?.degrees ?: 180f
 
   fun asCircle(): Drawable {
     val toWrap: Drawable = chatBubbleMask
@@ -143,9 +139,7 @@ class ChatColors(
     return true
   }
 
-  override fun hashCode(): Int {
-    return Objects.hashCode(linearGradient, singleColor, id)
-  }
+  override fun hashCode(): Int = Objects.hashCode(linearGradient, singleColor, id)
 
   companion object {
     /**
@@ -178,12 +172,10 @@ class ChatColors(
     }
 
     @JvmStatic
-    fun forGradient(id: Id, linearGradient: LinearGradient): ChatColors =
-      ChatColors(id, linearGradient, null)
+    fun forGradient(id: Id, linearGradient: LinearGradient): ChatColors = ChatColors(id, linearGradient, null)
 
     @JvmStatic
-    fun forColor(id: Id, @ColorInt color: Int): ChatColors =
-      ChatColors(id, null, color)
+    fun forColor(id: Id, @ColorInt color: Int): ChatColors = ChatColors(id, null, color)
   }
 
   sealed class Id(val longValue: Long) : Parcelable {
@@ -207,13 +199,9 @@ class ChatColors(
      */
     class Custom internal constructor(id: Long) : Id(id)
 
-    override fun equals(other: Any?): Boolean {
-      return longValue == (other as? Id)?.longValue
-    }
+    override fun equals(other: Any?): Boolean = longValue == (other as? Id)?.longValue
 
-    override fun hashCode(): Int {
-      return Objects.hashCode(longValue)
-    }
+    override fun hashCode(): Int = Objects.hashCode(longValue)
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
       dest.writeLong(longValue)
@@ -223,24 +211,18 @@ class ChatColors(
 
     companion object {
       @JvmStatic
-      fun forLongValue(longValue: Long): Id {
-        return when (longValue) {
-          -2L -> Auto
-          -1L -> BuiltIn
-          0L -> NotSet
-          else -> Custom(longValue)
-        }
+      fun forLongValue(longValue: Long): Id = when (longValue) {
+        -2L -> Auto
+        -1L -> BuiltIn
+        0L -> NotSet
+        else -> Custom(longValue)
       }
 
       @JvmField
       val CREATOR = object : Parcelable.Creator<Id> {
-        override fun createFromParcel(parcel: Parcel): Id {
-          return forLongValue(parcel.readLong())
-        }
+        override fun createFromParcel(parcel: Parcel): Id = forLongValue(parcel.readLong())
 
-        override fun newArray(size: Int): Array<Id?> {
-          return arrayOfNulls(size)
-        }
+        override fun newArray(size: Int): Array<Id?> = arrayOfNulls(size)
       }
     }
   }

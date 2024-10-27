@@ -57,20 +57,16 @@ class PermissionsSettingsViewModel(
     }
   }
 
-  private fun Boolean.asGroupAccessControl(): GroupAccessControl {
-    return if (this) {
-      GroupAccessControl.ALL_MEMBERS
-    } else {
-      GroupAccessControl.ONLY_ADMINS
-    }
+  private fun Boolean.asGroupAccessControl(): GroupAccessControl = if (this) {
+    GroupAccessControl.ALL_MEMBERS
+  } else {
+    GroupAccessControl.ONLY_ADMINS
   }
 
   class Factory(
     private val groupId: GroupId,
     private val repository: PermissionsSettingsRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(PermissionsSettingsViewModel(groupId, repository)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(PermissionsSettingsViewModel(groupId, repository)))
   }
 }

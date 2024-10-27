@@ -45,28 +45,22 @@ data class NotificationConversation(
   val isGroup: Boolean = recipient.isGroup
   val isOnlyContactJoinedEvent: Boolean = messageCount == 1 && mostRecentNotification.isJoined
 
-  fun getContentTitle(context: Context): CharSequence {
-    return if (SignalStore.settings.messageNotificationsPrivacy.isDisplayContact) {
-      getDisplayName(context)
-    } else {
-      context.getString(R.string.SingleRecipientNotificationBuilder_signal)
-    }
+  fun getContentTitle(context: Context): CharSequence = if (SignalStore.settings.messageNotificationsPrivacy.isDisplayContact) {
+    getDisplayName(context)
+  } else {
+    context.getString(R.string.SingleRecipientNotificationBuilder_signal)
   }
 
-  fun getContactLargeIcon(context: Context): Drawable? {
-    return if (SignalStore.settings.messageNotificationsPrivacy.isDisplayContact) {
-      recipient.getContactDrawable(context)
-    } else {
-      FallbackAvatarDrawable(context, FallbackAvatar.forTextOrDefault("Unknown", AvatarColor.UNKNOWN)).circleCrop()
-    }
+  fun getContactLargeIcon(context: Context): Drawable? = if (SignalStore.settings.messageNotificationsPrivacy.isDisplayContact) {
+    recipient.getContactDrawable(context)
+  } else {
+    FallbackAvatarDrawable(context, FallbackAvatar.forTextOrDefault("Unknown", AvatarColor.UNKNOWN)).circleCrop()
   }
 
-  fun getSlideBigPictureUri(context: Context): Uri? {
-    return if (notificationItems.size == 1 && SignalStore.settings.messageNotificationsPrivacy.isDisplayMessage && !KeyCachingService.isLocked(context)) {
-      mostRecentNotification.getBigPictureUri()
-    } else {
-      null
-    }
+  fun getSlideBigPictureUri(context: Context): Uri? = if (notificationItems.size == 1 && SignalStore.settings.messageNotificationsPrivacy.isDisplayMessage && !KeyCachingService.isLocked(context)) {
+    mostRecentNotification.getBigPictureUri()
+  } else {
+    null
   }
 
   fun getContentText(context: Context): CharSequence? {
@@ -91,20 +85,14 @@ data class NotificationConversation(
     return context.getString(R.string.SingleRecipientNotificationBuilder_signal)
   }
 
-  fun getWhen(): Long {
-    return mostRecentNotification.timestamp
-  }
+  fun getWhen(): Long = mostRecentNotification.timestamp
 
-  fun hasNewNotifications(): Boolean {
-    return notificationItems.any { it.isNewNotification }
-  }
+  fun hasNewNotifications(): Boolean = notificationItems.any { it.isNewNotification }
 
-  fun getChannelId(): String {
-    return if (isOnlyContactJoinedEvent) {
-      NotificationChannels.getInstance().JOIN_EVENTS
-    } else {
-      recipient.notificationChannel ?: NotificationChannels.getInstance().messagesChannel
-    }
+  fun getChannelId(): String = if (isOnlyContactJoinedEvent) {
+    NotificationChannels.getInstance().JOIN_EVENTS
+  } else {
+    recipient.notificationChannel ?: NotificationChannels.getInstance().messagesChannel
   }
 
   fun hasSameContent(other: NotificationConversation?): Boolean {
@@ -195,24 +183,18 @@ data class NotificationConversation(
     return NotificationPendingIntentHelper.getBroadcast(context, (thread.threadId * 2).toInt() + 1, intent, PendingIntentFlags.updateCurrent())
   }
 
-  fun getTurnOffJoinedNotificationsIntent(context: Context): PendingIntent? {
-    return NotificationPendingIntentHelper.getActivity(
-      context,
-      0,
-      TurnOffContactJoinedNotificationsActivity.newIntent(context, thread.threadId),
-      PendingIntentFlags.updateCurrent()
-    )
+  fun getTurnOffJoinedNotificationsIntent(context: Context): PendingIntent? = NotificationPendingIntentHelper.getActivity(
+    context,
+    0,
+    TurnOffContactJoinedNotificationsActivity.newIntent(context, thread.threadId),
+    PendingIntentFlags.updateCurrent()
+  )
+
+  private fun getDisplayName(context: Context): String = if (thread.groupStoryId != null) {
+    context.getString(R.string.SingleRecipientNotificationBuilder__s_dot_story, recipient.getDisplayName(context))
+  } else {
+    recipient.getDisplayName(context)
   }
 
-  private fun getDisplayName(context: Context): String {
-    return if (thread.groupStoryId != null) {
-      context.getString(R.string.SingleRecipientNotificationBuilder__s_dot_story, recipient.getDisplayName(context))
-    } else {
-      recipient.getDisplayName(context)
-    }
-  }
-
-  override fun toString(): String {
-    return "NotificationConversation(thread=$thread, notificationItems=$notificationItems, messageCount=$messageCount, hasNewNotifications=${hasNewNotifications()})"
-  }
+  override fun toString(): String = "NotificationConversation(thread=$thread, notificationItems=$notificationItems, messageCount=$messageCount, hasNewNotifications=${hasNewNotifications()})"
 }

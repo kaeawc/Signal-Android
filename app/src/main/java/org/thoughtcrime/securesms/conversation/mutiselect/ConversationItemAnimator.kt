@@ -25,9 +25,7 @@ class ConversationItemAnimator(
     val startValue: Float,
     val endValue: Float
   ) {
-    fun lerp(progress: Float): Float {
-      return startValue + progress * (endValue - startValue)
-    }
+    fun lerp(progress: Float): Float = startValue + progress * (endValue - startValue)
   }
 
   private data class AnimationInfo(
@@ -95,18 +93,16 @@ class ConversationItemAnimator(
     return true
   }
 
-  override fun animatePersistence(viewHolder: RecyclerView.ViewHolder, preLayoutInfo: ItemHolderInfo, postLayoutInfo: ItemHolderInfo): Boolean {
-    return if (!isInMultiSelectMode() && shouldPlayMessageAnimations() && isParentFilled()) {
-      if (pendingSlideAnimations.contains(viewHolder) || slideAnimations.containsKey(viewHolder) || !shouldUseSlideAnimation(viewHolder)) {
-        dispatchAnimationFinished(viewHolder)
-        false
-      } else {
-        animateSlide(viewHolder, preLayoutInfo, postLayoutInfo)
-      }
-    } else {
+  override fun animatePersistence(viewHolder: RecyclerView.ViewHolder, preLayoutInfo: ItemHolderInfo, postLayoutInfo: ItemHolderInfo): Boolean = if (!isInMultiSelectMode() && shouldPlayMessageAnimations() && isParentFilled()) {
+    if (pendingSlideAnimations.contains(viewHolder) || slideAnimations.containsKey(viewHolder) || !shouldUseSlideAnimation(viewHolder)) {
       dispatchAnimationFinished(viewHolder)
       false
+    } else {
+      animateSlide(viewHolder, preLayoutInfo, postLayoutInfo)
     }
+  } else {
+    dispatchAnimationFinished(viewHolder)
+    false
   }
 
   override fun animateChange(oldHolder: RecyclerView.ViewHolder, newHolder: RecyclerView.ViewHolder, preLayoutInfo: ItemHolderInfo, postLayoutInfo: ItemHolderInfo): Boolean {
@@ -166,9 +162,7 @@ class ConversationItemAnimator(
     dispatchAnimationsFinished()
   }
 
-  override fun isRunning(): Boolean {
-    return slideAnimations.values.any { it.sharedAnimator.isRunning }
-  }
+  override fun isRunning(): Boolean = slideAnimations.values.any { it.sharedAnimator.isRunning }
 
   override fun onAnimationFinished(viewHolder: RecyclerView.ViewHolder) {
     val parent = (viewHolder.itemView.parent as? RecyclerView)

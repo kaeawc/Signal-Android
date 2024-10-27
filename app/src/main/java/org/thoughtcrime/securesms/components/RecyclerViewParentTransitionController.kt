@@ -22,7 +22,8 @@ import androidx.recyclerview.widget.RecyclerView
 class RecyclerViewParentTransitionController(
   private val child: ViewGroup,
   private val transition: LayoutTransition = LayoutTransition()
-) : RecyclerView.OnScrollListener(), OnAttachStateChangeListener {
+) : RecyclerView.OnScrollListener(),
+  OnAttachStateChangeListener {
 
   private var recyclerViewParent: RecyclerView? = null
 

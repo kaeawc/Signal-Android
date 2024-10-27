@@ -7,21 +7,14 @@ plugins {
   id("signal-sample-app")
 }
 
-val signalBuildToolsVersion: String by rootProject.extra
-val signalCompileSdkVersion: String by rootProject.extra
-val signalTargetSdkVersion: Int by rootProject.extra
-val signalMinSdkVersion: Int by rootProject.extra
-val signalJavaVersion: JavaVersion by rootProject.extra
-val signalKotlinJvmTarget: String by rootProject.extra
-
 android {
   namespace = "org.thoughtcrime.video.app"
-  compileSdkVersion = signalCompileSdkVersion
+  compileSdk = libs.versions.build.android.compileSdk.get().toInt()
 
   defaultConfig {
     applicationId = "org.thoughtcrime.video.app"
-    minSdk = 23
-    targetSdk = signalTargetSdkVersion
+    minSdk = libs.versions.build.android.minSdk.get().toInt()
+    targetSdk = libs.versions.build.android.targetSdk.get().toInt()
     versionCode = 1
     versionName = "1.0"
 
@@ -38,11 +31,11 @@ android {
     }
   }
   compileOptions {
-    sourceCompatibility = signalJavaVersion
-    targetCompatibility = signalJavaVersion
+    sourceCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
+    targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
   }
   kotlinOptions {
-    jvmTarget = signalKotlinJvmTarget
+//    jvmTarget = signalKotlinJvmTarget
   }
   packaging {
     resources {
@@ -54,16 +47,16 @@ android {
 dependencies {
   implementation(libs.androidx.fragment.ktx)
   implementation(libs.androidx.activity.compose)
-  implementation(platform(libs.androidx.compose.bom))
-  implementation(libs.androidx.compose.material3)
+  implementation(platform(libs.compose.bom))
+  implementation(libs.compose.material)
   implementation(libs.bundles.media3)
   implementation(project(":video"))
   implementation(project(":core-util"))
   implementation("androidx.work:work-runtime-ktx:2.9.1")
   implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
-  implementation(libs.androidx.compose.ui.tooling.core)
-  implementation(libs.androidx.compose.ui.test.manifest)
-  androidTestImplementation(testLibs.junit.junit)
-  androidTestImplementation(testLibs.androidx.test.runner)
-  androidTestImplementation(testLibs.androidx.test.ext.junit.ktx)
+  implementation(libs.compose.ui.tooling)
+  implementation(libs.compose.ui.test.manifest)
+  androidTestImplementation(libs.junit)
+  androidTestImplementation(libs.androidx.test.runner)
+  androidTestImplementation(libs.androidx.junit.ktx)
 }

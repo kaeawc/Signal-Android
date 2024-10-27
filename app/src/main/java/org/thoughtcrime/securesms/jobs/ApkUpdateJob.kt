@@ -103,9 +103,7 @@ class ApkUpdateJob private constructor(parameters: Parameters) : BaseJob(paramet
     SignalStore.apkUpdate.lastSuccessfulCheck = System.currentTimeMillis()
   }
 
-  public override fun onShouldRetry(e: Exception): Boolean {
-    return e is IOException
-  }
+  public override fun onShouldRetry(e: Exception): Boolean = e is IOException
 
   override fun onFailure() {
     Log.w(TAG, "Update check failed")
@@ -179,15 +177,13 @@ class ApkUpdateJob private constructor(parameters: Parameters) : BaseJob(paramet
     ApkUpdateDownloadManagerReceiver().onReceive(context, intent)
   }
 
-  private fun getDigestForDownloadId(downloadId: Long): ByteArray? {
-    return try {
-      FileInputStream(context.getDownloadManager().openDownloadedFile(downloadId).fileDescriptor).use { stream ->
-        FileUtils.getFileDigest(stream)
-      }
-    } catch (e: IOException) {
-      Log.w(TAG, "Failed to get digest for downloadId! $downloadId", e)
-      null
+  private fun getDigestForDownloadId(downloadId: Long): ByteArray? = try {
+    FileInputStream(context.getDownloadManager().openDownloadedFile(downloadId).fileDescriptor).use { stream ->
+      FileUtils.getFileDigest(stream)
     }
+  } catch (e: IOException) {
+    Log.w(TAG, "Failed to get digest for downloadId! $downloadId", e)
+    null
   }
 
   private fun deleteExistingDownloadedApks(context: Context) {
@@ -240,8 +236,6 @@ class ApkUpdateJob private constructor(parameters: Parameters) : BaseJob(paramet
   }
 
   class Factory : Job.Factory<ApkUpdateJob?> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): ApkUpdateJob {
-      return ApkUpdateJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): ApkUpdateJob = ApkUpdateJob(parameters)
   }
 }

@@ -33,97 +33,61 @@ class BufferedSignalServiceAccountDataStore(selfServiceId: ServiceId) : SignalSe
   private val sessionStore: BufferedSessionStore = BufferedSessionStore(selfServiceId)
   private val senderKeyStore: BufferedSenderKeyStore = BufferedSenderKeyStore()
 
-  override fun getIdentityKeyPair(): IdentityKeyPair {
-    return identityStore.identityKeyPair
-  }
+  override fun getIdentityKeyPair(): IdentityKeyPair = identityStore.identityKeyPair
 
-  override fun getLocalRegistrationId(): Int {
-    return identityStore.localRegistrationId
-  }
+  override fun getLocalRegistrationId(): Int = identityStore.localRegistrationId
 
-  override fun saveIdentity(address: SignalProtocolAddress, identityKey: IdentityKey): Boolean {
-    return identityStore.saveIdentity(address, identityKey)
-  }
+  override fun saveIdentity(address: SignalProtocolAddress, identityKey: IdentityKey): Boolean = identityStore.saveIdentity(address, identityKey)
 
-  override fun isTrustedIdentity(address: SignalProtocolAddress, identityKey: IdentityKey, direction: IdentityKeyStore.Direction): Boolean {
-    return identityStore.isTrustedIdentity(address, identityKey, direction)
-  }
+  override fun isTrustedIdentity(address: SignalProtocolAddress, identityKey: IdentityKey, direction: IdentityKeyStore.Direction): Boolean = identityStore.isTrustedIdentity(address, identityKey, direction)
 
-  override fun getIdentity(address: SignalProtocolAddress): IdentityKey? {
-    return identityStore.getIdentity(address)
-  }
+  override fun getIdentity(address: SignalProtocolAddress): IdentityKey? = identityStore.getIdentity(address)
 
-  override fun loadPreKey(preKeyId: Int): PreKeyRecord {
-    return oneTimePreKeyStore.loadPreKey(preKeyId)
-  }
+  override fun loadPreKey(preKeyId: Int): PreKeyRecord = oneTimePreKeyStore.loadPreKey(preKeyId)
 
-  override fun storePreKey(preKeyId: Int, record: PreKeyRecord) {
-    return oneTimePreKeyStore.storePreKey(preKeyId, record)
-  }
+  override fun storePreKey(preKeyId: Int, record: PreKeyRecord) = oneTimePreKeyStore.storePreKey(preKeyId, record)
 
-  override fun containsPreKey(preKeyId: Int): Boolean {
-    return oneTimePreKeyStore.containsPreKey(preKeyId)
-  }
+  override fun containsPreKey(preKeyId: Int): Boolean = oneTimePreKeyStore.containsPreKey(preKeyId)
 
   override fun removePreKey(preKeyId: Int) {
     oneTimePreKeyStore.removePreKey(preKeyId)
   }
 
-  override fun loadSession(address: SignalProtocolAddress): SessionRecord {
-    return sessionStore.loadSession(address)
-  }
+  override fun loadSession(address: SignalProtocolAddress): SessionRecord = sessionStore.loadSession(address)
 
-  override fun loadExistingSessions(addresses: MutableList<SignalProtocolAddress>): List<SessionRecord> {
-    return sessionStore.loadExistingSessions(addresses)
-  }
+  override fun loadExistingSessions(addresses: MutableList<SignalProtocolAddress>): List<SessionRecord> = sessionStore.loadExistingSessions(addresses)
 
-  override fun getSubDeviceSessions(name: String): MutableList<Int> {
-    return sessionStore.getSubDeviceSessions(name)
-  }
+  override fun getSubDeviceSessions(name: String): MutableList<Int> = sessionStore.getSubDeviceSessions(name)
 
   override fun storeSession(address: SignalProtocolAddress, record: SessionRecord) {
     sessionStore.storeSession(address, record)
   }
 
-  override fun containsSession(address: SignalProtocolAddress): Boolean {
-    return sessionStore.containsSession(address)
-  }
+  override fun containsSession(address: SignalProtocolAddress): Boolean = sessionStore.containsSession(address)
 
-  override fun deleteSession(address: SignalProtocolAddress) {
-    return sessionStore.deleteSession(address)
-  }
+  override fun deleteSession(address: SignalProtocolAddress) = sessionStore.deleteSession(address)
 
   override fun deleteAllSessions(name: String) {
     sessionStore.deleteAllSessions(name)
   }
 
-  override fun loadSignedPreKey(signedPreKeyId: Int): SignedPreKeyRecord {
-    return signedPreKeyStore.loadSignedPreKey(signedPreKeyId)
-  }
+  override fun loadSignedPreKey(signedPreKeyId: Int): SignedPreKeyRecord = signedPreKeyStore.loadSignedPreKey(signedPreKeyId)
 
-  override fun loadSignedPreKeys(): List<SignedPreKeyRecord> {
-    return signedPreKeyStore.loadSignedPreKeys()
-  }
+  override fun loadSignedPreKeys(): List<SignedPreKeyRecord> = signedPreKeyStore.loadSignedPreKeys()
 
   override fun storeSignedPreKey(signedPreKeyId: Int, record: SignedPreKeyRecord) {
     signedPreKeyStore.storeSignedPreKey(signedPreKeyId, record)
   }
 
-  override fun containsSignedPreKey(signedPreKeyId: Int): Boolean {
-    return signedPreKeyStore.containsSignedPreKey(signedPreKeyId)
-  }
+  override fun containsSignedPreKey(signedPreKeyId: Int): Boolean = signedPreKeyStore.containsSignedPreKey(signedPreKeyId)
 
   override fun removeSignedPreKey(signedPreKeyId: Int) {
     signedPreKeyStore.removeSignedPreKey(signedPreKeyId)
   }
 
-  override fun loadKyberPreKey(kyberPreKeyId: Int): KyberPreKeyRecord {
-    return kyberPreKeyStore.loadKyberPreKey(kyberPreKeyId)
-  }
+  override fun loadKyberPreKey(kyberPreKeyId: Int): KyberPreKeyRecord = kyberPreKeyStore.loadKyberPreKey(kyberPreKeyId)
 
-  override fun loadKyberPreKeys(): List<KyberPreKeyRecord> {
-    return kyberPreKeyStore.loadKyberPreKeys()
-  }
+  override fun loadKyberPreKeys(): List<KyberPreKeyRecord> = kyberPreKeyStore.loadKyberPreKeys()
 
   override fun storeKyberPreKey(kyberPreKeyId: Int, record: KyberPreKeyRecord) {
     kyberPreKeyStore.storeKyberPreKey(kyberPreKeyId, record)
@@ -133,13 +97,9 @@ class BufferedSignalServiceAccountDataStore(selfServiceId: ServiceId) : SignalSe
     kyberPreKeyStore.storeKyberPreKey(kyberPreKeyId, kyberPreKeyRecord)
   }
 
-  override fun containsKyberPreKey(kyberPreKeyId: Int): Boolean {
-    return kyberPreKeyStore.containsKyberPreKey(kyberPreKeyId)
-  }
+  override fun containsKyberPreKey(kyberPreKeyId: Int): Boolean = kyberPreKeyStore.containsKyberPreKey(kyberPreKeyId)
 
-  override fun markKyberPreKeyUsed(kyberPreKeyId: Int) {
-    return kyberPreKeyStore.markKyberPreKeyUsed(kyberPreKeyId)
-  }
+  override fun markKyberPreKeyUsed(kyberPreKeyId: Int) = kyberPreKeyStore.markKyberPreKeyUsed(kyberPreKeyId)
 
   override fun deleteAllStaleOneTimeEcPreKeys(threshold: Long, minCount: Int) {
     error("Should not happen during the intended usage pattern of this class")
@@ -161,29 +121,21 @@ class BufferedSignalServiceAccountDataStore(selfServiceId: ServiceId) : SignalSe
     kyberPreKeyStore.deleteAllStaleOneTimeKyberPreKeys(threshold, minCount)
   }
 
-  override fun loadLastResortKyberPreKeys(): List<KyberPreKeyRecord> {
-    return kyberPreKeyStore.loadLastResortKyberPreKeys()
-  }
+  override fun loadLastResortKyberPreKeys(): List<KyberPreKeyRecord> = kyberPreKeyStore.loadLastResortKyberPreKeys()
 
   override fun storeSenderKey(sender: SignalProtocolAddress, distributionId: UUID, record: SenderKeyRecord) {
     senderKeyStore.storeSenderKey(sender, distributionId, record)
   }
 
-  override fun loadSenderKey(sender: SignalProtocolAddress, distributionId: UUID): SenderKeyRecord? {
-    return senderKeyStore.loadSenderKey(sender, distributionId)
-  }
+  override fun loadSenderKey(sender: SignalProtocolAddress, distributionId: UUID): SenderKeyRecord? = senderKeyStore.loadSenderKey(sender, distributionId)
 
   override fun archiveSession(address: SignalProtocolAddress?) {
     sessionStore.archiveSession(address)
   }
 
-  override fun getAllAddressesWithActiveSessions(addressNames: MutableList<String>): Map<SignalProtocolAddress, SessionRecord> {
-    return sessionStore.getAllAddressesWithActiveSessions(addressNames)
-  }
+  override fun getAllAddressesWithActiveSessions(addressNames: MutableList<String>): Map<SignalProtocolAddress, SessionRecord> = sessionStore.getAllAddressesWithActiveSessions(addressNames)
 
-  override fun getSenderKeySharedWith(distributionId: DistributionId?): MutableSet<SignalProtocolAddress> {
-    return senderKeyStore.getSenderKeySharedWith(distributionId)
-  }
+  override fun getSenderKeySharedWith(distributionId: DistributionId?): MutableSet<SignalProtocolAddress> = senderKeyStore.getSenderKeySharedWith(distributionId)
 
   override fun markSenderKeySharedWith(distributionId: DistributionId, addresses: MutableCollection<SignalProtocolAddress>) {
     senderKeyStore.markSenderKeySharedWith(distributionId, addresses)

@@ -89,14 +89,12 @@ class StoryGroupReplyFragment :
     private const val ARG_IS_FROM_NOTIFICATION = "is_from_notification"
     private const val ARG_GROUP_REPLY_START_POSITION = "group_reply_start_position"
 
-    fun create(storyId: Long, groupRecipientId: RecipientId, isFromNotification: Boolean, groupReplyStartPosition: Int): Fragment {
-      return StoryGroupReplyFragment().apply {
-        arguments = Bundle().apply {
-          putLong(ARG_STORY_ID, storyId)
-          putParcelable(ARG_GROUP_RECIPIENT_ID, groupRecipientId)
-          putBoolean(ARG_IS_FROM_NOTIFICATION, isFromNotification)
-          putInt(ARG_GROUP_REPLY_START_POSITION, groupReplyStartPosition)
-        }
+    fun create(storyId: Long, groupRecipientId: RecipientId, isFromNotification: Boolean, groupReplyStartPosition: Int): Fragment = StoryGroupReplyFragment().apply {
+      arguments = Bundle().apply {
+        putLong(ARG_STORY_ID, storyId)
+        putParcelable(ARG_GROUP_RECIPIENT_ID, groupRecipientId)
+        putBoolean(ARG_IS_FROM_NOTIFICATION, isFromNotification)
+        putInt(ARG_GROUP_REPLY_START_POSITION, groupReplyStartPosition)
       }
     }
   }
@@ -265,46 +263,44 @@ class StoryGroupReplyFragment :
     markReadHelper?.onViewsRevealed(adapterItem.replyBody.sentAtMillis)
   }
 
-  private fun getConfiguration(pageData: List<ReplyBody>): DSLConfiguration {
-    return configure {
-      pageData.forEach {
-        when (it) {
-          is ReplyBody.Text -> {
-            customPref(
-              StoryGroupReplyItem.TextModel(
-                text = it,
-                nameColor = it.sender.getStoryGroupReplyColor(),
-                onCopyClick = { s -> onCopyClick(s) },
-                onMentionClick = { recipientId ->
-                  RecipientBottomSheetDialogFragment
-                    .show(childFragmentManager, recipientId, null)
-                },
-                onDeleteClick = { m -> onDeleteClick(m) },
-                onTapForDetailsClick = { m -> onTapForDetailsClick(m) }
-              )
+  private fun getConfiguration(pageData: List<ReplyBody>): DSLConfiguration = configure {
+    pageData.forEach {
+      when (it) {
+        is ReplyBody.Text -> {
+          customPref(
+            StoryGroupReplyItem.TextModel(
+              text = it,
+              nameColor = it.sender.getStoryGroupReplyColor(),
+              onCopyClick = { s -> onCopyClick(s) },
+              onMentionClick = { recipientId ->
+                RecipientBottomSheetDialogFragment
+                  .show(childFragmentManager, recipientId, null)
+              },
+              onDeleteClick = { m -> onDeleteClick(m) },
+              onTapForDetailsClick = { m -> onTapForDetailsClick(m) }
             )
-          }
-          is ReplyBody.Reaction -> {
-            customPref(
-              StoryGroupReplyItem.ReactionModel(
-                reaction = it,
-                nameColor = it.sender.getStoryGroupReplyColor(),
-                onCopyClick = { s -> onCopyClick(s) },
-                onDeleteClick = { m -> onDeleteClick(m) },
-                onTapForDetailsClick = { m -> onTapForDetailsClick(m) }
-              )
+          )
+        }
+        is ReplyBody.Reaction -> {
+          customPref(
+            StoryGroupReplyItem.ReactionModel(
+              reaction = it,
+              nameColor = it.sender.getStoryGroupReplyColor(),
+              onCopyClick = { s -> onCopyClick(s) },
+              onDeleteClick = { m -> onDeleteClick(m) },
+              onTapForDetailsClick = { m -> onTapForDetailsClick(m) }
             )
-          }
-          is ReplyBody.RemoteDelete -> {
-            customPref(
-              StoryGroupReplyItem.RemoteDeleteModel(
-                remoteDelete = it,
-                nameColor = it.sender.getStoryGroupReplyColor(),
-                onDeleteClick = { m -> onDeleteClick(m) },
-                onTapForDetailsClick = { m -> onTapForDetailsClick(m) }
-              )
+          )
+        }
+        is ReplyBody.RemoteDelete -> {
+          customPref(
+            StoryGroupReplyItem.RemoteDeleteModel(
+              remoteDelete = it,
+              nameColor = it.sender.getStoryGroupReplyColor(),
+              onDeleteClick = { m -> onDeleteClick(m) },
+              onTapForDetailsClick = { m -> onTapForDetailsClick(m) }
             )
-          }
+          )
         }
       }
     }
@@ -575,9 +571,7 @@ class StoryGroupReplyFragment :
   }
 
   @ColorInt
-  private fun Recipient.getStoryGroupReplyColor(): Int {
-    return colorizer.getIncomingGroupSenderColor(requireContext(), this)
-  }
+  private fun Recipient.getStoryGroupReplyColor(): Int = colorizer.getIncomingGroupSenderColor(requireContext(), this)
 
   private inner class GroupReplyScrollObserver : RecyclerView.OnScrollListener() {
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

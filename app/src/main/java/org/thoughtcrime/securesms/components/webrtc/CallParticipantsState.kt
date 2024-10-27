@@ -185,12 +185,10 @@ data class CallParticipantsState(
     return null
   }
 
-  fun needsNewRequestSizes(): Boolean {
-    return if (groupCallState.isNotIdle) {
-      allRemoteParticipants.any { it.videoSink.needsNewRequestingSize() }
-    } else {
-      false
-    }
+  fun needsNewRequestSizes(): Boolean = if (groupCallState.isNotIdle) {
+    allRemoteParticipants.any { it.videoSink.needsNewRequestingSize() }
+  } else {
+    false
   }
 
   companion object {
@@ -280,19 +278,15 @@ data class CallParticipantsState(
     }
 
     @JvmStatic
-    fun update(oldState: CallParticipantsState, groupMembers: List<GroupMemberEntry.FullMember>): CallParticipantsState {
-      return oldState.copy(groupMembers = groupMembers)
-    }
+    fun update(oldState: CallParticipantsState, groupMembers: List<GroupMemberEntry.FullMember>): CallParticipantsState = oldState.copy(groupMembers = groupMembers)
 
     @JvmStatic
-    fun update(oldState: CallParticipantsState, ephemeralState: WebRtcEphemeralState): CallParticipantsState {
-      return oldState.copy(
-        remoteParticipants = oldState.remoteParticipants.map { p -> p.copy(audioLevel = ephemeralState.remoteAudioLevels[p.callParticipantId]) },
-        localParticipant = oldState.localParticipant.copy(audioLevel = ephemeralState.localAudioLevel),
-        focusedParticipant = oldState.focusedParticipant.copy(audioLevel = ephemeralState.remoteAudioLevels[oldState.focusedParticipant.callParticipantId]),
-        reactions = ephemeralState.getUnexpiredReactions()
-      )
-    }
+    fun update(oldState: CallParticipantsState, ephemeralState: WebRtcEphemeralState): CallParticipantsState = oldState.copy(
+      remoteParticipants = oldState.remoteParticipants.map { p -> p.copy(audioLevel = ephemeralState.remoteAudioLevels[p.callParticipantId]) },
+      localParticipant = oldState.localParticipant.copy(audioLevel = ephemeralState.localAudioLevel),
+      focusedParticipant = oldState.focusedParticipant.copy(audioLevel = ephemeralState.remoteAudioLevels[oldState.focusedParticipant.callParticipantId]),
+      reactions = ephemeralState.getUnexpiredReactions()
+    )
 
     private fun determineLocalRenderMode(
       oldState: CallParticipantsState,

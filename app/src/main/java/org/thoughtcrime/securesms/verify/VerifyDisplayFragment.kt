@@ -47,7 +47,9 @@ import kotlin.math.max
 /**
  * Fragment to display a user's identity key.
  */
-class VerifyDisplayFragment : Fragment(), OnScrollChangedListener {
+class VerifyDisplayFragment :
+  Fragment(),
+  OnScrollChangedListener {
   private lateinit var viewModel: VerifySafetyNumberViewModel
 
   private val binding by ViewBinderDelegate(VerifyDisplayFragmentBinding::bind)
@@ -75,9 +77,7 @@ class VerifyDisplayFragment : Fragment(), OnScrollChangedListener {
     }
   }
 
-  override fun onCreateView(inflater: LayoutInflater, viewGroup: ViewGroup?, bundle: Bundle?): View? {
-    return ViewUtil.inflate(inflater, viewGroup!!, R.layout.verify_display_fragment)
-  }
+  override fun onCreateView(inflater: LayoutInflater, viewGroup: ViewGroup?, bundle: Bundle?): View? = ViewUtil.inflate(inflater, viewGroup!!, R.layout.verify_display_fragment)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     initializeViewModel()
@@ -375,9 +375,7 @@ class VerifyDisplayFragment : Fragment(), OnScrollChangedListener {
       setHasStableIds(true)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SafetyNumberQrViewHolder {
-      return SafetyNumberQrViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.safety_number_qr_page_fragment, parent, false))
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SafetyNumberQrViewHolder = SafetyNumberQrViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.safety_number_qr_page_fragment, parent, false))
 
     override fun onBindViewHolder(holder: SafetyNumberQrViewHolder, position: Int) {
       val (version, _, _, _, _, fingerprint1) = fingerprints!![position]
@@ -402,13 +400,9 @@ class VerifyDisplayFragment : Fragment(), OnScrollChangedListener {
       }
     }
 
-    override fun getItemId(position: Int): Long {
-      return fingerprints!![position].version.toLong()
-    }
+    override fun getItemId(position: Int): Long = fingerprints!![position].version.toLong()
 
-    override fun getItemCount(): Int {
-      return if (fingerprints != null) fingerprints!!.size else 0
-    }
+    override fun getItemCount(): Int = if (fingerprints != null) fingerprints!!.size else 0
   }
 
   companion object {

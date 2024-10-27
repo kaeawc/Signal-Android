@@ -35,24 +35,18 @@ class StoriesLandingViewModel(private val storiesLandingRepository: StoriesLandi
     disposables.clear()
   }
 
-  fun resend(story: MessageRecord): Completable {
-    return storiesLandingRepository.resend(story)
-  }
+  fun resend(story: MessageRecord): Completable = storiesLandingRepository.resend(story)
 
-  fun setHideStory(sender: Recipient, hide: Boolean): Completable {
-    return storiesLandingRepository.setHideStory(sender.id, hide)
-  }
+  fun setHideStory(sender: Recipient, hide: Boolean): Completable = storiesLandingRepository.setHideStory(sender.id, hide)
 
   fun setHiddenContentVisible(isExpanded: Boolean) {
     store.update { it.copy(isHiddenContentVisible = isExpanded) }
   }
 
-  fun getRecipientIds(hidden: Boolean, isUnviewed: Boolean): List<RecipientId> {
-    return store.state.storiesLandingItems
-      .filter { it.isHidden == hidden }
-      .filter { if (isUnviewed) it.storyViewState == StoryViewState.UNVIEWED else true }
-      .map { it.storyRecipient.id }
-  }
+  fun getRecipientIds(hidden: Boolean, isUnviewed: Boolean): List<RecipientId> = store.state.storiesLandingItems
+    .filter { it.isHidden == hidden }
+    .filter { if (isUnviewed) it.storyViewState == StoryViewState.UNVIEWED else true }
+    .map { it.storyRecipient.id }
 
   fun setSearchQuery(query: String) {
     store.update { it.copy(searchQuery = query) }
@@ -64,8 +58,6 @@ class StoriesLandingViewModel(private val storiesLandingRepository: StoriesLandi
   }
 
   class Factory(private val storiesLandingRepository: StoriesLandingRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(StoriesLandingViewModel(storiesLandingRepository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(StoriesLandingViewModel(storiesLandingRepository)) as T
   }
 }

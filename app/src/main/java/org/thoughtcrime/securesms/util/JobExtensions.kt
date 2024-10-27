@@ -10,6 +10,4 @@ import org.thoughtcrime.securesms.jobmanager.Job
 import org.thoughtcrime.securesms.jobmanager.JobManager
 
 /** Starts a new chain with this job. */
-fun Job.asChain(): JobManager.Chain {
-  return AppDependencies.jobManager.startChain(this)
-}
+fun Job.asChain(): JobManager.Chain = AppDependencies.jobManager.startChain(this)

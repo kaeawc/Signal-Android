@@ -26,18 +26,17 @@ import java.util.concurrent.TimeUnit
 class LocalMetricsDatabase private constructor(
   application: Application,
   databaseSecret: DatabaseSecret
-) :
-  SQLiteOpenHelper(
-    application,
-    DATABASE_NAME,
-    databaseSecret.asString(),
-    null,
-    DATABASE_VERSION,
-    0,
-    SqlCipherDeletingErrorHandler(DATABASE_NAME),
-    SqlCipherDatabaseHook(),
-    true
-  ),
+) : SQLiteOpenHelper(
+  application,
+  DATABASE_NAME,
+  databaseSecret.asString(),
+  null,
+  DATABASE_VERSION,
+  0,
+  SqlCipherDeletingErrorHandler(DATABASE_NAME),
+  SqlCipherDatabaseHook(),
+  true
+),
   SignalDatabaseOpenHelper {
 
   companion object {
@@ -118,9 +117,7 @@ class LocalMetricsDatabase private constructor(
     db.setForeignKeyConstraintsEnabled(true)
   }
 
-  override fun getSqlCipherDatabase(): SQLiteDatabase {
-    return writableDatabase
-  }
+  override fun getSqlCipherDatabase(): SQLiteDatabase = writableDatabase
 
   fun insert(currentTime: Long, event: LocalMetricsEvent) {
     val db = writableDatabase
@@ -223,13 +220,9 @@ class LocalMetricsDatabase private constructor(
     }
   }
 
-  fun eventPercent(eventName: String, percent: Int): Long {
-    return percentile(EventTotals.VIEW_NAME, "$EVENT_NAME = '$eventName'", percent)
-  }
+  fun eventPercent(eventName: String, percent: Int): Long = percentile(EventTotals.VIEW_NAME, "$EVENT_NAME = '$eventName'", percent)
 
-  private fun splitPercent(eventName: String, splitName: String, percent: Int): Long {
-    return percentile(TABLE_NAME, "$EVENT_NAME = '$eventName' AND $SPLIT_NAME = '$splitName'", percent)
-  }
+  private fun splitPercent(eventName: String, splitName: String, percent: Int): Long = percentile(TABLE_NAME, "$EVENT_NAME = '$eventName' AND $SPLIT_NAME = '$splitName'", percent)
 
   private fun percentile(table: String, where: String, percent: Int): Long {
     val query: String = """

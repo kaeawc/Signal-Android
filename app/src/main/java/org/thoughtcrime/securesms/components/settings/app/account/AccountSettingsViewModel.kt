@@ -16,13 +16,11 @@ class AccountSettingsViewModel : ViewModel() {
     store.update { getCurrentState() }
   }
 
-  private fun getCurrentState(): AccountSettingsState {
-    return AccountSettingsState(
-      hasPin = SignalStore.svr.hasPin() && !SignalStore.svr.hasOptedOut(),
-      pinRemindersEnabled = SignalStore.pin.arePinRemindersEnabled(),
-      registrationLockEnabled = SignalStore.svr.isRegistrationLockEnabled,
-      userUnregistered = TextSecurePreferences.isUnauthorizedReceived(AppDependencies.application),
-      clientDeprecated = SignalStore.misc.isClientDeprecated
-    )
-  }
+  private fun getCurrentState(): AccountSettingsState = AccountSettingsState(
+    hasPin = SignalStore.svr.hasPin() && !SignalStore.svr.hasOptedOut(),
+    pinRemindersEnabled = SignalStore.pin.arePinRemindersEnabled(),
+    registrationLockEnabled = SignalStore.svr.isRegistrationLockEnabled,
+    userUnregistered = TextSecurePreferences.isUnauthorizedReceived(AppDependencies.application),
+    clientDeprecated = SignalStore.misc.isClientDeprecated
+  )
 }

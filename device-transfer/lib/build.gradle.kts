@@ -11,10 +11,10 @@ dependencies {
   implementation(libs.libsignal.android)
   api(libs.greenrobot.eventbus)
 
-  testImplementation(testLibs.robolectric.robolectric) {
+  testImplementation(libs.robolectric) {
     exclude(group = "com.google.protobuf", module = "protobuf-java")
   }
-  testImplementation(testLibs.hamcrest.hamcrest)
+  testImplementation(libs.hamcrest.hamcrest)
 
   testImplementation(testFixtures(project(":libsignal-service")))
 }

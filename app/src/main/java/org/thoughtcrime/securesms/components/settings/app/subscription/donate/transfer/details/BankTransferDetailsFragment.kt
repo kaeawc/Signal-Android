@@ -74,7 +74,9 @@ import org.thoughtcrime.securesms.util.navigation.safeNavigate
 /**
  * Collects SEPA Debit bank transfer details from the user to proceed with donation.
  */
-class BankTransferDetailsFragment : ComposeFragment(), InAppPaymentCheckoutDelegate.ErrorHandlerCallback {
+class BankTransferDetailsFragment :
+  ComposeFragment(),
+  InAppPaymentCheckoutDelegate.ErrorHandlerCallback {
 
   private val args: BankTransferDetailsFragmentArgs by navArgs()
   private val viewModel: BankTransferDetailsViewModel by viewModels()

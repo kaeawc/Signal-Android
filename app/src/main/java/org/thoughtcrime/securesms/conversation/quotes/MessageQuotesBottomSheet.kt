@@ -141,13 +141,9 @@ class MessageQuotesBottomSheet : FixedRoundedCornerBottomSheetDialogFragment() {
     return callback
   }
 
-  private fun getCallback(): ConversationBottomSheetCallback {
-    return findListener<ConversationBottomSheetCallback>() ?: throw IllegalStateException("Parent must implement callback interface!")
-  }
+  private fun getCallback(): ConversationBottomSheetCallback = findListener<ConversationBottomSheetCallback>() ?: throw IllegalStateException("Parent must implement callback interface!")
 
-  private fun getAdapterListener(): ConversationAdapter.ItemClickListener {
-    return getCallback().getConversationAdapterListener()
-  }
+  private fun getAdapterListener(): ConversationAdapter.ItemClickListener = getCallback().getConversationAdapterListener()
 
   private inner class ConversationAdapterListener : ConversationAdapter.ItemClickListener by getAdapterListener() {
     override fun onItemClick(item: MultiselectPart) {

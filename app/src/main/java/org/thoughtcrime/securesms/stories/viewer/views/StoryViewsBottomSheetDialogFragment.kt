@@ -30,9 +30,7 @@ class StoryViewsBottomSheetDialogFragment : FixedRoundedCornerBottomSheetDialogF
     ownerProducer = { requireParentFragment() }
   )
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.bottom_sheet_container, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.bottom_sheet_container, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     view.updateLayoutParams {
@@ -54,11 +52,9 @@ class StoryViewsBottomSheetDialogFragment : FixedRoundedCornerBottomSheetDialogF
   companion object {
     private const val ARG_STORY_ID = "arg.story.id"
 
-    fun create(storyId: Long): DialogFragment {
-      return StoryViewsBottomSheetDialogFragment().apply {
-        arguments = Bundle().apply {
-          putLong(ARG_STORY_ID, storyId)
-        }
+    fun create(storyId: Long): DialogFragment = StoryViewsBottomSheetDialogFragment().apply {
+      arguments = Bundle().apply {
+        putLong(ARG_STORY_ID, storyId)
       }
     }
   }

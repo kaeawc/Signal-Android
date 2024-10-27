@@ -230,12 +230,10 @@ class MediaSelectionActivity :
     }
   }
 
-  private fun canDisplayStorySwitch(): Boolean {
-    return Stories.isFeatureEnabled() &&
-      isCameraFirst() &&
-      !viewModel.hasSelectedMedia() &&
-      (destination == MediaSelectionDestination.ChooseAfterMediaSelection || destination is MediaSelectionDestination.SingleStory)
-  }
+  private fun canDisplayStorySwitch(): Boolean = Stories.isFeatureEnabled() &&
+    isCameraFirst() &&
+    !viewModel.hasSelectedMedia() &&
+    (destination == MediaSelectionDestination.ChooseAfterMediaSelection || destination is MediaSelectionDestination.SingleStory)
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
@@ -364,31 +362,25 @@ class MediaSelectionActivity :
     private const val IS_ADD_TO_GROUP_STORY_FLOW = "is_add_to_group_story_flow"
 
     @JvmStatic
-    fun camera(context: Context): Intent {
-      return camera(context, false)
-    }
+    fun camera(context: Context): Intent = camera(context, false)
 
     @JvmStatic
-    fun camera(context: Context, isStory: Boolean): Intent {
-      return buildIntent(
-        context = context,
-        startAction = R.id.action_directly_to_mediaCaptureFragment,
-        isStory = isStory
-      )
-    }
+    fun camera(context: Context, isStory: Boolean): Intent = buildIntent(
+      context = context,
+      startAction = R.id.action_directly_to_mediaCaptureFragment,
+      isStory = isStory
+    )
 
     fun addToGroupStory(
       context: Context,
       recipientId: RecipientId
-    ): Intent {
-      return buildIntent(
-        context = context,
-        startAction = R.id.action_directly_to_mediaCaptureFragment,
-        isStory = true,
-        isAddToGroupStoryFlow = true,
-        destination = MediaSelectionDestination.SingleStory(recipientId)
-      )
-    }
+    ): Intent = buildIntent(
+      context = context,
+      startAction = R.id.action_directly_to_mediaCaptureFragment,
+      isStory = true,
+      isAddToGroupStoryFlow = true,
+      destination = MediaSelectionDestination.SingleStory(recipientId)
+    )
 
     @JvmStatic
     fun camera(
@@ -396,15 +388,13 @@ class MediaSelectionActivity :
       messageSendType: MessageSendType,
       recipientId: RecipientId,
       isReply: Boolean
-    ): Intent {
-      return buildIntent(
-        context = context,
-        startAction = R.id.action_directly_to_mediaCaptureFragment,
-        messageSendType = messageSendType,
-        destination = MediaSelectionDestination.SingleRecipient(recipientId),
-        isReply = isReply
-      )
-    }
+    ): Intent = buildIntent(
+      context = context,
+      startAction = R.id.action_directly_to_mediaCaptureFragment,
+      messageSendType = messageSendType,
+      destination = MediaSelectionDestination.SingleRecipient(recipientId),
+      isReply = isReply
+    )
 
     @JvmStatic
     fun gallery(
@@ -414,17 +404,15 @@ class MediaSelectionActivity :
       recipientId: RecipientId,
       message: CharSequence?,
       isReply: Boolean
-    ): Intent {
-      return buildIntent(
-        context = context,
-        startAction = R.id.action_directly_to_mediaGalleryFragment,
-        messageSendType = messageSendType,
-        media = media,
-        destination = MediaSelectionDestination.SingleRecipient(recipientId),
-        message = message,
-        isReply = isReply
-      )
-    }
+    ): Intent = buildIntent(
+      context = context,
+      startAction = R.id.action_directly_to_mediaGalleryFragment,
+      messageSendType = messageSendType,
+      media = media,
+      destination = MediaSelectionDestination.SingleRecipient(recipientId),
+      message = message,
+      isReply = isReply
+    )
 
     @JvmStatic
     fun editor(
@@ -433,26 +421,22 @@ class MediaSelectionActivity :
       media: List<Media>,
       recipientId: RecipientId,
       message: CharSequence?
-    ): Intent {
-      return buildIntent(
-        context = context,
-        messageSendType = messageSendType,
-        media = media,
-        destination = MediaSelectionDestination.SingleRecipient(recipientId),
-        message = message
-      )
-    }
+    ): Intent = buildIntent(
+      context = context,
+      messageSendType = messageSendType,
+      media = media,
+      destination = MediaSelectionDestination.SingleRecipient(recipientId),
+      message = message
+    )
 
     @JvmStatic
     fun editor(
       context: Context,
       media: List<Media>
-    ): Intent {
-      return buildIntent(
-        context = context,
-        media = media
-      )
-    }
+    ): Intent = buildIntent(
+      context = context,
+      media = media
+    )
 
     @JvmStatic
     fun share(
@@ -462,18 +446,16 @@ class MediaSelectionActivity :
       recipientSearchKeys: List<ContactSearchKey.RecipientSearchKey>,
       message: CharSequence?,
       asTextStory: Boolean
-    ): Intent {
-      return buildIntent(
-        context = context,
-        messageSendType = messageSendType,
-        media = media,
-        destination = MediaSelectionDestination.MultipleRecipients(recipientSearchKeys),
-        message = message,
-        asTextStory = asTextStory,
-        startAction = if (asTextStory) R.id.action_directly_to_textPostCreationFragment else -1,
-        isStory = recipientSearchKeys.any { it.isStory }
-      )
-    }
+    ): Intent = buildIntent(
+      context = context,
+      messageSendType = messageSendType,
+      media = media,
+      destination = MediaSelectionDestination.MultipleRecipients(recipientSearchKeys),
+      message = message,
+      asTextStory = asTextStory,
+      startAction = if (asTextStory) R.id.action_directly_to_textPostCreationFragment else -1,
+      isStory = recipientSearchKeys.any { it.isStory }
+    )
 
     private fun buildIntent(
       context: Context,
@@ -486,18 +468,16 @@ class MediaSelectionActivity :
       isStory: Boolean = false,
       asTextStory: Boolean = false,
       isAddToGroupStoryFlow: Boolean = false
-    ): Intent {
-      return Intent(context, MediaSelectionActivity::class.java).apply {
-        putExtra(START_ACTION, startAction)
-        putExtra(MESSAGE_SEND_TYPE, messageSendType)
-        putParcelableArrayListExtra(MEDIA, ArrayList(media))
-        putExtra(MESSAGE, message)
-        putExtra(DESTINATION, destination.toBundle())
-        putExtra(IS_REPLY, isReply)
-        putExtra(IS_STORY, isStory)
-        putExtra(AS_TEXT_STORY, asTextStory)
-        putExtra(IS_ADD_TO_GROUP_STORY_FLOW, isAddToGroupStoryFlow)
-      }
+    ): Intent = Intent(context, MediaSelectionActivity::class.java).apply {
+      putExtra(START_ACTION, startAction)
+      putExtra(MESSAGE_SEND_TYPE, messageSendType)
+      putParcelableArrayListExtra(MEDIA, ArrayList(media))
+      putExtra(MESSAGE, message)
+      putExtra(DESTINATION, destination.toBundle())
+      putExtra(IS_REPLY, isReply)
+      putExtra(IS_STORY, isStory)
+      putExtra(AS_TEXT_STORY, asTextStory)
+      putExtra(IS_ADD_TO_GROUP_STORY_FLOW, isAddToGroupStoryFlow)
     }
   }
 }

@@ -84,8 +84,6 @@ class BuildExpirationConfirmationJob private constructor(params: Parameters) : J
   }
 
   class Factory : Job.Factory<BuildExpirationConfirmationJob> {
-    override fun create(params: Parameters, bytes: ByteArray?): BuildExpirationConfirmationJob {
-      return BuildExpirationConfirmationJob(params)
-    }
+    override fun create(params: Parameters, bytes: ByteArray?): BuildExpirationConfirmationJob = BuildExpirationConfirmationJob(params)
   }
 }

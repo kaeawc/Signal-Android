@@ -55,12 +55,10 @@ class ConversationShortcutRankingUpdateJob private constructor(
     direction
   )
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putString(KEY_RECIPIENT, recipient.id.serialize())
-      .putInt(KEY_REPORTED_SIGNAL, direction.serialize())
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putString(KEY_RECIPIENT, recipient.id.serialize())
+    .putInt(KEY_REPORTED_SIGNAL, direction.serialize())
+    .serialize()
 
   override fun getFactoryKey() = KEY
 
@@ -79,13 +77,9 @@ class ConversationShortcutRankingUpdateJob private constructor(
     }
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return e is RetryLaterException
-  }
+  override fun onShouldRetry(e: Exception): Boolean = e is RetryLaterException
 
-  override fun getNextRunAttemptBackoff(pastAttemptCount: Int, exception: Exception): Long {
-    return 30.seconds.inWholeMilliseconds
-  }
+  override fun getNextRunAttemptBackoff(pastAttemptCount: Int, exception: Exception): Long = 30.seconds.inWholeMilliseconds
 
   override fun onFailure() = Unit
 

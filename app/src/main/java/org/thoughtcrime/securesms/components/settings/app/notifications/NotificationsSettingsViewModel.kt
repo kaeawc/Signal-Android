@@ -139,18 +139,17 @@ class NotificationsSettingsViewModel(private val sharedPreferences: SharedPrefer
   )
 
   private fun canEnableNotifications(): Boolean {
-    val areNotificationsDisabledBySystem = Build.VERSION.SDK_INT >= 26 && (
-      !NotificationChannels.getInstance().isMessageChannelEnabled ||
-        !NotificationChannels.getInstance().isMessagesChannelGroupEnabled ||
-        !NotificationChannels.getInstance().areNotificationsEnabled()
-      )
+    val areNotificationsDisabledBySystem = Build.VERSION.SDK_INT >= 26 &&
+      (
+        !NotificationChannels.getInstance().isMessageChannelEnabled ||
+          !NotificationChannels.getInstance().isMessagesChannelGroupEnabled ||
+          !NotificationChannels.getInstance().areNotificationsEnabled()
+        )
 
     return !areNotificationsDisabledBySystem
   }
 
   class Factory(private val sharedPreferences: SharedPreferences) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(NotificationsSettingsViewModel(sharedPreferences)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(NotificationsSettingsViewModel(sharedPreferences)))
   }
 }

@@ -42,8 +42,6 @@ enum class DonationErrorSource(private val code: String) {
 
   companion object {
     @JvmStatic
-    fun deserialize(code: String): DonationErrorSource {
-      return values().firstOrNull { it.code == code } ?: UNKNOWN
-    }
+    fun deserialize(code: String): DonationErrorSource = values().firstOrNull { it.code == code } ?: UNKNOWN
   }
 }

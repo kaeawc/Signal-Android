@@ -22,7 +22,9 @@ private val MODE_DELAY = TimeUnit.MILLISECONDS.toMillis(300)
  * Displays the chosen image within the image editor. Also manages the "touch enabled" state of the shared
  * view model. We utilize delays here to help with Animation choreography.
  */
-class MediaReviewImagePageFragment : Fragment(R.layout.fragment_container), ImageEditorFragment.Controller {
+class MediaReviewImagePageFragment :
+  Fragment(R.layout.fragment_container),
+  ImageEditorFragment.Controller {
 
   private val sharedViewModel: MediaSelectionViewModel by viewModels(ownerProducer = { requireActivity() })
 
@@ -154,11 +156,9 @@ class MediaReviewImagePageFragment : Fragment(R.layout.fragment_container), Imag
   companion object {
     private const val ARG_URI = "arg.uri"
 
-    fun newInstance(uri: Uri): Fragment {
-      return MediaReviewImagePageFragment().apply {
-        arguments = Bundle().apply {
-          putParcelable(ARG_URI, uri)
-        }
+    fun newInstance(uri: Uri): Fragment = MediaReviewImagePageFragment().apply {
+      arguments = Bundle().apply {
+        putParcelable(ARG_URI, uri)
       }
     }
   }

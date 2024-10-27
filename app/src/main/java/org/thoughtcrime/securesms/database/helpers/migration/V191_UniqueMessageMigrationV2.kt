@@ -155,9 +155,8 @@ object V191_UniqueMessageMigrationV2 : SignalDatabaseMigration {
     stopwatch.stop(TAG)
   }
 
-  private fun findRemainingDuplicates(db: SQLiteDatabase): List<Duplicate> {
-    return db.rawQuery(
-      """
+  private fun findRemainingDuplicates(db: SQLiteDatabase): List<Duplicate> = db.rawQuery(
+    """
       WITH dupes AS (
         SELECT
           _id,
@@ -193,16 +192,15 @@ object V191_UniqueMessageMigrationV2 : SignalDatabaseMigration {
         date_sent ASC,
         _id ASC
       """,
-      null
-    ).readToList { cursor ->
-      Duplicate(
-        id = cursor.requireLong("_id"),
-        dateSent = cursor.requireLong("date_sent"),
-        fromRecipientId = cursor.requireLong("from_recipient_id"),
-        threadId = cursor.requireLong("thread_id"),
-        type = cursor.requireLong("type")
-      )
-    }
+    null
+  ).readToList { cursor ->
+    Duplicate(
+      id = cursor.requireLong("_id"),
+      dateSent = cursor.requireLong("date_sent"),
+      fromRecipientId = cursor.requireLong("from_recipient_id"),
+      threadId = cursor.requireLong("thread_id"),
+      type = cursor.requireLong("type")
+    )
   }
 
   /**
@@ -255,20 +253,18 @@ object V191_UniqueMessageMigrationV2 : SignalDatabaseMigration {
   }
 
   /** True if there already exists a message with the provided tuple, otherwise false. */
-  private fun isDateTaken(db: SQLiteDatabase, dateSent: Long, fromRecipientId: Long, threadId: Long): Boolean {
-    return db.rawQuery(
-      """
+  private fun isDateTaken(db: SQLiteDatabase, dateSent: Long, fromRecipientId: Long, threadId: Long): Boolean = db.rawQuery(
+    """
       SELECT EXISTS (
         SELECT 1 
         FROM message INDEXED BY message_date_sent_from_to_thread_index 
         WHERE date_sent = ? AND from_recipient_id = ? AND thread_id = ?
       )
       """,
-      dateSent,
-      fromRecipientId,
-      threadId
-    ).readToSingleBoolean()
-  }
+    dateSent,
+    fromRecipientId,
+    threadId
+  ).readToSingleBoolean()
 
   data class UniqueId(
     val dateSent: Long,

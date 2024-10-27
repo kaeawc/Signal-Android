@@ -37,20 +37,16 @@ class ChooseInitialMyStoryMembershipViewModel @JvmOverloads constructor(
     store.dispose()
   }
 
-  fun select(selection: DistributionListPrivacyMode): Single<DistributionListPrivacyMode> {
-    return repository.setPrivacyMode(selection)
-      .toSingleDefault(selection)
-      .doAfterSuccess { _ ->
-        store.update { it.copy(hasUserPerformedManualSelection = true) }
-      }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun select(selection: DistributionListPrivacyMode): Single<DistributionListPrivacyMode> = repository.setPrivacyMode(selection)
+    .toSingleDefault(selection)
+    .doAfterSuccess { _ ->
+      store.update { it.copy(hasUserPerformedManualSelection = true) }
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun save(): Single<RecipientId> {
-    return Single.fromCallable<RecipientId> {
-      SignalStore.story.userHasBeenNotifiedAboutStories = true
-      Stories.onStorySettingsChanged(Recipient.self().id)
-      store.state.recipientId!!
-    }.observeOn(AndroidSchedulers.mainThread())
-  }
+  fun save(): Single<RecipientId> = Single.fromCallable<RecipientId> {
+    SignalStore.story.userHasBeenNotifiedAboutStories = true
+    Stories.onStorySettingsChanged(Recipient.self().id)
+    store.state.recipientId!!
+  }.observeOn(AndroidSchedulers.mainThread())
 }

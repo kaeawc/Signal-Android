@@ -65,28 +65,22 @@ fun Recipient.getContactDrawable(context: Context): Drawable? {
   }
 }
 
-fun Uri.toBitmap(context: Context, dimension: Int): Bitmap {
-  return try {
-    Glide.with(context.applicationContext)
-      .asBitmap()
-      .load(DecryptableUri(this))
-      .diskCacheStrategy(DiskCacheStrategy.NONE)
-      .submit(dimension, dimension)
-      .get()
-  } catch (e: InterruptedException) {
-    Bitmap.createBitmap(dimension, dimension, Bitmap.Config.RGB_565)
-  } catch (e: ExecutionException) {
-    Bitmap.createBitmap(dimension, dimension, Bitmap.Config.RGB_565)
-  }
+fun Uri.toBitmap(context: Context, dimension: Int): Bitmap = try {
+  Glide.with(context.applicationContext)
+    .asBitmap()
+    .load(DecryptableUri(this))
+    .diskCacheStrategy(DiskCacheStrategy.NONE)
+    .submit(dimension, dimension)
+    .get()
+} catch (e: InterruptedException) {
+  Bitmap.createBitmap(dimension, dimension, Bitmap.Config.RGB_565)
+} catch (e: ExecutionException) {
+  Bitmap.createBitmap(dimension, dimension, Bitmap.Config.RGB_565)
 }
 
-fun Intent.makeUniqueToPreventMerging(): Intent {
-  return setData((Uri.parse("custom://" + System.currentTimeMillis())))
-}
+fun Intent.makeUniqueToPreventMerging(): Intent = setData((Uri.parse("custom://" + System.currentTimeMillis())))
 
-fun Recipient.getFallback(context: Context): FallbackAvatar {
-  return FallbackAvatar.forTextOrDefault(getDisplayName(context), avatarColor)
-}
+fun Recipient.getFallback(context: Context): FallbackAvatar = FallbackAvatar.forTextOrDefault(getDisplayName(context), avatarColor)
 
 fun NotificationManager.isDisplayingSummaryNotification(): Boolean {
   if (Build.VERSION.SDK_INT > 23) {

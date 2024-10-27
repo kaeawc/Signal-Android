@@ -60,9 +60,7 @@ class SignalBackupAgent : BackupAgent() {
     Log.i(TAG, "Android Backup Service restore complete.")
   }
 
-  private fun cumulativeHashCode(): Int {
-    return items.fold("") { acc: String, androidBackupItem: AndroidBackupItem -> acc + androidBackupItem.getDataForBackup().decodeToString() }.hashCode()
-  }
+  private fun cumulativeHashCode(): Int = items.fold("") { acc: String, androidBackupItem: AndroidBackupItem -> acc + androidBackupItem.getDataForBackup().decodeToString() }.hashCode()
 
   companion object {
     private val TAG = Log.tag(SignalBackupAgent::class)

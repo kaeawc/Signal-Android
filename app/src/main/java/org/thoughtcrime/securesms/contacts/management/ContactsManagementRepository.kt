@@ -14,30 +14,26 @@ class ContactsManagementRepository(context: Context) {
   private val context = context.applicationContext
 
   @CheckResult
-  fun blockContact(recipient: Recipient): Completable {
-    return Completable.fromAction {
-      if (recipient.isDistributionList) {
-        error("Blocking a distribution list makes no sense")
-      } else if (recipient.isGroup) {
-        RecipientUtil.block(context, recipient)
-      } else {
-        RecipientUtil.blockNonGroup(context, recipient)
-      }
-    }.subscribeOn(Schedulers.io())
-  }
+  fun blockContact(recipient: Recipient): Completable = Completable.fromAction {
+    if (recipient.isDistributionList) {
+      error("Blocking a distribution list makes no sense")
+    } else if (recipient.isGroup) {
+      RecipientUtil.block(context, recipient)
+    } else {
+      RecipientUtil.blockNonGroup(context, recipient)
+    }
+  }.subscribeOn(Schedulers.io())
 
   @CheckResult
-  fun hideContact(recipient: Recipient): Completable {
-    return Completable.fromAction {
-      if (recipient.isGroup || recipient.isDistributionList || recipient.isSelf) {
-        error("Cannot hide groups, self, or distribution lists.")
-      }
+  fun hideContact(recipient: Recipient): Completable = Completable.fromAction {
+    if (recipient.isGroup || recipient.isDistributionList || recipient.isSelf) {
+      error("Cannot hide groups, self, or distribution lists.")
+    }
 
-      val rotateProfileKey = !recipient.hasGroupsInCommon
-      SignalDatabase.recipients.markHidden(recipient.id, rotateProfileKey, false)
-      if (rotateProfileKey) {
-        AppDependencies.jobManager.add(RotateProfileKeyJob())
-      }
-    }.subscribeOn(Schedulers.io())
-  }
+    val rotateProfileKey = !recipient.hasGroupsInCommon
+    SignalDatabase.recipients.markHidden(recipient.id, rotateProfileKey, false)
+    if (rotateProfileKey) {
+      AppDependencies.jobManager.add(RotateProfileKeyJob())
+    }
+  }.subscribeOn(Schedulers.io())
 }

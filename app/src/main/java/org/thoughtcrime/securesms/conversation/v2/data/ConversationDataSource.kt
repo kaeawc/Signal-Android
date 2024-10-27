@@ -208,33 +208,27 @@ class ConversationDataSource(
     }
   }
 
-  override fun getKey(conversationMessage: ConversationElement): ConversationElementKey {
-    return when (conversationMessage) {
-      is ConversationMessageElement -> MessageBackedKey(conversationMessage.conversationMessage.messageRecord.id)
-      is ThreadHeader -> ThreadHeaderKey
-      else -> throw AssertionError()
-    }
+  override fun getKey(conversationMessage: ConversationElement): ConversationElementKey = when (conversationMessage) {
+    is ConversationMessageElement -> MessageBackedKey(conversationMessage.conversationMessage.messageRecord.id)
+    is ThreadHeader -> ThreadHeaderKey
+    else -> throw AssertionError()
   }
 
-  private fun loadThreadHeader(): ThreadHeader {
-    return ThreadHeader(messageRequestRepository.getRecipientInfo(threadRecipient.id, threadId))
-  }
+  private fun loadThreadHeader(): ThreadHeader = ThreadHeader(messageRequestRepository.getRecipientInfo(threadRecipient.id, threadId))
 
-  private fun ConversationMessage.toMappingModel(): MappingModel<*> {
-    return if (messageRecord.isUpdate) {
-      ConversationUpdate(this)
-    } else if (messageRecord.isOutgoing) {
-      if (this.isTextOnly(localContext)) {
-        OutgoingTextOnly(this)
-      } else {
-        OutgoingMedia(this)
-      }
+  private fun ConversationMessage.toMappingModel(): MappingModel<*> = if (messageRecord.isUpdate) {
+    ConversationUpdate(this)
+  } else if (messageRecord.isOutgoing) {
+    if (this.isTextOnly(localContext)) {
+      OutgoingTextOnly(this)
     } else {
-      if (this.isTextOnly(localContext)) {
-        IncomingTextOnly(this)
-      } else {
-        IncomingMedia(this)
-      }
+      OutgoingMedia(this)
+    }
+  } else {
+    if (this.isTextOnly(localContext)) {
+      IncomingTextOnly(this)
+    } else {
+      IncomingMedia(this)
     }
   }
 }

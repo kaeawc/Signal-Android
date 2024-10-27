@@ -322,11 +322,9 @@ class ContactSearchConfiguration private constructor(
      * ```
      */
     @JvmStatic
-    fun build(builderFunction: Builder.() -> Unit): ContactSearchConfiguration {
-      return ConfigurationBuilder().let {
-        it.builderFunction()
-        it.build()
-      }
+    fun build(builderFunction: Builder.() -> Unit): ContactSearchConfiguration = ConfigurationBuilder().let {
+      it.builderFunction()
+      it.build()
     }
   }
 
@@ -343,9 +341,7 @@ class ContactSearchConfiguration private constructor(
       error("Unsupported operation: Already in empty state.")
     }
 
-    fun build(): List<Section> {
-      return sections
-    }
+    fun build(): List<Section> = sections
   }
 
   /**
@@ -365,13 +361,11 @@ class ContactSearchConfiguration private constructor(
       emptyState.emptyStateBuilderFn()
     }
 
-    fun build(): ContactSearchConfiguration {
-      return ContactSearchConfiguration(
-        query = query,
-        sections = sections,
-        emptyStateSections = emptyState.build()
-      )
-    }
+    fun build(): ContactSearchConfiguration = ContactSearchConfiguration(
+      query = query,
+      sections = sections,
+      emptyStateSections = emptyState.build()
+    )
   }
 
   /**

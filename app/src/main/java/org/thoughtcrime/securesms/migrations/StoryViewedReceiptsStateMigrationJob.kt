@@ -34,8 +34,6 @@ internal class StoryViewedReceiptsStateMigrationJob(
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<StoryViewedReceiptsStateMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): StoryViewedReceiptsStateMigrationJob {
-      return StoryViewedReceiptsStateMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): StoryViewedReceiptsStateMigrationJob = StoryViewedReceiptsStateMigrationJob(parameters)
   }
 }

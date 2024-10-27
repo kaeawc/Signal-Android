@@ -68,11 +68,9 @@ class CircularProgressMaterialButton @JvmOverloads constructor(
     progressIndicator.visible = clickable
   }
 
-  override fun onSaveInstanceState(): Parcelable {
-    return Bundle().apply {
-      putParcelable(SUPER_STATE, super.onSaveInstanceState())
-      putInt(STATE, if (requestedState != currentState) requestedState.code else currentState.code)
-    }
+  override fun onSaveInstanceState(): Parcelable = Bundle().apply {
+    putParcelable(SUPER_STATE, super.onSaveInstanceState())
+    putInt(STATE, if (requestedState != currentState) requestedState.code else currentState.code)
   }
 
   override fun onRestoreInstanceState(state: Parcelable) {
@@ -90,9 +88,7 @@ class CircularProgressMaterialButton @JvmOverloads constructor(
   }
 
   @VisibleForTesting
-  fun getRequestedState(): State {
-    return requestedState
-  }
+  fun getRequestedState(): State = requestedState
 
   fun setSpinning() {
     transformTo(State.PROGRESS, true)
@@ -159,12 +155,10 @@ class CircularProgressMaterialButton @JvmOverloads constructor(
     PROGRESS(1, INVISIBLE);
 
     companion object {
-      fun fromCode(code: Int): State {
-        return when (code) {
-          0 -> BUTTON
-          1 -> PROGRESS
-          else -> error("Unexpected code $code")
-        }
+      fun fromCode(code: Int): State = when (code) {
+        0 -> BUTTON
+        1 -> PROGRESS
+        else -> error("Unexpected code $code")
       }
     }
   }

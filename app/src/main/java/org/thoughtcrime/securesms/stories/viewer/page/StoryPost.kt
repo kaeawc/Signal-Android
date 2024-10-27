@@ -46,12 +46,8 @@ data class StoryPost(
 
     abstract fun isText(): Boolean
 
-    override fun equals(other: Any?): Boolean {
-      return other != null && other::class.java == this::class.java && other.hashCode() == hashCode()
-    }
+    override fun equals(other: Any?): Boolean = other != null && other::class.java == this::class.java && other.hashCode() == hashCode()
 
-    override fun hashCode(): Int {
-      return Objects.hash(uri, isVideo(), isText(), transferState)
-    }
+    override fun hashCode(): Int = Objects.hash(uri, isVideo(), isText(), transferState)
   }
 }

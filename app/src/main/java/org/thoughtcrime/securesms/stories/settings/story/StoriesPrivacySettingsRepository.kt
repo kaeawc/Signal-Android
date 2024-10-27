@@ -15,27 +15,23 @@ import org.thoughtcrime.securesms.storage.StorageSyncHelper
 import org.thoughtcrime.securesms.stories.Stories
 
 class StoriesPrivacySettingsRepository {
-  fun markGroupsAsStories(groups: List<RecipientId>): Completable {
-    return Completable.fromCallable {
-      SignalDatabase.groups.setShowAsStoryState(groups, GroupTable.ShowAsStoryState.ALWAYS)
-      SignalDatabase.recipients.markNeedsSync(groups)
-      StorageSyncHelper.scheduleSyncForDataChange()
+  fun markGroupsAsStories(groups: List<RecipientId>): Completable = Completable.fromCallable {
+    SignalDatabase.groups.setShowAsStoryState(groups, GroupTable.ShowAsStoryState.ALWAYS)
+    SignalDatabase.recipients.markNeedsSync(groups)
+    StorageSyncHelper.scheduleSyncForDataChange()
+  }
+
+  fun setStoriesEnabled(isEnabled: Boolean): Completable = Completable.fromAction {
+    SignalStore.story.isFeatureDisabled = !isEnabled
+    Stories.onStorySettingsChanged(Recipient.self().id)
+    AppDependencies.resetNetwork()
+
+    SignalDatabase.messages.getAllOutgoingStories(false, -1).use { reader ->
+      reader.map { record -> record.id }
+    }.forEach { messageId ->
+      MessageSender.sendRemoteDelete(messageId)
     }
-  }
-
-  fun setStoriesEnabled(isEnabled: Boolean): Completable {
-    return Completable.fromAction {
-      SignalStore.story.isFeatureDisabled = !isEnabled
-      Stories.onStorySettingsChanged(Recipient.self().id)
-      AppDependencies.resetNetwork()
-
-      SignalDatabase.messages.getAllOutgoingStories(false, -1).use { reader ->
-        reader.map { record -> record.id }
-      }.forEach { messageId ->
-        MessageSender.sendRemoteDelete(messageId)
-      }
-    }.subscribeOn(Schedulers.io())
-  }
+  }.subscribeOn(Schedulers.io())
 
   fun onSettingsChanged() {
     SignalExecutors.BOUNDED_IO.execute {
@@ -43,11 +39,9 @@ class StoriesPrivacySettingsRepository {
     }
   }
 
-  fun userHasOutgoingStories(): Single<Boolean> {
-    return Single.fromCallable {
-      SignalDatabase.messages.getAllOutgoingStories(false, -1).use {
-        it.iterator().hasNext()
-      }
-    }.subscribeOn(Schedulers.io())
-  }
+  fun userHasOutgoingStories(): Single<Boolean> = Single.fromCallable {
+    SignalDatabase.messages.getAllOutgoingStories(false, -1).use {
+      it.iterator().hasNext()
+    }
+  }.subscribeOn(Schedulers.io())
 }

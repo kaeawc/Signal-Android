@@ -26,9 +26,7 @@ class TextAlignmentButton @JvmOverloads constructor(
     }
   }
 
-  override fun setOnClickListener(l: OnClickListener?) {
-    throw UnsupportedOperationException()
-  }
+  override fun setOnClickListener(l: OnClickListener?): Unit = throw UnsupportedOperationException()
 
   fun setAlignment(textAlignment: TextAlignment) {
     if (textAlignment != this.textAlignment) {

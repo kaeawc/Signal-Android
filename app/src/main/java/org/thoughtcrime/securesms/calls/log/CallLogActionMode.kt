@@ -18,26 +18,18 @@ class CallLogActionMode(
     return true
   }
 
-  override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-    return false
-  }
+  override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean = false
 
-  override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-    return true
-  }
+  override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean = true
 
   override fun onDestroyActionMode(mode: ActionMode?) {
     callback.onResetSelectionState()
     endIfActive()
   }
 
-  fun isInActionMode(): Boolean {
-    return actionMode != null
-  }
+  fun isInActionMode(): Boolean = actionMode != null
 
-  fun getCount(): Int {
-    return if (actionMode != null) count else 0
-  }
+  fun getCount(): Int = if (actionMode != null) count else 0
 
   fun setCount(count: Int) {
     this.count = count
@@ -55,9 +47,7 @@ class CallLogActionMode(
     actionMode = null
   }
 
-  private fun getTitle(callLogsSelected: Int): String {
-    return callback.getResources().getQuantityString(R.plurals.ConversationListFragment_s_selected, callLogsSelected, callLogsSelected)
-  }
+  private fun getTitle(callLogsSelected: Int): String = callback.getResources().getQuantityString(R.plurals.ConversationListFragment_s_selected, callLogsSelected, callLogsSelected)
 
   private fun endIfActive() {
     if (actionMode != null) {

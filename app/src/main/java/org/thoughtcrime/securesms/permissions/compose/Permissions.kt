@@ -38,14 +38,12 @@ object Permissions {
   fun cameraPermissionHandler(
     rationale: String,
     onPermissionGranted: () -> Unit
-  ): Controller {
-    return permissionHandler(
-      permission = android.Manifest.permission.CAMERA,
-      icon = painterResource(id = R.drawable.symbol_camera_24),
-      rationale = rationale,
-      onPermissionGranted = onPermissionGranted
-    )
-  }
+  ): Controller = permissionHandler(
+    permission = android.Manifest.permission.CAMERA,
+    icon = painterResource(id = R.drawable.symbol_camera_24),
+    rationale = rationale,
+    onPermissionGranted = onPermissionGranted
+  )
 
   /**
    * Generic permissions rationale dialog and state management for single permissions.

@@ -28,17 +28,13 @@ class PlainTextBackupReader(val dataStream: InputStream, val length: Long) : Bac
     next = read()
   }
 
-  override fun getHeader(): BackupInfo? {
-    return backupInfo
-  }
+  override fun getHeader(): BackupInfo? = backupInfo
 
   override fun getBytesRead() = inputStream.count
 
   override fun getStreamLength() = length
 
-  override fun hasNext(): Boolean {
-    return next != null
-  }
+  override fun hasNext(): Boolean = next != null
 
   override fun next(): Frame {
     next?.let { out ->

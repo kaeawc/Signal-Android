@@ -38,9 +38,7 @@ object MessageDataFetcher {
   /**
    * Singular version of [fetch].
    */
-  fun fetch(messageRecord: MessageRecord): ExtraMessageData {
-    return fetch(listOf(messageRecord))
-  }
+  fun fetch(messageRecord: MessageRecord): ExtraMessageData = fetch(listOf(messageRecord))
 
   /**
    * Fetches all associated message data in parallel.
@@ -127,16 +125,12 @@ object MessageDataFetcher {
    * Merges the data in [ExtraMessageData] into the provided list of [MessageRecord], outputted as
    * a new list of models.
    */
-  fun updateModelsWithData(messageRecords: List<MessageRecord>, data: ExtraMessageData): List<MessageRecord> {
-    return messageRecords.map { it.updateWithData(data) }
-  }
+  fun updateModelsWithData(messageRecords: List<MessageRecord>, data: ExtraMessageData): List<MessageRecord> = messageRecords.map { it.updateWithData(data) }
 
   /**
    * Singular version of [updateModelsWithData]
    */
-  fun updateModelWithData(messageRecord: MessageRecord, data: ExtraMessageData): MessageRecord {
-    return listOf(messageRecord).map { it.updateWithData(data) }.first()
-  }
+  fun updateModelWithData(messageRecord: MessageRecord, data: ExtraMessageData): MessageRecord = listOf(messageRecord).map { it.updateWithData(data) }.first()
 
   private fun MessageRecord.updateWithData(data: ExtraMessageData): MessageRecord {
     var output: MessageRecord = this
@@ -160,17 +154,15 @@ object MessageDataFetcher {
     return output
   }
 
-  private fun <T> ExecutorService.submitTimed(callable: Callable<T>): Future<TimedResult<T>> {
-    return this.submit(
-      Callable {
-        val start = System.nanoTime()
-        val result = callable.call()
-        val end = System.nanoTime()
+  private fun <T> ExecutorService.submitTimed(callable: Callable<T>): Future<TimedResult<T>> = this.submit(
+    Callable {
+      val start = System.nanoTime()
+      val result = callable.call()
+      val end = System.nanoTime()
 
-        TimedResult(result = result, durationNanos = end - start)
-      }
-    )
-  }
+      TimedResult(result = result, durationNanos = end - start)
+    }
+  )
 
   data class TimedResult<T>(
     val result: T,

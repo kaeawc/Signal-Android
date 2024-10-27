@@ -138,7 +138,10 @@ open class Material3OnScrollHelper(
     viewStubs.filter { it.resolved() }.forEach { it.get().setBackgroundColor(color) }
   }
 
-  private inner class OnScrollListener : RecyclerView.OnScrollListener(), AppBarLayout.OnOffsetChangedListener, NestedScrollView.OnScrollChangeListener {
+  private inner class OnScrollListener :
+    RecyclerView.OnScrollListener(),
+    AppBarLayout.OnOffsetChangedListener,
+    NestedScrollView.OnScrollChangeListener {
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
       updateActiveState(recyclerView.canScrollVertically(-1))
     }

@@ -49,9 +49,7 @@ class ScheduleMessageTimePickerBottomSheet : FixedRoundedCornerBottomSheetDialog
 
   private val binding by ViewBinderDelegate(ScheduleMessageTimePickerBottomSheetBinding::bind)
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-    return inflater.inflate(R.layout.schedule_message_time_picker_bottom_sheet, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.schedule_message_time_picker_bottom_sheet, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     val initialTime = arguments?.getLong(KEY_INITIAL_TIME)
@@ -152,14 +150,12 @@ class ScheduleMessageTimePickerBottomSheet : FixedRoundedCornerBottomSheetDialog
     }
   }
 
-  private fun getSelectedTimestamp(): Long {
-    return scheduledDate.toLocalDateTime()
-      .withMinute(scheduledMinute)
-      .withHour(scheduledHour)
-      .withSecond(0)
-      .withNano(0)
-      .toMillis()
-  }
+  private fun getSelectedTimestamp(): Long = scheduledDate.toLocalDateTime()
+    .withMinute(scheduledMinute)
+    .withHour(scheduledHour)
+    .withSecond(0)
+    .withNano(0)
+    .toMillis()
 
   private fun updateSelectedDate() {
     binding.dateText.text = DateUtils.getDayPrecisionTimeString(requireContext(), Locale.getDefault(), scheduledDate)

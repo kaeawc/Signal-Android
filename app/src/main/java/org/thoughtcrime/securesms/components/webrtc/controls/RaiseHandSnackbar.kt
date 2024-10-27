@@ -231,9 +231,7 @@ private fun getSnackbarText(state: RaiseHandState): String {
 }
 
 @Composable
-private fun getShortDisplayName(raisedHands: List<GroupCallRaiseHandEvent>): String {
-  return raisedHands.first().sender.getShortRecipientDisplayName(LocalContext.current)
-}
+private fun getShortDisplayName(raisedHands: List<GroupCallRaiseHandEvent>): String = raisedHands.first().sender.getShortRecipientDisplayName(LocalContext.current)
 
 private data class RaiseHandState(
   val raisedHands: List<GroupCallRaiseHandEvent> = emptyList(),

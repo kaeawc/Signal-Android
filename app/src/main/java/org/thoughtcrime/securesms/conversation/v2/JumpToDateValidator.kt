@@ -49,18 +49,16 @@ class JumpToDateValidator(val threadId: Long) : DateValidator {
     loadAround(startOfDay, allowPrefetch = true)
   }
 
-  override fun isValid(dateStart: Long): Boolean {
-    return lock.withLock {
-      var value = cachedDates[dateStart]
+  override fun isValid(dateStart: Long): Boolean = lock.withLock {
+    var value = cachedDates[dateStart]
 
-      while (value == null || value == LookupState.PENDING) {
-        loadAround(dateStart, allowPrefetch = true)
-        condition.await()
-        value = cachedDates[dateStart]
-      }
-
-      cachedDates[dateStart] == LookupState.FOUND
+    while (value == null || value == LookupState.PENDING) {
+      loadAround(dateStart, allowPrefetch = true)
+      condition.await()
+      value = cachedDates[dateStart]
     }
+
+    cachedDates[dateStart] == LookupState.FOUND
   }
 
   /**

@@ -34,25 +34,21 @@ class StoryDirectReplyViewModel(
     }
   }
 
-  fun sendReply(body: CharSequence, bodyRangeList: BodyRangeList?): Completable {
-    return repository.send(
-      storyId = storyId,
-      groupDirectReplyRecipientId = groupDirectReplyRecipientId,
-      body = body,
-      bodyRangeList = bodyRangeList,
-      isReaction = false
-    )
-  }
+  fun sendReply(body: CharSequence, bodyRangeList: BodyRangeList?): Completable = repository.send(
+    storyId = storyId,
+    groupDirectReplyRecipientId = groupDirectReplyRecipientId,
+    body = body,
+    bodyRangeList = bodyRangeList,
+    isReaction = false
+  )
 
-  fun sendReaction(emoji: CharSequence): Completable {
-    return repository.send(
-      storyId = storyId,
-      groupDirectReplyRecipientId = groupDirectReplyRecipientId,
-      body = emoji,
-      bodyRangeList = null,
-      isReaction = true
-    )
-  }
+  fun sendReaction(emoji: CharSequence): Completable = repository.send(
+    storyId = storyId,
+    groupDirectReplyRecipientId = groupDirectReplyRecipientId,
+    body = emoji,
+    bodyRangeList = null,
+    isReaction = true
+  )
 
   override fun onCleared() {
     super.onCleared()
@@ -64,10 +60,8 @@ class StoryDirectReplyViewModel(
     private val groupDirectReplyRecipientId: RecipientId?,
     private val repository: StoryDirectReplyRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(
-        StoryDirectReplyViewModel(storyId, groupDirectReplyRecipientId, repository)
-      ) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(
+      StoryDirectReplyViewModel(storyId, groupDirectReplyRecipientId, repository)
+    ) as T
   }
 }

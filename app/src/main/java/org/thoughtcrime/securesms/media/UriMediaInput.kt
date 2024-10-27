@@ -21,9 +21,7 @@ class UriMediaInput(private val context: Context, private val uri: Uri) : MediaI
     return extractor
   }
 
-  override fun hasSameInput(other: MediaInput): Boolean {
-    return other is UriMediaInput && other.uri == this.uri
-  }
+  override fun hasSameInput(other: MediaInput): Boolean = other is UriMediaInput && other.uri == this.uri
 
   override fun close() = Unit
 }

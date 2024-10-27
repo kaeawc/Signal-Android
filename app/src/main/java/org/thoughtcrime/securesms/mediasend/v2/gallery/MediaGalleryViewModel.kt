@@ -16,13 +16,11 @@ class MediaGalleryViewModel(bucketId: String?, bucketTitle: String?, private val
     loadItemsForBucket(bucketId, bucketTitle)
   }
 
-  fun pop(): Boolean {
-    return if (store.state.bucketId == null) {
-      true
-    } else {
-      loadItemsForBucket(null, null)
-      false
-    }
+  fun pop(): Boolean = if (store.state.bucketId == null) {
+    true
+  } else {
+    loadItemsForBucket(null, null)
+    false
   }
 
   fun setMediaFolder(mediaFolder: MediaFolder) {
@@ -66,8 +64,6 @@ class MediaGalleryViewModel(bucketId: String?, bucketTitle: String?, private val
     private val bucketTitle: String?,
     private val repository: MediaGalleryRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(MediaGalleryViewModel(bucketId, bucketTitle, repository)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(MediaGalleryViewModel(bucketId, bucketTitle, repository)))
   }
 }

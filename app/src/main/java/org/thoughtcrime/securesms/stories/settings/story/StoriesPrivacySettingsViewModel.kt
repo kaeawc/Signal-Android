@@ -104,8 +104,6 @@ class StoriesPrivacySettingsViewModel(
   class Factory(
     private val contactSearchPagedDataSourceRepository: ContactSearchPagedDataSourceRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(StoriesPrivacySettingsViewModel(contactSearchPagedDataSourceRepository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(StoriesPrivacySettingsViewModel(contactSearchPagedDataSourceRepository)) as T
   }
 }

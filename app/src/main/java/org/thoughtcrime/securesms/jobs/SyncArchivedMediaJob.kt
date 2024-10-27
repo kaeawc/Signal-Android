@@ -44,11 +44,9 @@ class SyncArchivedMediaJob private constructor(
     cursor
   )
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putString(KEY_CURSOR, jobCursor)
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putString(KEY_CURSOR, jobCursor)
+    .serialize()
 
   override fun getFactoryKey(): String = KEY
 
@@ -96,9 +94,7 @@ class SyncArchivedMediaJob private constructor(
     return abandonedObjects
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return e is NetworkFailureException
-  }
+  override fun onShouldRetry(e: Exception): Boolean = e is NetworkFailureException
 
   class Factory : Job.Factory<SyncArchivedMediaJob> {
     override fun create(parameters: Parameters, serializedData: ByteArray?): SyncArchivedMediaJob {

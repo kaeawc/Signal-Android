@@ -36,12 +36,10 @@ object AvatarPickerItem {
 
     override fun areContentsTheSame(newItem: Model): Boolean = avatar == newItem.avatar && isSelected == newItem.isSelected
 
-    override fun getChangePayload(newItem: Model): Any? {
-      return if (newItem.avatar == avatar && isSelected != newItem.isSelected) {
-        SELECTION_CHANGED
-      } else {
-        null
-      }
+    override fun getChangePayload(newItem: Model): Any? = if (newItem.avatar == avatar && isSelected != newItem.isSelected) {
+      SELECTION_CHANGED
+    } else {
+      null
     }
   }
 

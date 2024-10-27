@@ -190,9 +190,7 @@ class ConversationListFilterPullView @JvmOverloads constructor(
     }
   }
 
-  fun isCloseable(): Boolean {
-    return state == FilterPullState.OPEN
-  }
+  fun isCloseable(): Boolean = state == FilterPullState.OPEN
 
   fun openImmediate() {
     if (state == FilterPullState.CLOSED) {
@@ -290,11 +288,9 @@ class ConversationListFilterPullView @JvmOverloads constructor(
     }
   }
 
-  private fun FilterPullState.toLatestSettledState(): FilterPullState {
-    return when (this) {
-      FilterPullState.CLOSED, FilterPullState.OPEN_APEX, FilterPullState.OPENING, FilterPullState.CANCELING -> FilterPullState.CLOSED
-      FilterPullState.OPEN, FilterPullState.CLOSE_APEX, FilterPullState.CLOSING -> FilterPullState.OPEN
-    }
+  private fun FilterPullState.toLatestSettledState(): FilterPullState = when (this) {
+    FilterPullState.CLOSED, FilterPullState.OPEN_APEX, FilterPullState.OPENING, FilterPullState.CANCELING -> FilterPullState.CLOSED
+    FilterPullState.OPEN, FilterPullState.CLOSE_APEX, FilterPullState.CLOSING -> FilterPullState.OPEN
   }
 
   fun interface OnFilterStateChanged {

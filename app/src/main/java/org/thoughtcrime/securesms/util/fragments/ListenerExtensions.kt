@@ -49,8 +49,6 @@ inline fun <reified T> Fragment.requireListener(): T {
 
 class ListenerNotFoundException(hierarchy: List<String>, cause: Throwable) : Exception(formatMessage(hierarchy), cause) {
   companion object {
-    fun formatMessage(hierarchy: List<String>): String {
-      return "Hierarchy Searched: \n${hierarchy.joinToString("\n")}"
-    }
+    fun formatMessage(hierarchy: List<String>): String = "Hierarchy Searched: \n${hierarchy.joinToString("\n")}"
   }
 }

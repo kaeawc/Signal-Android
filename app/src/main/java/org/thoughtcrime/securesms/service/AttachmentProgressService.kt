@@ -111,15 +111,13 @@ class AttachmentProgressService : SafeForegroundService() {
 
   override val notificationId: Int = NotificationIds.ATTACHMENT_PROGRESS
 
-  override fun getForegroundNotification(intent: Intent): Notification {
-    return NotificationCompat.Builder(this, NotificationChannels.getInstance().OTHER)
-      .setSmallIcon(R.drawable.ic_notification)
-      .setContentTitle(title)
-      .setProgress(100, (progress * 100).toInt(), indeterminate)
-      .setContentIntent(PendingIntent.getActivity(this, 0, MainActivity.clearTop(this), PendingIntentFlags.mutable()))
-      .setVibrate(longArrayOf(0))
-      .build()
-  }
+  override fun getForegroundNotification(intent: Intent): Notification = NotificationCompat.Builder(this, NotificationChannels.getInstance().OTHER)
+    .setSmallIcon(R.drawable.ic_notification)
+    .setContentTitle(title)
+    .setProgress(100, (progress * 100).toInt(), indeterminate)
+    .setContentIntent(PendingIntent.getActivity(this, 0, MainActivity.clearTop(this), PendingIntentFlags.mutable()))
+    .setVibrate(longArrayOf(0))
+    .build()
 
   override fun onCreate() {
     super.onCreate()

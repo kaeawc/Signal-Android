@@ -94,11 +94,11 @@ class SpinnerTestSqliteOpenHelper(context: Context?) :
     writableDatabase.pageSize = numBytes
   }
 
-  override fun query(query: String?): Cursor {
+  override fun query(query: String): Cursor {
     return readableDatabase.rawQuery(query, null)
   }
 
-  override fun query(query: String?, bindArgs: Array<out Any>?): Cursor {
+  override fun query(query: String, bindArgs: Array<out Any>?): Cursor {
     return readableDatabase.rawQuery(query, bindArgs?.map { it.toString() }?.toTypedArray())
   }
 
@@ -110,15 +110,15 @@ class SpinnerTestSqliteOpenHelper(context: Context?) :
     TODO("Not yet implemented")
   }
 
-  override fun insert(table: String?, conflictAlgorithm: Int, values: ContentValues?): Long {
+  override fun insert(table: String, conflictAlgorithm: Int, values: ContentValues?): Long {
     return writableDatabase.insertWithOnConflict(table, null, values, conflictAlgorithm)
   }
 
-  override fun delete(table: String?, whereClause: String?, whereArgs: Array<out Any>?): Int {
+  override fun delete(table: String, whereClause: String?, whereArgs: Array<out Any>?): Int {
     return writableDatabase.delete(table, whereClause, whereArgs?.map { it.toString() }?.toTypedArray())
   }
 
-  override fun update(table: String?, conflictAlgorithm: Int, values: ContentValues?, whereClause: String?, whereArgs: Array<out Any>?): Int {
+  override fun update(table: String, conflictAlgorithm: Int, values: ContentValues?, whereClause: String?, whereArgs: Array<out Any>?): Int {
     return writableDatabase.updateWithOnConflict(table, values, whereClause, whereArgs?.map { it.toString() }?.toTypedArray(), conflictAlgorithm)
   }
 
@@ -126,8 +126,8 @@ class SpinnerTestSqliteOpenHelper(context: Context?) :
     writableDatabase.execSQL(sql)
   }
 
-  override fun execSQL(sql: String?, bindArgs: Array<out Any>?) {
-    writableDatabase.execSQL(sql, bindArgs?.map { it.toString() }?.toTypedArray())
+  override fun execSQL(sql: String, bindArgs: Array<out Any>) {
+    writableDatabase.execSQL(sql, bindArgs.map { it.toString() }.toTypedArray())
   }
 
   override fun isReadOnly(): Boolean {

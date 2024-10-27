@@ -67,12 +67,10 @@ class EmojiKeyboardPageViewModel(private val repository: EmojiKeyboardPageReposi
   }
 
   companion object {
-    fun getStartingTab(): String {
-      return if (RecentEmojiPageModel.hasRecents(AppDependencies.application, TextSecurePreferences.RECENT_STORAGE_KEY)) {
-        RecentEmojiPageModel.KEY
-      } else {
-        EmojiCategory.PEOPLE.key
-      }
+    fun getStartingTab(): String = if (RecentEmojiPageModel.hasRecents(AppDependencies.application, TextSecurePreferences.RECENT_STORAGE_KEY)) {
+      RecentEmojiPageModel.KEY
+    } else {
+      EmojiCategory.PEOPLE.key
     }
   }
 
@@ -80,8 +78,6 @@ class EmojiKeyboardPageViewModel(private val repository: EmojiKeyboardPageReposi
 
     private val repository = EmojiKeyboardPageRepository(context)
 
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(EmojiKeyboardPageViewModel(repository)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(EmojiKeyboardPageViewModel(repository)))
   }
 }

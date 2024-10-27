@@ -134,77 +134,73 @@ class ManageDonationsFragment :
     }
   }
 
-  override fun getMaterial3OnScrollHelper(toolbar: Toolbar?): Material3OnScrollHelper {
-    return object : Material3OnScrollHelper(requireActivity(), toolbar!!, viewLifecycleOwner) {
-      override val activeColorSet: ColorSet = ColorSet(R.color.transparent, R.color.signal_colorBackground)
-      override val inactiveColorSet: ColorSet = ColorSet(R.color.transparent, R.color.signal_colorBackground)
-    }
+  override fun getMaterial3OnScrollHelper(toolbar: Toolbar?): Material3OnScrollHelper = object : Material3OnScrollHelper(requireActivity(), toolbar!!, viewLifecycleOwner) {
+    override val activeColorSet: ColorSet = ColorSet(R.color.transparent, R.color.signal_colorBackground)
+    override val inactiveColorSet: ColorSet = ColorSet(R.color.transparent, R.color.signal_colorBackground)
   }
 
-  private fun getConfiguration(state: ManageDonationsState): DSLConfiguration {
-    return configure {
-      space(36.dp)
+  private fun getConfiguration(state: ManageDonationsState): DSLConfiguration = configure {
+    space(36.dp)
 
-      customPref(
-        BadgePreview.BadgeModel.SubscriptionModel(
-          badge = state.featuredBadge
-        )
+    customPref(
+      BadgePreview.BadgeModel.SubscriptionModel(
+        badge = state.featuredBadge
       )
+    )
 
-      space(12.dp)
+    space(12.dp)
 
-      noPadTextPref(
-        title = DSLSettingsText.from(
-          R.string.DonateToSignalFragment__privacy_over_profit,
-          DSLSettingsText.CenterModifier,
-          DSLSettingsText.TitleLargeModifier
-        )
+    noPadTextPref(
+      title = DSLSettingsText.from(
+        R.string.DonateToSignalFragment__privacy_over_profit,
+        DSLSettingsText.CenterModifier,
+        DSLSettingsText.TitleLargeModifier
       )
+    )
 
-      space(8.dp)
+    space(8.dp)
 
-      noPadTextPref(
-        title = DSLSettingsText.from(supportTechSummary, DSLSettingsText.CenterModifier)
-      )
+    noPadTextPref(
+      title = DSLSettingsText.from(supportTechSummary, DSLSettingsText.CenterModifier)
+    )
 
-      space(24.dp)
+    space(24.dp)
 
-      primaryWrappedButton(
-        text = DSLSettingsText.from(R.string.ManageDonationsFragment__donate_to_signal),
-        onClick = {
-          launcher.launch(InAppPaymentType.ONE_TIME_DONATION)
-        }
-      )
-
-      space(16.dp)
-
-      if (state.subscriptionTransactionState is ManageDonationsState.TransactionState.NotInTransaction) {
-        val activeSubscription = state.subscriptionTransactionState.activeSubscription.activeSubscription
-
-        if (activeSubscription != null) {
-          val subscription: Subscription? = state.availableSubscriptions.firstOrNull { it.level == activeSubscription.level }
-          if (subscription != null) {
-            presentSubscriptionSettings(activeSubscription, subscription, state)
-          } else {
-            customPref(IndeterminateLoadingCircle)
-          }
-        } else if (state.nonVerifiedMonthlyDonation != null) {
-          val subscription: Subscription? = state.availableSubscriptions.firstOrNull { it.level == state.nonVerifiedMonthlyDonation.level }
-          if (subscription != null) {
-            presentNonVerifiedSubscriptionSettings(state.nonVerifiedMonthlyDonation, subscription, state)
-          } else {
-            customPref(IndeterminateLoadingCircle)
-          }
-        } else if (state.hasOneTimeBadge || state.pendingOneTimeDonation != null) {
-          presentActiveOneTimeDonorSettings(state)
-        } else {
-          presentNotADonorSettings(state.hasReceipts)
-        }
-      } else if (state.subscriptionTransactionState == ManageDonationsState.TransactionState.NetworkFailure) {
-        presentNetworkFailureSettings(state, state.hasReceipts)
-      } else {
-        customPref(IndeterminateLoadingCircle)
+    primaryWrappedButton(
+      text = DSLSettingsText.from(R.string.ManageDonationsFragment__donate_to_signal),
+      onClick = {
+        launcher.launch(InAppPaymentType.ONE_TIME_DONATION)
       }
+    )
+
+    space(16.dp)
+
+    if (state.subscriptionTransactionState is ManageDonationsState.TransactionState.NotInTransaction) {
+      val activeSubscription = state.subscriptionTransactionState.activeSubscription.activeSubscription
+
+      if (activeSubscription != null) {
+        val subscription: Subscription? = state.availableSubscriptions.firstOrNull { it.level == activeSubscription.level }
+        if (subscription != null) {
+          presentSubscriptionSettings(activeSubscription, subscription, state)
+        } else {
+          customPref(IndeterminateLoadingCircle)
+        }
+      } else if (state.nonVerifiedMonthlyDonation != null) {
+        val subscription: Subscription? = state.availableSubscriptions.firstOrNull { it.level == state.nonVerifiedMonthlyDonation.level }
+        if (subscription != null) {
+          presentNonVerifiedSubscriptionSettings(state.nonVerifiedMonthlyDonation, subscription, state)
+        } else {
+          customPref(IndeterminateLoadingCircle)
+        }
+      } else if (state.hasOneTimeBadge || state.pendingOneTimeDonation != null) {
+        presentActiveOneTimeDonorSettings(state)
+      } else {
+        presentNotADonorSettings(state.hasReceipts)
+      }
+    } else if (state.subscriptionTransactionState == ManageDonationsState.TransactionState.NetworkFailure) {
+      presentNetworkFailureSettings(state, state.hasReceipts)
+    } else {
+      customPref(IndeterminateLoadingCircle)
     }
   }
 

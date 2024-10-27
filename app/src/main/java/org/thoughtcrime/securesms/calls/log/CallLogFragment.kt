@@ -74,7 +74,10 @@ import java.util.concurrent.TimeUnit
  * Call Log tab.
  */
 @SuppressLint("DiscouragedApi")
-class CallLogFragment : Fragment(R.layout.call_log_fragment), CallLogAdapter.Callbacks, CallLogContextMenu.Callbacks {
+class CallLogFragment :
+  Fragment(R.layout.call_log_fragment),
+  CallLogAdapter.Callbacks,
+  CallLogContextMenu.Callbacks {
 
   companion object {
     private val TAG = Log.tag(CallLogFragment::class.java)
@@ -323,13 +326,10 @@ class CallLogFragment : Fragment(R.layout.call_log_fragment), CallLogAdapter.Cal
         binding.pullView.onUserDragFinished()
       }
 
-      override fun canStartNestedScroll(): Boolean {
-        return !callLogActionMode.isInActionMode() && !isSearchOpen()
-      }
+      override fun canStartNestedScroll(): Boolean = !callLogActionMode.isInActionMode() && !isSearchOpen()
     }
 
-    filterViewOffsetChangeListener = AppBarLayout.OnOffsetChangedListener {
-        layout: AppBarLayout, verticalOffset: Int ->
+    filterViewOffsetChangeListener = AppBarLayout.OnOffsetChangedListener { layout: AppBarLayout, verticalOffset: Int ->
       val progress = 1 - verticalOffset.toFloat() / -layout.height
       binding.pullView.onUserDrag(progress)
     }
@@ -433,9 +433,7 @@ class CallLogFragment : Fragment(R.layout.call_log_fragment), CallLogAdapter.Cal
       .show()
   }
 
-  private fun isSearchOpen(): Boolean {
-    return isSearchVisible() || viewModel.hasSearchQuery
-  }
+  private fun isSearchOpen(): Boolean = isSearchVisible() || viewModel.hasSearchQuery
 
   private fun closeSearchIfOpen(): Boolean {
     if (isSearchOpen()) {
@@ -446,10 +444,8 @@ class CallLogFragment : Fragment(R.layout.call_log_fragment), CallLogAdapter.Cal
     return false
   }
 
-  private fun isSearchVisible(): Boolean {
-    return requireListener<SearchBinder>().getSearchToolbar().resolved() &&
-      requireListener<SearchBinder>().getSearchToolbar().get().visibility == View.VISIBLE
-  }
+  private fun isSearchVisible(): Boolean = requireListener<SearchBinder>().getSearchToolbar().resolved() &&
+    requireListener<SearchBinder>().getSearchToolbar().get().visibility == View.VISIBLE
 
   private fun performDeletion(count: Int, callLogStagedDeletion: CallLogStagedDeletion) {
     var progressDialog: ProgressCardDialogFragment? = null

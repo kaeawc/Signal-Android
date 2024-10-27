@@ -57,13 +57,9 @@ class ScribbleStickersFragment : StickerKeyboardPageFragment() {
 
   data class FeatureStickerModel(val featureSticker: FeatureSticker) : MappingModel<FeatureStickerModel> {
 
-    override fun areItemsTheSame(newItem: FeatureStickerModel): Boolean {
-      return featureSticker == newItem.featureSticker
-    }
+    override fun areItemsTheSame(newItem: FeatureStickerModel): Boolean = featureSticker == newItem.featureSticker
 
-    override fun areContentsTheSame(newItem: FeatureStickerModel): Boolean {
-      return areItemsTheSame(newItem)
-    }
+    override fun areContentsTheSame(newItem: FeatureStickerModel): Boolean = areItemsTheSame(newItem)
   }
 
   private inner class FeatureStickerViewHolder(itemView: View) : MappingViewHolder<FeatureStickerModel>(itemView) {
@@ -101,18 +97,14 @@ class ScribbleStickersFragment : StickerKeyboardPageFragment() {
     }
   }
 
-  data class FeatureHeader(private val titleResource: Int?) : MappingModel<FeatureHeader>, KeyboardStickerListAdapter.Header {
-    fun getTitle(context: Context): String {
-      return context.resources.getString(titleResource ?: R.string.StickerManagementAdapter_untitled)
-    }
+  data class FeatureHeader(private val titleResource: Int?) :
+    MappingModel<FeatureHeader>,
+    KeyboardStickerListAdapter.Header {
+    fun getTitle(context: Context): String = context.resources.getString(titleResource ?: R.string.StickerManagementAdapter_untitled)
 
-    override fun areItemsTheSame(newItem: FeatureHeader): Boolean {
-      return titleResource == newItem.titleResource
-    }
+    override fun areItemsTheSame(newItem: FeatureHeader): Boolean = titleResource == newItem.titleResource
 
-    override fun areContentsTheSame(newItem: FeatureHeader): Boolean {
-      return areItemsTheSame(newItem)
-    }
+    override fun areContentsTheSame(newItem: FeatureHeader): Boolean = areItemsTheSame(newItem)
   }
 
   private inner class HeaderViewHolder(itemView: View) : MappingViewHolder<FeatureHeader>(itemView) {

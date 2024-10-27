@@ -45,11 +45,9 @@ class GenerateAudioWaveFormJob private constructor(private val attachmentId: Att
       .build()
   )
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putLong(KEY_ATTACHMENT_ID, attachmentId.id)
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putLong(KEY_ATTACHMENT_ID, attachmentId.id)
+    .serialize()
 
   override fun getFactoryKey(): String = KEY
 
@@ -78,9 +76,7 @@ class GenerateAudioWaveFormJob private constructor(private val attachmentId: Att
     }
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return false
-  }
+  override fun onShouldRetry(e: Exception): Boolean = false
 
   override fun onFailure() = Unit
 

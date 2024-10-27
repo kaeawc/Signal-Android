@@ -285,14 +285,10 @@ class FindByActivity : PassphraseRequiredActivity() {
   }
 
   class Contract : ActivityResultContract<FindByMode, RecipientId?>() {
-    override fun createIntent(context: Context, input: FindByMode): Intent {
-      return Intent(context, FindByActivity::class.java)
-        .putExtra(MODE, input.name)
-    }
+    override fun createIntent(context: Context, input: FindByMode): Intent = Intent(context, FindByActivity::class.java)
+      .putExtra(MODE, input.name)
 
-    override fun parseResult(resultCode: Int, intent: Intent?): RecipientId? {
-      return intent?.getParcelableExtraCompat(RECIPIENT_ID, RecipientId::class.java)
-    }
+    override fun parseResult(resultCode: Int, intent: Intent?): RecipientId? = intent?.getParcelableExtraCompat(RECIPIENT_ID, RecipientId::class.java)
   }
 }
 

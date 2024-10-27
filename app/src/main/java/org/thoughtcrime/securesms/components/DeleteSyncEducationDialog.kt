@@ -45,11 +45,9 @@ class DeleteSyncEducationDialog : ComposeBottomSheetDialogFragment() {
   companion object {
 
     @JvmStatic
-    fun shouldShow(): Boolean {
-      return TextSecurePreferences.isMultiDevice(AppDependencies.application) &&
-        !SignalStore.uiHints.hasSeenDeleteSyncEducationSheet &&
-        Recipient.self().deleteSyncCapability.isSupported
-    }
+    fun shouldShow(): Boolean = TextSecurePreferences.isMultiDevice(AppDependencies.application) &&
+      !SignalStore.uiHints.hasSeenDeleteSyncEducationSheet &&
+      Recipient.self().deleteSyncCapability.isSupported
 
     @JvmStatic
     fun show(fragmentManager: FragmentManager): Completable {

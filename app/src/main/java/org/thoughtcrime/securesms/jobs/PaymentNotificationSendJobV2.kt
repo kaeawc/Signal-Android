@@ -32,16 +32,12 @@ class PaymentNotificationSendJobV2 private constructor(
 
   constructor(recipientId: RecipientId, uuid: UUID) : this(Parameters.Builder().build(), recipientId, uuid)
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putString(KEY_RECIPIENT, recipientId.serialize())
-      .putString(KEY_UUID, uuid.toString())
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putString(KEY_RECIPIENT, recipientId.serialize())
+    .putString(KEY_UUID, uuid.toString())
+    .serialize()
 
-  override fun getFactoryKey(): String {
-    return KEY
-  }
+  override fun getFactoryKey(): String = KEY
 
   @Throws(Exception::class)
   override fun onRun() {

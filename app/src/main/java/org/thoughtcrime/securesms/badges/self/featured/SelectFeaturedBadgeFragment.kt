@@ -22,11 +22,12 @@ import org.thoughtcrime.securesms.util.adapter.mapping.MappingAdapter
 /**
  * Fragment which allows user to select one of their badges to be their "Featured" badge.
  */
-class SelectFeaturedBadgeFragment : DSLSettingsFragment(
-  titleId = R.string.BadgesOverviewFragment__featured_badge,
-  layoutId = R.layout.select_featured_badge_fragment,
-  layoutManagerProducer = Badges::createLayoutManagerForGridWithBadges
-) {
+class SelectFeaturedBadgeFragment :
+  DSLSettingsFragment(
+    titleId = R.string.BadgesOverviewFragment__featured_badge,
+    layoutId = R.layout.select_featured_badge_fragment,
+    layoutManagerProducer = Badges::createLayoutManagerForGridWithBadges
+  ) {
 
   private val viewModel: SelectFeaturedBadgeViewModel by viewModels(factoryProducer = { SelectFeaturedBadgeViewModel.Factory(BadgeRepository(requireContext())) })
 
@@ -46,9 +47,7 @@ class SelectFeaturedBadgeFragment : DSLSettingsFragment(
     }
   }
 
-  override fun getMaterial3OnScrollHelper(toolbar: Toolbar?): Material3OnScrollHelper? {
-    return Material3OnScrollHelper(requireActivity(), scrollShadow, viewLifecycleOwner)
-  }
+  override fun getMaterial3OnScrollHelper(toolbar: Toolbar?): Material3OnScrollHelper? = Material3OnScrollHelper(requireActivity(), scrollShadow, viewLifecycleOwner)
 
   override fun bindAdapter(adapter: MappingAdapter) {
     Badge.register(adapter) { badge, isSelected, _ ->
@@ -84,10 +83,8 @@ class SelectFeaturedBadgeFragment : DSLSettingsFragment(
     }
   }
 
-  private fun getConfiguration(state: SelectFeaturedBadgeState): DSLConfiguration {
-    return configure {
-      sectionHeaderPref(R.string.SelectFeaturedBadgeFragment__select_a_badge)
-      displayBadges(requireContext(), state.allUnlockedBadges, state.selectedBadge)
-    }
+  private fun getConfiguration(state: SelectFeaturedBadgeState): DSLConfiguration = configure {
+    sectionHeaderPref(R.string.SelectFeaturedBadgeFragment__select_a_badge)
+    displayBadges(requireContext(), state.allUnlockedBadges, state.selectedBadge)
   }
 }

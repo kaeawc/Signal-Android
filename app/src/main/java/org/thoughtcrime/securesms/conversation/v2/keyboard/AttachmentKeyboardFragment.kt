@@ -33,7 +33,9 @@ import java.util.function.Predicate
  * Fragment wrapped version of [AttachmentKeyboard] to help encapsulate logic the view
  * needs from external sources.
  */
-class AttachmentKeyboardFragment : LoggingFragment(R.layout.attachment_keyboard_fragment), AttachmentKeyboard.Callback {
+class AttachmentKeyboardFragment :
+  LoggingFragment(R.layout.attachment_keyboard_fragment),
+  AttachmentKeyboard.Callback {
 
   companion object {
     const val RESULT_KEY = "AttachmentKeyboardFragmentResult"

@@ -9,11 +9,7 @@ object BankDetailsValidator {
 
   private val EMAIL_REGEX: Regex = ".+@.+\\..+".toRegex()
 
-  fun validName(name: String): Boolean {
-    return name.length >= 2
-  }
+  fun validName(name: String): Boolean = name.length >= 2
 
-  fun validEmail(email: String): Boolean {
-    return email.length >= 3 && email.matches(EMAIL_REGEX)
-  }
+  fun validEmail(email: String): Boolean = email.length >= 3 && email.matches(EMAIL_REGEX)
 }

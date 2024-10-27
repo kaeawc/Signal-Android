@@ -102,8 +102,6 @@ class MultiselectForwardViewModel(
     private val isSelectionOnly: Boolean,
     private val repository: MultiselectForwardRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(MultiselectForwardViewModel(storySendRequirements, records, isSelectionOnly, repository)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(MultiselectForwardViewModel(storySendRequirements, records, isSelectionOnly, repository)))
   }
 }

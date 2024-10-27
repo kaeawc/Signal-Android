@@ -76,15 +76,13 @@ class StoryViewerViewModel(
   fun postAfterLoadStateReady(
     delay: Duration = 100.milliseconds,
     action: () -> Unit
-  ): Disposable {
-    return loadState
-      .filter { it.isReady() }
-      .delay(delay.inWholeMilliseconds, TimeUnit.MILLISECONDS)
-      .firstOrError()
-      .ignoreElement()
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribeBy { action() }
-  }
+  ): Disposable = loadState
+    .filter { it.isReady() }
+    .delay(delay.inWholeMilliseconds, TimeUnit.MILLISECONDS)
+    .firstOrError()
+    .ignoreElement()
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeBy { action() }
 
   fun addHiddenAndRefresh(hidden: Set<RecipientId>) {
     this.hidden.addAll(hidden)
@@ -123,15 +121,13 @@ class StoryViewerViewModel(
     scrollStatePublisher.value = isScrolling
   }
 
-  private fun getStories(): Single<List<RecipientId>> {
-    return if (storyViewerArgs.recipientIds.isNotEmpty()) {
-      Single.just(storyViewerArgs.recipientIds - hidden)
-    } else {
-      repository.getStories(
-        hiddenStories = storyViewerArgs.isInHiddenStoryMode,
-        isOutgoingOnly = storyViewerArgs.isFromMyStories
-      )
-    }
+  private fun getStories(): Single<List<RecipientId>> = if (storyViewerArgs.recipientIds.isNotEmpty()) {
+    Single.just(storyViewerArgs.recipientIds - hidden)
+  } else {
+    repository.getStories(
+      hiddenStories = storyViewerArgs.isInHiddenStoryMode,
+      isOutgoingOnly = storyViewerArgs.isFromMyStories
+    )
   }
 
   fun refresh() {
@@ -222,16 +218,14 @@ class StoryViewerViewModel(
     )
   }
 
-  private fun resolvePage(page: Int, recipientIds: List<RecipientId>): Int {
-    return if (page > -1) {
-      page
+  private fun resolvePage(page: Int, recipientIds: List<RecipientId>): Int = if (page > -1) {
+    page
+  } else {
+    val indexOfStartRecipient = recipientIds.indexOf(storyViewerArgs.recipientId)
+    if (indexOfStartRecipient == -1) {
+      0
     } else {
-      val indexOfStartRecipient = recipientIds.indexOf(storyViewerArgs.recipientId)
-      if (indexOfStartRecipient == -1) {
-        0
-      } else {
-        indexOfStartRecipient
-      }
+      indexOfStartRecipient
     }
   }
 
@@ -243,13 +237,11 @@ class StoryViewerViewModel(
     private val storyViewerArgs: StoryViewerArgs,
     private val repository: StoryViewerRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(
-        StoryViewerViewModel(
-          storyViewerArgs,
-          repository
-        )
-      ) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(
+      StoryViewerViewModel(
+        storyViewerArgs,
+        repository
+      )
+    ) as T
   }
 }

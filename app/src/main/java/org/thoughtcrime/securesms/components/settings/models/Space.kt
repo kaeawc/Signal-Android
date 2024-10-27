@@ -23,13 +23,9 @@ data class Space(
   }
 
   class Model(val space: Space) : PreferenceModel<Model>() {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return true
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = true
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) && newItem.space == space
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) && newItem.space == space
   }
 
   class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

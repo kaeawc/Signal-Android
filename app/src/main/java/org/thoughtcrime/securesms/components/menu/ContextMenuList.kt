@@ -33,30 +33,24 @@ class ContextMenuList(recyclerView: RecyclerView, onItemClick: () -> Unit) {
     mappingAdapter.submitList(items.toAdapterItems())
   }
 
-  private fun List<ActionItem>.toAdapterItems(): List<DisplayItem> {
-    return this.mapIndexed { index, item ->
-      val displayType: DisplayType = when {
-        this.size == 1 -> DisplayType.ONLY
-        index == 0 -> DisplayType.TOP
-        index == this.size - 1 -> DisplayType.BOTTOM
-        else -> DisplayType.MIDDLE
-      }
-
-      DisplayItem(item, displayType)
+  private fun List<ActionItem>.toAdapterItems(): List<DisplayItem> = this.mapIndexed { index, item ->
+    val displayType: DisplayType = when {
+      this.size == 1 -> DisplayType.ONLY
+      index == 0 -> DisplayType.TOP
+      index == this.size - 1 -> DisplayType.BOTTOM
+      else -> DisplayType.MIDDLE
     }
+
+    DisplayItem(item, displayType)
   }
 
   private data class DisplayItem(
     val item: ActionItem,
     val displayType: DisplayType
   ) : MappingModel<DisplayItem> {
-    override fun areItemsTheSame(newItem: DisplayItem): Boolean {
-      return this == newItem
-    }
+    override fun areItemsTheSame(newItem: DisplayItem): Boolean = this == newItem
 
-    override fun areContentsTheSame(newItem: DisplayItem): Boolean {
-      return this == newItem
-    }
+    override fun areContentsTheSame(newItem: DisplayItem): Boolean = this == newItem
   }
 
   private enum class DisplayType {

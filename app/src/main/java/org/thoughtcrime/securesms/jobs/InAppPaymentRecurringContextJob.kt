@@ -49,34 +49,30 @@ class InAppPaymentRecurringContextJob private constructor(
 
     const val KEY = "InAppPurchaseRecurringContextJob"
 
-    fun create(inAppPayment: InAppPaymentTable.InAppPayment): Job {
-      return InAppPaymentRecurringContextJob(
-        inAppPaymentId = inAppPayment.id,
-        parameters = Parameters.Builder()
-          .addConstraint(NetworkConstraint.KEY)
-          .setQueue(InAppPaymentsRepository.resolveJobQueueKey(inAppPayment))
-          .setLifespan(InAppPaymentsRepository.resolveContextJobLifespan(inAppPayment).inWholeMilliseconds)
-          .setMaxAttempts(Parameters.UNLIMITED)
-          .build()
-      )
-    }
+    fun create(inAppPayment: InAppPaymentTable.InAppPayment): Job = InAppPaymentRecurringContextJob(
+      inAppPaymentId = inAppPayment.id,
+      parameters = Parameters.Builder()
+        .addConstraint(NetworkConstraint.KEY)
+        .setQueue(InAppPaymentsRepository.resolveJobQueueKey(inAppPayment))
+        .setLifespan(InAppPaymentsRepository.resolveContextJobLifespan(inAppPayment).inWholeMilliseconds)
+        .setMaxAttempts(Parameters.UNLIMITED)
+        .build()
+    )
 
     /**
      * Creates a job chain using data from the given InAppPayment. This object is passed by ID to the job,
      * meaning the job will always load the freshest data it can about the payment.
      */
-    fun createJobChain(inAppPayment: InAppPaymentTable.InAppPayment, makePrimary: Boolean = false): Chain {
-      return if (inAppPayment.type == InAppPaymentType.RECURRING_BACKUP) {
-        AppDependencies.jobManager
-          .startChain(create(inAppPayment))
-          .then(InAppPaymentRedemptionJob.create(inAppPayment, makePrimary))
-      } else {
-        AppDependencies.jobManager
-          .startChain(create(inAppPayment))
-          .then(InAppPaymentRedemptionJob.create(inAppPayment, makePrimary))
-          .then(RefreshOwnProfileJob())
-          .then(MultiDeviceProfileContentUpdateJob())
-      }
+    fun createJobChain(inAppPayment: InAppPaymentTable.InAppPayment, makePrimary: Boolean = false): Chain = if (inAppPayment.type == InAppPaymentType.RECURRING_BACKUP) {
+      AppDependencies.jobManager
+        .startChain(create(inAppPayment))
+        .then(InAppPaymentRedemptionJob.create(inAppPayment, makePrimary))
+    } else {
+      AppDependencies.jobManager
+        .startChain(create(inAppPayment))
+        .then(InAppPaymentRedemptionJob.create(inAppPayment, makePrimary))
+        .then(RefreshOwnProfileJob())
+        .then(MultiDeviceProfileContentUpdateJob())
     }
   }
 
@@ -527,11 +523,9 @@ class InAppPaymentRecurringContextJob private constructor(
   }
 
   class Factory : Job.Factory<InAppPaymentRecurringContextJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): InAppPaymentRecurringContextJob {
-      return InAppPaymentRecurringContextJob(
-        InAppPaymentTable.InAppPaymentId(serializedData!!.decodeToString().toLong()),
-        parameters
-      )
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): InAppPaymentRecurringContextJob = InAppPaymentRecurringContextJob(
+      InAppPaymentTable.InAppPaymentId(serializedData!!.decodeToString().toLong()),
+      parameters
+    )
   }
 }

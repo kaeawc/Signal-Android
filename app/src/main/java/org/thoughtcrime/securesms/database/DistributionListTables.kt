@@ -33,7 +33,9 @@ import java.util.UUID
 /**
  * Stores distribution lists, which represent different sets of people you may want to share a story with.
  */
-class DistributionListTables constructor(context: Context?, databaseHelper: SignalDatabase?) : DatabaseTable(context, databaseHelper), RecipientIdDatabaseReference {
+class DistributionListTables constructor(context: Context?, databaseHelper: SignalDatabase?) :
+  DatabaseTable(context, databaseHelper),
+  RecipientIdDatabaseReference {
 
   companion object {
     private val TAG = Log.tag(DistributionListTables::class.java)
@@ -169,13 +171,11 @@ class DistributionListTables constructor(context: Context?, databaseHelper: Sign
     return db.query(ListTable.TABLE_NAME, ListTable.LIST_UI_PROJECTION, where, whereArgs, null, null, null)
   }
 
-  fun getAllListRecipients(): List<RecipientId> {
-    return readableDatabase
-      .select(ListTable.RECIPIENT_ID)
-      .from(ListTable.TABLE_NAME)
-      .run()
-      .readToList { cursor -> RecipientId.from(cursor.requireLong(ListTable.RECIPIENT_ID)) }
-  }
+  fun getAllListRecipients(): List<RecipientId> = readableDatabase
+    .select(ListTable.RECIPIENT_ID)
+    .from(ListTable.TABLE_NAME)
+    .run()
+    .readToList { cursor -> RecipientId.from(cursor.requireLong(ListTable.RECIPIENT_ID)) }
 
   /**
    * Gets or creates a distribution list for the given id.
@@ -272,20 +272,18 @@ class DistributionListTables constructor(context: Context?, databaseHelper: Sign
     }
   }
 
-  fun getRecipientIdByDistributionId(distributionId: DistributionId): RecipientId? {
-    return readableDatabase
-      .select(ListTable.RECIPIENT_ID)
-      .from(ListTable.TABLE_NAME)
-      .where("${ListTable.DISTRIBUTION_ID} = ?", distributionId.toString())
-      .run()
-      .use { cursor ->
-        if (cursor.moveToFirst()) {
-          RecipientId.from(CursorUtil.requireLong(cursor, ListTable.RECIPIENT_ID))
-        } else {
-          null
-        }
+  fun getRecipientIdByDistributionId(distributionId: DistributionId): RecipientId? = readableDatabase
+    .select(ListTable.RECIPIENT_ID)
+    .from(ListTable.TABLE_NAME)
+    .where("${ListTable.DISTRIBUTION_ID} = ?", distributionId.toString())
+    .run()
+    .use { cursor ->
+      if (cursor.moveToFirst()) {
+        RecipientId.from(CursorUtil.requireLong(cursor, ListTable.RECIPIENT_ID))
+      } else {
+        null
       }
-  }
+    }
 
   fun getStoryType(listId: DistributionListId): StoryType {
     readableDatabase.query(ListTable.TABLE_NAME, arrayOf(ListTable.ALLOWS_REPLIES), "${ListTable.ID} = ? AND ${ListTable.IS_NOT_DELETED}", SqlUtil.buildArgs(listId), null, null, null).use { cursor ->
@@ -305,17 +303,11 @@ class DistributionListTables constructor(context: Context?, databaseHelper: Sign
     writableDatabase.update(ListTable.TABLE_NAME, contentValuesOf(ListTable.ALLOWS_REPLIES to allowsReplies), "${ListTable.ID} = ? AND ${ListTable.IS_NOT_DELETED}", SqlUtil.buildArgs(listId))
   }
 
-  fun getList(listId: DistributionListId): DistributionListRecord? {
-    return getListByQuery("${ListTable.ID} = ? AND ${ListTable.IS_NOT_DELETED}", SqlUtil.buildArgs(listId))
-  }
+  fun getList(listId: DistributionListId): DistributionListRecord? = getListByQuery("${ListTable.ID} = ? AND ${ListTable.IS_NOT_DELETED}", SqlUtil.buildArgs(listId))
 
-  fun getList(recipientId: RecipientId): DistributionListRecord? {
-    return getListByQuery("${ListTable.RECIPIENT_ID} = ? AND ${ListTable.IS_NOT_DELETED}", SqlUtil.buildArgs(recipientId))
-  }
+  fun getList(recipientId: RecipientId): DistributionListRecord? = getListByQuery("${ListTable.RECIPIENT_ID} = ? AND ${ListTable.IS_NOT_DELETED}", SqlUtil.buildArgs(recipientId))
 
-  fun getListByDistributionId(distributionId: DistributionId): DistributionListRecord? {
-    return getListByQuery("${ListTable.DISTRIBUTION_ID} = ? AND ${ListTable.IS_NOT_DELETED}", SqlUtil.buildArgs(distributionId))
-  }
+  fun getListByDistributionId(distributionId: DistributionId): DistributionListRecord? = getListByQuery("${ListTable.DISTRIBUTION_ID} = ? AND ${ListTable.IS_NOT_DELETED}", SqlUtil.buildArgs(distributionId))
 
   private fun getListByQuery(query: String, args: Array<String>): DistributionListRecord? {
     readableDatabase.query(ListTable.TABLE_NAME, null, query, args, null, null, null).use { cursor ->
@@ -343,20 +335,18 @@ class DistributionListTables constructor(context: Context?, databaseHelper: Sign
   /**
    * Gets the raw string value of distribution ID of the desired row. Added for additional logging around the UUID issues we've seen.
    */
-  fun getRawDistributionId(listId: DistributionListId): String? {
-    return readableDatabase
-      .select(ListTable.DISTRIBUTION_ID)
-      .from(ListTable.TABLE_NAME)
-      .where("${ListTable.ID} = ?", listId)
-      .run()
-      .use { cursor ->
-        if (cursor.moveToFirst()) {
-          cursor.requireString(ListTable.DISTRIBUTION_ID)
-        } else {
-          null
-        }
+  fun getRawDistributionId(listId: DistributionListId): String? = readableDatabase
+    .select(ListTable.DISTRIBUTION_ID)
+    .from(ListTable.TABLE_NAME)
+    .where("${ListTable.ID} = ?", listId)
+    .run()
+    .use { cursor ->
+      if (cursor.moveToFirst()) {
+        cursor.requireString(ListTable.DISTRIBUTION_ID)
+      } else {
+        null
       }
-  }
+    }
 
   fun getListForStorageSync(listId: DistributionListId): DistributionListRecord? {
     readableDatabase.query(ListTable.TABLE_NAME, null, "${ListTable.ID} = ?", SqlUtil.buildArgs(listId), null, null, null).use { cursor ->
@@ -440,9 +430,7 @@ class DistributionListTables constructor(context: Context?, databaseHelper: Sign
     return members
   }
 
-  fun getMemberCount(listId: DistributionListId): Int {
-    return getPrivacyData(listId).memberCount
-  }
+  fun getMemberCount(listId: DistributionListId): Int = getPrivacyData(listId).memberCount
 
   fun getPrivacyData(listId: DistributionListId): DistributionListPrivacyData {
     lateinit var privacyMode: DistributionListPrivacyMode
@@ -477,20 +465,18 @@ class DistributionListTables constructor(context: Context?, databaseHelper: Sign
     }
   }
 
-  fun getPrivacyMode(listId: DistributionListId): DistributionListPrivacyMode {
-    return readableDatabase
-      .select(ListTable.PRIVACY_MODE)
-      .from(ListTable.TABLE_NAME)
-      .where("${ListTable.ID} = ?", listId.serialize())
-      .run()
-      .use {
-        if (it.moveToFirst()) {
-          it.requireObject(ListTable.PRIVACY_MODE, DistributionListPrivacyMode.Serializer)
-        } else {
-          DistributionListPrivacyMode.ONLY_WITH
-        }
+  fun getPrivacyMode(listId: DistributionListId): DistributionListPrivacyMode = readableDatabase
+    .select(ListTable.PRIVACY_MODE)
+    .from(ListTable.TABLE_NAME)
+    .where("${ListTable.ID} = ?", listId.serialize())
+    .run()
+    .use {
+      if (it.moveToFirst()) {
+        it.requireObject(ListTable.PRIVACY_MODE, DistributionListPrivacyMode.Serializer)
+      } else {
+        DistributionListPrivacyMode.ONLY_WITH
       }
-  }
+    }
 
   fun removeMemberFromAllLists(member: RecipientId) {
     writableDatabase.delete(MembershipTable.TABLE_NAME, "${MembershipTable.RECIPIENT_ID} = ?", SqlUtil.buildArgs(member))
@@ -572,21 +558,19 @@ class DistributionListTables constructor(context: Context?, databaseHelper: Sign
     }
   }
 
-  fun getRecipientId(distributionListId: DistributionListId): RecipientId? {
-    return readableDatabase.query(
-      ListTable.TABLE_NAME,
-      arrayOf(ListTable.RECIPIENT_ID),
-      "${ListTable.ID} = ?",
-      SqlUtil.buildArgs(distributionListId),
-      null,
-      null,
+  fun getRecipientId(distributionListId: DistributionListId): RecipientId? = readableDatabase.query(
+    ListTable.TABLE_NAME,
+    arrayOf(ListTable.RECIPIENT_ID),
+    "${ListTable.ID} = ?",
+    SqlUtil.buildArgs(distributionListId),
+    null,
+    null,
+    null
+  )?.use { cursor ->
+    if (cursor.moveToFirst()) {
+      RecipientId.from(CursorUtil.requireLong(cursor, ListTable.RECIPIENT_ID))
+    } else {
       null
-    )?.use { cursor ->
-      if (cursor.moveToFirst()) {
-        RecipientId.from(CursorUtil.requireLong(cursor, ListTable.RECIPIENT_ID))
-      } else {
-        null
-      }
     }
   }
 
@@ -678,13 +662,9 @@ class DistributionListTables constructor(context: Context?, databaseHelper: Sign
     }
   }
 
-  private fun createUniqueNameForDeletedStory(): String {
-    return "DELETED-${UUID.randomUUID()}"
-  }
+  private fun createUniqueNameForDeletedStory(): String = "DELETED-${UUID.randomUUID()}"
 
-  private fun createUniqueNameForUnknownDistributionId(): String {
-    return "DELETED-${UUID.randomUUID()}"
-  }
+  private fun createUniqueNameForUnknownDistributionId(): String = "DELETED-${UUID.randomUUID()}"
 
   fun excludeFromStory(recipientId: RecipientId, record: DistributionListRecord) {
     excludeAllFromStory(listOf(recipientId), record)

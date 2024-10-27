@@ -46,7 +46,7 @@ public final class BadDecryptLearnMoreDialog extends DialogFragment {
   public Dialog onCreateDialog(Bundle savedInstanceState) {
     MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(requireContext());
 
-    View     view = LayoutInflater.from(requireContext()).inflate(R.layout.bad_decrypt_learn_more_dialog_fragment, null);
+    View     view = getLayoutInflater().inflate(R.layout.bad_decrypt_learn_more_dialog_fragment, null);
     TextView body = view.findViewById(R.id.bad_decrypt_dialog_body);
 
     String  displayName = requireArguments().getString(KEY_DISPLAY_NAME);

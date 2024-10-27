@@ -17,12 +17,10 @@ abstract class AudioRecorderFocusManager(val context: Context) {
 
   companion object {
     @JvmStatic
-    fun create(context: Context, changeListener: OnAudioFocusChangeListener): AudioRecorderFocusManager {
-      return if (Build.VERSION.SDK_INT >= 26) {
-        AudioRecorderFocusManager26(context, changeListener)
-      } else {
-        AudioRecorderFocusManagerLegacy(context, changeListener)
-      }
+    fun create(context: Context, changeListener: OnAudioFocusChangeListener): AudioRecorderFocusManager = if (Build.VERSION.SDK_INT >= 26) {
+      AudioRecorderFocusManager26(context, changeListener)
+    } else {
+      AudioRecorderFocusManagerLegacy(context, changeListener)
     }
   }
 }
@@ -42,22 +40,14 @@ private class AudioRecorderFocusManager26(context: Context, changeListener: OnAu
       .build()
   }
 
-  override fun requestAudioFocus(): Int {
-    return audioManager.requestAudioFocus(audioFocusRequest)
-  }
+  override fun requestAudioFocus(): Int = audioManager.requestAudioFocus(audioFocusRequest)
 
-  override fun abandonAudioFocus(): Int {
-    return audioManager.abandonAudioFocusRequest(audioFocusRequest)
-  }
+  override fun abandonAudioFocus(): Int = audioManager.abandonAudioFocusRequest(audioFocusRequest)
 }
 
 @Suppress("DEPRECATION")
 private class AudioRecorderFocusManagerLegacy(context: Context, val changeListener: OnAudioFocusChangeListener) : AudioRecorderFocusManager(context) {
-  override fun requestAudioFocus(): Int {
-    return audioManager.requestAudioFocus(changeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE)
-  }
+  override fun requestAudioFocus(): Int = audioManager.requestAudioFocus(changeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE)
 
-  override fun abandonAudioFocus(): Int {
-    return audioManager.abandonAudioFocus(changeListener)
-  }
+  override fun abandonAudioFocus(): Int = audioManager.abandonAudioFocus(changeListener)
 }

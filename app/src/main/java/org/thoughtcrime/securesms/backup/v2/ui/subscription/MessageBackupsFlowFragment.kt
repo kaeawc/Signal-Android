@@ -33,16 +33,16 @@ import org.thoughtcrime.securesms.util.viewModel
 /**
  * Handles the selection, payment, and changing of a user's backup tier.
  */
-class MessageBackupsFlowFragment : ComposeFragment(), InAppPaymentCheckoutDelegate.ErrorHandlerCallback {
+class MessageBackupsFlowFragment :
+  ComposeFragment(),
+  InAppPaymentCheckoutDelegate.ErrorHandlerCallback {
 
   companion object {
 
     private const val TIER = "tier"
 
-    fun create(messageBackupTier: MessageBackupTier?): MessageBackupsFlowFragment {
-      return MessageBackupsFlowFragment().apply {
-        arguments = bundleOf(TIER to messageBackupTier)
-      }
+    fun create(messageBackupTier: MessageBackupTier?): MessageBackupsFlowFragment = MessageBackupsFlowFragment().apply {
+      arguments = bundleOf(TIER to messageBackupTier)
     }
   }
 
@@ -164,11 +164,9 @@ class MessageBackupsFlowFragment : ComposeFragment(), InAppPaymentCheckoutDelega
     }
   }
 
-  private fun getTypeLabel(type: MessageBackupsType): String {
-    return when (type) {
-      is MessageBackupsType.Free -> requireContext().resources.getQuantityString(R.plurals.MessageBackupsTypeSelectionScreen__text_plus_d_days_of_media, type.mediaRetentionDays, type.mediaRetentionDays)
-      is MessageBackupsType.Paid -> requireContext().getString(R.string.MessageBackupsTypeSelectionScreen__text_plus_all_your_media)
-    }
+  private fun getTypeLabel(type: MessageBackupsType): String = when (type) {
+    is MessageBackupsType.Free -> requireContext().resources.getQuantityString(R.plurals.MessageBackupsTypeSelectionScreen__text_plus_d_days_of_media, type.mediaRetentionDays, type.mediaRetentionDays)
+    is MessageBackupsType.Paid -> requireContext().getString(R.string.MessageBackupsTypeSelectionScreen__text_plus_all_your_media)
   }
 
   override fun onUserLaunchedAnExternalApplication() = error("Not supported by this fragment.")

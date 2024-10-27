@@ -2,7 +2,6 @@ package org.thoughtcrime.securesms.components.settings.app.privacy.expire
 
 import android.app.Dialog
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
@@ -20,7 +19,7 @@ class CustomExpireTimerSelectDialog : DialogFragment() {
   private lateinit var selector: CustomExpireTimerSelectorView
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val dialogView: View = LayoutInflater.from(context).inflate(R.layout.custom_expire_timer_select_dialog, null, false)
+    val dialogView: View = layoutInflater.inflate(R.layout.custom_expire_timer_select_dialog, null, false)
     selector = dialogView.findViewById(R.id.custom_expire_timer_select_dialog_selector)
 
     return MaterialAlertDialogBuilder(requireContext())

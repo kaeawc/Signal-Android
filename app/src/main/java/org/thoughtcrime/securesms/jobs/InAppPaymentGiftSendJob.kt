@@ -35,14 +35,12 @@ class InAppPaymentGiftSendJob private constructor(
     private val TAG = Log.tag(InAppPaymentGiftSendJob::class.java)
     const val KEY = "InAppPurchaseOneTimeGiftSendJob"
 
-    fun create(inAppPayment: InAppPaymentTable.InAppPayment): Job {
-      return InAppPaymentGiftSendJob(
-        inAppPaymentId = inAppPayment.id,
-        parameters = Parameters.Builder()
-          .addConstraint(NetworkConstraint.KEY)
-          .build()
-      )
-    }
+    fun create(inAppPayment: InAppPaymentTable.InAppPayment): Job = InAppPaymentGiftSendJob(
+      inAppPaymentId = inAppPayment.id,
+      parameters = Parameters.Builder()
+        .addConstraint(NetworkConstraint.KEY)
+        .build()
+    )
   }
 
   override fun serialize(): ByteArray = inAppPaymentId.serialize().toByteArray()
@@ -166,11 +164,9 @@ class InAppPaymentGiftSendJob private constructor(
   }
 
   class Factory : Job.Factory<InAppPaymentGiftSendJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): InAppPaymentGiftSendJob {
-      return InAppPaymentGiftSendJob(
-        inAppPaymentId = InAppPaymentTable.InAppPaymentId(serializedData!!.decodeToString().toLong()),
-        parameters = parameters
-      )
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): InAppPaymentGiftSendJob = InAppPaymentGiftSendJob(
+      inAppPaymentId = InAppPaymentTable.InAppPaymentId(serializedData!!.decodeToString().toLong()),
+      parameters = parameters
+    )
   }
 }

@@ -127,13 +127,11 @@ fun CallAudioToggleButton(
 private fun rememberPickerController(
   onSelectedDeviceChanged: (WebRtcAudioDevice) -> Unit,
   outputState: ToggleButtonOutputState
-): PickerController {
-  return remember(onSelectedDeviceChanged, outputState) {
-    PickerController(
-      onSelectedDeviceChanged,
-      outputState
-    )
-  }
+): PickerController = remember(onSelectedDeviceChanged, outputState) {
+  PickerController(
+    onSelectedDeviceChanged,
+    outputState
+  )
 }
 
 /**

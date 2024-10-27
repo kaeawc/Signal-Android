@@ -219,17 +219,13 @@ class ConversationItemDecorations(hasWallpaper: Boolean = false, private val sch
     return unreadViewHolder!!
   }
 
-  private fun ConversationMessageElement.timestamp(): Long {
-    return if (scheduleMessageMode) {
-      (conversationMessage.messageRecord as MmsMessageRecord).scheduledDate
-    } else {
-      conversationMessage.conversationTimestamp
-    }
+  private fun ConversationMessageElement.timestamp(): Long = if (scheduleMessageMode) {
+    (conversationMessage.messageRecord as MmsMessageRecord).scheduledDate
+  } else {
+    conversationMessage.conversationTimestamp
   }
 
-  private fun ConversationMessageElement.toEpochDay(): Long {
-    return timestamp().toLocalDate().toEpochDay()
-  }
+  private fun ConversationMessageElement.toEpochDay(): Long = timestamp().toLocalDate().toEpochDay()
 
   private inner class DateHeaderViewHolder(val itemView: View) {
     private val date = itemView.findViewById<TextView>(R.id.text)

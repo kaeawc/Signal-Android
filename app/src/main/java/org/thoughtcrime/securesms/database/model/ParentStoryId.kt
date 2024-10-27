@@ -36,12 +36,10 @@ sealed class ParentStoryId(protected val id: Long) {
      * If the passed value is 0L, null is returned.
      */
     @JvmStatic
-    fun deserialize(id: Long): ParentStoryId? {
-      return when {
-        id > 0L -> GroupReply(id)
-        id < 0L -> DirectReply(id)
-        else -> null
-      }
+    fun deserialize(id: Long): ParentStoryId? = when {
+      id > 0L -> GroupReply(id)
+      id < 0L -> DirectReply(id)
+      else -> null
     }
   }
 }

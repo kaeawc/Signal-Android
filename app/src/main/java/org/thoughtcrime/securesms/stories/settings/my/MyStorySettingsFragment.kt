@@ -19,9 +19,10 @@ import org.thoughtcrime.securesms.stories.settings.connections.ViewAllSignalConn
 import org.thoughtcrime.securesms.util.adapter.mapping.MappingAdapter
 import org.thoughtcrime.securesms.util.navigation.safeNavigate
 
-class MyStorySettingsFragment : DSLSettingsFragment(
-  titleId = R.string.MyStorySettingsFragment__my_story
-) {
+class MyStorySettingsFragment :
+  DSLSettingsFragment(
+    titleId = R.string.MyStorySettingsFragment__my_story
+  ) {
 
   private val viewModel: MyStorySettingsViewModel by viewModels()
 
@@ -45,86 +46,80 @@ class MyStorySettingsFragment : DSLSettingsFragment(
     }
   }
 
-  private fun getConfiguration(state: MyStorySettingsState): DSLConfiguration {
-    return configure {
-      sectionHeaderPref(R.string.MyStorySettingsFragment__who_can_view_this_story)
+  private fun getConfiguration(state: MyStorySettingsState): DSLConfiguration = configure {
+    sectionHeaderPref(R.string.MyStorySettingsFragment__who_can_view_this_story)
 
-      customPref(
-        AllSignalConnectionsRowItem.Model(
-          isChecked = state.myStoryPrivacyState.privacyMode == DistributionListPrivacyMode.ALL && state.hasUserPerformedManualSelection,
-          count = state.allSignalConnectionsCount,
-          onRowClicked = {
-            lifecycleDisposable += viewModel.setMyStoryPrivacyMode(DistributionListPrivacyMode.ALL)
-              .subscribe()
-          },
-          onViewClicked = {
-            ViewAllSignalConnectionsFragment.Dialog.show(childFragmentManager)
-          }
-        )
-      )
-
-      val exceptText = if (state.myStoryPrivacyState.privacyMode == DistributionListPrivacyMode.ALL_EXCEPT) {
-        DSLSettingsText.from(resources.getQuantityString(R.plurals.MyStorySettingsFragment__d_people_excluded, state.myStoryPrivacyState.connectionCount, state.myStoryPrivacyState.connectionCount))
-      } else {
-        DSLSettingsText.from(R.string.MyStorySettingsFragment__hide_your_story_from_specific_people)
-      }
-
-      radioPref(
-        title = DSLSettingsText.from(R.string.MyStorySettingsFragment__all_except),
-        summary = exceptText,
-        isChecked = state.myStoryPrivacyState.privacyMode == DistributionListPrivacyMode.ALL_EXCEPT && state.hasUserPerformedManualSelection,
-        onClick = {
-          lifecycleDisposable += viewModel.setMyStoryPrivacyMode(DistributionListPrivacyMode.ALL_EXCEPT)
-            .subscribe { findNavController().safeNavigate(R.id.action_myStorySettings_to_allExceptFragment) }
+    customPref(
+      AllSignalConnectionsRowItem.Model(
+        isChecked = state.myStoryPrivacyState.privacyMode == DistributionListPrivacyMode.ALL && state.hasUserPerformedManualSelection,
+        count = state.allSignalConnectionsCount,
+        onRowClicked = {
+          lifecycleDisposable += viewModel.setMyStoryPrivacyMode(DistributionListPrivacyMode.ALL)
+            .subscribe()
+        },
+        onViewClicked = {
+          ViewAllSignalConnectionsFragment.Dialog.show(childFragmentManager)
         }
       )
+    )
 
-      val onlyWithText = if (state.myStoryPrivacyState.privacyMode == DistributionListPrivacyMode.ONLY_WITH) {
-        DSLSettingsText.from(resources.getQuantityString(R.plurals.MyStorySettingsFragment__d_people, state.myStoryPrivacyState.connectionCount, state.myStoryPrivacyState.connectionCount))
-      } else {
-        DSLSettingsText.from(R.string.MyStorySettingsFragment__only_share_with_selected_people)
-      }
-
-      radioPref(
-        title = DSLSettingsText.from(R.string.MyStorySettingsFragment__only_share_with),
-        summary = onlyWithText,
-        isChecked = state.myStoryPrivacyState.privacyMode == DistributionListPrivacyMode.ONLY_WITH && state.hasUserPerformedManualSelection,
-        onClick = {
-          lifecycleDisposable += viewModel.setMyStoryPrivacyMode(DistributionListPrivacyMode.ONLY_WITH)
-            .subscribe { findNavController().safeNavigate(R.id.action_myStorySettings_to_onlyShareWithFragment) }
-        }
-      )
-
-      learnMoreTextPref(
-        summary = DSLSettingsText.from(R.string.MyStorySettingsFragment__choose_who_can_view_your_story),
-        onClick = {
-          findNavController().safeNavigate(R.id.action_myStorySettings_to_signalConnectionsBottomSheet)
-        }
-      )
-
-      dividerPref()
-
-      sectionHeaderPref(R.string.MyStorySettingsFragment__replies_amp_reactions)
-      switchPref(
-        title = DSLSettingsText.from(R.string.MyStorySettingsFragment__allow_replies_amp_reactions),
-        summary = DSLSettingsText.from(R.string.MyStorySettingsFragment__let_people_who_can_view_your_story_react_and_reply),
-        isChecked = state.areRepliesAndReactionsEnabled,
-        onClick = {
-          viewModel.setRepliesAndReactionsEnabled(!state.areRepliesAndReactionsEnabled)
-        }
-      )
+    val exceptText = if (state.myStoryPrivacyState.privacyMode == DistributionListPrivacyMode.ALL_EXCEPT) {
+      DSLSettingsText.from(resources.getQuantityString(R.plurals.MyStorySettingsFragment__d_people_excluded, state.myStoryPrivacyState.connectionCount, state.myStoryPrivacyState.connectionCount))
+    } else {
+      DSLSettingsText.from(R.string.MyStorySettingsFragment__hide_your_story_from_specific_people)
     }
+
+    radioPref(
+      title = DSLSettingsText.from(R.string.MyStorySettingsFragment__all_except),
+      summary = exceptText,
+      isChecked = state.myStoryPrivacyState.privacyMode == DistributionListPrivacyMode.ALL_EXCEPT && state.hasUserPerformedManualSelection,
+      onClick = {
+        lifecycleDisposable += viewModel.setMyStoryPrivacyMode(DistributionListPrivacyMode.ALL_EXCEPT)
+          .subscribe { findNavController().safeNavigate(R.id.action_myStorySettings_to_allExceptFragment) }
+      }
+    )
+
+    val onlyWithText = if (state.myStoryPrivacyState.privacyMode == DistributionListPrivacyMode.ONLY_WITH) {
+      DSLSettingsText.from(resources.getQuantityString(R.plurals.MyStorySettingsFragment__d_people, state.myStoryPrivacyState.connectionCount, state.myStoryPrivacyState.connectionCount))
+    } else {
+      DSLSettingsText.from(R.string.MyStorySettingsFragment__only_share_with_selected_people)
+    }
+
+    radioPref(
+      title = DSLSettingsText.from(R.string.MyStorySettingsFragment__only_share_with),
+      summary = onlyWithText,
+      isChecked = state.myStoryPrivacyState.privacyMode == DistributionListPrivacyMode.ONLY_WITH && state.hasUserPerformedManualSelection,
+      onClick = {
+        lifecycleDisposable += viewModel.setMyStoryPrivacyMode(DistributionListPrivacyMode.ONLY_WITH)
+          .subscribe { findNavController().safeNavigate(R.id.action_myStorySettings_to_onlyShareWithFragment) }
+      }
+    )
+
+    learnMoreTextPref(
+      summary = DSLSettingsText.from(R.string.MyStorySettingsFragment__choose_who_can_view_your_story),
+      onClick = {
+        findNavController().safeNavigate(R.id.action_myStorySettings_to_signalConnectionsBottomSheet)
+      }
+    )
+
+    dividerPref()
+
+    sectionHeaderPref(R.string.MyStorySettingsFragment__replies_amp_reactions)
+    switchPref(
+      title = DSLSettingsText.from(R.string.MyStorySettingsFragment__allow_replies_amp_reactions),
+      summary = DSLSettingsText.from(R.string.MyStorySettingsFragment__let_people_who_can_view_your_story_react_and_reply),
+      isChecked = state.areRepliesAndReactionsEnabled,
+      onClick = {
+        viewModel.setRepliesAndReactionsEnabled(!state.areRepliesAndReactionsEnabled)
+      }
+    )
   }
 
   class Dialog : WrapperDialogFragment() {
-    override fun getWrappedFragment(): Fragment {
-      return NavHostFragment.create(R.navigation.my_story_settings)
-    }
+    override fun getWrappedFragment(): Fragment = NavHostFragment.create(R.navigation.my_story_settings)
   }
 
   companion object {
-    fun createAsDialog(): DialogFragment {
-      return Dialog()
-    }
+    fun createAsDialog(): DialogFragment = Dialog()
   }
 }

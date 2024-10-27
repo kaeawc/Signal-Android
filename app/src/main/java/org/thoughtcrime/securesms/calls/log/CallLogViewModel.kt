@@ -113,22 +113,18 @@ class CallLogViewModel(
   }
 
   @MainThread
-  fun stageCallDeletion(call: CallLogRow): CallLogStagedDeletion {
-    return CallLogStagedDeletion(
-      callLogStore.state.filter,
-      CallLogSelectionState.empty().toggle(call.id),
-      callLogRepository
-    )
-  }
+  fun stageCallDeletion(call: CallLogRow): CallLogStagedDeletion = CallLogStagedDeletion(
+    callLogStore.state.filter,
+    CallLogSelectionState.empty().toggle(call.id),
+    callLogRepository
+  )
 
   @MainThread
-  fun stageSelectionDeletion(): CallLogStagedDeletion {
-    return CallLogStagedDeletion(
-      callLogStore.state.filter,
-      callLogStore.state.selectionState,
-      callLogRepository
-    )
-  }
+  fun stageSelectionDeletion(): CallLogStagedDeletion = CallLogStagedDeletion(
+    callLogStore.state.filter,
+    callLogStore.state.selectionState,
+    callLogRepository
+  )
 
   fun stageDeleteAll(): CallLogStagedDeletion {
     callLogStore.update {
@@ -145,21 +141,19 @@ class CallLogViewModel(
   }
 
   @SuppressLint("CheckResult")
-  fun delete(stagedDeletion: CallLogStagedDeletion): Maybe<CallLogDeletionResult> {
-    return stagedDeletion.commit()
-      .doOnSubscribe {
-        clearSelected()
+  fun delete(stagedDeletion: CallLogStagedDeletion): Maybe<CallLogDeletionResult> = stagedDeletion.commit()
+    .doOnSubscribe {
+      clearSelected()
+    }
+    .map { failedRevocations ->
+      if (failedRevocations == 0) {
+        CallLogDeletionResult.Success
+      } else {
+        CallLogDeletionResult.FailedToRevoke(failedRevocations)
       }
-      .map { failedRevocations ->
-        if (failedRevocations == 0) {
-          CallLogDeletionResult.Success
-        } else {
-          CallLogDeletionResult.FailedToRevoke(failedRevocations)
-        }
-      }
-      .onErrorReturn { CallLogDeletionResult.UnknownFailure(it) }
-      .toMaybe()
-  }
+    }
+    .onErrorReturn { CallLogDeletionResult.UnknownFailure(it) }
+    .toMaybe()
 
   fun clearSelected() {
     callLogStore.update {

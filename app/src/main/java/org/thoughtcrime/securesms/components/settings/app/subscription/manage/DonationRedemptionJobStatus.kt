@@ -46,14 +46,12 @@ sealed class DonationRedemptionJobStatus {
    */
   object FailedSubscription : DonationRedemptionJobStatus()
 
-  fun isInProgress(): Boolean {
-    return when (this) {
-      is PendingExternalVerification,
-      PendingReceiptRedemption,
-      PendingReceiptRequest -> true
+  fun isInProgress(): Boolean = when (this) {
+    is PendingExternalVerification,
+    PendingReceiptRedemption,
+    PendingReceiptRequest -> true
 
-      FailedSubscription,
-      None -> false
-    }
+    FailedSubscription,
+    None -> false
   }
 }

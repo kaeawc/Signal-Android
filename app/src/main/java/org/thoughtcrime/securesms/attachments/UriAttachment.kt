@@ -110,11 +110,7 @@ class UriAttachment : Attachment {
     dest.writeParcelable(uri, 0)
   }
 
-  override fun equals(other: Any?): Boolean {
-    return other != null && other is UriAttachment && other.uri == uri
-  }
+  override fun equals(other: Any?): Boolean = other != null && other is UriAttachment && other.uri == uri
 
-  override fun hashCode(): Int {
-    return uri.hashCode()
-  }
+  override fun hashCode(): Int = uri.hashCode()
 }

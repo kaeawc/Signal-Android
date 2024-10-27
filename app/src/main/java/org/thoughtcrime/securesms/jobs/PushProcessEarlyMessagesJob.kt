@@ -24,13 +24,9 @@ class PushProcessEarlyMessagesJob private constructor(parameters: Parameters) : 
         .build()
     )
 
-  override fun getFactoryKey(): String {
-    return KEY
-  }
+  override fun getFactoryKey(): String = KEY
 
-  override fun serialize(): ByteArray? {
-    return null
-  }
+  override fun serialize(): ByteArray? = null
 
   override fun onRun() {
     val earlyIds: List<ServiceMessageId> = AppDependencies.earlyMessageCache.allReferencedIds
@@ -57,17 +53,13 @@ class PushProcessEarlyMessagesJob private constructor(parameters: Parameters) : 
     }
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return false
-  }
+  override fun onShouldRetry(e: Exception): Boolean = false
 
   override fun onFailure() {
   }
 
   class Factory : Job.Factory<PushProcessEarlyMessagesJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): PushProcessEarlyMessagesJob {
-      return PushProcessEarlyMessagesJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): PushProcessEarlyMessagesJob = PushProcessEarlyMessagesJob(parameters)
   }
 
   companion object {

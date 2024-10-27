@@ -738,9 +738,7 @@ class ConversationFragment :
 
   //region Fragment callbacks and listeners
 
-  override fun getConversationAdapterListener(): ConversationAdapter.ItemClickListener {
-    return adapter.clickListener
-  }
+  override fun getConversationAdapterListener(): ConversationAdapter.ItemClickListener = adapter.clickListener
 
   override fun jumpToMessage(messageRecord: MessageRecord) {
     viewModel
@@ -810,9 +808,7 @@ class ConversationFragment :
     container.hideInput()
   }
 
-  override fun isMms(): Boolean {
-    return false
-  }
+  override fun isMms(): Boolean = false
 
   override fun openGifSearch() {
     val recipientId = viewModel.recipientSnapshot?.id ?: return
@@ -880,9 +876,7 @@ class ConversationFragment :
 
   //endregion
 
-  private fun createGroupSubtitleString(members: List<Recipient>): String {
-    return members.joinToString(", ") { r -> if (r.isSelf) getString(R.string.ConversationTitleView_you) else r.getDisplayName(requireContext()) }
-  }
+  private fun createGroupSubtitleString(members: List<Recipient>): String = members.joinToString(", ") { r -> if (r.isSelf) getString(R.string.ConversationTitleView_you) else r.getDisplayName(requireContext()) }
 
   private fun observeConversationThread() {
     var firstRender = true
@@ -2308,19 +2302,17 @@ class ConversationFragment :
     }
   }
 
-  private fun Single<Result<Unit, GroupChangeFailureReason>>.subscribeWithShowProgress(logMessage: String): Disposable {
-    return doOnSubscribe { binding.conversationDisabledInput.showBusy() }
-      .doOnTerminate { binding.conversationDisabledInput.hideBusy() }
-      .subscribeBy { result ->
-        when (result) {
-          is Result.Success -> Log.d(TAG, "$logMessage complete")
-          is Result.Failure -> {
-            Log.d(TAG, "$logMessage failed ${result.failure}")
-            toast(GroupErrors.getUserDisplayMessage(result.failure))
-          }
+  private fun Single<Result<Unit, GroupChangeFailureReason>>.subscribeWithShowProgress(logMessage: String): Disposable = doOnSubscribe { binding.conversationDisabledInput.showBusy() }
+    .doOnTerminate { binding.conversationDisabledInput.hideBusy() }
+    .subscribeBy { result ->
+      when (result) {
+        is Result.Success -> Log.d(TAG, "$logMessage complete")
+        is Result.Failure -> {
+          Log.d(TAG, "$logMessage failed ${result.failure}")
+          toast(GroupErrors.getUserDisplayMessage(result.failure))
         }
       }
-  }
+    }
 
   private inner class BackPressedDelegate : OnBackPressedCallback(true) {
     override fun handleOnBackPressed() {
@@ -2502,13 +2494,14 @@ class ConversationFragment :
     override fun isSwipeAvailable(conversationMessage: ConversationMessage): Boolean {
       val recipient = viewModel.recipientSnapshot ?: return false
 
-      return actionMode == null && MenuState.canReplyToMessage(
-        recipient,
-        MenuState.isActionMessage(conversationMessage.messageRecord),
-        conversationMessage.messageRecord,
-        viewModel.hasMessageRequestState,
-        conversationGroupViewModel.isNonAdminInAnnouncementGroup()
-      )
+      return actionMode == null &&
+        MenuState.canReplyToMessage(
+          recipient,
+          MenuState.isActionMessage(conversationMessage.messageRecord),
+          conversationMessage.messageRecord,
+          viewModel.hasMessageRequestState,
+          conversationGroupViewModel.isNonAdminInAnnouncementGroup()
+        )
     }
   }
 
@@ -2577,17 +2570,11 @@ class ConversationFragment :
     }
   }
 
-  private fun isScrolledToBottom(): Boolean {
-    return !binding.conversationItemRecycler.canScrollVertically(1)
-  }
+  private fun isScrolledToBottom(): Boolean = !binding.conversationItemRecycler.canScrollVertically(1)
 
-  private fun isScrolledPastButtonThreshold(): Boolean {
-    return layoutManager.findFirstVisibleItemPosition() > 4
-  }
+  private fun isScrolledPastButtonThreshold(): Boolean = layoutManager.findFirstVisibleItemPosition() > 4
 
-  private fun shouldScrollToBottom(): Boolean {
-    return isScrolledToBottom() || layoutManager.findFirstVisibleItemPosition() <= 0
-  }
+  private fun shouldScrollToBottom(): Boolean = isScrolledToBottom() || layoutManager.findFirstVisibleItemPosition() <= 0
 
   private fun closeChatSearch() {
     isSearchRequested = false
@@ -3066,10 +3053,8 @@ class ConversationFragment :
 
     override fun onScheduledIndicatorClicked(view: View, conversationMessage: ConversationMessage) = Unit
 
-    override fun onUrlClicked(url: String): Boolean {
-      return CommunicationActions.handlePotentialGroupLinkUrl(requireActivity(), url) ||
-        CommunicationActions.handlePotentialProxyLinkUrl(requireActivity(), url)
-    }
+    override fun onUrlClicked(url: String): Boolean = CommunicationActions.handlePotentialGroupLinkUrl(requireActivity(), url) ||
+      CommunicationActions.handlePotentialProxyLinkUrl(requireActivity(), url)
 
     override fun onViewGiftBadgeClicked(messageRecord: MessageRecord) {
       if (!messageRecord.hasGiftBadge()) {
@@ -3348,9 +3333,7 @@ class ConversationFragment :
       )
     }
 
-    override fun isTextHighlighted(): Boolean {
-      return composeText.isTextHighlighted
-    }
+    override fun isTextHighlighted(): Boolean = composeText.isTextHighlighted
 
     override fun onOptionsMenuCreated(menu: Menu) {
       searchMenuItem = menu.findItem(R.id.menu_search)
@@ -3617,12 +3600,10 @@ class ConversationFragment :
   private inner class MotionEventRelayDrain(lifecycleOwner: LifecycleOwner) : MotionEventRelay.Drain {
     private val lifecycle = lifecycleOwner.lifecycle
 
-    override fun accept(motionEvent: MotionEvent): Boolean {
-      return if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-        reactionDelegate.applyTouchEvent(motionEvent)
-      } else {
-        false
-      }
+    override fun accept(motionEvent: MotionEvent): Boolean = if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+      reactionDelegate.applyTouchEvent(motionEvent)
+    } else {
+      false
     }
   }
 
@@ -3942,7 +3923,10 @@ class ConversationFragment :
 
   //region Compose + Send Callbacks
 
-  private inner class SendButtonListener : View.OnClickListener, OnEditorActionListener, SendButton.ScheduledSendListener {
+  private inner class SendButtonListener :
+    View.OnClickListener,
+    OnEditorActionListener,
+    SendButton.ScheduledSendListener {
     override fun onClick(v: View) {
       sendMessage()
     }
@@ -3969,9 +3953,7 @@ class ConversationFragment :
       }
     }
 
-    override fun canSchedule(): Boolean {
-      return !(inputPanel.isRecordingInLockedMode || draftViewModel.voiceNoteDraft != null)
-    }
+    override fun canSchedule(): Boolean = !(inputPanel.isRecordingInLockedMode || draftViewModel.voiceNoteDraft != null)
   }
 
   private inner class ComposeTextEventsListener :
@@ -4271,7 +4253,10 @@ class ConversationFragment :
     override fun create(): Fragment = KeyboardPagerFragment()
   }
 
-  private inner class KeyboardEvents : OnBackPressedCallback(false), InputAwareConstraintLayout.Listener, InsetAwareConstraintLayout.KeyboardStateListener {
+  private inner class KeyboardEvents :
+    OnBackPressedCallback(false),
+    InputAwareConstraintLayout.Listener,
+    InsetAwareConstraintLayout.KeyboardStateListener {
     override fun handleOnBackPressed() {
       container.hideInput()
     }

@@ -21,9 +21,7 @@ object InAppDonations {
    * - Able to use SEPA Debit and is in a region where they are able to be accepted.
    * - Able to use PayPal and is in a region where it is able to be accepted.
    */
-  fun hasAtLeastOnePaymentMethodAvailable(): Boolean {
-    return isCreditCardAvailable() || isPayPalAvailable() || isGooglePayAvailable() || isSEPADebitAvailable() || isIDEALAvailable()
-  }
+  fun hasAtLeastOnePaymentMethodAvailable(): Boolean = isCreditCardAvailable() || isPayPalAvailable() || isGooglePayAvailable() || isSEPADebitAvailable() || isIDEALAvailable()
 
   fun isPaymentSourceAvailable(paymentSourceType: PaymentSourceType, inAppPaymentType: InAppPaymentType): Boolean {
     if (inAppPaymentType == InAppPaymentType.RECURRING_BACKUP) {
@@ -41,63 +39,48 @@ object InAppDonations {
     }
   }
 
-  private fun isPayPalAvailableForDonateToSignalType(inAppPaymentType: InAppPaymentType): Boolean {
-    return when (inAppPaymentType) {
-      InAppPaymentType.UNKNOWN -> error("Unsupported type UNKNOWN")
-      InAppPaymentType.ONE_TIME_DONATION, InAppPaymentType.ONE_TIME_GIFT -> RemoteConfig.paypalOneTimeDonations
-      InAppPaymentType.RECURRING_DONATION -> RemoteConfig.paypalRecurringDonations
-      InAppPaymentType.RECURRING_BACKUP -> false
-    } && !LocaleRemoteConfig.isPayPalDisabled()
-  }
+  private fun isPayPalAvailableForDonateToSignalType(inAppPaymentType: InAppPaymentType): Boolean = when (inAppPaymentType) {
+    InAppPaymentType.UNKNOWN -> error("Unsupported type UNKNOWN")
+    InAppPaymentType.ONE_TIME_DONATION, InAppPaymentType.ONE_TIME_GIFT -> RemoteConfig.paypalOneTimeDonations
+    InAppPaymentType.RECURRING_DONATION -> RemoteConfig.paypalRecurringDonations
+    InAppPaymentType.RECURRING_BACKUP -> false
+  } &&
+    !LocaleRemoteConfig.isPayPalDisabled()
 
   /**
    * Whether the user is in a region that supports credit cards, based off local phone number.
    */
-  fun isCreditCardAvailable(): Boolean {
-    return !LocaleRemoteConfig.isCreditCardDisabled()
-  }
+  fun isCreditCardAvailable(): Boolean = !LocaleRemoteConfig.isCreditCardDisabled()
 
   /**
    * Whether the user is in a region that supports PayPal, based off local phone number.
    */
-  fun isPayPalAvailable(): Boolean {
-    return (RemoteConfig.paypalOneTimeDonations || RemoteConfig.paypalRecurringDonations) && !LocaleRemoteConfig.isPayPalDisabled()
-  }
+  fun isPayPalAvailable(): Boolean = (RemoteConfig.paypalOneTimeDonations || RemoteConfig.paypalRecurringDonations) && !LocaleRemoteConfig.isPayPalDisabled()
 
   /**
    * Whether the user is using a device that supports GooglePay, based off Wallet API and phone number.
    */
-  fun isGooglePayAvailable(): Boolean {
-    return SignalStore.inAppPayments.isGooglePayReady && !LocaleRemoteConfig.isGooglePayDisabled()
-  }
+  fun isGooglePayAvailable(): Boolean = SignalStore.inAppPayments.isGooglePayReady && !LocaleRemoteConfig.isGooglePayDisabled()
 
   /**
    * Whether the user is in a region which supports SEPA Debit transfers, based off local phone number.
    */
-  fun isSEPADebitAvailable(): Boolean {
-    return Environment.IS_STAGING || (RemoteConfig.sepaDebitDonations && LocaleRemoteConfig.isSepaEnabled())
-  }
+  fun isSEPADebitAvailable(): Boolean = Environment.IS_STAGING || (RemoteConfig.sepaDebitDonations && LocaleRemoteConfig.isSepaEnabled())
 
   /**
    * Whether the user is in a region which supports IDEAL transfers, based off local phone number.
    */
-  fun isIDEALAvailable(): Boolean {
-    return Environment.IS_STAGING || (RemoteConfig.idealDonations && LocaleRemoteConfig.isIdealEnabled())
-  }
+  fun isIDEALAvailable(): Boolean = Environment.IS_STAGING || (RemoteConfig.idealDonations && LocaleRemoteConfig.isIdealEnabled())
 
   /**
    * Whether the user is in a region which supports SEPA Debit transfers, based off local phone number
    * and donation type.
    */
-  fun isSEPADebitAvailableForDonateToSignalType(inAppPaymentType: InAppPaymentType): Boolean {
-    return inAppPaymentType != InAppPaymentType.ONE_TIME_GIFT && isSEPADebitAvailable()
-  }
+  fun isSEPADebitAvailableForDonateToSignalType(inAppPaymentType: InAppPaymentType): Boolean = inAppPaymentType != InAppPaymentType.ONE_TIME_GIFT && isSEPADebitAvailable()
 
   /**
    * Whether the user is in a region which suports IDEAL transfers, based off local phone number and
    * donation type
    */
-  fun isIDEALAvailbleForDonateToSignalType(inAppPaymentType: InAppPaymentType): Boolean {
-    return inAppPaymentType != InAppPaymentType.ONE_TIME_GIFT && isIDEALAvailable()
-  }
+  fun isIDEALAvailbleForDonateToSignalType(inAppPaymentType: InAppPaymentType): Boolean = inAppPaymentType != InAppPaymentType.ONE_TIME_GIFT && isIDEALAvailable()
 }

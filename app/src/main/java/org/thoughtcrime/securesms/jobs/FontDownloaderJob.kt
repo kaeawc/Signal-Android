@@ -78,8 +78,6 @@ class FontDownloaderJob private constructor(parameters: Parameters) : BaseJob(pa
   override fun onShouldRetry(e: Exception): Boolean = true
 
   class Factory : Job.Factory<FontDownloaderJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): FontDownloaderJob {
-      return FontDownloaderJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): FontDownloaderJob = FontDownloaderJob(parameters)
   }
 }

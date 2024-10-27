@@ -12,21 +12,19 @@ class AvatarColorPair private constructor(
 ) {
   companion object {
     @JvmStatic
-    fun create(context: Context, avatarColor: AvatarColor): AvatarColorPair {
-      return when (avatarColor) {
-        AvatarColor.UNKNOWN -> AvatarColorPair(
-          foregroundColor = ContextCompat.getColor(context, R.color.signal_colorOnSurface),
-          backgroundColor = ContextCompat.getColor(context, R.color.signal_colorSurfaceVariant)
-        )
-        AvatarColor.ON_SURFACE_VARIANT -> AvatarColorPair(
-          foregroundColor = ContextCompat.getColor(context, R.color.signal_colorOnSurfaceVariant),
-          backgroundColor = ContextCompat.getColor(context, R.color.signal_colorSurfaceVariant)
-        )
-        else -> AvatarColorPair(
-          foregroundColor = Avatars.getForegroundColor(avatarColor).colorInt,
-          backgroundColor = avatarColor.colorInt()
-        )
-      }
+    fun create(context: Context, avatarColor: AvatarColor): AvatarColorPair = when (avatarColor) {
+      AvatarColor.UNKNOWN -> AvatarColorPair(
+        foregroundColor = ContextCompat.getColor(context, R.color.signal_colorOnSurface),
+        backgroundColor = ContextCompat.getColor(context, R.color.signal_colorSurfaceVariant)
+      )
+      AvatarColor.ON_SURFACE_VARIANT -> AvatarColorPair(
+        foregroundColor = ContextCompat.getColor(context, R.color.signal_colorOnSurfaceVariant),
+        backgroundColor = ContextCompat.getColor(context, R.color.signal_colorSurfaceVariant)
+      )
+      else -> AvatarColorPair(
+        foregroundColor = Avatars.getForegroundColor(avatarColor).colorInt,
+        backgroundColor = avatarColor.colorInt()
+      )
     }
   }
 

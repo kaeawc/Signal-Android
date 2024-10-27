@@ -112,23 +112,19 @@ class WebRtcAudioPicker31(private val audioOutputChangedListener: OnAudioOutputC
     }
   }
 
-  private fun AudioDeviceInfo.toFriendlyName(context: Context): CharSequence {
-    return when (this.type) {
-      AudioDeviceInfo.TYPE_BUILTIN_EARPIECE -> context.getString(R.string.WebRtcAudioOutputToggle__phone_earpiece)
-      AudioDeviceInfo.TYPE_BUILTIN_SPEAKER -> context.getString(R.string.WebRtcAudioOutputToggle__speaker)
-      AudioDeviceInfo.TYPE_WIRED_HEADPHONES -> context.getString(R.string.WebRtcAudioOutputToggle__wired_headphones)
-      AudioDeviceInfo.TYPE_WIRED_HEADSET -> context.getString(R.string.WebRtcAudioOutputToggle__wired_headset)
-      AudioDeviceInfo.TYPE_USB_HEADSET -> context.getString(R.string.WebRtcAudioOutputToggle__wired_headset_usb)
-      else -> this.productName
-    }
+  private fun AudioDeviceInfo.toFriendlyName(context: Context): CharSequence = when (this.type) {
+    AudioDeviceInfo.TYPE_BUILTIN_EARPIECE -> context.getString(R.string.WebRtcAudioOutputToggle__phone_earpiece)
+    AudioDeviceInfo.TYPE_BUILTIN_SPEAKER -> context.getString(R.string.WebRtcAudioOutputToggle__speaker)
+    AudioDeviceInfo.TYPE_WIRED_HEADPHONES -> context.getString(R.string.WebRtcAudioOutputToggle__wired_headphones)
+    AudioDeviceInfo.TYPE_WIRED_HEADSET -> context.getString(R.string.WebRtcAudioOutputToggle__wired_headset)
+    AudioDeviceInfo.TYPE_USB_HEADSET -> context.getString(R.string.WebRtcAudioOutputToggle__wired_headset_usb)
+    else -> this.productName
   }
 
-  private fun AudioOutputOption.toWebRtcAudioOutput(): WebRtcAudioOutput {
-    return when (this.deviceType) {
-      SignalAudioManager.AudioDevice.WIRED_HEADSET -> WebRtcAudioOutput.WIRED_HEADSET
-      SignalAudioManager.AudioDevice.EARPIECE -> WebRtcAudioOutput.HANDSET
-      SignalAudioManager.AudioDevice.BLUETOOTH -> WebRtcAudioOutput.BLUETOOTH_HEADSET
-      SignalAudioManager.AudioDevice.SPEAKER_PHONE, SignalAudioManager.AudioDevice.NONE -> WebRtcAudioOutput.SPEAKER
-    }
+  private fun AudioOutputOption.toWebRtcAudioOutput(): WebRtcAudioOutput = when (this.deviceType) {
+    SignalAudioManager.AudioDevice.WIRED_HEADSET -> WebRtcAudioOutput.WIRED_HEADSET
+    SignalAudioManager.AudioDevice.EARPIECE -> WebRtcAudioOutput.HANDSET
+    SignalAudioManager.AudioDevice.BLUETOOTH -> WebRtcAudioOutput.BLUETOOTH_HEADSET
+    SignalAudioManager.AudioDevice.SPEAKER_PHONE, SignalAudioManager.AudioDevice.NONE -> WebRtcAudioOutput.SPEAKER
   }
 }

@@ -234,13 +234,9 @@ internal class UsernameEditViewModel private constructor(private val mode: Usern
     }
   }
 
-  fun getUiState(): Flowable<State> {
-    return uiState.stateFlowable.observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getUiState(): Flowable<State> = uiState.stateFlowable.observeOn(AndroidSchedulers.mainThread())
 
-  fun getEvents(): Observable<Event> {
-    return events.observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getEvents(): Observable<Event> = events.observeOn(AndroidSchedulers.mainThread())
 
   private fun isCaseChange(state: UsernameEditStateMachine.State): Boolean {
     if (mode == UsernameEditMode.RECOVERY) {
@@ -412,9 +408,7 @@ internal class UsernameEditViewModel private constructor(private val mode: Usern
   }
 
   class Factory(private val mode: UsernameEditMode) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(UsernameEditViewModel(mode))!!
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(UsernameEditViewModel(mode))!!
   }
 
   companion object {
@@ -422,27 +416,23 @@ internal class UsernameEditViewModel private constructor(private val mode: Usern
 
     private const val NICKNAME_PUBLISHER_DEBOUNCE_TIMEOUT_MILLIS: Long = 500
 
-    private fun mapNicknameError(invalidReason: InvalidReason): UsernameStatus {
-      return when (invalidReason) {
-        InvalidReason.TOO_SHORT -> UsernameStatus.TOO_SHORT
-        InvalidReason.TOO_LONG -> UsernameStatus.TOO_LONG
-        InvalidReason.STARTS_WITH_NUMBER -> UsernameStatus.CANNOT_START_WITH_NUMBER
-        InvalidReason.INVALID_CHARACTERS -> UsernameStatus.INVALID_CHARACTERS
-        InvalidReason.INVALID_NUMBER,
-        InvalidReason.INVALID_NUMBER_00,
-        InvalidReason.INVALID_NUMBER_PREFIX_0 -> error("Unexpected reason $invalidReason")
-      }
+    private fun mapNicknameError(invalidReason: InvalidReason): UsernameStatus = when (invalidReason) {
+      InvalidReason.TOO_SHORT -> UsernameStatus.TOO_SHORT
+      InvalidReason.TOO_LONG -> UsernameStatus.TOO_LONG
+      InvalidReason.STARTS_WITH_NUMBER -> UsernameStatus.CANNOT_START_WITH_NUMBER
+      InvalidReason.INVALID_CHARACTERS -> UsernameStatus.INVALID_CHARACTERS
+      InvalidReason.INVALID_NUMBER,
+      InvalidReason.INVALID_NUMBER_00,
+      InvalidReason.INVALID_NUMBER_PREFIX_0 -> error("Unexpected reason $invalidReason")
     }
 
-    private fun mapDiscriminatorError(invalidReason: InvalidReason): UsernameStatus {
-      return when (invalidReason) {
-        InvalidReason.TOO_SHORT -> UsernameStatus.DISCRIMINATOR_TOO_SHORT
-        InvalidReason.TOO_LONG -> UsernameStatus.DISCRIMINATOR_TOO_LONG
-        InvalidReason.INVALID_CHARACTERS -> UsernameStatus.DISCRIMINATOR_HAS_INVALID_CHARACTERS
-        InvalidReason.INVALID_NUMBER_00 -> UsernameStatus.DISCRIMINATOR_CANNOT_BE_00
-        InvalidReason.INVALID_NUMBER_PREFIX_0 -> UsernameStatus.DISCRIMINATOR_CANNOT_START_WITH_0
-        else -> UsernameStatus.INVALID_GENERIC
-      }
+    private fun mapDiscriminatorError(invalidReason: InvalidReason): UsernameStatus = when (invalidReason) {
+      InvalidReason.TOO_SHORT -> UsernameStatus.DISCRIMINATOR_TOO_SHORT
+      InvalidReason.TOO_LONG -> UsernameStatus.DISCRIMINATOR_TOO_LONG
+      InvalidReason.INVALID_CHARACTERS -> UsernameStatus.DISCRIMINATOR_HAS_INVALID_CHARACTERS
+      InvalidReason.INVALID_NUMBER_00 -> UsernameStatus.DISCRIMINATOR_CANNOT_BE_00
+      InvalidReason.INVALID_NUMBER_PREFIX_0 -> UsernameStatus.DISCRIMINATOR_CANNOT_START_WITH_0
+      else -> UsernameStatus.INVALID_GENERIC
     }
   }
 }

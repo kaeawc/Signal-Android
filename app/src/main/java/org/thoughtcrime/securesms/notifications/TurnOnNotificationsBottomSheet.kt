@@ -58,43 +58,37 @@ class TurnOnNotificationsBottomSheet private constructor() : ComposeBottomSheetD
     private const val ARG_SETTINGS_INTENT = "argument.settings_intent"
 
     @JvmStatic
-    fun turnOnSystemNotificationsFragment(context: Context): ComposeBottomSheetDialogFragment {
-      return TurnOnNotificationsBottomSheet().apply {
-        arguments = bundleOf(
-          ARG_TITLE to R.string.TurnOnNotificationsBottomSheet__turn_on_notifications,
-          ARG_SUBTITLE to R.string.TurnOnNotificationsBottomSheet__to_receive_notifications,
-          ARG_STEP2 to R.string.TurnOnNotificationsBottomSheet__2_s_turn_on_notifications,
-          ARG_SETTINGS_INTENT to getNotificationsSettingsIntent(context)
-        )
-      }
+    fun turnOnSystemNotificationsFragment(context: Context): ComposeBottomSheetDialogFragment = TurnOnNotificationsBottomSheet().apply {
+      arguments = bundleOf(
+        ARG_TITLE to R.string.TurnOnNotificationsBottomSheet__turn_on_notifications,
+        ARG_SUBTITLE to R.string.TurnOnNotificationsBottomSheet__to_receive_notifications,
+        ARG_STEP2 to R.string.TurnOnNotificationsBottomSheet__2_s_turn_on_notifications,
+        ARG_SETTINGS_INTENT to getNotificationsSettingsIntent(context)
+      )
     }
 
     @JvmStatic
     @RequiresApi(34)
-    fun turnOnFullScreenIntentFragment(context: Context): ComposeBottomSheetDialogFragment {
-      return TurnOnNotificationsBottomSheet().apply {
-        arguments = bundleOf(
-          ARG_TITLE to R.string.GrantFullScreenIntentPermission_bottomsheet_title,
-          ARG_SUBTITLE to R.string.GrantFullScreenIntentPermission_bottomsheet_subtitle,
-          ARG_STEP2 to R.string.GrantFullScreenIntentPermission_bottomsheet_step2,
-          ARG_SETTINGS_INTENT to Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT, Uri.parse("package:" + context.packageName))
-        )
-      }
+    fun turnOnFullScreenIntentFragment(context: Context): ComposeBottomSheetDialogFragment = TurnOnNotificationsBottomSheet().apply {
+      arguments = bundleOf(
+        ARG_TITLE to R.string.GrantFullScreenIntentPermission_bottomsheet_title,
+        ARG_SUBTITLE to R.string.GrantFullScreenIntentPermission_bottomsheet_subtitle,
+        ARG_STEP2 to R.string.GrantFullScreenIntentPermission_bottomsheet_step2,
+        ARG_SETTINGS_INTENT to Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT, Uri.parse("package:" + context.packageName))
+      )
     }
 
-    private fun getNotificationsSettingsIntent(context: Context): Intent {
-      return if (Build.VERSION.SDK_INT >= 26 && !NotificationChannels.getInstance().isMessageChannelEnabled) {
-        Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS).apply {
-          putExtra(Settings.EXTRA_CHANNEL_ID, NotificationChannels.getInstance().messagesChannel)
-          putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-        }
-      } else if (Build.VERSION.SDK_INT >= 26 && (!NotificationChannels.getInstance().areNotificationsEnabled() || !NotificationChannels.getInstance().isMessagesChannelGroupEnabled)) {
-        Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-          putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-        }
-      } else {
-        AppSettingsActivity.notifications(context)
+    private fun getNotificationsSettingsIntent(context: Context): Intent = if (Build.VERSION.SDK_INT >= 26 && !NotificationChannels.getInstance().isMessageChannelEnabled) {
+      Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS).apply {
+        putExtra(Settings.EXTRA_CHANNEL_ID, NotificationChannels.getInstance().messagesChannel)
+        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
       }
+    } else if (Build.VERSION.SDK_INT >= 26 && (!NotificationChannels.getInstance().areNotificationsEnabled() || !NotificationChannels.getInstance().isMessagesChannelGroupEnabled)) {
+      Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+      }
+    } else {
+      AppSettingsActivity.notifications(context)
     }
   }
 

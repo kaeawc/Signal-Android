@@ -23,15 +23,11 @@ class LeaveGroupV2Job(parameters: Parameters, private val groupId: GroupId.V2) :
     groupId = groupId
   )
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putString(KEY_GROUP_ID, groupId.toString())
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putString(KEY_GROUP_ID, groupId.toString())
+    .serialize()
 
-  override fun getFactoryKey(): String {
-    return KEY
-  }
+  override fun getFactoryKey(): String = KEY
 
   override fun onRun() {
     AppDependencies.jobManager.add(LeaveGroupV2WorkerJob(groupId))

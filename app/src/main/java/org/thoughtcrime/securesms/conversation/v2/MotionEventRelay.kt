@@ -19,9 +19,7 @@ class MotionEventRelay : ViewModel() {
     this.drain = drain
   }
 
-  fun offer(motionEvent: MotionEvent?): Boolean {
-    return motionEvent?.let { drain?.accept(it) } ?: false
-  }
+  fun offer(motionEvent: MotionEvent?): Boolean = motionEvent?.let { drain?.accept(it) } ?: false
 
   interface Drain {
     fun accept(motionEvent: MotionEvent): Boolean

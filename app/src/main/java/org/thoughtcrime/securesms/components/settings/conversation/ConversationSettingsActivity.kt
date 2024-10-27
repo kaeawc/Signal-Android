@@ -18,7 +18,9 @@ import org.thoughtcrime.securesms.recipients.RecipientId
 import org.thoughtcrime.securesms.util.DynamicConversationSettingsTheme
 import org.thoughtcrime.securesms.util.DynamicTheme
 
-open class ConversationSettingsActivity : DSLSettingsActivity(), ConversationSettingsFragment.Callback {
+open class ConversationSettingsActivity :
+  DSLSettingsActivity(),
+  ConversationSettingsFragment.Callback {
 
   override val dynamicTheme: DynamicTheme = DynamicConversationSettingsTheme()
 
@@ -40,29 +42,25 @@ open class ConversationSettingsActivity : DSLSettingsActivity(), ConversationSet
   companion object {
 
     @JvmStatic
-    fun createTransitionBundle(context: Context, avatar: View, windowContent: View): Bundle? {
-      return if (context is Activity) {
-        ActivityOptionsCompat.makeSceneTransitionAnimation(
-          context,
-          Pair.create(avatar, "avatar"),
-          Pair.create(windowContent, "window_content")
-        ).toBundle()
-      } else {
-        null
-      }
+    fun createTransitionBundle(context: Context, avatar: View, windowContent: View): Bundle? = if (context is Activity) {
+      ActivityOptionsCompat.makeSceneTransitionAnimation(
+        context,
+        Pair.create(avatar, "avatar"),
+        Pair.create(windowContent, "window_content")
+      ).toBundle()
+    } else {
+      null
     }
 
     @JvmStatic
-    fun createTransitionBundle(context: Context, avatar: View): Bundle? {
-      return if (context is Activity) {
-        ActivityOptionsCompat.makeSceneTransitionAnimation(
-          context,
-          avatar,
-          "avatar"
-        ).toBundle()
-      } else {
-        null
-      }
+    fun createTransitionBundle(context: Context, avatar: View): Bundle? = if (context is Activity) {
+      ActivityOptionsCompat.makeSceneTransitionAnimation(
+        context,
+        avatar,
+        "avatar"
+      ).toBundle()
+    } else {
+      null
     }
 
     @JvmStatic
@@ -100,9 +98,7 @@ open class ConversationSettingsActivity : DSLSettingsActivity(), ConversationSet
         .putExtra(ARG_START_BUNDLE, startBundle)
     }
 
-    private fun getIntent(context: Context): Intent {
-      return Intent(context, ConversationSettingsActivity::class.java)
-        .putExtra(ARG_NAV_GRAPH, R.navigation.conversation_settings)
-    }
+    private fun getIntent(context: Context): Intent = Intent(context, ConversationSettingsActivity::class.java)
+      .putExtra(ARG_NAV_GRAPH, R.navigation.conversation_settings)
   }
 }

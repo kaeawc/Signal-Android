@@ -175,18 +175,14 @@ class DatabaseAttachment : Attachment {
       null
     }
 
-  override fun equals(other: Any?): Boolean {
-    return other != null &&
-      other is DatabaseAttachment && other.attachmentId == attachmentId && other.uri == uri
-  }
+  override fun equals(other: Any?): Boolean = other != null &&
+    other is DatabaseAttachment &&
+    other.attachmentId == attachmentId &&
+    other.uri == uri
 
-  override fun hashCode(): Int {
-    return attachmentId.hashCode()
-  }
+  override fun hashCode(): Int = attachmentId.hashCode()
 
   class DisplayOrderComparator : Comparator<DatabaseAttachment> {
-    override fun compare(lhs: DatabaseAttachment, rhs: DatabaseAttachment): Int {
-      return lhs.displayOrder.compareTo(rhs.displayOrder)
-    }
+    override fun compare(lhs: DatabaseAttachment, rhs: DatabaseAttachment): Int = lhs.displayOrder.compareTo(rhs.displayOrder)
   }
 }

@@ -32,12 +32,8 @@ class MessageBackupsCheckoutActivity : FragmentWrapperActivity() {
 
   class Contract : ActivityResultContract<MessageBackupTier?, Result?>() {
 
-    override fun createIntent(context: Context, input: MessageBackupTier?): Intent {
-      return Intent(context, MessageBackupsCheckoutActivity::class.java).putExtra(TIER, input)
-    }
+    override fun createIntent(context: Context, input: MessageBackupTier?): Intent = Intent(context, MessageBackupsCheckoutActivity::class.java).putExtra(TIER, input)
 
-    override fun parseResult(resultCode: Int, intent: Intent?): Result? {
-      return intent?.getParcelableExtraCompat(RESULT_DATA, Result::class.java)
-    }
+    override fun parseResult(resultCode: Int, intent: Intent?): Result? = intent?.getParcelableExtraCompat(RESULT_DATA, Result::class.java)
   }
 }

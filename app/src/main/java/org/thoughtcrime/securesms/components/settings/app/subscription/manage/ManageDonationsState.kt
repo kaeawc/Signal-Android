@@ -17,22 +17,18 @@ data class ManageDonationsState(
   private val subscriptionRedemptionState: RedemptionState = RedemptionState.NONE
 ) {
 
-  fun getMonthlyDonorRedemptionState(): RedemptionState {
-    return when (subscriptionTransactionState) {
-      TransactionState.Init -> subscriptionRedemptionState
-      TransactionState.NetworkFailure -> subscriptionRedemptionState
-      TransactionState.InTransaction -> RedemptionState.IN_PROGRESS
-      is TransactionState.NotInTransaction -> getStateFromActiveSubscription(subscriptionTransactionState.activeSubscription) ?: subscriptionRedemptionState
-    }
+  fun getMonthlyDonorRedemptionState(): RedemptionState = when (subscriptionTransactionState) {
+    TransactionState.Init -> subscriptionRedemptionState
+    TransactionState.NetworkFailure -> subscriptionRedemptionState
+    TransactionState.InTransaction -> RedemptionState.IN_PROGRESS
+    is TransactionState.NotInTransaction -> getStateFromActiveSubscription(subscriptionTransactionState.activeSubscription) ?: subscriptionRedemptionState
   }
 
-  private fun getStateFromActiveSubscription(activeSubscription: ActiveSubscription): RedemptionState? {
-    return when {
-      activeSubscription.isFailedPayment && !activeSubscription.isPastDue -> RedemptionState.FAILED
-      activeSubscription.isPendingBankTransfer -> RedemptionState.IS_PENDING_BANK_TRANSFER
-      activeSubscription.isInProgress -> RedemptionState.IN_PROGRESS
-      else -> null
-    }
+  private fun getStateFromActiveSubscription(activeSubscription: ActiveSubscription): RedemptionState? = when {
+    activeSubscription.isFailedPayment && !activeSubscription.isPastDue -> RedemptionState.FAILED
+    activeSubscription.isPendingBankTransfer -> RedemptionState.IS_PENDING_BANK_TRANSFER
+    activeSubscription.isInProgress -> RedemptionState.IN_PROGRESS
+    else -> null
   }
 
   sealed class TransactionState {

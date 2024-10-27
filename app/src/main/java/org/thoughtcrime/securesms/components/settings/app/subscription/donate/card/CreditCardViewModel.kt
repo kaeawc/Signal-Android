@@ -77,9 +77,7 @@ class CreditCardViewModel : ViewModel() {
     updateFocus(CreditCardFormState.FocusedField.CODE, isFocused)
   }
 
-  fun getCardData(): StripeApi.CardData {
-    return formStore.state.toCardData()
-  }
+  fun getCardData(): StripeApi.CardData = formStore.state.toCardData()
 
   private fun updateFocus(
     newFocusedField: CreditCardFormState.FocusedField,
@@ -94,13 +92,11 @@ class CreditCardViewModel : ViewModel() {
     currentFocusedField: CreditCardFormState.FocusedField,
     newFocusedField: CreditCardFormState.FocusedField,
     isFocused: Boolean
-  ): CreditCardFormState.FocusedField {
-    return if (currentFocusedField == newFocusedField && !isFocused) {
-      CreditCardFormState.FocusedField.NONE
-    } else if (isFocused) {
-      newFocusedField
-    } else {
-      currentFocusedField
-    }
+  ): CreditCardFormState.FocusedField = if (currentFocusedField == newFocusedField && !isFocused) {
+    CreditCardFormState.FocusedField.NONE
+  } else if (isFocused) {
+    newFocusedField
+  } else {
+    currentFocusedField
   }
 }

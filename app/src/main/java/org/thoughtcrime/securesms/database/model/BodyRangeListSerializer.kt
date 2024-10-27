@@ -9,6 +9,4 @@ object BodyRangeListSerializer : StringSerializer<BodyRangeList> {
   override fun deserialize(data: String): BodyRangeList = BodyRangeList.ADAPTER.decode(Base64.decode(data))
 }
 
-fun BodyRangeList.serialize(): String {
-  return BodyRangeListSerializer.serialize(this)
-}
+fun BodyRangeList.serialize(): String = BodyRangeListSerializer.serialize(this)

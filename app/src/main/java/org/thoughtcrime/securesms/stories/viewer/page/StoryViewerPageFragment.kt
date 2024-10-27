@@ -611,9 +611,7 @@ class StoryViewerPageFragment :
     return textStoryIntersectHitRect.contains(event.x.toInt(), event.y.toInt())
   }
 
-  private fun calculateDurationForText(textContent: StoryPost.Content.TextContent): Long {
-    return calculateDurationForContentLength(textContent.length)
-  }
+  private fun calculateDurationForText(textContent: StoryPost.Content.TextContent): Long = calculateDurationForContentLength(textContent.length)
 
   private fun calculateDurationForAttachment(attachmentContent: StoryPost.Content.AttachmentContent): Long {
     val caption: String? = attachmentContent.attachment.caption
@@ -629,21 +627,17 @@ class StoryViewerPageFragment :
     return TimeUnit.SECONDS.toMillis(divisionsOf15) + MIN_TEXT_STORY_PLAYBACK
   }
 
-  private fun getVideoPlaybackPosition(playerState: VideoControlsDelegate.PlayerState): Float {
-    return if (playerState.isGif) {
-      playerState.position.toFloat() + (playerState.duration * playerState.loopCount)
-    } else {
-      playerState.position.toFloat()
-    }
+  private fun getVideoPlaybackPosition(playerState: VideoControlsDelegate.PlayerState): Float = if (playerState.isGif) {
+    playerState.position.toFloat() + (playerState.duration * playerState.loopCount)
+  } else {
+    playerState.position.toFloat()
   }
 
-  private fun getVideoPlaybackDuration(playerState: VideoControlsDelegate.PlayerState): Long {
-    return if (playerState.isGif) {
-      val timeToPlayMinLoops = playerState.duration * MIN_GIF_LOOPS
-      max(MIN_GIF_PLAYBACK_DURATION, timeToPlayMinLoops)
-    } else {
-      min(playerState.duration, MAX_VIDEO_PLAYBACK_DURATION)
-    }
+  private fun getVideoPlaybackDuration(playerState: VideoControlsDelegate.PlayerState): Long = if (playerState.isGif) {
+    val timeToPlayMinLoops = playerState.duration * MIN_GIF_LOOPS
+    max(MIN_GIF_PLAYBACK_DURATION, timeToPlayMinLoops)
+  } else {
+    min(playerState.duration, MAX_VIDEO_PLAYBACK_DURATION)
   }
 
   private fun displayStoryVolumeOverlayForTimeout(view: View) {
@@ -818,12 +812,10 @@ class StoryViewerPageFragment :
     ).show(childFragmentManager, BottomSheetUtil.STANDARD_BOTTOM_SHEET_FRAGMENT_TAG)
   }
 
-  private fun getViewsAndRepliesDialogStartPage(): StoryViewsAndRepliesDialogFragment.StartPage {
-    return if (viewModel.requirePost().replyCount > 0) {
-      StoryViewsAndRepliesDialogFragment.StartPage.REPLIES
-    } else {
-      StoryViewsAndRepliesDialogFragment.StartPage.VIEWS
-    }
+  private fun getViewsAndRepliesDialogStartPage(): StoryViewsAndRepliesDialogFragment.StartPage = if (viewModel.requirePost().replyCount > 0) {
+    StoryViewsAndRepliesDialogFragment.StartPage.REPLIES
+  } else {
+    StoryViewsAndRepliesDialogFragment.StartPage.VIEWS
   }
 
   private fun presentStory(post: StoryPost, index: Int) {
@@ -1125,9 +1117,7 @@ class StoryViewerPageFragment :
     viewModel.setIsDisplayingLinkPreviewTooltip(isDisplayingLinkPreviewTooltip)
   }
 
-  override fun getVideoControlsDelegate(): VideoControlsDelegate {
-    return videoControlsDelegate
-  }
+  override fun getVideoControlsDelegate(): VideoControlsDelegate = videoControlsDelegate
 
   private fun displayMoreContextMenu(anchor: View) {
     viewModel.setIsDisplayingContextMenu(true)
@@ -1205,20 +1195,16 @@ class StoryViewerPageFragment :
       }
     }
 
-    private fun getLeftBoundary(): Float {
-      return if (container.layoutDirection == View.LAYOUT_DIRECTION_LTR) {
-        BOUNDARY_PREV
-      } else {
-        BOUNDARY_NEXT
-      }
+    private fun getLeftBoundary(): Float = if (container.layoutDirection == View.LAYOUT_DIRECTION_LTR) {
+      BOUNDARY_PREV
+    } else {
+      BOUNDARY_NEXT
     }
 
-    private fun getRightBoundary(): Float {
-      return if (container.layoutDirection == View.LAYOUT_DIRECTION_LTR) {
-        BOUNDARY_NEXT
-      } else {
-        BOUNDARY_PREV
-      }
+    private fun getRightBoundary(): Float = if (container.layoutDirection == View.LAYOUT_DIRECTION_LTR) {
+      BOUNDARY_NEXT
+    } else {
+      BOUNDARY_PREV
     }
   }
 
@@ -1235,12 +1221,10 @@ class StoryViewerPageFragment :
 
     private const val ARGS = "args"
 
-    fun create(args: StoryViewerPageArgs): Fragment {
-      return StoryViewerPageFragment().apply {
-        arguments = bundleOf(
-          ARGS to args
-        )
-      }
+    fun create(args: StoryViewerPageArgs): Fragment = StoryViewerPageFragment().apply {
+      arguments = bundleOf(
+        ARGS to args
+      )
     }
   }
 
@@ -1306,9 +1290,7 @@ class StoryViewerPageFragment :
 
     private val maxSlide = DimensionUnit.DP.toPixels(56f * 2)
 
-    override fun onDown(e: MotionEvent): Boolean {
-      return true
-    }
+    override fun onDown(e: MotionEvent): Boolean = true
 
     override fun onSingleTapUp(e: MotionEvent): Boolean {
       singleTapHandler.onActionUp(e)

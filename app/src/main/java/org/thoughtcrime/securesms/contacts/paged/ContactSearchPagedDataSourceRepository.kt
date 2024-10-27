@@ -29,89 +29,57 @@ open class ContactSearchPagedDataSourceRepository(
   private val contactRepository = ContactRepository(context, context.getString(R.string.note_to_self))
   private val context = context.applicationContext
 
-  open fun getLatestStorySends(activeStoryCutoffDuration: Long): List<StorySend> {
-    return SignalStore.story
-      .getLatestActiveStorySendTimestamps(System.currentTimeMillis() - activeStoryCutoffDuration)
-  }
+  open fun getLatestStorySends(activeStoryCutoffDuration: Long): List<StorySend> = SignalStore.story
+    .getLatestActiveStorySendTimestamps(System.currentTimeMillis() - activeStoryCutoffDuration)
 
-  open fun querySignalContacts(contactsSearchQuery: RecipientTable.ContactSearchQuery): Cursor? {
-    return contactRepository.querySignalContacts(contactsSearchQuery)
-  }
+  open fun querySignalContacts(contactsSearchQuery: RecipientTable.ContactSearchQuery): Cursor? = contactRepository.querySignalContacts(contactsSearchQuery)
 
-  open fun querySignalContactLetterHeaders(query: String?, includeSelf: Boolean, includePush: Boolean, includeSms: Boolean): Map<RecipientId, String> {
-    return SignalDatabase.recipients.querySignalContactLetterHeaders(query ?: "", includeSelf, includePush, includeSms)
-  }
+  open fun querySignalContactLetterHeaders(query: String?, includeSelf: Boolean, includePush: Boolean, includeSms: Boolean): Map<RecipientId, String> = SignalDatabase.recipients.querySignalContactLetterHeaders(query ?: "", includeSelf, includePush, includeSms)
 
-  open fun queryNonSignalContacts(query: String?): Cursor? {
-    return contactRepository.queryNonSignalContacts(query ?: "")
-  }
+  open fun queryNonSignalContacts(query: String?): Cursor? = contactRepository.queryNonSignalContacts(query ?: "")
 
-  open fun queryNonGroupContacts(query: String?, includeSelf: Boolean): Cursor? {
-    return contactRepository.queryNonGroupContacts(query ?: "", includeSelf)
-  }
+  open fun queryNonGroupContacts(query: String?, includeSelf: Boolean): Cursor? = contactRepository.queryNonGroupContacts(query ?: "", includeSelf)
 
-  open fun queryGroupMemberContacts(query: String?): Cursor? {
-    return contactRepository.queryGroupMemberContacts(query ?: "")
-  }
+  open fun queryGroupMemberContacts(query: String?): Cursor? = contactRepository.queryGroupMemberContacts(query ?: "")
 
   open fun getGroupSearchIterator(
     section: ContactSearchConfiguration.Section.Groups,
     query: String?
-  ): ContactSearchIterator<GroupRecord> {
-    return SignalDatabase.groups.queryGroups(
-      GroupTable.GroupQuery.Builder()
-        .withSearchQuery(query)
-        .withInactiveGroups(section.includeInactive)
-        .withMmsGroups(section.includeMms)
-        .withV1Groups(section.includeV1)
-        .withSortOrder(section.sortOrder)
-        .build()
-    )
-  }
+  ): ContactSearchIterator<GroupRecord> = SignalDatabase.groups.queryGroups(
+    GroupTable.GroupQuery.Builder()
+      .withSearchQuery(query)
+      .withInactiveGroups(section.includeInactive)
+      .withMmsGroups(section.includeMms)
+      .withV1Groups(section.includeV1)
+      .withSortOrder(section.sortOrder)
+      .build()
+  )
 
-  open fun getRecents(section: ContactSearchConfiguration.Section.Recents): Cursor? {
-    return SignalDatabase.threads.getRecentConversationList(
-      section.limit,
-      section.includeInactiveGroups,
-      section.mode == ContactSearchConfiguration.Section.Recents.Mode.INDIVIDUALS,
-      section.mode == ContactSearchConfiguration.Section.Recents.Mode.GROUPS,
-      !section.includeGroupsV1,
-      !section.includeSms,
-      !section.includeSelf
-    )
-  }
+  open fun getRecents(section: ContactSearchConfiguration.Section.Recents): Cursor? = SignalDatabase.threads.getRecentConversationList(
+    section.limit,
+    section.includeInactiveGroups,
+    section.mode == ContactSearchConfiguration.Section.Recents.Mode.INDIVIDUALS,
+    section.mode == ContactSearchConfiguration.Section.Recents.Mode.GROUPS,
+    !section.includeGroupsV1,
+    !section.includeSms,
+    !section.includeSelf
+  )
 
-  open fun getStories(query: String?): Cursor? {
-    return SignalDatabase.distributionLists.getAllListsForContactSelectionUiCursor(query, myStoryContainsQuery(query ?: ""))
-  }
+  open fun getStories(query: String?): Cursor? = SignalDatabase.distributionLists.getAllListsForContactSelectionUiCursor(query, myStoryContainsQuery(query ?: ""))
 
-  open fun getGroupsWithMembers(query: String): Cursor {
-    return SignalDatabase.groups.queryGroupsByMemberName(query)
-  }
+  open fun getGroupsWithMembers(query: String): Cursor = SignalDatabase.groups.queryGroupsByMemberName(query)
 
-  open fun getContactsWithoutThreads(query: String): Cursor {
-    return SignalDatabase.recipients.getAllContactsWithoutThreads(query)
-  }
+  open fun getContactsWithoutThreads(query: String): Cursor = SignalDatabase.recipients.getAllContactsWithoutThreads(query)
 
-  open fun getRecipientFromDistributionListCursor(cursor: Cursor): Recipient {
-    return Recipient.resolved(RecipientId.from(CursorUtil.requireLong(cursor, DistributionListTables.RECIPIENT_ID)))
-  }
+  open fun getRecipientFromDistributionListCursor(cursor: Cursor): Recipient = Recipient.resolved(RecipientId.from(CursorUtil.requireLong(cursor, DistributionListTables.RECIPIENT_ID)))
 
-  open fun getPrivacyModeFromDistributionListCursor(cursor: Cursor): DistributionListPrivacyMode {
-    return DistributionListPrivacyMode.deserialize(CursorUtil.requireLong(cursor, DistributionListTables.PRIVACY_MODE))
-  }
+  open fun getPrivacyModeFromDistributionListCursor(cursor: Cursor): DistributionListPrivacyMode = DistributionListPrivacyMode.deserialize(CursorUtil.requireLong(cursor, DistributionListTables.PRIVACY_MODE))
 
-  open fun getRecipientFromThreadCursor(cursor: Cursor): Recipient {
-    return Recipient.resolved(RecipientId.from(CursorUtil.requireLong(cursor, ThreadTable.RECIPIENT_ID)))
-  }
+  open fun getRecipientFromThreadCursor(cursor: Cursor): Recipient = Recipient.resolved(RecipientId.from(CursorUtil.requireLong(cursor, ThreadTable.RECIPIENT_ID)))
 
-  open fun getRecipientFromSearchCursor(cursor: Cursor): Recipient {
-    return Recipient.resolved(RecipientId.from(CursorUtil.requireLong(cursor, ContactRepository.ID_COLUMN)))
-  }
+  open fun getRecipientFromSearchCursor(cursor: Cursor): Recipient = Recipient.resolved(RecipientId.from(CursorUtil.requireLong(cursor, ContactRepository.ID_COLUMN)))
 
-  open fun getRecipientFromRecipientCursor(cursor: Cursor): Recipient {
-    return Recipient.resolved(RecipientId.from(CursorUtil.requireLong(cursor, RecipientTable.ID)))
-  }
+  open fun getRecipientFromRecipientCursor(cursor: Cursor): Recipient = Recipient.resolved(RecipientId.from(CursorUtil.requireLong(cursor, RecipientTable.ID)))
 
   open fun getGroupsInCommon(recipient: Recipient): GroupsInCommon {
     val groupsInCommon = SignalDatabase.groups.getPushGroupsContainingMember(recipient.id)
@@ -123,24 +91,16 @@ open class ContactSearchPagedDataSourceRepository(
     return GroupsInCommon(groupsInCommon.size, names)
   }
 
-  open fun getRecipientFromGroupRecord(groupRecord: GroupRecord): Recipient {
-    return Recipient.resolved(groupRecord.recipientId)
-  }
+  open fun getRecipientFromGroupRecord(groupRecord: GroupRecord): Recipient = Recipient.resolved(groupRecord.recipientId)
 
-  open fun getDistributionListMembershipCount(recipient: Recipient): Int {
-    return SignalDatabase.distributionLists.getMemberCount(recipient.requireDistributionListId())
-  }
+  open fun getDistributionListMembershipCount(recipient: Recipient): Int = SignalDatabase.distributionLists.getMemberCount(recipient.requireDistributionListId())
 
-  open fun getGroupStories(): Set<ContactSearchData.Story> {
-    return SignalDatabase.groups.getGroupsToDisplayAsStories().map {
-      val recipient = Recipient.resolved(SignalDatabase.recipients.getOrInsertFromGroupId(it))
-      ContactSearchData.Story(recipient, recipient.participantIds.size, DistributionListPrivacyMode.ALL)
-    }.toSet()
-  }
+  open fun getGroupStories(): Set<ContactSearchData.Story> = SignalDatabase.groups.getGroupsToDisplayAsStories().map {
+    val recipient = Recipient.resolved(SignalDatabase.recipients.getOrInsertFromGroupId(it))
+    ContactSearchData.Story(recipient, recipient.participantIds.size, DistributionListPrivacyMode.ALL)
+  }.toSet()
 
-  open fun recipientNameContainsQuery(recipient: Recipient, query: String?): Boolean {
-    return query.isNullOrBlank() || recipient.getDisplayName(context).contains(query, ignoreCase = true)
-  }
+  open fun recipientNameContainsQuery(recipient: Recipient, query: String?): Boolean = query.isNullOrBlank() || recipient.getDisplayName(context).contains(query, ignoreCase = true)
 
   open fun myStoryContainsQuery(query: String): Boolean {
     if (query.isEmpty()) {

@@ -99,20 +99,16 @@ class MultiselectForwardFragment :
   private var dismissibleDialog: SimpleProgressDialog.DismissibleDialog? = null
   private var handler: Handler? = null
 
-  private fun createViewModelFactory(): MultiselectForwardViewModel.Factory {
-    return MultiselectForwardViewModel.Factory(args.storySendRequirements, args.multiShareArgs, args.forceSelectionOnly, MultiselectForwardRepository())
-  }
+  private fun createViewModelFactory(): MultiselectForwardViewModel.Factory = MultiselectForwardViewModel.Factory(args.storySendRequirements, args.multiShareArgs, args.forceSelectionOnly, MultiselectForwardRepository())
 
   private val args: MultiselectForwardFragmentArgs by lazy {
     requireArguments().getParcelableCompat(ARGS, MultiselectForwardFragmentArgs::class.java)!!
   }
 
-  override fun onGetLayoutInflater(savedInstanceState: Bundle?): LayoutInflater {
-    return if (parentFragment != null) {
-      requireParentFragment().onGetLayoutInflater(savedInstanceState)
-    } else {
-      super.onGetLayoutInflater(savedInstanceState)
-    }
+  override fun onGetLayoutInflater(savedInstanceState: Bundle?): LayoutInflater = if (parentFragment != null) {
+    requireParentFragment().onGetLayoutInflater(savedInstanceState)
+  } else {
+    super.onGetLayoutInflater(savedInstanceState)
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -388,17 +384,13 @@ class MultiselectForwardFragment :
     viewModel.confirmSafetySend(addMessage.text.toString(), destinations.toSet())
   }
 
-  override fun onMessageResentAfterSafetyNumberChangeInBottomSheet() {
-    throw UnsupportedOperationException()
-  }
+  override fun onMessageResentAfterSafetyNumberChangeInBottomSheet(): Unit = throw UnsupportedOperationException()
 
   override fun onCanceled() {
     viewModel.cancelSend()
   }
 
-  private fun getStorySendRequirements(): Stories.MediaTransform.SendRequirements {
-    return requireListener<Callback>().getStorySendRequirements() ?: viewModel.snapshot.storySendRequirements
-  }
+  private fun getStorySendRequirements(): Stories.MediaTransform.SendRequirements = requireListener<Callback>().getStorySendRequirements() ?: viewModel.snapshot.storySendRequirements
 
   private fun filterContacts(view: View?, contactSet: Set<ContactSearchKey>): Set<ContactSearchKey> {
     val storySendRequirements = getStorySendRequirements()
@@ -429,74 +421,68 @@ class MultiselectForwardFragment :
       .show(TooltipPopup.POSITION_BELOW)
   }
 
-  private fun getConfiguration(contactSearchState: ContactSearchState): ContactSearchConfiguration {
-    return findListener<SearchConfigurationProvider>()?.getSearchConfiguration(childFragmentManager, contactSearchState) ?: ContactSearchConfiguration.build {
-      query = contactSearchState.query
+  private fun getConfiguration(contactSearchState: ContactSearchState): ContactSearchConfiguration = findListener<SearchConfigurationProvider>()?.getSearchConfiguration(childFragmentManager, contactSearchState) ?: ContactSearchConfiguration.build {
+    query = contactSearchState.query
 
-      if (Stories.isFeatureEnabled() && isSelectedMediaValidForStories()) {
-        val expandedConfig: ContactSearchConfiguration.ExpandConfig? = if (isSelectedMediaValidForNonStories()) {
-          ContactSearchConfiguration.ExpandConfig(
-            isExpanded = contactSearchState.expandedSections.contains(ContactSearchConfiguration.SectionKey.STORIES),
-            maxCountWhenNotExpanded = {
-              if (args.isWrappedInBottomSheet) 1 else it + 1
-            }
-          )
-        } else {
-          null
-        }
+    if (Stories.isFeatureEnabled() && isSelectedMediaValidForStories()) {
+      val expandedConfig: ContactSearchConfiguration.ExpandConfig? = if (isSelectedMediaValidForNonStories()) {
+        ContactSearchConfiguration.ExpandConfig(
+          isExpanded = contactSearchState.expandedSections.contains(ContactSearchConfiguration.SectionKey.STORIES),
+          maxCountWhenNotExpanded = {
+            if (args.isWrappedInBottomSheet) 1 else it + 1
+          }
+        )
+      } else {
+        null
+      }
 
+      addSection(
+        ContactSearchConfiguration.Section.Stories(
+          groupStories = contactSearchState.groupStories,
+          includeHeader = true,
+          headerAction = getHeaderAction(childFragmentManager),
+          expandConfig = expandedConfig
+        )
+      )
+    }
+
+    if (isSelectedMediaValidForNonStories()) {
+      if (query.isNullOrEmpty()) {
         addSection(
-          ContactSearchConfiguration.Section.Stories(
-            groupStories = contactSearchState.groupStories,
+          ContactSearchConfiguration.Section.Recents(
             includeHeader = true,
-            headerAction = getHeaderAction(childFragmentManager),
-            expandConfig = expandedConfig
+            includeSelf = true
           )
         )
       }
 
-      if (isSelectedMediaValidForNonStories()) {
-        if (query.isNullOrEmpty()) {
-          addSection(
-            ContactSearchConfiguration.Section.Recents(
-              includeHeader = true,
-              includeSelf = true
-            )
-          )
-        }
-
-        addSection(
-          ContactSearchConfiguration.Section.Individuals(
-            includeHeader = true,
-            transportType = ContactSearchConfiguration.TransportType.PUSH,
-            includeSelf = true
-          )
+      addSection(
+        ContactSearchConfiguration.Section.Individuals(
+          includeHeader = true,
+          transportType = ContactSearchConfiguration.TransportType.PUSH,
+          includeSelf = true
         )
+      )
 
-        if (!query.isNullOrEmpty()) {
-          addSection(
-            ContactSearchConfiguration.Section.GroupMembers(
-              includeHeader = true
-            )
-          )
-        }
-
+      if (!query.isNullOrEmpty()) {
         addSection(
-          ContactSearchConfiguration.Section.Groups(
+          ContactSearchConfiguration.Section.GroupMembers(
             includeHeader = true
           )
         )
       }
+
+      addSection(
+        ContactSearchConfiguration.Section.Groups(
+          includeHeader = true
+        )
+      )
     }
   }
 
-  private fun isSelectedMediaValidForStories(): Boolean {
-    return !args.isViewOnce && args.multiShareArgs.all { it.isValidForStories }
-  }
+  private fun isSelectedMediaValidForStories(): Boolean = !args.isViewOnce && args.multiShareArgs.all { it.isValidForStories }
 
-  private fun isSelectedMediaValidForNonStories(): Boolean {
-    return args.multiShareArgs.all { it.isValidForNonStories }
-  }
+  private fun isSelectedMediaValidForNonStories(): Boolean = args.multiShareArgs.all { it.isValidForNonStories }
 
   override fun onGroupStoryClicked() {
     if (SignalStore.story.userHasSeenGroupStoryEducationSheet) {
@@ -557,10 +543,8 @@ class MultiselectForwardFragment :
     }
 
     @JvmStatic
-    fun create(multiselectForwardFragmentArgs: MultiselectForwardFragmentArgs): Fragment {
-      return MultiselectForwardFragment().apply {
-        arguments = bundleOf(ARGS to multiselectForwardFragmentArgs)
-      }
+    fun create(multiselectForwardFragmentArgs: MultiselectForwardFragmentArgs): Fragment = MultiselectForwardFragment().apply {
+      arguments = bundleOf(ARGS to multiselectForwardFragmentArgs)
     }
 
     private fun showDialogFragment(supportFragmentManager: FragmentManager, fragment: DialogFragment, multiselectForwardFragmentArgs: MultiselectForwardFragmentArgs) {

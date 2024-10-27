@@ -239,10 +239,8 @@ class ConversationListViewModel(
     }
   }
 
-  fun getNotificationProfiles(): Flowable<List<NotificationProfile>> {
-    return notificationProfilesRepository.getProfiles()
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getNotificationProfiles(): Flowable<List<NotificationProfile>> = notificationProfilesRepository.getProfiles()
+    .observeOn(AndroidSchedulers.mainThread())
 
   private fun setSelection(newSelection: Collection<Conversation>) {
     store.update {
@@ -309,8 +307,6 @@ class ConversationListViewModel(
   )
 
   class Factory(private val isArchived: Boolean) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(ConversationListViewModel(isArchived))!!
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(ConversationListViewModel(isArchived))!!
   }
 }

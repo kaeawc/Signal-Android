@@ -32,9 +32,7 @@ class MediaPreviewV2ViewModel : ViewModel() {
     store.update { it.copy(isInSharedAnimation = isInSharedAnimation) }
   }
 
-  fun shouldFinishAfterTransition(initialMediaUri: Uri): Boolean {
-    return currentPosition in store.state.mediaRecords.indices && store.state.mediaRecords[currentPosition].toMedia()?.uri == initialMediaUri
-  }
+  fun shouldFinishAfterTransition(initialMediaUri: Uri): Boolean = currentPosition in store.state.mediaRecords.indices && store.state.mediaRecords[currentPosition].toMedia()?.uri == initialMediaUri
 
   fun fetchAttachments(context: Context, startingAttachmentId: AttachmentId, threadId: Long, sorting: MediaTable.Sorting, forceRefresh: Boolean = false) {
     if (store.state.loadState == MediaPreviewV2State.LoadState.INIT || forceRefresh) {
@@ -99,17 +97,11 @@ class MediaPreviewV2ViewModel : ViewModel() {
     }
   }
 
-  fun remoteDelete(attachment: DatabaseAttachment): Completable {
-    return repository.remoteDelete(attachment).subscribeOn(Schedulers.io())
-  }
+  fun remoteDelete(attachment: DatabaseAttachment): Completable = repository.remoteDelete(attachment).subscribeOn(Schedulers.io())
 
-  fun localDelete(context: Context, attachment: DatabaseAttachment): Completable {
-    return repository.localDelete(attachment).subscribeOn(Schedulers.io())
-  }
+  fun localDelete(context: Context, attachment: DatabaseAttachment): Completable = repository.localDelete(attachment).subscribeOn(Schedulers.io())
 
-  fun jumpToFragment(context: Context, messageId: Long): Single<Intent> {
-    return repository.getMessagePositionIntent(context, messageId)
-  }
+  fun jumpToFragment(context: Context, messageId: Long): Single<Intent> = repository.getMessagePositionIntent(context, messageId)
 
   override fun onCleared() {
     disposables.dispose()

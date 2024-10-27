@@ -86,9 +86,7 @@ class MediaCaptureViewModel(private val repository: MediaCaptureRepository) : Vi
     repository.renderVideoToMedia(fd, this::onMediaRendered, this::onMediaRenderFailed)
   }
 
-  fun getMostRecentMedia(): Flowable<Optional<Media>> {
-    return store.stateFlowable.map { Optional.ofNullable(it.mostRecentMedia) }
-  }
+  fun getMostRecentMedia(): Flowable<Optional<Media>> = store.stateFlowable.map { Optional.ofNullable(it.mostRecentMedia) }
 
   fun onQrCodeFound(data: String) {
     qrData.onNext(data)
@@ -108,8 +106,6 @@ class MediaCaptureViewModel(private val repository: MediaCaptureRepository) : Vi
   }
 
   class Factory(private val repository: MediaCaptureRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(MediaCaptureViewModel(repository)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(MediaCaptureViewModel(repository)))
   }
 }

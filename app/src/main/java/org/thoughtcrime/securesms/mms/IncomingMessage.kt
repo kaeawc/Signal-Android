@@ -51,50 +51,42 @@ class IncomingMessage(
 
   companion object {
     @JvmStatic
-    fun identityUpdate(from: RecipientId, sentTimestamp: Long, groupId: GroupId?): IncomingMessage {
-      return IncomingMessage(
-        from = from,
-        sentTimeMillis = sentTimestamp,
-        serverTimeMillis = -1,
-        receivedTimeMillis = sentTimestamp,
-        groupId = groupId,
-        type = MessageType.IDENTITY_UPDATE
-      )
-    }
+    fun identityUpdate(from: RecipientId, sentTimestamp: Long, groupId: GroupId?): IncomingMessage = IncomingMessage(
+      from = from,
+      sentTimeMillis = sentTimestamp,
+      serverTimeMillis = -1,
+      receivedTimeMillis = sentTimestamp,
+      groupId = groupId,
+      type = MessageType.IDENTITY_UPDATE
+    )
 
     @JvmStatic
-    fun identityVerified(from: RecipientId, sentTimestamp: Long, groupId: GroupId?): IncomingMessage {
-      return IncomingMessage(
-        from = from,
-        sentTimeMillis = sentTimestamp,
-        serverTimeMillis = -1,
-        receivedTimeMillis = sentTimestamp,
-        groupId = groupId,
-        type = MessageType.IDENTITY_VERIFIED
-      )
-    }
+    fun identityVerified(from: RecipientId, sentTimestamp: Long, groupId: GroupId?): IncomingMessage = IncomingMessage(
+      from = from,
+      sentTimeMillis = sentTimestamp,
+      serverTimeMillis = -1,
+      receivedTimeMillis = sentTimestamp,
+      groupId = groupId,
+      type = MessageType.IDENTITY_VERIFIED
+    )
 
     @JvmStatic
-    fun identityDefault(from: RecipientId, sentTimestamp: Long, groupId: GroupId?): IncomingMessage {
-      return IncomingMessage(
-        from = from,
-        sentTimeMillis = sentTimestamp,
-        serverTimeMillis = -1,
-        receivedTimeMillis = sentTimestamp,
-        groupId = groupId,
-        type = MessageType.IDENTITY_DEFAULT
-      )
-    }
+    fun identityDefault(from: RecipientId, sentTimestamp: Long, groupId: GroupId?): IncomingMessage = IncomingMessage(
+      from = from,
+      sentTimeMillis = sentTimestamp,
+      serverTimeMillis = -1,
+      receivedTimeMillis = sentTimestamp,
+      groupId = groupId,
+      type = MessageType.IDENTITY_DEFAULT
+    )
 
-    fun contactJoined(from: RecipientId, currentTime: Long): IncomingMessage {
-      return IncomingMessage(
-        from = from,
-        sentTimeMillis = currentTime,
-        serverTimeMillis = -1,
-        receivedTimeMillis = currentTime,
-        type = MessageType.CONTACT_JOINED
-      )
-    }
+    fun contactJoined(from: RecipientId, currentTime: Long): IncomingMessage = IncomingMessage(
+      from = from,
+      sentTimeMillis = currentTime,
+      serverTimeMillis = -1,
+      receivedTimeMillis = currentTime,
+      type = MessageType.CONTACT_JOINED
+    )
 
     @JvmStatic
     fun groupUpdate(from: RecipientId, timestamp: Long, groupId: GroupId, update: GV2UpdateDescription, isGroupAdd: Boolean, serverGuid: String?): IncomingMessage {

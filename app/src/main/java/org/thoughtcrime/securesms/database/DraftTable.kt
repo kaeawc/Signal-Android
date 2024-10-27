@@ -15,7 +15,9 @@ import org.signal.core.util.withinTransaction
 import org.thoughtcrime.securesms.R
 import java.util.LinkedList
 
-class DraftTable(context: Context?, databaseHelper: SignalDatabase?) : DatabaseTable(context, databaseHelper), ThreadIdDatabaseReference {
+class DraftTable(context: Context?, databaseHelper: SignalDatabase?) :
+  DatabaseTable(context, databaseHelper),
+  ThreadIdDatabaseReference {
   companion object {
     private val TAG = Log.tag(DraftTable::class.java)
     const val TABLE_NAME = "drafts"
@@ -75,35 +77,31 @@ class DraftTable(context: Context?, databaseHelper: SignalDatabase?) : DatabaseT
     writableDatabase.deleteAll(TABLE_NAME)
   }
 
-  fun getDrafts(threadId: Long): Drafts {
-    return readableDatabase
-      .select()
-      .from(TABLE_NAME)
-      .where("$THREAD_ID = ?", threadId)
-      .run()
-      .readToList { cursor ->
-        Draft(
-          type = cursor.requireNonNullString(DRAFT_TYPE),
-          value = cursor.requireNonNullString(DRAFT_VALUE)
-        )
-      }
-      .asDrafts()
-  }
+  fun getDrafts(threadId: Long): Drafts = readableDatabase
+    .select()
+    .from(TABLE_NAME)
+    .where("$THREAD_ID = ?", threadId)
+    .run()
+    .readToList { cursor ->
+      Draft(
+        type = cursor.requireNonNullString(DRAFT_TYPE),
+        value = cursor.requireNonNullString(DRAFT_VALUE)
+      )
+    }
+    .asDrafts()
 
-  fun getAllVoiceNoteDrafts(): Drafts {
-    return readableDatabase
-      .select()
-      .from(TABLE_NAME)
-      .where("$DRAFT_TYPE = ?", Draft.VOICE_NOTE)
-      .run()
-      .readToList { cursor ->
-        Draft(
-          type = cursor.requireNonNullString(DRAFT_TYPE),
-          value = cursor.requireNonNullString(DRAFT_VALUE)
-        )
-      }
-      .asDrafts()
-  }
+  fun getAllVoiceNoteDrafts(): Drafts = readableDatabase
+    .select()
+    .from(TABLE_NAME)
+    .where("$DRAFT_TYPE = ?", Draft.VOICE_NOTE)
+    .run()
+    .readToList { cursor ->
+      Draft(
+        type = cursor.requireNonNullString(DRAFT_TYPE),
+        value = cursor.requireNonNullString(DRAFT_VALUE)
+      )
+    }
+    .asDrafts()
 
   override fun remapThread(fromId: Long, toId: Long) {
     writableDatabase
@@ -113,22 +111,18 @@ class DraftTable(context: Context?, databaseHelper: SignalDatabase?) : DatabaseT
       .run()
   }
 
-  private fun List<Draft>.asDrafts(): Drafts {
-    return Drafts(this)
-  }
+  private fun List<Draft>.asDrafts(): Drafts = Drafts(this)
 
   class Draft(val type: String, val value: String) {
-    fun getSnippet(context: Context): String {
-      return when (type) {
-        TEXT -> value
-        IMAGE -> context.getString(R.string.DraftDatabase_Draft_image_snippet)
-        VIDEO -> context.getString(R.string.DraftDatabase_Draft_video_snippet)
-        AUDIO -> context.getString(R.string.DraftDatabase_Draft_audio_snippet)
-        LOCATION -> context.getString(R.string.DraftDatabase_Draft_location_snippet)
-        QUOTE -> context.getString(R.string.DraftDatabase_Draft_quote_snippet)
-        VOICE_NOTE -> context.getString(R.string.DraftDatabase_Draft_voice_note)
-        else -> ""
-      }
+    fun getSnippet(context: Context): String = when (type) {
+      TEXT -> value
+      IMAGE -> context.getString(R.string.DraftDatabase_Draft_image_snippet)
+      VIDEO -> context.getString(R.string.DraftDatabase_Draft_video_snippet)
+      AUDIO -> context.getString(R.string.DraftDatabase_Draft_audio_snippet)
+      LOCATION -> context.getString(R.string.DraftDatabase_Draft_location_snippet)
+      QUOTE -> context.getString(R.string.DraftDatabase_Draft_quote_snippet)
+      VOICE_NOTE -> context.getString(R.string.DraftDatabase_Draft_voice_note)
+      else -> ""
     }
 
     companion object {
@@ -155,13 +149,9 @@ class DraftTable(context: Context?, databaseHelper: SignalDatabase?) : DatabaseT
       }
     }
 
-    fun getDraftOfType(type: String): Draft? {
-      return firstOrNull { it.type == type }
-    }
+    fun getDraftOfType(type: String): Draft? = firstOrNull { it.type == type }
 
-    fun shouldUpdateSnippet(): Boolean {
-      return none { it.type == Draft.MESSAGE_EDIT }
-    }
+    fun shouldUpdateSnippet(): Boolean = none { it.type == Draft.MESSAGE_EDIT }
 
     fun getSnippet(context: Context): String {
       val textDraft = getDraftOfType(Draft.TEXT)

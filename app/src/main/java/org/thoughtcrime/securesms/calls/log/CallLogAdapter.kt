@@ -112,29 +112,21 @@ class CallLogAdapter(
   ) : MappingModel<CallModel> {
 
     override fun areItemsTheSame(newItem: CallModel): Boolean = call.id == newItem.call.id
-    override fun areContentsTheSame(newItem: CallModel): Boolean {
-      return call == newItem.call &&
-        isSelectionStateTheSame(newItem) &&
-        isItemCountTheSame(newItem) &&
-        isLocalDeviceInCall == newItem.isLocalDeviceInCall
+    override fun areContentsTheSame(newItem: CallModel): Boolean = call == newItem.call &&
+      isSelectionStateTheSame(newItem) &&
+      isItemCountTheSame(newItem) &&
+      isLocalDeviceInCall == newItem.isLocalDeviceInCall
+
+    override fun getChangePayload(newItem: CallModel): Any? = if (call == newItem.call && (!isSelectionStateTheSame(newItem) || !isItemCountTheSame(newItem))) {
+      PAYLOAD_SELECTION_STATE
+    } else {
+      null
     }
 
-    override fun getChangePayload(newItem: CallModel): Any? {
-      return if (call == newItem.call && (!isSelectionStateTheSame(newItem) || !isItemCountTheSame(newItem))) {
-        PAYLOAD_SELECTION_STATE
-      } else {
-        null
-      }
-    }
+    private fun isSelectionStateTheSame(newItem: CallModel): Boolean = selectionState.contains(call.id) == newItem.selectionState.contains(newItem.call.id) &&
+      selectionState.isNotEmpty(itemCount) == newItem.selectionState.isNotEmpty(newItem.itemCount)
 
-    private fun isSelectionStateTheSame(newItem: CallModel): Boolean {
-      return selectionState.contains(call.id) == newItem.selectionState.contains(newItem.call.id) &&
-        selectionState.isNotEmpty(itemCount) == newItem.selectionState.isNotEmpty(newItem.itemCount)
-    }
-
-    private fun isItemCountTheSame(newItem: CallModel): Boolean {
-      return itemCount == newItem.itemCount
-    }
+    private fun isItemCountTheSame(newItem: CallModel): Boolean = itemCount == newItem.itemCount
   }
 
   private class CallLinkModel(
@@ -144,33 +136,23 @@ class CallLogAdapter(
     val isLocalDeviceInCall: Boolean
   ) : MappingModel<CallLinkModel> {
 
-    override fun areItemsTheSame(newItem: CallLinkModel): Boolean {
-      return callLink.record.roomId == newItem.callLink.record.roomId
+    override fun areItemsTheSame(newItem: CallLinkModel): Boolean = callLink.record.roomId == newItem.callLink.record.roomId
+
+    override fun areContentsTheSame(newItem: CallLinkModel): Boolean = callLink == newItem.callLink &&
+      isSelectionStateTheSame(newItem) &&
+      isItemCountTheSame(newItem) &&
+      isLocalDeviceInCall == newItem.isLocalDeviceInCall
+
+    override fun getChangePayload(newItem: CallLinkModel): Any? = if (callLink == newItem.callLink && (!isSelectionStateTheSame(newItem) || !isItemCountTheSame(newItem))) {
+      PAYLOAD_SELECTION_STATE
+    } else {
+      null
     }
 
-    override fun areContentsTheSame(newItem: CallLinkModel): Boolean {
-      return callLink == newItem.callLink &&
-        isSelectionStateTheSame(newItem) &&
-        isItemCountTheSame(newItem) &&
-        isLocalDeviceInCall == newItem.isLocalDeviceInCall
-    }
+    private fun isSelectionStateTheSame(newItem: CallLinkModel): Boolean = selectionState.contains(callLink.id) == newItem.selectionState.contains(newItem.callLink.id) &&
+      selectionState.isNotEmpty(itemCount) == newItem.selectionState.isNotEmpty(newItem.itemCount)
 
-    override fun getChangePayload(newItem: CallLinkModel): Any? {
-      return if (callLink == newItem.callLink && (!isSelectionStateTheSame(newItem) || !isItemCountTheSame(newItem))) {
-        PAYLOAD_SELECTION_STATE
-      } else {
-        null
-      }
-    }
-
-    private fun isSelectionStateTheSame(newItem: CallLinkModel): Boolean {
-      return selectionState.contains(callLink.id) == newItem.selectionState.contains(newItem.callLink.id) &&
-        selectionState.isNotEmpty(itemCount) == newItem.selectionState.isNotEmpty(newItem.itemCount)
-    }
-
-    private fun isItemCountTheSame(newItem: CallLinkModel): Boolean {
-      return itemCount == newItem.itemCount
-    }
+    private fun isItemCountTheSame(newItem: CallLinkModel): Boolean = itemCount == newItem.itemCount
   }
 
   private class ClearFilterModel : MappingModel<ClearFilterModel> {
@@ -412,42 +394,38 @@ class CallLogAdapter(
     }
 
     @DrawableRes
-    private fun getCallStateDrawableRes(call: CallTable.Call): Int {
-      return when (call.messageType) {
-        MessageTypes.MISSED_VIDEO_CALL_TYPE, MessageTypes.MISSED_AUDIO_CALL_TYPE -> R.drawable.symbol_missed_incoming_compact_16
-        MessageTypes.INCOMING_AUDIO_CALL_TYPE, MessageTypes.INCOMING_VIDEO_CALL_TYPE -> if (call.isDisplayedAsMissedCallInUi) R.drawable.symbol_missed_incoming_compact_16 else R.drawable.symbol_arrow_downleft_compact_16
-        MessageTypes.OUTGOING_AUDIO_CALL_TYPE, MessageTypes.OUTGOING_VIDEO_CALL_TYPE -> R.drawable.symbol_arrow_upright_compact_16
-        MessageTypes.GROUP_CALL_TYPE -> when {
-          call.type == CallTable.Type.AD_HOC_CALL -> R.drawable.symbol_link_compact_16
-          call.isDisplayedAsMissedCallInUi -> R.drawable.symbol_missed_incoming_compact_16
-          call.event == CallTable.Event.GENERIC_GROUP_CALL || call.event == CallTable.Event.JOINED -> R.drawable.symbol_group_compact_16
-          call.direction == CallTable.Direction.INCOMING -> R.drawable.symbol_arrow_downleft_compact_16
-          call.direction == CallTable.Direction.OUTGOING -> R.drawable.symbol_arrow_upright_compact_16
-          else -> throw AssertionError()
-        }
-
-        else -> error("Unexpected type ${call.type}")
+    private fun getCallStateDrawableRes(call: CallTable.Call): Int = when (call.messageType) {
+      MessageTypes.MISSED_VIDEO_CALL_TYPE, MessageTypes.MISSED_AUDIO_CALL_TYPE -> R.drawable.symbol_missed_incoming_compact_16
+      MessageTypes.INCOMING_AUDIO_CALL_TYPE, MessageTypes.INCOMING_VIDEO_CALL_TYPE -> if (call.isDisplayedAsMissedCallInUi) R.drawable.symbol_missed_incoming_compact_16 else R.drawable.symbol_arrow_downleft_compact_16
+      MessageTypes.OUTGOING_AUDIO_CALL_TYPE, MessageTypes.OUTGOING_VIDEO_CALL_TYPE -> R.drawable.symbol_arrow_upright_compact_16
+      MessageTypes.GROUP_CALL_TYPE -> when {
+        call.type == CallTable.Type.AD_HOC_CALL -> R.drawable.symbol_link_compact_16
+        call.isDisplayedAsMissedCallInUi -> R.drawable.symbol_missed_incoming_compact_16
+        call.event == CallTable.Event.GENERIC_GROUP_CALL || call.event == CallTable.Event.JOINED -> R.drawable.symbol_group_compact_16
+        call.direction == CallTable.Direction.INCOMING -> R.drawable.symbol_arrow_downleft_compact_16
+        call.direction == CallTable.Direction.OUTGOING -> R.drawable.symbol_arrow_upright_compact_16
+        else -> throw AssertionError()
       }
+
+      else -> error("Unexpected type ${call.type}")
     }
 
     @StringRes
-    private fun getCallStateStringRes(call: CallTable.Call): Int {
-      return when (call.messageType) {
-        MessageTypes.MISSED_VIDEO_CALL_TYPE, MessageTypes.MISSED_AUDIO_CALL_TYPE -> if (call.event == CallTable.Event.MISSED) R.string.CallLogAdapter__missed else R.string.CallLogAdapter__missed_notification_profile
-        MessageTypes.OUTGOING_AUDIO_CALL_TYPE -> R.string.CallLogAdapter__outgoing
-        MessageTypes.OUTGOING_VIDEO_CALL_TYPE -> R.string.CallLogAdapter__outgoing
-        MessageTypes.GROUP_CALL_TYPE -> when {
-          call.type == CallTable.Type.AD_HOC_CALL -> R.string.CallLogAdapter__call_link
-          call.event == CallTable.Event.MISSED_NOTIFICATION_PROFILE -> R.string.CallLogAdapter__missed_notification_profile
-          call.isDisplayedAsMissedCallInUi -> R.string.CallLogAdapter__missed
-          call.event == CallTable.Event.GENERIC_GROUP_CALL || call.event == CallTable.Event.JOINED -> R.string.CallPreference__group_call
-          call.direction == CallTable.Direction.INCOMING -> R.string.CallLogAdapter__incoming
-          call.direction == CallTable.Direction.OUTGOING -> R.string.CallLogAdapter__outgoing
-          else -> throw AssertionError()
-        }
-
-        else -> if (call.isDisplayedAsMissedCallInUi) R.string.CallLogAdapter__missed else R.string.CallLogAdapter__incoming
+    private fun getCallStateStringRes(call: CallTable.Call): Int = when (call.messageType) {
+      MessageTypes.MISSED_VIDEO_CALL_TYPE, MessageTypes.MISSED_AUDIO_CALL_TYPE -> if (call.event == CallTable.Event.MISSED) R.string.CallLogAdapter__missed else R.string.CallLogAdapter__missed_notification_profile
+      MessageTypes.OUTGOING_AUDIO_CALL_TYPE -> R.string.CallLogAdapter__outgoing
+      MessageTypes.OUTGOING_VIDEO_CALL_TYPE -> R.string.CallLogAdapter__outgoing
+      MessageTypes.GROUP_CALL_TYPE -> when {
+        call.type == CallTable.Type.AD_HOC_CALL -> R.string.CallLogAdapter__call_link
+        call.event == CallTable.Event.MISSED_NOTIFICATION_PROFILE -> R.string.CallLogAdapter__missed_notification_profile
+        call.isDisplayedAsMissedCallInUi -> R.string.CallLogAdapter__missed
+        call.event == CallTable.Event.GENERIC_GROUP_CALL || call.event == CallTable.Event.JOINED -> R.string.CallPreference__group_call
+        call.direction == CallTable.Direction.INCOMING -> R.string.CallLogAdapter__incoming
+        call.direction == CallTable.Direction.OUTGOING -> R.string.CallLogAdapter__outgoing
+        else -> throw AssertionError()
       }
+
+      else -> if (call.isDisplayedAsMissedCallInUi) R.string.CallLogAdapter__missed else R.string.CallLogAdapter__incoming
     }
   }
 

@@ -33,13 +33,9 @@ object ButtonStripPreference {
     val onMuteClick: () -> Unit = {},
     val onSearchClick: () -> Unit = {}
   ) : PreferenceModel<Model>() {
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) && state == newItem.state
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) && state == newItem.state
 
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return true
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = true
   }
 
   class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

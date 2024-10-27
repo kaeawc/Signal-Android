@@ -24,9 +24,7 @@ object StoryInfoHeader {
   class Model(val sentMillis: Long, val receivedMillis: Long, val size: Long) : MappingModel<Model> {
     override fun areItemsTheSame(newItem: Model): Boolean = true
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return newItem.sentMillis == sentMillis && newItem.receivedMillis == receivedMillis && newItem.size == size
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = newItem.sentMillis == sentMillis && newItem.receivedMillis == receivedMillis && newItem.size == size
   }
 
   private class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

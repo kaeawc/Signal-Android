@@ -85,9 +85,7 @@ class StoryCache(
    * Get the appropriate cache value from the cache if it exists.
    * Since this is only used for images, we don't need to worry about transform properties.
    */
-  fun getFromCache(uri: Uri): StoryCacheValue? {
-    return cache[uri]
-  }
+  fun getFromCache(uri: Uri): StoryCacheValue? = cache[uri]
 
   /**
    * Represents the load targets for an image and blur.

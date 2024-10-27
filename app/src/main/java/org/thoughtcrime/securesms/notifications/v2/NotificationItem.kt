@@ -90,77 +90,61 @@ sealed class NotificationItem(val threadRecipient: Recipient, protected val reco
     }
   }
 
-  fun getStyledPrimaryText(context: Context, trimmed: Boolean = false): CharSequence {
-    return if (SignalStore.settings.messageNotificationsPrivacy.isDisplayNothing) {
-      context.getString(R.string.SingleRecipientNotificationBuilder_new_message)
-    } else {
-      SpannableStringBuilder().apply {
-        append(Util.getBoldedString(authorRecipient.getShortDisplayName(context)))
-        if (threadRecipient != authorRecipient) {
-          append(Util.getBoldedString("@${threadRecipient.getDisplayName(context)}"))
-        }
-        append(": ")
-        append(getPrimaryText(context).apply { if (trimmed) trimToDisplayLength() })
+  fun getStyledPrimaryText(context: Context, trimmed: Boolean = false): CharSequence = if (SignalStore.settings.messageNotificationsPrivacy.isDisplayNothing) {
+    context.getString(R.string.SingleRecipientNotificationBuilder_new_message)
+  } else {
+    SpannableStringBuilder().apply {
+      append(Util.getBoldedString(authorRecipient.getShortDisplayName(context)))
+      if (threadRecipient != authorRecipient) {
+        append(Util.getBoldedString("@${threadRecipient.getDisplayName(context)}"))
       }
+      append(": ")
+      append(getPrimaryText(context).apply { if (trimmed) trimToDisplayLength() })
     }
   }
 
-  fun getPersonName(context: Context): CharSequence {
-    return if (SignalStore.settings.messageNotificationsPrivacy.isDisplayContact) {
-      authorRecipient.getDisplayName(context)
+  fun getPersonName(context: Context): CharSequence = if (SignalStore.settings.messageNotificationsPrivacy.isDisplayContact) {
+    authorRecipient.getDisplayName(context)
+  } else {
+    context.getString(R.string.SingleRecipientNotificationBuilder_signal)
+  }
+
+  override fun compareTo(other: NotificationItem): Int = timestamp.compareTo(other.timestamp)
+
+  fun getPersonUri(context: Context): String? = if (SignalStore.settings.messageNotificationsPrivacy.isDisplayContact && authorRecipient.isSystemContact && Permissions.hasAny(context, Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)) {
+    authorRecipient.contactUri.toString()
+  } else {
+    null
+  }
+
+  fun getPersonIcon(context: Context): IconCompat? = if (SignalStore.settings.messageNotificationsPrivacy.isDisplayContact) {
+    AvatarUtil.getIconCompat(context, authorRecipient)
+  } else {
+    null
+  }
+
+  fun getPrimaryText(context: Context): CharSequence = if (SignalStore.settings.messageNotificationsPrivacy.isDisplayMessage) {
+    if (RecipientUtil.isMessageRequestAccepted(context, thread.threadId)) {
+      getPrimaryTextActual(context)
     } else {
-      context.getString(R.string.SingleRecipientNotificationBuilder_signal)
+      SpanUtil.italic(context.getString(R.string.SingleRecipientNotificationBuilder_message_request))
     }
+  } else {
+    context.getString(R.string.SingleRecipientNotificationBuilder_new_message)
   }
 
-  override fun compareTo(other: NotificationItem): Int {
-    return timestamp.compareTo(other.timestamp)
+  fun getInboxLine(context: Context): CharSequence? = when {
+    SignalStore.settings.messageNotificationsPrivacy.isDisplayNothing -> null
+    else -> getStyledPrimaryText(context, true)
   }
 
-  fun getPersonUri(context: Context): String? {
-    return if (SignalStore.settings.messageNotificationsPrivacy.isDisplayContact && authorRecipient.isSystemContact && Permissions.hasAny(context, Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)) {
-      authorRecipient.contactUri.toString()
-    } else {
-      null
-    }
-  }
-
-  fun getPersonIcon(context: Context): IconCompat? {
-    return if (SignalStore.settings.messageNotificationsPrivacy.isDisplayContact) {
-      AvatarUtil.getIconCompat(context, authorRecipient)
-    } else {
-      null
-    }
-  }
-
-  fun getPrimaryText(context: Context): CharSequence {
-    return if (SignalStore.settings.messageNotificationsPrivacy.isDisplayMessage) {
-      if (RecipientUtil.isMessageRequestAccepted(context, thread.threadId)) {
-        getPrimaryTextActual(context)
-      } else {
-        SpanUtil.italic(context.getString(R.string.SingleRecipientNotificationBuilder_message_request))
-      }
-    } else {
-      context.getString(R.string.SingleRecipientNotificationBuilder_new_message)
-    }
-  }
-
-  fun getInboxLine(context: Context): CharSequence? {
-    return when {
-      SignalStore.settings.messageNotificationsPrivacy.isDisplayNothing -> null
-      else -> getStyledPrimaryText(context, true)
-    }
-  }
-
-  open fun hasSameContent(other: NotificationItem): Boolean {
-    return timestamp == other.timestamp &&
-      id == other.id &&
-      isMms == other.isMms &&
-      authorRecipient == other.authorRecipient &&
-      authorRecipient.hasSameContent(other.authorRecipient) &&
-      slideDeck?.thumbnailSlide?.isInProgress == other.slideDeck?.thumbnailSlide?.isInProgress &&
-      record.isRemoteDelete == other.record.isRemoteDelete
-  }
+  open fun hasSameContent(other: NotificationItem): Boolean = timestamp == other.timestamp &&
+    id == other.id &&
+    isMms == other.isMms &&
+    authorRecipient == other.authorRecipient &&
+    authorRecipient.hasSameContent(other.authorRecipient) &&
+    slideDeck?.thumbnailSlide?.isInProgress == other.slideDeck?.thumbnailSlide?.isInProgress &&
+    record.isRemoteDelete == other.record.isRemoteDelete
 
   protected fun getBodyWithMentionsAndStyles(context: Context, record: MessageRecord): CharSequence {
     val updated = MentionUtil.updateBodyWithDisplayNames(context, record)
@@ -216,29 +200,27 @@ class MessageNotification(threadRecipient: Recipient, record: MessageRecord) : N
 
   private var thumbnailInfo: ThumbnailInfo = NotificationThumbnails.getWithoutModifying(this)
 
-  override fun getPrimaryTextActual(context: Context): CharSequence {
-    return if (KeyCachingService.isLocked(context)) {
-      SpanUtil.italic(context.getString(R.string.MessageNotifier_locked_message))
-    } else if (record.isMms && (record as MmsMessageRecord).sharedContacts.isNotEmpty()) {
-      val contact = record.sharedContacts[0]
-      ContactUtil.getStringSummary(context, contact)
-    } else if (record.isMms && record.isViewOnce) {
-      SpanUtil.italic(context.getString(getViewOnceDescription(record as MmsMessageRecord)))
-    } else if (record.isRemoteDelete) {
-      SpanUtil.italic(context.getString(R.string.MessageNotifier_this_message_was_deleted))
-    } else if (record.isMms && !record.isMmsNotification && (record as MmsMessageRecord).slideDeck.slides.isNotEmpty()) {
-      ThreadBodyUtil.getFormattedBodyForNotification(context, record, getBodyWithMentionsAndStyles(context, record))
-    } else if (record.isGroupCall) {
-      MessageRecord.getGroupCallUpdateDescription(context, record.body, false).spannable
-    } else if (record.hasGiftBadge()) {
-      ThreadBodyUtil.getFormattedBodyForNotification(context, record, null)
-    } else if (record.isStoryReaction()) {
-      ThreadBodyUtil.getFormattedBodyForNotification(context, record, null)
-    } else if (record.isPaymentNotification || record.isPaymentTombstone) {
-      ThreadBodyUtil.getFormattedBodyForNotification(context, record, null)
-    } else {
-      getBodyWithMentionsAndStyles(context, record)
-    }
+  override fun getPrimaryTextActual(context: Context): CharSequence = if (KeyCachingService.isLocked(context)) {
+    SpanUtil.italic(context.getString(R.string.MessageNotifier_locked_message))
+  } else if (record.isMms && (record as MmsMessageRecord).sharedContacts.isNotEmpty()) {
+    val contact = record.sharedContacts[0]
+    ContactUtil.getStringSummary(context, contact)
+  } else if (record.isMms && record.isViewOnce) {
+    SpanUtil.italic(context.getString(getViewOnceDescription(record as MmsMessageRecord)))
+  } else if (record.isRemoteDelete) {
+    SpanUtil.italic(context.getString(R.string.MessageNotifier_this_message_was_deleted))
+  } else if (record.isMms && !record.isMmsNotification && (record as MmsMessageRecord).slideDeck.slides.isNotEmpty()) {
+    ThreadBodyUtil.getFormattedBodyForNotification(context, record, getBodyWithMentionsAndStyles(context, record))
+  } else if (record.isGroupCall) {
+    MessageRecord.getGroupCallUpdateDescription(context, record.body, false).spannable
+  } else if (record.hasGiftBadge()) {
+    ThreadBodyUtil.getFormattedBodyForNotification(context, record, null)
+  } else if (record.isStoryReaction()) {
+    ThreadBodyUtil.getFormattedBodyForNotification(context, record, null)
+  } else if (record.isPaymentNotification || record.isPaymentTombstone) {
+    ThreadBodyUtil.getFormattedBodyForNotification(context, record, null)
+  } else {
+    getBodyWithMentionsAndStyles(context, record)
   }
 
   @StringRes
@@ -247,12 +229,10 @@ class MessageNotification(threadRecipient: Recipient, record: MessageRecord) : N
     return if (MediaUtil.isImageType(contentType)) R.string.MessageNotifier_view_once_photo else R.string.MessageNotifier_view_once_video
   }
 
-  override fun getStartingPosition(context: Context): Int {
-    return if (thread.groupStoryId != null) {
-      SignalDatabase.messages.getMessagePositionInConversation(thread.threadId, thread.groupStoryId, record.dateReceived)
-    } else {
-      -1
-    }
+  override fun getStartingPosition(context: Context): Int = if (thread.groupStoryId != null) {
+    SignalDatabase.messages.getMessagePositionInConversation(thread.threadId, thread.groupStoryId, record.dateReceived)
+  } else {
+    -1
   }
 
   override fun getLargeIconUri(): Uri? {
@@ -267,16 +247,14 @@ class MessageNotification(threadRecipient: Recipient, record: MessageRecord) : N
     return if (slide?.isInProgress == false) slide.uri else null
   }
 
-  override fun getThumbnailInfo(context: Context): ThumbnailInfo {
-    return if (SignalStore.settings.messageNotificationsPrivacy.isDisplayMessage && !KeyCachingService.isLocked(context)) {
-      if (thumbnailInfo.needsShrinking) {
-        thumbnailInfo = NotificationThumbnails.get(context, this)
-      }
-
-      thumbnailInfo
-    } else {
-      ThumbnailInfo.NONE
+  override fun getThumbnailInfo(context: Context): ThumbnailInfo = if (SignalStore.settings.messageNotificationsPrivacy.isDisplayMessage && !KeyCachingService.isLocked(context)) {
+    if (thumbnailInfo.needsShrinking) {
+      thumbnailInfo = NotificationThumbnails.get(context, this)
     }
+
+    thumbnailInfo
+  } else {
+    ThumbnailInfo.NONE
   }
 
   override fun canReply(context: Context): Boolean {
@@ -296,13 +274,9 @@ class MessageNotification(threadRecipient: Recipient, record: MessageRecord) : N
     return true
   }
 
-  override fun hasSameContent(other: NotificationItem): Boolean {
-    return super.hasSameContent(other) && thumbnailInfo == (other as? MessageNotification)?.thumbnailInfo
-  }
+  override fun hasSameContent(other: NotificationItem): Boolean = super.hasSameContent(other) && thumbnailInfo == (other as? MessageNotification)?.thumbnailInfo
 
-  override fun toString(): String {
-    return "MessageNotification(timestamp=$timestamp, isNewNotification=$isNewNotification)"
-  }
+  override fun toString(): String = "MessageNotification(timestamp=$timestamp, isNewNotification=$isNewNotification)"
 }
 
 /**
@@ -313,23 +287,21 @@ class ReactionNotification(threadRecipient: Recipient, record: MessageRecord, va
   override val authorRecipient: Recipient = Recipient.resolved(reaction.author)
   override val isNewNotification: Boolean = timestamp > notifiedTimestamp
 
-  override fun getPrimaryTextActual(context: Context): CharSequence {
-    return if (KeyCachingService.isLocked(context)) {
-      SpanUtil.italic(context.getString(R.string.MessageNotifier_locked_message))
-    } else {
-      val text: String = SpanUtil.italic(getReactionMessageBody(context)).toString()
-      val parts: Array<String> = text.split(EMOJI_REPLACEMENT_STRING).toTypedArray()
-      val builder = SpannableStringBuilder()
+  override fun getPrimaryTextActual(context: Context): CharSequence = if (KeyCachingService.isLocked(context)) {
+    SpanUtil.italic(context.getString(R.string.MessageNotifier_locked_message))
+  } else {
+    val text: String = SpanUtil.italic(getReactionMessageBody(context)).toString()
+    val parts: Array<String> = text.split(EMOJI_REPLACEMENT_STRING).toTypedArray()
+    val builder = SpannableStringBuilder()
 
-      parts.forEachIndexed { i, part ->
-        builder.append(SpanUtil.italic(part))
-        if (i != parts.size - 1) {
-          builder.append(reaction.emoji)
-        }
+    parts.forEachIndexed { i, part ->
+      builder.append(SpanUtil.italic(part))
+      if (i != parts.size - 1) {
+        builder.append(reaction.emoji)
       }
-
-      builder
     }
+
+    builder
   }
 
   private fun getReactionMessageBody(context: Context): CharSequence {
@@ -363,16 +335,12 @@ class ReactionNotification(threadRecipient: Recipient, record: MessageRecord, va
     }
   }
 
-  override fun getStartingPosition(context: Context): Int {
-    return SignalDatabase.messages.getMessagePositionInConversation(thread.threadId, thread.groupStoryId ?: 0L, record.dateReceived)
-  }
+  override fun getStartingPosition(context: Context): Int = SignalDatabase.messages.getMessagePositionInConversation(thread.threadId, thread.groupStoryId ?: 0L, record.dateReceived)
 
   override fun getLargeIconUri(): Uri? = null
   override fun getBigPictureUri(): Uri? = null
   override fun getThumbnailInfo(context: Context): ThumbnailInfo = ThumbnailInfo()
   override fun canReply(context: Context): Boolean = false
 
-  override fun toString(): String {
-    return "ReactionNotification(timestamp=$timestamp, isNewNotification=$isNewNotification)"
-  }
+  override fun toString(): String = "ReactionNotification(timestamp=$timestamp, isNewNotification=$isNewNotification)"
 }

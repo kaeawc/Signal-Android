@@ -11,9 +11,7 @@ import org.thoughtcrime.securesms.dependencies.AppDependencies
 import org.thoughtcrime.securesms.recipients.Recipient
 
 class StoryGroupReplyDataSource(private val parentStoryId: Long) : PagedDataSource<MessageId, ReplyBody> {
-  override fun size(): Int {
-    return SignalDatabase.messages.getNumberOfStoryReplies(parentStoryId)
-  }
+  override fun size(): Int = SignalDatabase.messages.getNumberOfStoryReplies(parentStoryId)
 
   override fun load(start: Int, length: Int, totalSize: Int, cancellationSignal: PagedDataSource.CancellationSignal): MutableList<ReplyBody> {
     val results: MutableList<ReplyBody> = ArrayList(length)
@@ -28,13 +26,9 @@ class StoryGroupReplyDataSource(private val parentStoryId: Long) : PagedDataSour
     return results
   }
 
-  override fun load(key: MessageId): ReplyBody {
-    return readRowFromRecord(SignalDatabase.messages.getMessageRecord(key.id) as MmsMessageRecord)
-  }
+  override fun load(key: MessageId): ReplyBody = readRowFromRecord(SignalDatabase.messages.getMessageRecord(key.id) as MmsMessageRecord)
 
-  override fun getKey(data: ReplyBody): MessageId {
-    return data.key
-  }
+  override fun getKey(data: ReplyBody): MessageId = data.key
 
   private fun readRowFromRecord(record: MmsMessageRecord): ReplyBody {
     val threadRecipient: Recipient = requireNotNull(SignalDatabase.threads.getRecipientForThreadId(record.threadId))

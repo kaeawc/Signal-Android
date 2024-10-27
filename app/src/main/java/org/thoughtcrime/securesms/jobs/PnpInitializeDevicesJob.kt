@@ -55,13 +55,9 @@ class PnpInitializeDevicesJob private constructor(parameters: Parameters) : Base
 
   constructor() : this(Parameters.Builder().addConstraint(NetworkConstraint.KEY).build())
 
-  override fun serialize(): ByteArray? {
-    return null
-  }
+  override fun serialize(): ByteArray? = null
 
-  override fun getFactoryKey(): String {
-    return KEY
-  }
+  override fun getFactoryKey(): String = KEY
 
   override fun onFailure() = Unit
 
@@ -215,13 +211,9 @@ class PnpInitializeDevicesJob private constructor(parameters: Parameters) : Base
     )
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return e is IOException
-  }
+  override fun onShouldRetry(e: Exception): Boolean = e is IOException
 
   class Factory : Job.Factory<PnpInitializeDevicesJob?> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): PnpInitializeDevicesJob {
-      return PnpInitializeDevicesJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): PnpInitializeDevicesJob = PnpInitializeDevicesJob(parameters)
   }
 }

@@ -3,24 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-val signalJavaVersion: JavaVersion by rootProject.extra
-val signalKotlinJvmTarget: String by rootProject.extra
-
 plugins {
   id("java-library")
   id("org.jetbrains.kotlin.jvm")
-  id("ktlint")
+  id("org.jlleitschuh.gradle.ktlint")
   id("com.squareup.wire")
 }
 
 java {
-  sourceCompatibility = signalJavaVersion
-  targetCompatibility = signalJavaVersion
+  sourceCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
+  targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
 }
 
 kotlin {
   jvmToolchain {
-    languageVersion = JavaLanguageVersion.of(signalKotlinJvmTarget)
+//    languageVersion = JavaLanguageVersion.of(signalKotlinJvmTarget)
   }
 }
 
@@ -54,8 +51,7 @@ dependencies {
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.kotlinx.coroutines.core.jvm)
 
-  testImplementation(testLibs.junit.junit)
-  testImplementation(testLibs.assertj.core)
-  testImplementation(testLibs.junit.junit)
-  testImplementation(testLibs.kotlinx.coroutines.test)
+  testImplementation(libs.junit)
+  testImplementation(libs.assertj.core)
+  testImplementation(libs.kotlinx.coroutines.test)
 }

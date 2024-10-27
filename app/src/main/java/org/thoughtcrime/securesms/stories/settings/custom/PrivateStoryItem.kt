@@ -33,39 +33,29 @@ object PrivateStoryItem {
   ) : PreferenceModel<RecipientModel>() {
     override fun areItemsTheSame(newItem: RecipientModel): Boolean = newItem.recipient == recipient
 
-    override fun areContentsTheSame(newItem: RecipientModel): Boolean {
-      return newItem.recipient.hasSameContent(recipient) &&
-        (newItem.onClick != null) == (onClick != null) &&
-        super.areContentsTheSame(newItem)
-    }
+    override fun areContentsTheSame(newItem: RecipientModel): Boolean = newItem.recipient.hasSameContent(recipient) &&
+      (newItem.onClick != null) == (onClick != null) &&
+      super.areContentsTheSame(newItem)
   }
 
   class Model(
     val privateStoryItemData: DistributionListRecord,
     val onClick: (Model) -> Unit
   ) : PreferenceModel<Model>() {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return newItem.privateStoryItemData.id == privateStoryItemData.id
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = newItem.privateStoryItemData.id == privateStoryItemData.id
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return newItem.privateStoryItemData == privateStoryItemData &&
-        super.areContentsTheSame(newItem)
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = newItem.privateStoryItemData == privateStoryItemData &&
+      super.areContentsTheSame(newItem)
   }
 
   class PartialModel(
     val privateStoryItemData: DistributionListPartialRecord,
     val onClick: (PartialModel) -> Unit
   ) : PreferenceModel<PartialModel>() {
-    override fun areItemsTheSame(newItem: PartialModel): Boolean {
-      return newItem.privateStoryItemData.id == privateStoryItemData.id
-    }
+    override fun areItemsTheSame(newItem: PartialModel): Boolean = newItem.privateStoryItemData.id == privateStoryItemData.id
 
-    override fun areContentsTheSame(newItem: PartialModel): Boolean {
-      return newItem.privateStoryItemData == privateStoryItemData &&
-        super.areContentsTheSame(newItem)
-    }
+    override fun areContentsTheSame(newItem: PartialModel): Boolean = newItem.privateStoryItemData == privateStoryItemData &&
+      super.areContentsTheSame(newItem)
   }
 
   private class RecipientViewHolder(itemView: View) : MappingViewHolder<RecipientModel>(itemView) {

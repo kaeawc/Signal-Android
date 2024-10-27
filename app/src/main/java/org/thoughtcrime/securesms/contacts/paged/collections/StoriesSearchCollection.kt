@@ -27,9 +27,7 @@ class StoriesSearchCollection<ContactRecord>(
 
   override val contentSize: Int = records.getCount() + extraData.size
 
-  override fun getItemAtCorrectedIndex(correctedIndex: Int): ContactSearchData {
-    return aggregateStoryData[correctedIndex]
-  }
+  override fun getItemAtCorrectedIndex(correctedIndex: Int): ContactSearchData = aggregateStoryData[correctedIndex]
 
   override fun fillDataWindow(offset: Int, limit: Int) = Unit
 }

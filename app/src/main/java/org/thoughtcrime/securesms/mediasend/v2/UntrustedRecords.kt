@@ -14,14 +14,12 @@ import java.util.concurrent.TimeUnit
 
 object UntrustedRecords {
 
-  fun checkForBadIdentityRecords(contactSearchKeys: Set<ContactSearchKey.RecipientSearchKey>, changedSince: Long): Completable {
-    return Completable.fromAction {
-      val untrustedRecords: List<IdentityRecord> = checkForBadIdentityRecordsSync(contactSearchKeys, changedSince)
-      if (untrustedRecords.isNotEmpty()) {
-        throw UntrustedRecordsException(untrustedRecords, contactSearchKeys)
-      }
-    }.subscribeOn(Schedulers.io())
-  }
+  fun checkForBadIdentityRecords(contactSearchKeys: Set<ContactSearchKey.RecipientSearchKey>, changedSince: Long): Completable = Completable.fromAction {
+    val untrustedRecords: List<IdentityRecord> = checkForBadIdentityRecordsSync(contactSearchKeys, changedSince)
+    if (untrustedRecords.isNotEmpty()) {
+      throw UntrustedRecordsException(untrustedRecords, contactSearchKeys)
+    }
+  }.subscribeOn(Schedulers.io())
 
   fun checkForBadIdentityRecords(contactSearchKeys: Set<ContactSearchKey.RecipientSearchKey>, changedSince: Long, consumer: Consumer<List<IdentityRecord>>) {
     SignalExecutors.BOUNDED.execute {

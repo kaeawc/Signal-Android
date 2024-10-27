@@ -71,8 +71,6 @@ internal class UpdateSmsJobsMigrationJob(
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<UpdateSmsJobsMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): UpdateSmsJobsMigrationJob {
-      return UpdateSmsJobsMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): UpdateSmsJobsMigrationJob = UpdateSmsJobsMigrationJob(parameters)
   }
 }

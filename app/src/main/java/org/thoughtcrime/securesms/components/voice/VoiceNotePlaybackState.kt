@@ -47,9 +47,7 @@ data class VoiceNotePlaybackState(
     val NONE = VoiceNotePlaybackState(Uri.EMPTY, 0, 0, false, 1f, false, ClipType.Idle)
   }
 
-  fun asPaused(): VoiceNotePlaybackState {
-    return copy(isPlaying = false)
-  }
+  fun asPaused(): VoiceNotePlaybackState = copy(isPlaying = false)
 
   sealed class ClipType {
     data class Message(

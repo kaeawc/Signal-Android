@@ -286,12 +286,10 @@ object SyncMessageProcessor {
     }
   }
 
-  private fun getSyncMessageDestination(message: Sent): Recipient {
-    return if (message.message.hasGroupContext) {
-      Recipient.externalPossiblyMigratedGroup(GroupId.v2(message.message!!.groupV2!!.groupMasterKey))
-    } else {
-      Recipient.externalPush(SignalServiceAddress(ServiceId.parseOrThrow(message.destinationServiceId!!), message.destinationE164))
-    }
+  private fun getSyncMessageDestination(message: Sent): Recipient = if (message.message.hasGroupContext) {
+    Recipient.externalPossiblyMigratedGroup(GroupId.v2(message.message!!.groupV2!!.groupMasterKey))
+  } else {
+    Recipient.externalPush(SignalServiceAddress(ServiceId.parseOrThrow(message.destinationServiceId!!), message.destinationE164))
   }
 
   @Throws(MmsException::class)
@@ -1631,45 +1629,41 @@ object SyncMessageProcessor {
     }
   }
 
-  private fun SyncMessage.DeleteForMe.ConversationIdentifier.toRecipientId(): RecipientId? {
-    return when {
-      threadGroupId != null -> {
-        try {
-          val groupId: GroupId = GroupId.push(threadGroupId!!)
-          Recipient.externalPossiblyMigratedGroup(groupId).id
-        } catch (e: BadGroupIdException) {
-          null
-        }
+  private fun SyncMessage.DeleteForMe.ConversationIdentifier.toRecipientId(): RecipientId? = when {
+    threadGroupId != null -> {
+      try {
+        val groupId: GroupId = GroupId.push(threadGroupId!!)
+        Recipient.externalPossiblyMigratedGroup(groupId).id
+      } catch (e: BadGroupIdException) {
+        null
       }
-
-      threadServiceId != null -> {
-        ServiceId.parseOrNull(threadServiceId)?.let {
-          SignalDatabase.recipients.getOrInsertFromServiceId(it)
-        }
-      }
-
-      threadE164 != null -> {
-        SignalDatabase.recipients.getOrInsertFromE164(threadE164!!)
-      }
-
-      else -> null
     }
+
+    threadServiceId != null -> {
+      ServiceId.parseOrNull(threadServiceId)?.let {
+        SignalDatabase.recipients.getOrInsertFromServiceId(it)
+      }
+    }
+
+    threadE164 != null -> {
+      SignalDatabase.recipients.getOrInsertFromE164(threadE164!!)
+    }
+
+    else -> null
   }
 
-  private fun SyncMessage.DeleteForMe.AddressableMessage.toSyncMessageId(envelopeTimestamp: Long): MessageTable.SyncMessageId? {
-    return if (this.sentTimestamp != null && (this.authorServiceId != null || this.authorE164 != null)) {
-      val serviceId = ServiceId.parseOrNull(this.authorServiceId)
-      val id = if (serviceId != null) {
-        SignalDatabase.recipients.getOrInsertFromServiceId(serviceId)
-      } else {
-        SignalDatabase.recipients.getOrInsertFromE164(this.authorE164!!)
-      }
-
-      MessageTable.SyncMessageId(id, this.sentTimestamp!!)
+  private fun SyncMessage.DeleteForMe.AddressableMessage.toSyncMessageId(envelopeTimestamp: Long): MessageTable.SyncMessageId? = if (this.sentTimestamp != null && (this.authorServiceId != null || this.authorE164 != null)) {
+    val serviceId = ServiceId.parseOrNull(this.authorServiceId)
+    val id = if (serviceId != null) {
+      SignalDatabase.recipients.getOrInsertFromServiceId(serviceId)
     } else {
-      warn(envelopeTimestamp, "[handleSynchronizeDeleteForMe] Invalid delete sync missing timestamp or author")
-      null
+      SignalDatabase.recipients.getOrInsertFromE164(this.authorE164!!)
     }
+
+    MessageTable.SyncMessageId(id, this.sentTimestamp!!)
+  } else {
+    warn(envelopeTimestamp, "[handleSynchronizeDeleteForMe] Invalid delete sync missing timestamp or author")
+    null
   }
 
   private fun SyncMessage.DeleteForMe.AttachmentDelete.toSyncAttachmentId(syncMessageId: MessageTable.SyncMessageId?, envelopeTimestamp: Long): AttachmentTable.SyncAttachmentId? {

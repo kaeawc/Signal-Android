@@ -68,49 +68,43 @@ class BackupsSettingsViewModel : ViewModel() {
     }
   }
 
-  private suspend fun getEnabledStateForFreeTier(): BackupsSettingsState.EnabledState {
-    return try {
+  private suspend fun getEnabledStateForFreeTier(): BackupsSettingsState.EnabledState = try {
+    BackupsSettingsState.EnabledState.Active(
+      expiresAt = 0.seconds,
+      lastBackupAt = SignalStore.backup.lastBackupTime.milliseconds,
+      type = BackupRepository.getBackupsType(MessageBackupTier.FREE)!!
+    )
+  } catch (e: Exception) {
+    Log.w(TAG, "Failed to build enabled state.", e)
+    BackupsSettingsState.EnabledState.Failed
+  }
+
+  private suspend fun getEnabledStateForPaidTier(): BackupsSettingsState.EnabledState = try {
+    val backupType = BackupRepository.getBackupsType(MessageBackupTier.PAID) as MessageBackupsType.Paid
+    val activeSubscription = RecurringInAppPaymentRepository.getActiveSubscriptionSync(InAppPaymentSubscriberRecord.Type.BACKUP).getOrThrow()
+    if (activeSubscription.isActive) {
       BackupsSettingsState.EnabledState.Active(
-        expiresAt = 0.seconds,
+        expiresAt = activeSubscription.activeSubscription.endOfCurrentPeriod.seconds,
         lastBackupAt = SignalStore.backup.lastBackupTime.milliseconds,
-        type = BackupRepository.getBackupsType(MessageBackupTier.FREE)!!
-      )
-    } catch (e: Exception) {
-      Log.w(TAG, "Failed to build enabled state.", e)
-      BackupsSettingsState.EnabledState.Failed
-    }
-  }
-
-  private suspend fun getEnabledStateForPaidTier(): BackupsSettingsState.EnabledState {
-    return try {
-      val backupType = BackupRepository.getBackupsType(MessageBackupTier.PAID) as MessageBackupsType.Paid
-      val activeSubscription = RecurringInAppPaymentRepository.getActiveSubscriptionSync(InAppPaymentSubscriberRecord.Type.BACKUP).getOrThrow()
-      if (activeSubscription.isActive) {
-        BackupsSettingsState.EnabledState.Active(
-          expiresAt = activeSubscription.activeSubscription.endOfCurrentPeriod.seconds,
-          lastBackupAt = SignalStore.backup.lastBackupTime.milliseconds,
-          type = MessageBackupsType.Paid(
-            pricePerMonth = FiatMoney.fromSignalNetworkAmount(
-              activeSubscription.activeSubscription.amount,
-              Currency.getInstance(activeSubscription.activeSubscription.currency)
-            ),
-            storageAllowanceBytes = backupType.storageAllowanceBytes
-          )
+        type = MessageBackupsType.Paid(
+          pricePerMonth = FiatMoney.fromSignalNetworkAmount(
+            activeSubscription.activeSubscription.amount,
+            Currency.getInstance(activeSubscription.activeSubscription.currency)
+          ),
+          storageAllowanceBytes = backupType.storageAllowanceBytes
         )
-      } else {
-        BackupsSettingsState.EnabledState.Inactive
-      }
-    } catch (e: Exception) {
-      Log.w(TAG, "Failed to build enabled state.", e)
-      BackupsSettingsState.EnabledState.Failed
+      )
+    } else {
+      BackupsSettingsState.EnabledState.Inactive
     }
+  } catch (e: Exception) {
+    Log.w(TAG, "Failed to build enabled state.", e)
+    BackupsSettingsState.EnabledState.Failed
   }
 
-  private fun getEnabledStateForNoTier(): BackupsSettingsState.EnabledState {
-    return if (SignalStore.uiHints.hasEverEnabledRemoteBackups) {
-      BackupsSettingsState.EnabledState.Inactive
-    } else {
-      BackupsSettingsState.EnabledState.Never
-    }
+  private fun getEnabledStateForNoTier(): BackupsSettingsState.EnabledState = if (SignalStore.uiHints.hasEverEnabledRemoteBackups) {
+    BackupsSettingsState.EnabledState.Inactive
+  } else {
+    BackupsSettingsState.EnabledState.Never
   }
 }

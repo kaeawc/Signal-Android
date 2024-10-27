@@ -11,9 +11,7 @@ import org.thoughtcrime.securesms.database.helpers.SignalDatabaseMigrations
  * Renders data pertaining to sender key. While all private info is obfuscated, this is still only intended to be printed for internal users.
  */
 class LogSectionDatabaseSchema : LogSection {
-  override fun getTitle(): String {
-    return "DATABASE SCHEMA"
-  }
+  override fun getTitle(): String = "DATABASE SCHEMA"
 
   override fun getContent(context: Context): CharSequence {
     val builder = StringBuilder()

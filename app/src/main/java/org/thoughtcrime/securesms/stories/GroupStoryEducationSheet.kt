@@ -23,9 +23,7 @@ class GroupStoryEducationSheet : FixedRoundedCornerBottomSheetDialogFragment() {
 
   override val peekHeightPercentage: Float = 1f
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.group_story_education_sheet, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.group_story_education_sheet, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     SignalStore.story.userHasSeenGroupStoryEducationSheet = true

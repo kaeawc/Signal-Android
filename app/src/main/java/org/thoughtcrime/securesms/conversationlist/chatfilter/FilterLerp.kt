@@ -53,42 +53,28 @@ object FilterLerp {
     Point(1f, 1f)
   )
 
-  fun getHelpTextAlphaLerp(fraction: Float, startFraction: Float): Float {
-    return getLerp(fraction, helpTextAlphaLerp(startFraction))
-  }
+  fun getHelpTextAlphaLerp(fraction: Float, startFraction: Float): Float = getLerp(fraction, helpTextAlphaLerp(startFraction))
 
-  fun getPillCloseApexAlphaLerp(fraction: Float): Float {
-    return Util.clamp(getLerp(fraction, PILL_CLOSE_APEX_ALPHA_LERP), 0f, 1f)
-  }
+  fun getPillCloseApexAlphaLerp(fraction: Float): Float = Util.clamp(getLerp(fraction, PILL_CLOSE_APEX_ALPHA_LERP), 0f, 1f)
 
-  fun getCircleCancelAlphaLerp(fraction: Float): Float {
-    return Util.clamp(getLerp(fraction, CIRCLE_CANCEL_ALPHA_LERP), 0f, 1f)
-  }
+  fun getCircleCancelAlphaLerp(fraction: Float): Float = Util.clamp(getLerp(fraction, CIRCLE_CANCEL_ALPHA_LERP), 0f, 1f)
 
   /**
    * Get the LERP for the "Filter enabled" pill.
    */
-  fun getPillLerp(fraction: Float): Float {
-    return getLerp(fraction, PILL_LERP)
-  }
+  fun getPillLerp(fraction: Float): Float = getLerp(fraction, PILL_LERP)
 
   /**
    * Get the LERP for the padding below the filter circle when the filter is open
    */
-  fun getOpenCircleBottomPadLerp(fraction: Float): Float {
-    return getLerp(fraction, OPEN_CIRCLE_BOTTOM_PAD_LERP)
-  }
+  fun getOpenCircleBottomPadLerp(fraction: Float): Float = getLerp(fraction, OPEN_CIRCLE_BOTTOM_PAD_LERP)
 
   /**
    * Get the LERP for the padding below the filter circle when the filter is closed
    */
-  fun getClosedCircleBottomPadLerp(fraction: Float): Float {
-    return getLerp(fraction, CLOSED_CIRCLE_BOTTOM_PAD_LERP)
-  }
+  fun getClosedCircleBottomPadLerp(fraction: Float): Float = getLerp(fraction, CLOSED_CIRCLE_BOTTOM_PAD_LERP)
 
-  private fun getLerp(fraction: Float, fn: Fn): Float {
-    return EVAL.evaluate(fraction, fn(0f), fn(1f)).dp
-  }
+  private fun getLerp(fraction: Float, fn: Fn): Float = EVAL.evaluate(fraction, fn(0f), fn(1f)).dp
 
   /**
    * Gets the linear slope between two points using:
@@ -129,8 +115,6 @@ object FilterLerp {
    * LERP function defined as y = mx + b
    */
   data class Fn(val m: Float, val b: Float) {
-    operator fun invoke(x: Float): Float {
-      return m * x + b
-    }
+    operator fun invoke(x: Float): Float = m * x + b
   }
 }

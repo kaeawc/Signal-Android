@@ -43,34 +43,30 @@ class InAppPaymentOneTimeContextJob private constructor(
 
     const val KEY = "InAppPurchaseOneTimeContextJob"
 
-    private fun create(inAppPayment: InAppPaymentTable.InAppPayment): Job {
-      return InAppPaymentOneTimeContextJob(
-        inAppPayment.id,
-        parameters = Parameters.Builder()
-          .addConstraint(NetworkConstraint.KEY)
-          .setQueue(InAppPaymentsRepository.resolveJobQueueKey(inAppPayment))
-          .setLifespan(InAppPaymentsRepository.resolveContextJobLifespan(inAppPayment).inWholeMilliseconds)
-          .setMaxAttempts(Parameters.UNLIMITED)
-          .build()
-      )
-    }
+    private fun create(inAppPayment: InAppPaymentTable.InAppPayment): Job = InAppPaymentOneTimeContextJob(
+      inAppPayment.id,
+      parameters = Parameters.Builder()
+        .addConstraint(NetworkConstraint.KEY)
+        .setQueue(InAppPaymentsRepository.resolveJobQueueKey(inAppPayment))
+        .setLifespan(InAppPaymentsRepository.resolveContextJobLifespan(inAppPayment).inWholeMilliseconds)
+        .setMaxAttempts(Parameters.UNLIMITED)
+        .build()
+    )
 
-    fun createJobChain(inAppPayment: InAppPaymentTable.InAppPayment, makePrimary: Boolean = false): Chain {
-      return when (inAppPayment.type) {
-        InAppPaymentType.ONE_TIME_DONATION -> {
-          AppDependencies.jobManager
-            .startChain(create(inAppPayment))
-            .then(InAppPaymentRedemptionJob.create(inAppPayment, makePrimary))
-            .then(RefreshOwnProfileJob())
-            .then(MultiDeviceProfileContentUpdateJob())
-        }
-        InAppPaymentType.ONE_TIME_GIFT -> {
-          AppDependencies.jobManager
-            .startChain(create(inAppPayment))
-            .then(InAppPaymentGiftSendJob.create(inAppPayment))
-        }
-        else -> error("Unsupported type: ${inAppPayment.type}")
+    fun createJobChain(inAppPayment: InAppPaymentTable.InAppPayment, makePrimary: Boolean = false): Chain = when (inAppPayment.type) {
+      InAppPaymentType.ONE_TIME_DONATION -> {
+        AppDependencies.jobManager
+          .startChain(create(inAppPayment))
+          .then(InAppPaymentRedemptionJob.create(inAppPayment, makePrimary))
+          .then(RefreshOwnProfileJob())
+          .then(MultiDeviceProfileContentUpdateJob())
       }
+      InAppPaymentType.ONE_TIME_GIFT -> {
+        AppDependencies.jobManager
+          .startChain(create(inAppPayment))
+          .then(InAppPaymentGiftSendJob.create(inAppPayment))
+      }
+      else -> error("Unsupported type: ${inAppPayment.type}")
     }
   }
 
@@ -302,11 +298,9 @@ class InAppPaymentOneTimeContextJob private constructor(
   }
 
   class Factory : Job.Factory<InAppPaymentOneTimeContextJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): InAppPaymentOneTimeContextJob {
-      return InAppPaymentOneTimeContextJob(
-        InAppPaymentTable.InAppPaymentId(serializedData!!.decodeToString().toLong()),
-        parameters
-      )
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): InAppPaymentOneTimeContextJob = InAppPaymentOneTimeContextJob(
+      InAppPaymentTable.InAppPaymentId(serializedData!!.decodeToString().toLong()),
+      parameters
+    )
   }
 }

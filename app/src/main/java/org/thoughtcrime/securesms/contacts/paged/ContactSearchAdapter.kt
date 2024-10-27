@@ -51,7 +51,8 @@ open class ContactSearchAdapter(
   longClickCallbacks: LongClickCallbacks,
   storyContextMenuCallbacks: StoryContextMenuCallbacks,
   callButtonClickCallbacks: CallButtonClickCallbacks
-) : PagingMappingAdapter<ContactSearchKey>(), FastScrollAdapter {
+) : PagingMappingAdapter<ContactSearchKey>(),
+  FastScrollAdapter {
 
   init {
     registerStoryItems(this, displayOptions.displayCheckBox, onClickCallbacks::onStoryClicked, storyContextMenuCallbacks, displayOptions.displayStoryRing)
@@ -126,26 +127,24 @@ open class ContactSearchAdapter(
       )
     }
 
-    fun toMappingModelList(contactSearchData: List<ContactSearchData?>, selection: Set<ContactSearchKey>, arbitraryRepository: ArbitraryRepository?): MappingModelList {
-      return MappingModelList(
-        contactSearchData.filterNotNull().map {
-          when (it) {
-            is ContactSearchData.Story -> StoryModel(it, selection.contains(it.contactSearchKey), SignalStore.story.userHasBeenNotifiedAboutStories)
-            is ContactSearchData.KnownRecipient -> RecipientModel(it, selection.contains(it.contactSearchKey), it.shortSummary)
-            is ContactSearchData.Expand -> ExpandModel(it)
-            is ContactSearchData.Header -> HeaderModel(it)
-            is ContactSearchData.TestRow -> error("This row exists for testing only.")
-            is ContactSearchData.Arbitrary -> arbitraryRepository?.getMappingModel(it) ?: error("This row must be handled manually")
-            is ContactSearchData.Message -> MessageModel(it)
-            is ContactSearchData.Thread -> ThreadModel(it)
-            is ContactSearchData.Empty -> EmptyModel(it)
-            is ContactSearchData.GroupWithMembers -> GroupWithMembersModel(it)
-            is ContactSearchData.UnknownRecipient -> UnknownRecipientModel(it)
-            is ContactSearchData.ChatTypeRow -> ChatTypeModel(it, selection.contains(it.contactSearchKey))
-          }
+    fun toMappingModelList(contactSearchData: List<ContactSearchData?>, selection: Set<ContactSearchKey>, arbitraryRepository: ArbitraryRepository?): MappingModelList = MappingModelList(
+      contactSearchData.filterNotNull().map {
+        when (it) {
+          is ContactSearchData.Story -> StoryModel(it, selection.contains(it.contactSearchKey), SignalStore.story.userHasBeenNotifiedAboutStories)
+          is ContactSearchData.KnownRecipient -> RecipientModel(it, selection.contains(it.contactSearchKey), it.shortSummary)
+          is ContactSearchData.Expand -> ExpandModel(it)
+          is ContactSearchData.Header -> HeaderModel(it)
+          is ContactSearchData.TestRow -> error("This row exists for testing only.")
+          is ContactSearchData.Arbitrary -> arbitraryRepository?.getMappingModel(it) ?: error("This row must be handled manually")
+          is ContactSearchData.Message -> MessageModel(it)
+          is ContactSearchData.Thread -> ThreadModel(it)
+          is ContactSearchData.Empty -> EmptyModel(it)
+          is ContactSearchData.GroupWithMembers -> GroupWithMembersModel(it)
+          is ContactSearchData.UnknownRecipient -> UnknownRecipientModel(it)
+          is ContactSearchData.ChatTypeRow -> ChatTypeModel(it, selection.contains(it.contactSearchKey))
         }
-      )
-    }
+      }
+    )
   }
 
   /**
@@ -153,25 +152,19 @@ open class ContactSearchAdapter(
    */
   class StoryModel(val story: ContactSearchData.Story, val isSelected: Boolean, val hasBeenNotified: Boolean) : MappingModel<StoryModel> {
 
-    override fun areItemsTheSame(newItem: StoryModel): Boolean {
-      return newItem.story == story
-    }
+    override fun areItemsTheSame(newItem: StoryModel): Boolean = newItem.story == story
 
-    override fun areContentsTheSame(newItem: StoryModel): Boolean {
-      return story.recipient.hasSameContent(newItem.story.recipient) &&
-        isSelected == newItem.isSelected &&
-        hasBeenNotified == newItem.hasBeenNotified
-    }
+    override fun areContentsTheSame(newItem: StoryModel): Boolean = story.recipient.hasSameContent(newItem.story.recipient) &&
+      isSelected == newItem.isSelected &&
+      hasBeenNotified == newItem.hasBeenNotified
 
-    override fun getChangePayload(newItem: StoryModel): Any? {
-      return if (story.recipient.hasSameContent(newItem.story.recipient) &&
-        hasBeenNotified == newItem.hasBeenNotified &&
-        newItem.isSelected != isSelected
-      ) {
-        0
-      } else {
-        null
-      }
+    override fun getChangePayload(newItem: StoryModel): Any? = if (story.recipient.hasSameContent(newItem.story.recipient) &&
+      hasBeenNotified == newItem.hasBeenNotified &&
+      newItem.isSelected != isSelected
+    ) {
+      0
+    } else {
+      null
     }
   }
 
@@ -281,39 +274,31 @@ open class ContactSearchAdapter(
       }
     }
 
-    private fun getMyStoryContextMenuActions(model: StoryModel, callbacks: StoryContextMenuCallbacks): List<ActionItem> {
-      return listOf(
-        ActionItem(R.drawable.symbol_settings_android_24, context.getString(R.string.ContactSearchItems__story_settings)) {
-          callbacks.onOpenStorySettings(model.story)
-        }
-      )
-    }
-
-    private fun getGroupStoryContextMenuActions(model: StoryModel, callbacks: StoryContextMenuCallbacks): List<ActionItem> {
-      return listOf(
-        ActionItem(R.drawable.symbol_minus_circle_24, context.getString(R.string.ContactSearchItems__remove_story)) {
-          callbacks.onRemoveGroupStory(model.story, model.isSelected)
-        }
-      )
-    }
-
-    private fun getPrivateStoryContextMenuActions(model: StoryModel, callbacks: StoryContextMenuCallbacks): List<ActionItem> {
-      return listOf(
-        ActionItem(R.drawable.symbol_settings_android_24, context.getString(R.string.ContactSearchItems__story_settings)) {
-          callbacks.onOpenStorySettings(model.story)
-        },
-        ActionItem(R.drawable.symbol_trash_24, context.getString(R.string.ContactSearchItems__delete_story), R.color.signal_colorError) {
-          callbacks.onDeletePrivateStory(model.story, model.isSelected)
-        }
-      )
-    }
-
-    private fun presentPrivacyMode(privacyMode: DistributionListPrivacyMode): String {
-      return when (privacyMode) {
-        DistributionListPrivacyMode.ONLY_WITH -> context.getString(R.string.ContactSearchItems__only_share_with)
-        DistributionListPrivacyMode.ALL_EXCEPT -> context.getString(R.string.ChooseInitialMyStoryMembershipFragment__all_except)
-        DistributionListPrivacyMode.ALL -> context.getString(R.string.ChooseInitialMyStoryMembershipFragment__all_signal_connections)
+    private fun getMyStoryContextMenuActions(model: StoryModel, callbacks: StoryContextMenuCallbacks): List<ActionItem> = listOf(
+      ActionItem(R.drawable.symbol_settings_android_24, context.getString(R.string.ContactSearchItems__story_settings)) {
+        callbacks.onOpenStorySettings(model.story)
       }
+    )
+
+    private fun getGroupStoryContextMenuActions(model: StoryModel, callbacks: StoryContextMenuCallbacks): List<ActionItem> = listOf(
+      ActionItem(R.drawable.symbol_minus_circle_24, context.getString(R.string.ContactSearchItems__remove_story)) {
+        callbacks.onRemoveGroupStory(model.story, model.isSelected)
+      }
+    )
+
+    private fun getPrivateStoryContextMenuActions(model: StoryModel, callbacks: StoryContextMenuCallbacks): List<ActionItem> = listOf(
+      ActionItem(R.drawable.symbol_settings_android_24, context.getString(R.string.ContactSearchItems__story_settings)) {
+        callbacks.onOpenStorySettings(model.story)
+      },
+      ActionItem(R.drawable.symbol_trash_24, context.getString(R.string.ContactSearchItems__delete_story), R.color.signal_colorError) {
+        callbacks.onDeletePrivateStory(model.story, model.isSelected)
+      }
+    )
+
+    private fun presentPrivacyMode(privacyMode: DistributionListPrivacyMode): String = when (privacyMode) {
+      DistributionListPrivacyMode.ONLY_WITH -> context.getString(R.string.ContactSearchItems__only_share_with)
+      DistributionListPrivacyMode.ALL_EXCEPT -> context.getString(R.string.ChooseInitialMyStoryMembershipFragment__all_except)
+      DistributionListPrivacyMode.ALL -> context.getString(R.string.ChooseInitialMyStoryMembershipFragment__all_signal_connections)
     }
 
     private object MyStoryFallbackAvatarProvider : AvatarImageView.FallbackAvatarProvider {
@@ -348,7 +333,8 @@ open class ContactSearchAdapter(
     val knownRecipient: ContactSearchData.KnownRecipient,
     val isSelected: Boolean,
     val shortSummary: Boolean
-  ) : MappingModel<RecipientModel>, FastScrollCharacterProvider {
+  ) : MappingModel<RecipientModel>,
+    FastScrollCharacterProvider {
 
     override fun getFastScrollCharacter(context: Context): CharSequence {
       val name = if (knownRecipient.recipient.isSelf) {
@@ -374,20 +360,14 @@ open class ContactSearchAdapter(
       return letter
     }
 
-    override fun areItemsTheSame(newItem: RecipientModel): Boolean {
-      return newItem.knownRecipient == knownRecipient
-    }
+    override fun areItemsTheSame(newItem: RecipientModel): Boolean = newItem.knownRecipient == knownRecipient
 
-    override fun areContentsTheSame(newItem: RecipientModel): Boolean {
-      return knownRecipient.recipient.hasSameContent(newItem.knownRecipient.recipient) && isSelected == newItem.isSelected
-    }
+    override fun areContentsTheSame(newItem: RecipientModel): Boolean = knownRecipient.recipient.hasSameContent(newItem.knownRecipient.recipient) && isSelected == newItem.isSelected
 
-    override fun getChangePayload(newItem: RecipientModel): Any? {
-      return if (knownRecipient.recipient.hasSameContent(newItem.knownRecipient.recipient) && newItem.isSelected != isSelected) {
-        0
-      } else {
-        null
-      }
+    override fun getChangePayload(newItem: RecipientModel): Any? = if (knownRecipient.recipient.hasSameContent(newItem.knownRecipient.recipient) && newItem.isSelected != isSelected) {
+      0
+    } else {
+      null
     }
   }
 
@@ -454,7 +434,8 @@ open class ContactSearchAdapter(
     onClick: OnClickedCallback<ContactSearchData.KnownRecipient>,
     private val onLongClick: OnLongClickedCallback<ContactSearchData.KnownRecipient>,
     callButtonClickCallbacks: CallButtonClickCallbacks
-  ) : BaseRecipientViewHolder<RecipientModel, ContactSearchData.KnownRecipient>(itemView, displayOptions, onClick, callButtonClickCallbacks), LetterHeaderDecoration.LetterHeaderItem {
+  ) : BaseRecipientViewHolder<RecipientModel, ContactSearchData.KnownRecipient>(itemView, displayOptions, onClick, callButtonClickCallbacks),
+    LetterHeaderDecoration.LetterHeaderItem {
 
     private var headerLetter: String? = null
 
@@ -491,13 +472,9 @@ open class ContactSearchAdapter(
       checkbox.isEnabled = !fixedContacts.contains(model.knownRecipient.contactSearchKey)
     }
 
-    override fun isEnabled(model: RecipientModel): Boolean {
-      return !fixedContacts.contains(model.knownRecipient.contactSearchKey)
-    }
+    override fun isEnabled(model: RecipientModel): Boolean = !fixedContacts.contains(model.knownRecipient.contactSearchKey)
 
-    override fun getHeaderLetter(): String? {
-      return headerLetter
-    }
+    override fun getHeaderLetter(): String? = headerLetter
 
     override fun bindLongPress(model: RecipientModel) {
       itemView.setOnLongClickListener { onLongClick.onLongClicked(itemView, model.knownRecipient) }
@@ -619,15 +596,11 @@ open class ContactSearchAdapter(
    * Mapping Model for section headers
    */
   class HeaderModel(val header: ContactSearchData.Header) : MappingModel<HeaderModel> {
-    override fun areItemsTheSame(newItem: HeaderModel): Boolean {
-      return header.sectionKey == newItem.header.sectionKey
-    }
+    override fun areItemsTheSame(newItem: HeaderModel): Boolean = header.sectionKey == newItem.header.sectionKey
 
-    override fun areContentsTheSame(newItem: HeaderModel): Boolean {
-      return areItemsTheSame(newItem) &&
-        header.action?.icon == newItem.header.action?.icon &&
-        header.action?.label == newItem.header.action?.label
-    }
+    override fun areContentsTheSame(newItem: HeaderModel): Boolean = areItemsTheSame(newItem) &&
+      header.action?.icon == newItem.header.action?.icon &&
+      header.action?.label == newItem.header.action?.label
   }
 
   /**
@@ -636,9 +609,7 @@ open class ContactSearchAdapter(
   class MessageModel(val message: ContactSearchData.Message) : MappingModel<MessageModel> {
     override fun areItemsTheSame(newItem: MessageModel): Boolean = message.contactSearchKey == newItem.message.contactSearchKey
 
-    override fun areContentsTheSame(newItem: MessageModel): Boolean {
-      return message == newItem.message
-    }
+    override fun areContentsTheSame(newItem: MessageModel): Boolean = message == newItem.message
   }
 
   /**
@@ -646,9 +617,7 @@ open class ContactSearchAdapter(
    */
   class ThreadModel(val thread: ContactSearchData.Thread) : MappingModel<ThreadModel> {
     override fun areItemsTheSame(newItem: ThreadModel): Boolean = thread.contactSearchKey == newItem.thread.contactSearchKey
-    override fun areContentsTheSame(newItem: ThreadModel): Boolean {
-      return thread == newItem.thread
-    }
+    override fun areContentsTheSame(newItem: ThreadModel): Boolean = thread == newItem.thread
   }
 
   class EmptyModel(val empty: ContactSearchData.Empty) : MappingModel<EmptyModel> {
@@ -705,13 +674,9 @@ open class ContactSearchAdapter(
    * Mapping Model for expandable content rows.
    */
   class ExpandModel(val expand: ContactSearchData.Expand) : MappingModel<ExpandModel> {
-    override fun areItemsTheSame(newItem: ExpandModel): Boolean {
-      return expand.contactSearchKey == newItem.expand.contactSearchKey
-    }
+    override fun areItemsTheSame(newItem: ExpandModel): Boolean = expand.contactSearchKey == newItem.expand.contactSearchKey
 
-    override fun areContentsTheSame(newItem: ExpandModel): Boolean {
-      return areItemsTheSame(newItem)
-    }
+    override fun areContentsTheSame(newItem: ExpandModel): Boolean = areItemsTheSame(newItem)
   }
 
   /**
@@ -808,9 +773,7 @@ open class ContactSearchAdapter(
     fun onStoryClicked(view: View, story: ContactSearchData.Story, isSelected: Boolean)
     fun onKnownRecipientClicked(view: View, knownRecipient: ContactSearchData.KnownRecipient, isSelected: Boolean)
     fun onExpandClicked(expand: ContactSearchData.Expand)
-    fun onUnknownRecipientClicked(view: View, unknownRecipient: ContactSearchData.UnknownRecipient, isSelected: Boolean) {
-      throw NotImplementedError()
-    }
+    fun onUnknownRecipientClicked(view: View, unknownRecipient: ContactSearchData.UnknownRecipient, isSelected: Boolean): Unit = throw NotImplementedError()
     fun onChatTypeClicked(view: View, chatTypeRow: ContactSearchData.ChatTypeRow, isSelected: Boolean)
   }
 

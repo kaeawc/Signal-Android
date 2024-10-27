@@ -5,7 +5,5 @@ data class ConstraintSpec(
   val factoryKey: String,
   val isMemoryOnly: Boolean
 ) {
-  override fun toString(): String {
-    return "jobSpecId: JOB::$jobSpecId | factoryKey: $factoryKey | memoryOnly: $isMemoryOnly"
-  }
+  override fun toString(): String = "jobSpecId: JOB::$jobSpecId | factoryKey: $factoryKey | memoryOnly: $isMemoryOnly"
 }

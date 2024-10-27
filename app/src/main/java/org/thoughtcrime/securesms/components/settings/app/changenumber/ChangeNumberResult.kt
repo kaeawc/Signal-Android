@@ -23,36 +23,32 @@ import org.whispersystems.signalservice.internal.push.VerifyAccountResponse
  */
 sealed class ChangeNumberResult(cause: Throwable?) : RegistrationResult(cause) {
   companion object {
-    fun from(networkResult: NetworkResult<ChangeNumberRepository.NumberChangeResult>): ChangeNumberResult {
-      return when (networkResult) {
-        is NetworkResult.Success -> Success(networkResult.result)
-        is NetworkResult.ApplicationError -> UnknownError(networkResult.throwable)
-        is NetworkResult.NetworkError -> UnknownError(networkResult.exception)
-        is NetworkResult.StatusCodeError -> {
-          when (val cause = networkResult.exception) {
-            is IncorrectRegistrationRecoveryPasswordException -> IncorrectRecoveryPassword(cause)
-            is AuthorizationFailedException -> AuthorizationFailed(cause)
-            is MalformedRequestException -> MalformedRequest(cause)
-            is RateLimitException -> createRateLimitProcessor(cause)
-            is LockedException -> RegistrationLocked(cause = cause, timeRemaining = cause.timeRemaining, svr2Credentials = cause.svr2Credentials, svr3Credentials = cause.svr3Credentials)
-            else -> {
-              if (networkResult.code == 422) {
-                ValidationError(cause)
-              } else {
-                UnknownError(cause)
-              }
+    fun from(networkResult: NetworkResult<ChangeNumberRepository.NumberChangeResult>): ChangeNumberResult = when (networkResult) {
+      is NetworkResult.Success -> Success(networkResult.result)
+      is NetworkResult.ApplicationError -> UnknownError(networkResult.throwable)
+      is NetworkResult.NetworkError -> UnknownError(networkResult.exception)
+      is NetworkResult.StatusCodeError -> {
+        when (val cause = networkResult.exception) {
+          is IncorrectRegistrationRecoveryPasswordException -> IncorrectRecoveryPassword(cause)
+          is AuthorizationFailedException -> AuthorizationFailed(cause)
+          is MalformedRequestException -> MalformedRequest(cause)
+          is RateLimitException -> createRateLimitProcessor(cause)
+          is LockedException -> RegistrationLocked(cause = cause, timeRemaining = cause.timeRemaining, svr2Credentials = cause.svr2Credentials, svr3Credentials = cause.svr3Credentials)
+          else -> {
+            if (networkResult.code == 422) {
+              ValidationError(cause)
+            } else {
+              UnknownError(cause)
             }
           }
         }
       }
     }
 
-    private fun createRateLimitProcessor(exception: RateLimitException): ChangeNumberResult {
-      return if (exception.retryAfterMilliseconds.isPresent) {
-        RateLimited(exception, exception.retryAfterMilliseconds.get())
-      } else {
-        AttemptsExhausted(exception)
-      }
+    private fun createRateLimitProcessor(exception: RateLimitException): ChangeNumberResult = if (exception.retryAfterMilliseconds.isPresent) {
+      RateLimited(exception, exception.retryAfterMilliseconds.get())
+    } else {
+      AttemptsExhausted(exception)
     }
   }
 

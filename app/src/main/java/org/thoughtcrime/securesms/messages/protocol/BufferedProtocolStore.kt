@@ -16,17 +16,13 @@ class BufferedProtocolStore private constructor(
   private val pniStore: Pair<ServiceId, BufferedSignalServiceAccountDataStore>
 ) {
 
-  fun get(serviceId: ServiceId): BufferedSignalServiceAccountDataStore {
-    return when (serviceId) {
-      aciStore.first -> aciStore.second
-      pniStore.first -> pniStore.second
-      else -> error("No store matching serviceId $serviceId")
-    }
+  fun get(serviceId: ServiceId): BufferedSignalServiceAccountDataStore = when (serviceId) {
+    aciStore.first -> aciStore.second
+    pniStore.first -> pniStore.second
+    else -> error("No store matching serviceId $serviceId")
   }
 
-  fun getAciStore(): BufferedSignalServiceAccountDataStore {
-    return aciStore.second
-  }
+  fun getAciStore(): BufferedSignalServiceAccountDataStore = aciStore.second
 
   /**
    * Writes any buffered data to disk. You can continue to use the same buffered store afterwards.

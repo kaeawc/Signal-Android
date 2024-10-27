@@ -23,7 +23,9 @@ import org.thoughtcrime.securesms.dependencies.AppDependencies
 /**
  * Stores chat folders and the chats that belong in each chat folder
  */
-class ChatFolderTables(context: Context?, databaseHelper: SignalDatabase?) : DatabaseTable(context, databaseHelper), ThreadIdDatabaseReference {
+class ChatFolderTables(context: Context?, databaseHelper: SignalDatabase?) :
+  DatabaseTable(context, databaseHelper),
+  ThreadIdDatabaseReference {
 
   companion object {
     @JvmField
@@ -36,15 +38,13 @@ class ChatFolderTables(context: Context?, databaseHelper: SignalDatabase?) : Dat
       db.insert(ChatFolderTable.TABLE_NAME, null, getAllChatsFolderContentValues())
     }
 
-    private fun getAllChatsFolderContentValues(): ContentValues {
-      return contentValuesOf(
-        ChatFolderTable.POSITION to 0,
-        ChatFolderTable.FOLDER_TYPE to ChatFolderRecord.FolderType.ALL.value,
-        ChatFolderTable.SHOW_INDIVIDUAL to 1,
-        ChatFolderTable.SHOW_GROUPS to 1,
-        ChatFolderTable.SHOW_MUTED to 1
-      )
-    }
+    private fun getAllChatsFolderContentValues(): ContentValues = contentValuesOf(
+      ChatFolderTable.POSITION to 0,
+      ChatFolderTable.FOLDER_TYPE to ChatFolderRecord.FolderType.ALL.value,
+      ChatFolderTable.SHOW_INDIVIDUAL to 1,
+      ChatFolderTable.SHOW_GROUPS to 1,
+      ChatFolderTable.SHOW_MUTED to 1
+    )
   }
 
   /**
@@ -347,14 +347,12 @@ class ChatFolderTables(context: Context?, databaseHelper: SignalDatabase?) : Dat
     }
   }
 
-  private fun Collection<Long>.toContentValues(chatFolderId: Long, membershipType: MembershipType): List<ContentValues> {
-    return map {
-      contentValuesOf(
-        ChatFolderMembershipTable.CHAT_FOLDER_ID to chatFolderId,
-        ChatFolderMembershipTable.THREAD_ID to it,
-        ChatFolderMembershipTable.MEMBERSHIP_TYPE to membershipType.value
-      )
-    }
+  private fun Collection<Long>.toContentValues(chatFolderId: Long, membershipType: MembershipType): List<ContentValues> = map {
+    contentValuesOf(
+      ChatFolderMembershipTable.CHAT_FOLDER_ID to chatFolderId,
+      ChatFolderMembershipTable.THREAD_ID to it,
+      ChatFolderMembershipTable.MEMBERSHIP_TYPE to membershipType.value
+    )
   }
 
   enum class MembershipType(val value: Int) {

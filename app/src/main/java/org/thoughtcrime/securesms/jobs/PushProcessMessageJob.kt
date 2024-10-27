@@ -36,60 +36,52 @@ class PushProcessMessageJob private constructor(
 
   override fun shouldTrace() = true
 
-  override fun serialize(): ByteArray {
-    return CompleteMessage(
-      envelope = envelope.encodeByteString(),
-      content = content.encodeByteString(),
-      metadata = EnvelopeMetadataProto(
-        sourceServiceId = ByteString.of(*metadata.sourceServiceId.toByteArray()),
-        sourceE164 = metadata.sourceE164,
-        sourceDeviceId = metadata.sourceDeviceId,
-        sealedSender = metadata.sealedSender,
-        groupId = if (metadata.groupId != null) metadata.groupId!!.toByteString() else null,
-        destinationServiceId = ByteString.of(*metadata.destinationServiceId.toByteArray())
-      ),
-      serverDeliveredTimestamp = serverDeliveredTimestamp
-    ).encode()
-  }
+  override fun serialize(): ByteArray = CompleteMessage(
+    envelope = envelope.encodeByteString(),
+    content = content.encodeByteString(),
+    metadata = EnvelopeMetadataProto(
+      sourceServiceId = ByteString.of(*metadata.sourceServiceId.toByteArray()),
+      sourceE164 = metadata.sourceE164,
+      sourceDeviceId = metadata.sourceDeviceId,
+      sealedSender = metadata.sealedSender,
+      groupId = if (metadata.groupId != null) metadata.groupId!!.toByteString() else null,
+      destinationServiceId = ByteString.of(*metadata.destinationServiceId.toByteArray())
+    ),
+    serverDeliveredTimestamp = serverDeliveredTimestamp
+  ).encode()
 
-  override fun getFactoryKey(): String {
-    return KEY
-  }
+  override fun getFactoryKey(): String = KEY
 
   public override fun onRun() {
     val processor = MessageContentProcessor.create(context)
     processor.process(envelope, content, metadata, serverDeliveredTimestamp)
   }
 
-  public override fun onShouldRetry(e: Exception): Boolean {
-    return e is PushNetworkException ||
-      e is NoCredentialForRedemptionTimeException ||
-      e is GroupChangeBusyException
-  }
+  public override fun onShouldRetry(e: Exception): Boolean = e is PushNetworkException ||
+    e is NoCredentialForRedemptionTimeException ||
+    e is GroupChangeBusyException
 
   override fun onFailure() = Unit
 
   class Factory : Job.Factory<PushProcessMessageJob?> {
-    override fun create(parameters: Parameters, data: ByteArray?): PushProcessMessageJob {
-      return try {
-        val completeMessage = CompleteMessage.ADAPTER.decode(data!!)
-        PushProcessMessageJob(
-          parameters = parameters,
-          envelope = Envelope.ADAPTER.decode(completeMessage.envelope.toByteArray()),
-          content = Content.ADAPTER.decode(completeMessage.content.toByteArray()),
-          metadata = EnvelopeMetadata(
-            sourceServiceId = ServiceId.parseOrThrow(completeMessage.metadata.sourceServiceId.toByteArray()),
-            sourceE164 = completeMessage.metadata.sourceE164,
-            sourceDeviceId = completeMessage.metadata.sourceDeviceId,
-            sealedSender = completeMessage.metadata.sealedSender,
-            groupId = completeMessage.metadata.groupId?.toByteArray(),
-            destinationServiceId = ServiceId.parseOrThrow(completeMessage.metadata.destinationServiceId.toByteArray())
-          ),
-          serverDeliveredTimestamp = completeMessage.serverDeliveredTimestamp
-        )
-      } catch (e: IOException) {
-        throw AssertionError(e)
-      }
+    override fun create(parameters: Parameters, data: ByteArray?): PushProcessMessageJob = try {
+      val completeMessage = CompleteMessage.ADAPTER.decode(data!!)
+      PushProcessMessageJob(
+        parameters = parameters,
+        envelope = Envelope.ADAPTER.decode(completeMessage.envelope.toByteArray()),
+        content = Content.ADAPTER.decode(completeMessage.content.toByteArray()),
+        metadata = EnvelopeMetadata(
+          sourceServiceId = ServiceId.parseOrThrow(completeMessage.metadata.sourceServiceId.toByteArray()),
+          sourceE164 = completeMessage.metadata.sourceE164,
+          sourceDeviceId = completeMessage.metadata.sourceDeviceId,
+          sealedSender = completeMessage.metadata.sealedSender,
+          groupId = completeMessage.metadata.groupId?.toByteArray(),
+          destinationServiceId = ServiceId.parseOrThrow(completeMessage.metadata.destinationServiceId.toByteArray())
+        ),
+        serverDeliveredTimestamp = completeMessage.serverDeliveredTimestamp
+      )
+    } catch (e: IOException) {
+      throw AssertionError(e)
     }
   }
 
@@ -108,9 +100,7 @@ class PushProcessMessageJob private constructor(
     private val empty1to1QueueCache = HashSet<String>()
 
     @JvmStatic
-    fun getQueueName(recipientId: RecipientId): String {
-      return QUEUE_PREFIX + recipientId.toQueueKey()
-    }
+    fun getQueueName(recipientId: RecipientId): String = QUEUE_PREFIX + recipientId.toQueueKey()
 
     fun processOrDefer(messageProcessor: MessageContentProcessor, result: MessageDecryptor.Result.Success, localReceiveMetric: SignalLocalMetrics.MessageReceive): PushProcessMessageJob? {
       val groupContext = GroupUtil.getGroupContextIfPresent(result.content)

@@ -67,9 +67,7 @@ class AttachmentDownloadJob private constructor(
     private const val KEY_MANUAL = "part_manual"
 
     @JvmStatic
-    fun constructQueueString(attachmentId: AttachmentId): String {
-      return "AttachmentDownloadJob-" + attachmentId.id
-    }
+    fun constructQueueString(attachmentId: AttachmentId): String = "AttachmentDownloadJob-" + attachmentId.id
 
     fun jobSpecMatchesAttachmentId(jobSpec: JobSpec, attachmentId: AttachmentId): Boolean {
       if (KEY != jobSpec.factoryKey) {
@@ -84,45 +82,43 @@ class AttachmentDownloadJob private constructor(
 
     @JvmStatic
     @MainThread
-    fun downloadAttachmentIfNeeded(databaseAttachment: DatabaseAttachment): String? {
-      return when (val transferState = databaseAttachment.transferState) {
-        AttachmentTable.TRANSFER_PROGRESS_DONE -> null
+    fun downloadAttachmentIfNeeded(databaseAttachment: DatabaseAttachment): String? = when (val transferState = databaseAttachment.transferState) {
+      AttachmentTable.TRANSFER_PROGRESS_DONE -> null
 
-        AttachmentTable.TRANSFER_RESTORE_OFFLOADED,
-        AttachmentTable.TRANSFER_NEEDS_RESTORE -> RestoreAttachmentJob.restoreAttachment(databaseAttachment)
+      AttachmentTable.TRANSFER_RESTORE_OFFLOADED,
+      AttachmentTable.TRANSFER_NEEDS_RESTORE -> RestoreAttachmentJob.restoreAttachment(databaseAttachment)
 
-        AttachmentTable.TRANSFER_PROGRESS_PENDING,
-        AttachmentTable.TRANSFER_PROGRESS_FAILED -> {
-          if (SignalStore.backup.backsUpMedia && databaseAttachment.remoteLocation == null) {
-            if (databaseAttachment.archiveMediaName.isNullOrEmpty()) {
-              Log.w(TAG, "No remote location or archive media name, can't download")
-              null
-            } else {
-              Log.i(TAG, "Trying to restore attachment from archive cdn")
-              RestoreAttachmentJob.restoreAttachment(databaseAttachment)
-            }
+      AttachmentTable.TRANSFER_PROGRESS_PENDING,
+      AttachmentTable.TRANSFER_PROGRESS_FAILED -> {
+        if (SignalStore.backup.backsUpMedia && databaseAttachment.remoteLocation == null) {
+          if (databaseAttachment.archiveMediaName.isNullOrEmpty()) {
+            Log.w(TAG, "No remote location or archive media name, can't download")
+            null
           } else {
-            val downloadJob = AttachmentDownloadJob(
-              messageId = databaseAttachment.mmsId,
-              attachmentId = databaseAttachment.attachmentId,
-              manual = true
-            )
-            AppDependencies.jobManager.add(downloadJob)
-            downloadJob.id
+            Log.i(TAG, "Trying to restore attachment from archive cdn")
+            RestoreAttachmentJob.restoreAttachment(databaseAttachment)
           }
+        } else {
+          val downloadJob = AttachmentDownloadJob(
+            messageId = databaseAttachment.mmsId,
+            attachmentId = databaseAttachment.attachmentId,
+            manual = true
+          )
+          AppDependencies.jobManager.add(downloadJob)
+          downloadJob.id
         }
+      }
 
-        AttachmentTable.TRANSFER_RESTORE_IN_PROGRESS,
-        AttachmentTable.TRANSFER_PROGRESS_STARTED,
-        AttachmentTable.TRANSFER_PROGRESS_PERMANENT_FAILURE -> {
-          Log.d(TAG, "${databaseAttachment.attachmentId} is downloading or permanently failed, transferState: $transferState")
-          null
-        }
+      AttachmentTable.TRANSFER_RESTORE_IN_PROGRESS,
+      AttachmentTable.TRANSFER_PROGRESS_STARTED,
+      AttachmentTable.TRANSFER_PROGRESS_PERMANENT_FAILURE -> {
+        Log.d(TAG, "${databaseAttachment.attachmentId} is downloading or permanently failed, transferState: $transferState")
+        null
+      }
 
-        else -> {
-          Log.w(TAG, "Attempted to download attachment with unknown transfer state: $transferState")
-          null
-        }
+      else -> {
+        Log.w(TAG, "Attempted to download attachment with unknown transfer state: $transferState")
+        null
       }
     }
   }
@@ -139,17 +135,13 @@ class AttachmentDownloadJob private constructor(
     manual
   )
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putLong(KEY_MESSAGE_ID, messageId)
-      .putLong(KEY_ATTACHMENT_ID, attachmentId.id)
-      .putBoolean(KEY_MANUAL, manual)
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putLong(KEY_MESSAGE_ID, messageId)
+    .putLong(KEY_ATTACHMENT_ID, attachmentId.id)
+    .putBoolean(KEY_MANUAL, manual)
+    .serialize()
 
-  override fun getFactoryKey(): String {
-    return KEY
-  }
+  override fun getFactoryKey(): String = KEY
 
   override fun onAdded() {
     Log.i(TAG, "onAdded() messageId: $messageId  attachmentId: $attachmentId  manual: $manual")
@@ -254,10 +246,8 @@ class AttachmentDownloadJob private constructor(
     markFailed(messageId, attachmentId)
   }
 
-  override fun onShouldRetry(exception: Exception): Boolean {
-    return exception is PushNetworkException ||
-      exception is RetryLaterException
-  }
+  override fun onShouldRetry(exception: Exception): Boolean = exception is PushNetworkException ||
+    exception is RetryLaterException
 
   /**
    * @return True if the digest changed as part of downloading, otherwise false.
@@ -283,9 +273,7 @@ class AttachmentDownloadJob private constructor(
           EventBus.getDefault().postSticky(PartProgressEvent(attachment, PartProgressEvent.Type.NETWORK, total, progress))
         }
 
-        override fun shouldCancel(): Boolean {
-          return this@AttachmentDownloadJob.isCanceled
-        }
+        override fun shouldCancel(): Boolean = this@AttachmentDownloadJob.isCanceled
       }
 
       val downloadResult = AppDependencies

@@ -12,14 +12,12 @@ data class IdentityStoreRecord(
   val timestamp: Long,
   val nonblockingApproval: Boolean
 ) {
-  fun toIdentityRecord(recipientId: RecipientId): IdentityRecord {
-    return IdentityRecord(
-      recipientId = recipientId,
-      identityKey = identityKey,
-      verifiedStatus = verifiedStatus,
-      firstUse = firstUse,
-      timestamp = timestamp,
-      nonblockingApproval = nonblockingApproval
-    )
-  }
+  fun toIdentityRecord(recipientId: RecipientId): IdentityRecord = IdentityRecord(
+    recipientId = recipientId,
+    identityKey = identityKey,
+    verifiedStatus = verifiedStatus,
+    firstUse = firstUse,
+    timestamp = timestamp,
+    nonblockingApproval = nonblockingApproval
+  )
 }

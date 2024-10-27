@@ -64,60 +64,46 @@ object DonationErrorDialogs {
 
   abstract class DialogCallback : DonationErrorParams.Callback<Unit> {
 
-    override fun onCancel(context: Context): DonationErrorParams.ErrorAction<Unit>? {
-      return DonationErrorParams.ErrorAction(
-        label = android.R.string.cancel,
-        action = {}
-      )
-    }
+    override fun onCancel(context: Context): DonationErrorParams.ErrorAction<Unit>? = DonationErrorParams.ErrorAction(
+      label = android.R.string.cancel,
+      action = {}
+    )
 
-    override fun onOk(context: Context): DonationErrorParams.ErrorAction<Unit>? {
-      return DonationErrorParams.ErrorAction(
-        label = android.R.string.ok,
-        action = {}
-      )
-    }
+    override fun onOk(context: Context): DonationErrorParams.ErrorAction<Unit>? = DonationErrorParams.ErrorAction(
+      label = android.R.string.ok,
+      action = {}
+    )
 
-    override fun onGoToGooglePay(context: Context): DonationErrorParams.ErrorAction<Unit>? {
-      return DonationErrorParams.ErrorAction(
-        label = R.string.DeclineCode__go_to_google_pay,
-        action = {
-          CommunicationActions.openBrowserLink(context, context.getString(R.string.google_pay_url))
-        }
-      )
-    }
+    override fun onGoToGooglePay(context: Context): DonationErrorParams.ErrorAction<Unit>? = DonationErrorParams.ErrorAction(
+      label = R.string.DeclineCode__go_to_google_pay,
+      action = {
+        CommunicationActions.openBrowserLink(context, context.getString(R.string.google_pay_url))
+      }
+    )
 
-    override fun onTryCreditCardAgain(context: Context): DonationErrorParams.ErrorAction<Unit>? {
-      return DonationErrorParams.ErrorAction(
-        label = R.string.DeclineCode__try,
-        action = {}
-      )
-    }
+    override fun onTryCreditCardAgain(context: Context): DonationErrorParams.ErrorAction<Unit>? = DonationErrorParams.ErrorAction(
+      label = R.string.DeclineCode__try,
+      action = {}
+    )
 
-    override fun onTryBankTransferAgain(context: Context): DonationErrorParams.ErrorAction<Unit>? {
-      return DonationErrorParams.ErrorAction(
-        label = R.string.DeclineCode__try,
-        action = {}
-      )
-    }
+    override fun onTryBankTransferAgain(context: Context): DonationErrorParams.ErrorAction<Unit>? = DonationErrorParams.ErrorAction(
+      label = R.string.DeclineCode__try,
+      action = {}
+    )
 
-    override fun onLearnMore(context: Context): DonationErrorParams.ErrorAction<Unit>? {
-      return DonationErrorParams.ErrorAction(
-        label = R.string.DeclineCode__learn_more,
-        action = {
-          CommunicationActions.openBrowserLink(context, context.getString(R.string.donation_decline_code_error_url))
-        }
-      )
-    }
+    override fun onLearnMore(context: Context): DonationErrorParams.ErrorAction<Unit>? = DonationErrorParams.ErrorAction(
+      label = R.string.DeclineCode__learn_more,
+      action = {
+        CommunicationActions.openBrowserLink(context, context.getString(R.string.donation_decline_code_error_url))
+      }
+    )
 
-    override fun onContactSupport(context: Context): DonationErrorParams.ErrorAction<Unit> {
-      return DonationErrorParams.ErrorAction(
-        label = R.string.Subscription__contact_support,
-        action = {
-          context.startActivity(AppSettingsActivity.help(context, HelpFragment.DONATION_INDEX))
-        }
-      )
-    }
+    override fun onContactSupport(context: Context): DonationErrorParams.ErrorAction<Unit> = DonationErrorParams.ErrorAction(
+      label = R.string.Subscription__contact_support,
+      action = {
+        context.startActivity(AppSettingsActivity.help(context, HelpFragment.DONATION_INDEX))
+      }
+    )
 
     open fun onDialogDismissed() = Unit
   }

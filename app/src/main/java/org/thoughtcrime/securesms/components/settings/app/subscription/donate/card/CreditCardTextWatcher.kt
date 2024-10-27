@@ -37,24 +37,18 @@ class CreditCardTextWatcher : TextWatcher {
     }
   }
 
-  private fun applyAmexFormatting(normalizedNumber: String): String {
-    return applyGrouping(normalizedNumber, listOf(4, 6, 5))
+  private fun applyAmexFormatting(normalizedNumber: String): String = applyGrouping(normalizedNumber, listOf(4, 6, 5))
+
+  private fun applyUnionPayFormatting(normalizedNumber: String): String = when {
+    normalizedNumber.length <= 13 -> applyGrouping(normalizedNumber, listOf(4, 4, 5))
+    normalizedNumber.length <= 16 -> applyGrouping(normalizedNumber, listOf(4, 4, 4, 4))
+    else -> applyGrouping(normalizedNumber, listOf(5, 5, 5, 4))
   }
 
-  private fun applyUnionPayFormatting(normalizedNumber: String): String {
-    return when {
-      normalizedNumber.length <= 13 -> applyGrouping(normalizedNumber, listOf(4, 4, 5))
-      normalizedNumber.length <= 16 -> applyGrouping(normalizedNumber, listOf(4, 4, 4, 4))
-      else -> applyGrouping(normalizedNumber, listOf(5, 5, 5, 4))
-    }
-  }
-
-  private fun applyOtherFormatting(normalizedNumber: String): String {
-    return if (normalizedNumber.length <= 16) {
-      applyGrouping(normalizedNumber, listOf(4, 4, 4, 4))
-    } else {
-      applyGrouping(normalizedNumber, listOf(5, 5, 5, 4))
-    }
+  private fun applyOtherFormatting(normalizedNumber: String): String = if (normalizedNumber.length <= 16) {
+    applyGrouping(normalizedNumber, listOf(4, 4, 4, 4))
+  } else {
+    applyGrouping(normalizedNumber, listOf(5, 5, 5, 4))
   }
 
   private fun applyGrouping(normalizedNumber: String, groups: List<Int>): String {

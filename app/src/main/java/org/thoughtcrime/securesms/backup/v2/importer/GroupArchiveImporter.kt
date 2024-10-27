@@ -70,77 +70,59 @@ object GroupArchiveImporter {
   }
 }
 
-private fun Group.StorySendMode.toLocal(): GroupTable.ShowAsStoryState {
-  return when (this) {
-    Group.StorySendMode.ENABLED -> GroupTable.ShowAsStoryState.ALWAYS
-    Group.StorySendMode.DISABLED -> GroupTable.ShowAsStoryState.NEVER
-    Group.StorySendMode.DEFAULT -> GroupTable.ShowAsStoryState.IF_ACTIVE
-  }
+private fun Group.StorySendMode.toLocal(): GroupTable.ShowAsStoryState = when (this) {
+  Group.StorySendMode.ENABLED -> GroupTable.ShowAsStoryState.ALWAYS
+  Group.StorySendMode.DISABLED -> GroupTable.ShowAsStoryState.NEVER
+  Group.StorySendMode.DEFAULT -> GroupTable.ShowAsStoryState.IF_ACTIVE
 }
 
-private fun Group.MemberPendingProfileKey.toLocal(operations: GroupsV2Operations.GroupOperations): DecryptedPendingMember {
-  return DecryptedPendingMember(
-    serviceIdBytes = member!!.userId,
-    role = member.role.toLocal(),
-    addedByAci = addedByUserId,
-    timestamp = timestamp,
-    serviceIdCipherText = operations.encryptServiceId(ServiceId.Companion.parseOrNull(member.userId))
-  )
+private fun Group.MemberPendingProfileKey.toLocal(operations: GroupsV2Operations.GroupOperations): DecryptedPendingMember = DecryptedPendingMember(
+  serviceIdBytes = member!!.userId,
+  role = member.role.toLocal(),
+  addedByAci = addedByUserId,
+  timestamp = timestamp,
+  serviceIdCipherText = operations.encryptServiceId(ServiceId.Companion.parseOrNull(member.userId))
+)
+
+private fun Group.AccessControl.AccessRequired.toLocal(): AccessControl.AccessRequired = when (this) {
+  Group.AccessControl.AccessRequired.UNKNOWN -> AccessControl.AccessRequired.UNKNOWN
+  Group.AccessControl.AccessRequired.ANY -> AccessControl.AccessRequired.ANY
+  Group.AccessControl.AccessRequired.MEMBER -> AccessControl.AccessRequired.MEMBER
+  Group.AccessControl.AccessRequired.ADMINISTRATOR -> AccessControl.AccessRequired.ADMINISTRATOR
+  Group.AccessControl.AccessRequired.UNSATISFIABLE -> AccessControl.AccessRequired.UNSATISFIABLE
 }
 
-private fun Group.AccessControl.AccessRequired.toLocal(): AccessControl.AccessRequired {
-  return when (this) {
-    Group.AccessControl.AccessRequired.UNKNOWN -> AccessControl.AccessRequired.UNKNOWN
-    Group.AccessControl.AccessRequired.ANY -> AccessControl.AccessRequired.ANY
-    Group.AccessControl.AccessRequired.MEMBER -> AccessControl.AccessRequired.MEMBER
-    Group.AccessControl.AccessRequired.ADMINISTRATOR -> AccessControl.AccessRequired.ADMINISTRATOR
-    Group.AccessControl.AccessRequired.UNSATISFIABLE -> AccessControl.AccessRequired.UNSATISFIABLE
-  }
+private fun Group.AccessControl.toLocal(): AccessControl = AccessControl(members = this.members.toLocal(), attributes = this.attributes.toLocal(), addFromInviteLink = this.addFromInviteLink.toLocal())
+
+private fun Group.Member.Role.toLocal(): Member.Role = when (this) {
+  Group.Member.Role.UNKNOWN -> Member.Role.UNKNOWN
+  Group.Member.Role.DEFAULT -> Member.Role.DEFAULT
+  Group.Member.Role.ADMINISTRATOR -> Member.Role.ADMINISTRATOR
 }
 
-private fun Group.AccessControl.toLocal(): AccessControl {
-  return AccessControl(members = this.members.toLocal(), attributes = this.attributes.toLocal(), addFromInviteLink = this.addFromInviteLink.toLocal())
-}
+private fun Group.Member.toLocal(): DecryptedMember = DecryptedMember(aciBytes = userId, role = role.toLocal(), joinedAtRevision = joinedAtVersion)
 
-private fun Group.Member.Role.toLocal(): Member.Role {
-  return when (this) {
-    Group.Member.Role.UNKNOWN -> Member.Role.UNKNOWN
-    Group.Member.Role.DEFAULT -> Member.Role.DEFAULT
-    Group.Member.Role.ADMINISTRATOR -> Member.Role.ADMINISTRATOR
-  }
-}
+private fun Group.MemberPendingAdminApproval.toLocal(): DecryptedRequestingMember = DecryptedRequestingMember(
+  aciBytes = this.userId,
+  timestamp = this.timestamp
+)
 
-private fun Group.Member.toLocal(): DecryptedMember {
-  return DecryptedMember(aciBytes = userId, role = role.toLocal(), joinedAtRevision = joinedAtVersion)
-}
+private fun Group.MemberBanned.toLocal(): DecryptedBannedMember = DecryptedBannedMember(
+  serviceIdBytes = this.userId,
+  timestamp = this.timestamp
+)
 
-private fun Group.MemberPendingAdminApproval.toLocal(): DecryptedRequestingMember {
-  return DecryptedRequestingMember(
-    aciBytes = this.userId,
-    timestamp = this.timestamp
-  )
-}
-
-private fun Group.MemberBanned.toLocal(): DecryptedBannedMember {
-  return DecryptedBannedMember(
-    serviceIdBytes = this.userId,
-    timestamp = this.timestamp
-  )
-}
-
-private fun Group.GroupSnapshot.toLocal(operations: GroupsV2Operations.GroupOperations): DecryptedGroup {
-  return DecryptedGroup(
-    title = this.title?.title ?: "",
-    avatar = this.avatarUrl,
-    disappearingMessagesTimer = DecryptedTimer(duration = this.disappearingMessagesTimer?.disappearingMessagesDuration ?: 0),
-    accessControl = this.accessControl?.toLocal(),
-    revision = this.version,
-    members = this.members.map { member -> member.toLocal() },
-    pendingMembers = this.membersPendingProfileKey.map { pending -> pending.toLocal(operations) },
-    requestingMembers = this.membersPendingAdminApproval.map { requesting -> requesting.toLocal() },
-    inviteLinkPassword = this.inviteLinkPassword,
-    description = this.description?.descriptionText ?: "",
-    isAnnouncementGroup = if (this.announcements_only) EnabledState.ENABLED else EnabledState.DISABLED,
-    bannedMembers = this.members_banned.map { it.toLocal() }
-  )
-}
+private fun Group.GroupSnapshot.toLocal(operations: GroupsV2Operations.GroupOperations): DecryptedGroup = DecryptedGroup(
+  title = this.title?.title ?: "",
+  avatar = this.avatarUrl,
+  disappearingMessagesTimer = DecryptedTimer(duration = this.disappearingMessagesTimer?.disappearingMessagesDuration ?: 0),
+  accessControl = this.accessControl?.toLocal(),
+  revision = this.version,
+  members = this.members.map { member -> member.toLocal() },
+  pendingMembers = this.membersPendingProfileKey.map { pending -> pending.toLocal(operations) },
+  requestingMembers = this.membersPendingAdminApproval.map { requesting -> requesting.toLocal() },
+  inviteLinkPassword = this.inviteLinkPassword,
+  description = this.description?.descriptionText ?: "",
+  isAnnouncementGroup = if (this.announcements_only) EnabledState.ENABLED else EnabledState.DISABLED,
+  bannedMembers = this.members_banned.map { it.toLocal() }
+)

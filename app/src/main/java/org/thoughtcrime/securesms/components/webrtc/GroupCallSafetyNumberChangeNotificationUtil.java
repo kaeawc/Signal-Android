@@ -1,5 +1,6 @@
 package org.thoughtcrime.securesms.components.webrtc;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -25,6 +26,7 @@ public final class GroupCallSafetyNumberChangeNotificationUtil {
   private GroupCallSafetyNumberChangeNotificationUtil() {
   }
 
+  @SuppressLint("MissingPermission")
   public static void showNotification(@NonNull Context context, @NonNull Recipient recipient) {
     Intent contentIntent = new Intent(context, WebRtcCallActivity.class);
     contentIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

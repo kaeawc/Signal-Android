@@ -22,13 +22,11 @@ class ShareRepository(context: Context) {
 
   private val appContext = context.applicationContext
 
-  fun resolve(unresolvedShareData: UnresolvedShareData): Single<out ResolvedShareData> {
-    return when (unresolvedShareData) {
-      is UnresolvedShareData.ExternalMultiShare -> Single.fromCallable { resolve(unresolvedShareData) }
-      is UnresolvedShareData.ExternalSingleShare -> Single.fromCallable { resolve(unresolvedShareData) }
-      is UnresolvedShareData.ExternalPrimitiveShare -> Single.just(ResolvedShareData.Primitive(unresolvedShareData.text))
-    }.subscribeOn(Schedulers.io())
-  }
+  fun resolve(unresolvedShareData: UnresolvedShareData): Single<out ResolvedShareData> = when (unresolvedShareData) {
+    is UnresolvedShareData.ExternalMultiShare -> Single.fromCallable { resolve(unresolvedShareData) }
+    is UnresolvedShareData.ExternalSingleShare -> Single.fromCallable { resolve(unresolvedShareData) }
+    is UnresolvedShareData.ExternalPrimitiveShare -> Single.just(ResolvedShareData.Primitive(unresolvedShareData.text))
+  }.subscribeOn(Schedulers.io())
 
   @NonNull
   @WorkerThread

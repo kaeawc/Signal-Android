@@ -129,7 +129,7 @@ public final class EnableCallNotificationSettingsDialog extends DialogFragment {
 
   @SuppressLint("InflateParams")
   private @NonNull View createView() {
-    view = LayoutInflater.from(getContext()).inflate(R.layout.enable_call_notification_settings_dialog_fragment, null, false);
+    view = getLayoutInflater().inflate(R.layout.enable_call_notification_settings_dialog_fragment, null, false);
     bind(view);
     return view;
   }

@@ -51,10 +51,8 @@ object V171_ThreadForeignKeyFix : SignalDatabaseMigration {
     }
   }
 
-  private fun getThreadsByRecipientId(db: SQLiteDatabase, recipientId: Long): List<ThreadInfo> {
-    return db.rawQuery("SELECT _id, date FROM thread WHERE recipient_id = ?".trimIndent(), recipientId).readToList { cursor ->
-      ThreadInfo(cursor.requireLong("_id"), cursor.requireLong("date"))
-    }
+  private fun getThreadsByRecipientId(db: SQLiteDatabase, recipientId: Long): List<ThreadInfo> = db.rawQuery("SELECT _id, date FROM thread WHERE recipient_id = ?".trimIndent(), recipientId).readToList { cursor ->
+    ThreadInfo(cursor.requireLong("_id"), cursor.requireLong("date"))
   }
 
   private fun mergeThreads(db: SQLiteDatabase, threads: List<ThreadInfo>) {

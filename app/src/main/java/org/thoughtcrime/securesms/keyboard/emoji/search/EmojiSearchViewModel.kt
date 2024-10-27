@@ -29,8 +29,6 @@ class EmojiSearchViewModel(private val repository: EmojiSearchRepository) : View
   data class EmojiSearchResults(val emojiList: List<MappingModel<*>>, val isRecents: Boolean)
 
   class Factory(private val repository: EmojiSearchRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(EmojiSearchViewModel(repository)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(EmojiSearchViewModel(repository)))
   }
 }

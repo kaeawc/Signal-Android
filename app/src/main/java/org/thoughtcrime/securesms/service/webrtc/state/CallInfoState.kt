@@ -36,29 +36,17 @@ data class CallInfoState(
   val remoteCallParticipants: List<CallParticipant>
     get() = ArrayList(remoteParticipants.values)
 
-  fun getRemoteCallParticipant(recipient: Recipient): CallParticipant? {
-    return getRemoteCallParticipant(CallParticipantId(recipient))
-  }
+  fun getRemoteCallParticipant(recipient: Recipient): CallParticipant? = getRemoteCallParticipant(CallParticipantId(recipient))
 
-  fun getRemoteCallParticipant(callParticipantId: CallParticipantId): CallParticipant? {
-    return remoteParticipants[callParticipantId]
-  }
+  fun getRemoteCallParticipant(callParticipantId: CallParticipantId): CallParticipant? = remoteParticipants[callParticipantId]
 
-  fun getPeer(hashCode: Int): RemotePeer? {
-    return peerMap[hashCode]
-  }
+  fun getPeer(hashCode: Int): RemotePeer? = peerMap[hashCode]
 
-  fun getPeerByCallId(callId: CallId): RemotePeer? {
-    return peerMap.values.firstOrNull { it.callId == callId }
-  }
+  fun getPeerByCallId(callId: CallId): RemotePeer? = peerMap.values.firstOrNull { it.callId == callId }
 
-  fun requireActivePeer(): RemotePeer {
-    return activePeer!!
-  }
+  fun requireActivePeer(): RemotePeer = activePeer!!
 
-  fun requireGroupCall(): GroupCall {
-    return groupCall!!
-  }
+  fun requireGroupCall(): GroupCall = groupCall!!
 
   fun duplicate(): CallInfoState = copy(
     remoteParticipants = remoteParticipants.toMutableMap(),

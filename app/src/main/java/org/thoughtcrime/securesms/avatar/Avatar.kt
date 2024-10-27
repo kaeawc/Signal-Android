@@ -13,9 +13,7 @@ sealed class Avatar(
     val resourceId: Int,
     val color: Avatars.ColorPair
   ) : Avatar(DatabaseId.DoNotPersist) {
-    override fun isSameAs(other: Avatar): Boolean {
-      return other is Resource && other.resourceId == resourceId
-    }
+    override fun isSameAs(other: Avatar): Boolean = other is Resource && other.resourceId == resourceId
   }
 
   data class Text(
@@ -23,13 +21,9 @@ sealed class Avatar(
     val color: Avatars.ColorPair,
     override val databaseId: DatabaseId
   ) : Avatar(databaseId) {
-    override fun withDatabaseId(databaseId: DatabaseId): Avatar {
-      return copy(databaseId = databaseId)
-    }
+    override fun withDatabaseId(databaseId: DatabaseId): Avatar = copy(databaseId = databaseId)
 
-    override fun isSameAs(other: Avatar): Boolean {
-      return other is Text && other.databaseId == databaseId
-    }
+    override fun isSameAs(other: Avatar): Boolean = other is Text && other.databaseId == databaseId
   }
 
   data class Vector(
@@ -37,13 +31,9 @@ sealed class Avatar(
     val color: Avatars.ColorPair,
     override val databaseId: DatabaseId
   ) : Avatar(databaseId) {
-    override fun withDatabaseId(databaseId: DatabaseId): Avatar {
-      return copy(databaseId = databaseId)
-    }
+    override fun withDatabaseId(databaseId: DatabaseId): Avatar = copy(databaseId = databaseId)
 
-    override fun isSameAs(other: Avatar): Boolean {
-      return other is Vector && other.key == key
-    }
+    override fun isSameAs(other: Avatar): Boolean = other is Vector && other.key == key
   }
 
   data class Photo(
@@ -51,18 +41,12 @@ sealed class Avatar(
     val size: Long,
     override val databaseId: DatabaseId
   ) : Avatar(databaseId) {
-    override fun withDatabaseId(databaseId: DatabaseId): Avatar {
-      return copy(databaseId = databaseId)
-    }
+    override fun withDatabaseId(databaseId: DatabaseId): Avatar = copy(databaseId = databaseId)
 
-    override fun isSameAs(other: Avatar): Boolean {
-      return other is Photo && databaseId == other.databaseId
-    }
+    override fun isSameAs(other: Avatar): Boolean = other is Photo && databaseId == other.databaseId
   }
 
-  open fun withDatabaseId(databaseId: DatabaseId): Avatar {
-    throw UnsupportedOperationException()
-  }
+  open fun withDatabaseId(databaseId: DatabaseId): Avatar = throw UnsupportedOperationException()
 
   abstract fun isSameAs(other: Avatar): Boolean
 

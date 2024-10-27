@@ -20,9 +20,7 @@ data class CallSetupState(
   @get:JvmName("isAlwaysTurnServers") var alwaysTurnServers: Boolean = false
 ) {
 
-  fun duplicate(): CallSetupState {
-    return copy()
-  }
+  fun duplicate(): CallSetupState = copy()
 
   companion object {
     const val NO_RING = 0L

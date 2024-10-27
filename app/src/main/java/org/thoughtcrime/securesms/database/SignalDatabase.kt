@@ -188,13 +188,9 @@ open class SignalDatabase(private val context: Application, databaseSecret: Data
     Log.i(TAG, "Upgrade complete. Took " + (System.currentTimeMillis() - startTime) + " ms.")
   }
 
-  override fun getReadableDatabase(): net.zetetic.database.sqlcipher.SQLiteDatabase {
-    throw UnsupportedOperationException("Call getSignalReadableDatabase() instead!")
-  }
+  override fun getReadableDatabase(): net.zetetic.database.sqlcipher.SQLiteDatabase = throw UnsupportedOperationException("Call getSignalReadableDatabase() instead!")
 
-  override fun getWritableDatabase(): net.zetetic.database.sqlcipher.SQLiteDatabase {
-    throw UnsupportedOperationException("Call getSignalWritableDatabase() instead!")
-  }
+  override fun getWritableDatabase(): net.zetetic.database.sqlcipher.SQLiteDatabase = throw UnsupportedOperationException("Call getSignalWritableDatabase() instead!")
 
   open val rawReadableDatabase: net.zetetic.database.sqlcipher.SQLiteDatabase
     get() = super.getReadableDatabase()
@@ -208,9 +204,7 @@ open class SignalDatabase(private val context: Application, databaseSecret: Data
   open val signalWritableDatabase: SQLiteDatabase
     get() = SQLiteDatabase(super.getWritableDatabase())
 
-  override fun getSqlCipherDatabase(): net.zetetic.database.sqlcipher.SQLiteDatabase {
-    return super.getWritableDatabase()
-  }
+  override fun getSqlCipherDatabase(): net.zetetic.database.sqlcipher.SQLiteDatabase = super.getWritableDatabase()
 
   open fun markCurrent(db: net.zetetic.database.sqlcipher.SQLiteDatabase) {
     db.version = SignalDatabaseMigrations.DATABASE_VERSION
@@ -278,14 +272,10 @@ open class SignalDatabase(private val context: Application, databaseSecret: Data
     }
 
     @JvmStatic
-    fun databaseFileExists(context: Context): Boolean {
-      return context.getDatabasePath(DATABASE_NAME).exists()
-    }
+    fun databaseFileExists(context: Context): Boolean = context.getDatabasePath(DATABASE_NAME).exists()
 
     @JvmStatic
-    fun getDatabaseFile(context: Context): File {
-      return context.getDatabasePath(DATABASE_NAME)
-    }
+    fun getDatabaseFile(context: Context): File = context.getDatabasePath(DATABASE_NAME)
 
     /**
      * After restoring a backup, we want to make sure that we run all of the onUpgrade logic necessary to bring the databases up to our current versions.
@@ -321,9 +311,7 @@ open class SignalDatabase(private val context: Application, databaseSecret: Data
     }
 
     @JvmStatic
-    fun hasTable(table: String): Boolean {
-      return SqlUtil.tableExists(instance!!.rawReadableDatabase, table)
-    }
+    fun hasTable(table: String): Boolean = SqlUtil.tableExists(instance!!.rawReadableDatabase, table)
 
     @JvmStatic
     fun triggerDatabaseAccess() {
@@ -361,10 +349,8 @@ open class SignalDatabase(private val context: Application, databaseSecret: Data
     }
 
     @JvmStatic
-    fun <T> runInTransaction(block: (SQLiteDatabase) -> T): T {
-      return instance!!.signalWritableDatabase.withinTransaction {
-        block(it)
-      }
+    fun <T> runInTransaction(block: (SQLiteDatabase) -> T): T = instance!!.signalWritableDatabase.withinTransaction {
+      block(it)
     }
 
     @get:JvmStatic

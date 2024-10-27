@@ -29,7 +29,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import app.cash.exhaustive.Exhaustive
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -77,7 +76,10 @@ import kotlin.math.roundToInt
 /**
  * Allows the user to view and edit selected media.
  */
-class MediaReviewFragment : Fragment(R.layout.v2_media_review_fragment), ScheduleMessageTimePickerBottomSheet.ScheduleCallback, VideoThumbnailsRangeSelectorView.RangeDragListener {
+class MediaReviewFragment :
+  Fragment(R.layout.v2_media_review_fragment),
+  ScheduleMessageTimePickerBottomSheet.ScheduleCallback,
+  VideoThumbnailsRangeSelectorView.RangeDragListener {
 
   private val sharedViewModel: MediaSelectionViewModel by viewModels(
     ownerProducer = { requireActivity() }
@@ -439,7 +441,6 @@ class MediaReviewFragment : Fragment(R.layout.v2_media_review_fragment), Schedul
   }
 
   private fun handleMediaValidatorFilterError(error: MediaValidator.FilterError) {
-    @Exhaustive
     when (error) {
       MediaValidator.FilterError.None -> return
       MediaValidator.FilterError.ItemTooLarge -> Toast.makeText(requireContext(), R.string.MediaReviewFragment__one_or_more_items_were_too_large, Toast.LENGTH_SHORT).show()
@@ -674,134 +675,112 @@ class MediaReviewFragment : Fragment(R.layout.v2_media_review_fragment), Schedul
     return animators
   }
 
-  private fun computeAddMessageAnimators(state: MediaSelectionState): List<Animator> {
-    return if (!state.isTouchEnabled) {
+  private fun computeAddMessageAnimators(state: MediaSelectionState): List<Animator> = if (!state.isTouchEnabled) {
+    listOf(
+      MediaReviewAnimatorController.getFadeOutAnimator(addMessageButton)
+    )
+  } else {
+    listOf(
+      MediaReviewAnimatorController.getFadeInAnimator(addMessageButton)
+    )
+  }
+
+  private fun computeViewOnceButtonAnimators(state: MediaSelectionState): List<Animator> = if (state.isTouchEnabled && state.selectedMedia.size == 1 && !state.isStory && !MediaUtil.isDocumentType(state.focusedMedia?.contentType)) {
+    listOf(MediaReviewAnimatorController.getFadeInAnimator(viewOnceButton))
+  } else {
+    listOf(MediaReviewAnimatorController.getFadeOutAnimator(viewOnceButton))
+  }
+
+  private fun computeEmojiButtonAnimators(state: MediaSelectionState): List<Animator> = if (state.isTouchEnabled && state.viewOnceToggleState != MediaSelectionState.ViewOnceToggleState.ONCE) {
+    listOf(MediaReviewAnimatorController.getFadeInAnimator(emojiButton))
+  } else {
+    listOf(MediaReviewAnimatorController.getFadeOutAnimator(emojiButton))
+  }
+
+  private fun computeAddMediaButtonsAnimators(state: MediaSelectionState): List<Animator> = when {
+    !state.isTouchEnabled || state.viewOnceToggleState == MediaSelectionState.ViewOnceToggleState.ONCE || MediaUtil.isDocumentType(state.focusedMedia?.contentType) -> {
       listOf(
-        MediaReviewAnimatorController.getFadeOutAnimator(addMessageButton)
+        MediaReviewAnimatorController.getFadeOutAnimator(addMediaButton),
+        MediaReviewAnimatorController.getFadeOutAnimator(selectionRecycler)
       )
-    } else {
+    }
+    state.selectedMedia.size > 1 -> {
       listOf(
-        MediaReviewAnimatorController.getFadeInAnimator(addMessageButton)
+        MediaReviewAnimatorController.getFadeOutAnimator(addMediaButton),
+        MediaReviewAnimatorController.getFadeInAnimator(selectionRecycler)
       )
     }
-  }
-
-  private fun computeViewOnceButtonAnimators(state: MediaSelectionState): List<Animator> {
-    return if (state.isTouchEnabled && state.selectedMedia.size == 1 && !state.isStory && !MediaUtil.isDocumentType(state.focusedMedia?.contentType)) {
-      listOf(MediaReviewAnimatorController.getFadeInAnimator(viewOnceButton))
-    } else {
-      listOf(MediaReviewAnimatorController.getFadeOutAnimator(viewOnceButton))
-    }
-  }
-
-  private fun computeEmojiButtonAnimators(state: MediaSelectionState): List<Animator> {
-    return if (state.isTouchEnabled && state.viewOnceToggleState != MediaSelectionState.ViewOnceToggleState.ONCE) {
-      listOf(MediaReviewAnimatorController.getFadeInAnimator(emojiButton))
-    } else {
-      listOf(MediaReviewAnimatorController.getFadeOutAnimator(emojiButton))
-    }
-  }
-
-  private fun computeAddMediaButtonsAnimators(state: MediaSelectionState): List<Animator> {
-    return when {
-      !state.isTouchEnabled || state.viewOnceToggleState == MediaSelectionState.ViewOnceToggleState.ONCE || MediaUtil.isDocumentType(state.focusedMedia?.contentType) -> {
-        listOf(
-          MediaReviewAnimatorController.getFadeOutAnimator(addMediaButton),
-          MediaReviewAnimatorController.getFadeOutAnimator(selectionRecycler)
-        )
-      }
-      state.selectedMedia.size > 1 -> {
-        listOf(
-          MediaReviewAnimatorController.getFadeOutAnimator(addMediaButton),
-          MediaReviewAnimatorController.getFadeInAnimator(selectionRecycler)
-        )
-      }
-      else -> {
-        listOf(
-          MediaReviewAnimatorController.getFadeInAnimator(addMediaButton),
-          MediaReviewAnimatorController.getFadeOutAnimator(selectionRecycler)
-        )
-      }
-    }
-  }
-
-  private fun computeSendButtonAnimators(state: MediaSelectionState): List<Animator> {
-    return if (state.isTouchEnabled) {
+    else -> {
       listOf(
-        MediaReviewAnimatorController.getFadeInAnimator(sendButton, isEnabled = state.canSend)
-      )
-    } else {
-      listOf(
-        MediaReviewAnimatorController.getFadeOutAnimator(sendButton, isEnabled = state.canSend)
+        MediaReviewAnimatorController.getFadeInAnimator(addMediaButton),
+        MediaReviewAnimatorController.getFadeOutAnimator(selectionRecycler)
       )
     }
   }
 
-  private fun computeSaveButtonAnimators(state: MediaSelectionState): List<Animator> {
-    return if (state.isTouchEnabled && !MediaUtil.isVideo(state.focusedMedia?.contentType) && !MediaUtil.isDocumentType(state.focusedMedia?.contentType)) {
-      listOf(
-        MediaReviewAnimatorController.getFadeInAnimator(saveButton)
-      )
-    } else {
-      listOf(
-        MediaReviewAnimatorController.getFadeOutAnimator(saveButton)
-      )
-    }
+  private fun computeSendButtonAnimators(state: MediaSelectionState): List<Animator> = if (state.isTouchEnabled) {
+    listOf(
+      MediaReviewAnimatorController.getFadeInAnimator(sendButton, isEnabled = state.canSend)
+    )
+  } else {
+    listOf(
+      MediaReviewAnimatorController.getFadeOutAnimator(sendButton, isEnabled = state.canSend)
+    )
   }
 
-  private fun computeQualityButtonAnimators(state: MediaSelectionState): List<Animator> {
-    return if (state.isTouchEnabled && !state.isStory && !MediaUtil.isDocumentType(state.focusedMedia?.contentType)) {
-      listOf(MediaReviewAnimatorController.getFadeInAnimator(qualityButton))
-    } else {
-      listOf(MediaReviewAnimatorController.getFadeOutAnimator(qualityButton))
-    }
+  private fun computeSaveButtonAnimators(state: MediaSelectionState): List<Animator> = if (state.isTouchEnabled && !MediaUtil.isVideo(state.focusedMedia?.contentType) && !MediaUtil.isDocumentType(state.focusedMedia?.contentType)) {
+    listOf(
+      MediaReviewAnimatorController.getFadeInAnimator(saveButton)
+    )
+  } else {
+    listOf(
+      MediaReviewAnimatorController.getFadeOutAnimator(saveButton)
+    )
   }
 
-  private fun computeCropAndRotateButtonAnimators(state: MediaSelectionState): List<Animator> {
-    return if (state.isTouchEnabled && MediaUtil.isImageAndNotGif(state.focusedMedia?.contentType ?: "")) {
-      listOf(MediaReviewAnimatorController.getFadeInAnimator(cropAndRotateButton))
-    } else {
-      listOf(MediaReviewAnimatorController.getFadeOutAnimator(cropAndRotateButton))
-    }
+  private fun computeQualityButtonAnimators(state: MediaSelectionState): List<Animator> = if (state.isTouchEnabled && !state.isStory && !MediaUtil.isDocumentType(state.focusedMedia?.contentType)) {
+    listOf(MediaReviewAnimatorController.getFadeInAnimator(qualityButton))
+  } else {
+    listOf(MediaReviewAnimatorController.getFadeOutAnimator(qualityButton))
   }
 
-  private fun computeDrawToolButtonAnimators(state: MediaSelectionState): List<Animator> {
-    return if (state.isTouchEnabled && MediaUtil.isImageAndNotGif(state.focusedMedia?.contentType ?: "")) {
-      listOf(MediaReviewAnimatorController.getFadeInAnimator(drawToolButton))
-    } else {
-      listOf(MediaReviewAnimatorController.getFadeOutAnimator(drawToolButton))
-    }
+  private fun computeCropAndRotateButtonAnimators(state: MediaSelectionState): List<Animator> = if (state.isTouchEnabled && MediaUtil.isImageAndNotGif(state.focusedMedia?.contentType ?: "")) {
+    listOf(MediaReviewAnimatorController.getFadeInAnimator(cropAndRotateButton))
+  } else {
+    listOf(MediaReviewAnimatorController.getFadeOutAnimator(cropAndRotateButton))
   }
 
-  private fun computeRecipientDisplayAnimators(state: MediaSelectionState): List<Animator> {
-    return if (state.isTouchEnabled && state.recipient != null) {
-      recipientDisplay.text = if (state.recipient.isSelf) requireContext().getString(R.string.note_to_self) else state.recipient.getDisplayName(requireContext())
-      listOf(MediaReviewAnimatorController.getFadeInAnimator(recipientDisplay))
-    } else {
-      listOf(MediaReviewAnimatorController.getFadeOutAnimator(recipientDisplay))
-    }
+  private fun computeDrawToolButtonAnimators(state: MediaSelectionState): List<Animator> = if (state.isTouchEnabled && MediaUtil.isImageAndNotGif(state.focusedMedia?.contentType ?: "")) {
+    listOf(MediaReviewAnimatorController.getFadeInAnimator(drawToolButton))
+  } else {
+    listOf(MediaReviewAnimatorController.getFadeOutAnimator(drawToolButton))
+  }
+
+  private fun computeRecipientDisplayAnimators(state: MediaSelectionState): List<Animator> = if (state.isTouchEnabled && state.recipient != null) {
+    recipientDisplay.text = if (state.recipient.isSelf) requireContext().getString(R.string.note_to_self) else state.recipient.getDisplayName(requireContext())
+    listOf(MediaReviewAnimatorController.getFadeInAnimator(recipientDisplay))
+  } else {
+    listOf(MediaReviewAnimatorController.getFadeOutAnimator(recipientDisplay))
   }
 
   companion object {
     private val TAG = Log.tag(MediaReviewFragment::class.java)
 
     @JvmStatic
-    private fun tryGetUriSize(context: Context, uri: Uri, defaultValue: Long): Long {
-      return try {
-        var size: Long = 0
-        context.contentResolver.query(uri, null, null, null, null).use { cursor ->
-          if (cursor != null && cursor.moveToFirst() && cursor.getColumnIndex(OpenableColumns.SIZE) >= 0) {
-            size = cursor.getLong(cursor.getColumnIndexOrThrow(OpenableColumns.SIZE))
-          }
+    private fun tryGetUriSize(context: Context, uri: Uri, defaultValue: Long): Long = try {
+      var size: Long = 0
+      context.contentResolver.query(uri, null, null, null, null).use { cursor ->
+        if (cursor != null && cursor.moveToFirst() && cursor.getColumnIndex(OpenableColumns.SIZE) >= 0) {
+          size = cursor.getLong(cursor.getColumnIndexOrThrow(OpenableColumns.SIZE))
         }
-        if (size <= 0) {
-          size = MediaUtil.getMediaSize(context, uri)
-        }
-        size
-      } catch (e: IOException) {
-        Log.w(TAG, e)
-        defaultValue
       }
+      if (size <= 0) {
+        size = MediaUtil.getMediaSize(context, uri)
+      }
+      size
+    } catch (e: IOException) {
+      Log.w(TAG, e)
+      defaultValue
     }
   }
 

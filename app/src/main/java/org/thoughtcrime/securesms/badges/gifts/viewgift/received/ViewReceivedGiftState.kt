@@ -15,13 +15,11 @@ data class ViewReceivedGiftState(
   val redemptionState: RedemptionState = RedemptionState.NONE
 ) {
 
-  fun getControlChecked(): Boolean {
-    return when {
-      userCheckSelection != null -> userCheckSelection
-      controlState == ControlState.FEATURE -> false
-      !displayingOtherBadges -> false
-      else -> true
-    }
+  fun getControlChecked(): Boolean = when {
+    userCheckSelection != null -> userCheckSelection
+    controlState == ControlState.FEATURE -> false
+    !displayingOtherBadges -> false
+    else -> true
   }
 
   enum class ControlState {

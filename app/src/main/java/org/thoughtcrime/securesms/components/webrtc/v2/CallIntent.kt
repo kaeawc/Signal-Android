@@ -29,13 +29,9 @@ class CallIntent(
       WebRtcCallActivity::class.java
     }
 
-    private fun getActionString(action: Action): String {
-      return "$CALL_INTENT_PREFIX.${action.code}"
-    }
+    private fun getActionString(action: Action): String = "$CALL_INTENT_PREFIX.${action.code}"
 
-    private fun getExtraString(extra: Extra): String {
-      return "$CALL_INTENT_PREFIX.${extra.code}"
-    }
+    private fun getExtraString(extra: Extra): String = "$CALL_INTENT_PREFIX.${extra.code}"
   }
 
   val action: Action by lazy { Action.fromIntent(intent) }
@@ -54,16 +50,14 @@ class CallIntent(
   @get:JvmName("shouldLaunchInPip")
   val shouldLaunchInPip: Boolean by lazy { intent.getBooleanExtra(getExtraString(Extra.LAUNCH_IN_PIP), false) }
 
-  override fun toString(): String {
-    return """
+  override fun toString(): String = """
       CallIntent
       Action - $action
       Enable video if available? $shouldEnableVideoIfAvailable
       Started from full screen? $isStartedFromFullScreen
       Started from call link? $isStartedFromCallLink
       Launch in pip? $shouldLaunchInPip
-    """.trimIndent()
-  }
+  """.trimIndent()
 
   enum class Action(val code: String) {
     VIEW(Intent.ACTION_VIEW),
@@ -73,9 +67,7 @@ class CallIntent(
     END_CALL("END_CALL_ACTION");
 
     companion object {
-      fun fromIntent(intent: Intent): Action {
-        return intent.action?.let { a -> entries.firstOrNull { a == it.code || a == getActionString(it) } } ?: VIEW
-      }
+      fun fromIntent(intent: Intent): Action = intent.action?.let { a -> entries.firstOrNull { a == it.code || a == getActionString(it) } } ?: VIEW
     }
   }
 
@@ -131,8 +123,6 @@ class CallIntent(
       return this
     }
 
-    fun build(): Intent {
-      return intent
-    }
+    fun build(): Intent = intent
   }
 }

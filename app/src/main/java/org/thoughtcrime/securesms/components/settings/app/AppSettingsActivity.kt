@@ -31,7 +31,9 @@ private const val NOTIFICATION_CATEGORY = "android.intent.category.NOTIFICATION_
 private const val STATE_WAS_CONFIGURATION_UPDATED = "app.settings.state.configuration.updated"
 private const val EXTRA_PERFORM_ACTION_ON_CREATE = "extra_perform_action_on_create"
 
-class AppSettingsActivity : DSLSettingsActivity(), InAppPaymentComponent {
+class AppSettingsActivity :
+  DSLSettingsActivity(),
+  InAppPaymentComponent {
 
   private var wasConfigurationUpdated = false
 
@@ -140,19 +142,15 @@ class AppSettingsActivity : DSLSettingsActivity(), InAppPaymentComponent {
 
     @JvmStatic
     @JvmOverloads
-    fun home(context: Context, action: String? = null): Intent {
-      return getIntentForStartLocation(context, StartLocation.HOME)
-        .putExtra(EXTRA_PERFORM_ACTION_ON_CREATE, action)
-    }
+    fun home(context: Context, action: String? = null): Intent = getIntentForStartLocation(context, StartLocation.HOME)
+      .putExtra(EXTRA_PERFORM_ACTION_ON_CREATE, action)
 
     @JvmStatic
     fun backups(context: Context): Intent = getIntentForStartLocation(context, StartLocation.BACKUPS)
 
     @JvmStatic
-    fun help(context: Context, startCategoryIndex: Int = 0): Intent {
-      return getIntentForStartLocation(context, StartLocation.HELP)
-        .putExtra(HelpFragment.START_CATEGORY_INDEX, startCategoryIndex)
-    }
+    fun help(context: Context, startCategoryIndex: Int = 0): Intent = getIntentForStartLocation(context, StartLocation.HELP)
+      .putExtra(HelpFragment.START_CATEGORY_INDEX, startCategoryIndex)
 
     @JvmStatic
     fun proxy(context: Context): Intent = getIntentForStartLocation(context, StartLocation.PROXY)
@@ -215,11 +213,9 @@ class AppSettingsActivity : DSLSettingsActivity(), InAppPaymentComponent {
       return getIntentForStartLocation(context, StartLocation.CREATE_CHAT_FOLDER).putExtra(START_ARGUMENTS, arguments)
     }
 
-    private fun getIntentForStartLocation(context: Context, startLocation: StartLocation): Intent {
-      return Intent(context, AppSettingsActivity::class.java)
-        .putExtra(ARG_NAV_GRAPH, R.navigation.app_settings_with_change_number)
-        .putExtra(START_LOCATION, startLocation.code)
-    }
+    private fun getIntentForStartLocation(context: Context, startLocation: StartLocation): Intent = Intent(context, AppSettingsActivity::class.java)
+      .putExtra(ARG_NAV_GRAPH, R.navigation.app_settings_with_change_number)
+      .putExtra(START_LOCATION, startLocation.code)
   }
 
   private enum class StartLocation(val code: Int) {
@@ -244,9 +240,7 @@ class AppSettingsActivity : DSLSettingsActivity(), InAppPaymentComponent {
     CREATE_CHAT_FOLDER(18);
 
     companion object {
-      fun fromCode(code: Int?): StartLocation {
-        return values().find { code == it.code } ?: HOME
-      }
+      fun fromCode(code: Int?): StartLocation = values().find { code == it.code } ?: HOME
     }
   }
 }

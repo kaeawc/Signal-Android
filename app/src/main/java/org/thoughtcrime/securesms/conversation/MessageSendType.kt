@@ -34,13 +34,9 @@ sealed class MessageSendType(
   val usesSignalTransport
     get() = transportType == TransportType.SIGNAL
 
-  fun calculateCharacters(body: String): CharacterCalculator.CharacterState {
-    return characterCalculator.calculateCharacters(body)
-  }
+  fun calculateCharacters(body: String): CharacterCalculator.CharacterState = characterCalculator.calculateCharacters(body)
 
-  open fun getTitle(context: Context): String {
-    return context.getString(titleRes)
-  }
+  open fun getTitle(context: Context): String = context.getString(titleRes)
 
   /**
    * A type representing a basic Signal message.
@@ -63,13 +59,9 @@ sealed class MessageSendType(
 
   companion object {
     @JvmStatic
-    fun getAllAvailable(): List<MessageSendType> {
-      return listOf(SignalMessageSendType)
-    }
+    fun getAllAvailable(): List<MessageSendType> = listOf(SignalMessageSendType)
 
     @JvmStatic
-    fun getFirstForTransport(transportType: TransportType): MessageSendType {
-      return getAllAvailable().firstOrNull { it.transportType == transportType } ?: throw IllegalArgumentException("No options available for desired type $transportType!")
-    }
+    fun getFirstForTransport(transportType: TransportType): MessageSendType = getAllAvailable().firstOrNull { it.transportType == transportType } ?: throw IllegalArgumentException("No options available for desired type $transportType!")
   }
 }

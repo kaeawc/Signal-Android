@@ -23,7 +23,5 @@ object BottomSheetUtil {
     }
   }
 
-  fun BottomSheetDialogFragment.requireCoordinatorLayout(): CoordinatorLayout {
-    return requireDialog().findViewById(R.id.coordinator)
-  }
+  fun BottomSheetDialogFragment.requireCoordinatorLayout(): CoordinatorLayout = requireDialog().findViewById(R.id.coordinator)
 }

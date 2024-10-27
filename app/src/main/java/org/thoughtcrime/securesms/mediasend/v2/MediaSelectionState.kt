@@ -41,37 +41,29 @@ data class MediaSelectionState(
 
   val canSend = !isSent && selectedMedia.isNotEmpty()
 
-  fun getOrCreateVideoTrimData(uri: Uri): VideoTrimData {
-    return editorStateMap[uri] as? VideoTrimData ?: VideoTrimData()
-  }
+  fun getOrCreateVideoTrimData(uri: Uri): VideoTrimData = editorStateMap[uri] as? VideoTrimData ?: VideoTrimData()
 
-  fun calculateMaxVideoDurationUs(maxFileSize: Long): Long {
-    return if (isStory && !MediaConstraints.isVideoTranscodeAvailable()) {
-      Stories.MAX_VIDEO_DURATION_MILLIS
-    } else {
-      transcodingPreset.calculateMaxVideoUploadDurationInSeconds(maxFileSize).seconds.inWholeMicroseconds
-    }
+  fun calculateMaxVideoDurationUs(maxFileSize: Long): Long = if (isStory && !MediaConstraints.isVideoTranscodeAvailable()) {
+    Stories.MAX_VIDEO_DURATION_MILLIS
+  } else {
+    transcodingPreset.calculateMaxVideoUploadDurationInSeconds(maxFileSize).seconds.inWholeMicroseconds
   }
 
   enum class ViewOnceToggleState(val code: Int) {
     INFINITE(0),
     ONCE(1);
 
-    fun next(): ViewOnceToggleState {
-      return when (this) {
-        INFINITE -> ONCE
-        ONCE -> INFINITE
-      }
+    fun next(): ViewOnceToggleState = when (this) {
+      INFINITE -> ONCE
+      ONCE -> INFINITE
     }
 
     companion object {
       val default = INFINITE
 
-      fun fromCode(code: Int): ViewOnceToggleState {
-        return when (code) {
-          1 -> ONCE
-          else -> INFINITE
-        }
+      fun fromCode(code: Int): ViewOnceToggleState = when (code) {
+        1 -> ONCE
+        else -> INFINITE
       }
     }
   }

@@ -27,9 +27,7 @@ class TextFontButton @JvmOverloads constructor(
     }
   }
 
-  override fun setOnClickListener(l: OnClickListener?) {
-    throw UnsupportedOperationException()
-  }
+  override fun setOnClickListener(l: OnClickListener?): Unit = throw UnsupportedOperationException()
 
   fun setTextFont(textFont: TextFont) {
     if (textFont != this.textFont) {

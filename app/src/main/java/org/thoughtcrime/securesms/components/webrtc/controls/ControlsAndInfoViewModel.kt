@@ -60,8 +60,6 @@ class ControlsAndInfoViewModel(
   }
 
   class Factory : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(ControlsAndInfoViewModel()) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(ControlsAndInfoViewModel()) as T
   }
 }

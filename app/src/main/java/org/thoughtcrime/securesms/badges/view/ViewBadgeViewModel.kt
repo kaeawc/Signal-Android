@@ -52,8 +52,6 @@ class ViewBadgeViewModel(
     private val recipientId: RecipientId,
     private val repository: BadgeRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(ViewBadgeViewModel(startBadge, recipientId, repository)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(ViewBadgeViewModel(startBadge, recipientId, repository)))
   }
 }

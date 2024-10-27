@@ -1,21 +1,12 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("java-library")
-  id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
+  id("org.jlleitschuh.gradle.ktlint")
 }
-
-val signalJavaVersion: JavaVersion by rootProject.extra
-val signalKotlinJvmTarget: String by rootProject.extra
 
 java {
-  sourceCompatibility = signalJavaVersion
-  targetCompatibility = signalJavaVersion
-}
-
-kotlin {
-  jvmToolchain {
-    languageVersion = JavaLanguageVersion.of(signalKotlinJvmTarget)
-  }
+  sourceCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
+  targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
 }
 
 // NOTE: For now, in order to run ktlint on this project, you have to manually run ./gradlew :build-logic:tools:ktlintFormat
@@ -28,6 +19,6 @@ dependencies {
   implementation(gradleApi())
 
   implementation(libs.dnsjava)
-  testImplementation(testLibs.junit.junit)
-  testImplementation(testLibs.mockk)
+  testImplementation(libs.junit)
+  testImplementation(libs.mockk)
 }

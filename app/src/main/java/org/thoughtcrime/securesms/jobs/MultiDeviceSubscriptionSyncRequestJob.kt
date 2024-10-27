@@ -59,13 +59,9 @@ class MultiDeviceSubscriptionSyncRequestJob private constructor(parameters: Para
     messageSender.sendSyncMessage(SignalServiceSyncMessage.forFetchLatest(SignalServiceSyncMessage.FetchType.SUBSCRIPTION_STATUS))
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return e is PushNetworkException && e !is ServerRejectedException
-  }
+  override fun onShouldRetry(e: Exception): Boolean = e is PushNetworkException && e !is ServerRejectedException
 
   class Factory : Job.Factory<MultiDeviceSubscriptionSyncRequestJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): MultiDeviceSubscriptionSyncRequestJob {
-      return MultiDeviceSubscriptionSyncRequestJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): MultiDeviceSubscriptionSyncRequestJob = MultiDeviceSubscriptionSyncRequestJob(parameters)
   }
 }

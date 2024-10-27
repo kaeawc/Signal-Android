@@ -20,7 +20,9 @@ import kotlin.time.Duration.Companion.minutes
  *
  * Uses [setFragmentResult] to pass the provided duration back in milliseconds.
  */
-class TimeDurationPickerDialog : DialogFragment(), NumericKeyboardView.Listener {
+class TimeDurationPickerDialog :
+  DialogFragment(),
+  NumericKeyboardView.Listener {
 
   private var _binding: TimeDurationPickerDialogBinding? = null
   private val binding: TimeDurationPickerDialogBinding
@@ -90,12 +92,10 @@ class TimeDurationPickerDialog : DialogFragment(), NumericKeyboardView.Listener 
 
     private const val ARGUMENT_DURATION = "ARGUMENT_DURATION"
 
-    fun create(duration: Duration): TimeDurationPickerDialog {
-      return TimeDurationPickerDialog().apply {
-        arguments = bundleOf(
-          ARGUMENT_DURATION to duration.inWholeMilliseconds
-        )
-      }
+    fun create(duration: Duration): TimeDurationPickerDialog = TimeDurationPickerDialog().apply {
+      arguments = bundleOf(
+        ARGUMENT_DURATION to duration.inWholeMilliseconds
+      )
     }
   }
 }

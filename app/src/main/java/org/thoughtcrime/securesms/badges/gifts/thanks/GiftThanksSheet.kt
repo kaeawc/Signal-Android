@@ -56,29 +56,27 @@ class GiftThanksSheet : DSLSettingsBottomSheetFragment() {
     }
   }
 
-  private fun getConfiguration(recipient: Recipient): DSLConfiguration {
-    return configure {
-      textPref(
-        title = DSLSettingsText.from(R.string.SubscribeThanksForYourSupportBottomSheetDialogFragment__thanks_for_your_support, DSLSettingsText.TitleLargeModifier, DSLSettingsText.CenterModifier)
+  private fun getConfiguration(recipient: Recipient): DSLConfiguration = configure {
+    textPref(
+      title = DSLSettingsText.from(R.string.SubscribeThanksForYourSupportBottomSheetDialogFragment__thanks_for_your_support, DSLSettingsText.TitleLargeModifier, DSLSettingsText.CenterModifier)
+    )
+
+    noPadTextPref(
+      title = DSLSettingsText.from(
+        getString(R.string.GiftThanksSheet__youve_made_a_donation, recipient.getDisplayName(requireContext())),
+        DSLSettingsText.CenterModifier
       )
+    )
 
-      noPadTextPref(
-        title = DSLSettingsText.from(
-          getString(R.string.GiftThanksSheet__youve_made_a_donation, recipient.getDisplayName(requireContext())),
-          DSLSettingsText.CenterModifier
-        )
+    space(DimensionUnit.DP.toPixels(37f).toInt())
+
+    customPref(
+      BadgePreview.BadgeModel.GiftedBadgeModel(
+        badge = badge,
+        recipient = recipient
       )
+    )
 
-      space(DimensionUnit.DP.toPixels(37f).toInt())
-
-      customPref(
-        BadgePreview.BadgeModel.GiftedBadgeModel(
-          badge = badge,
-          recipient = recipient
-        )
-      )
-
-      space(DimensionUnit.DP.toPixels(60f).toInt())
-    }
+    space(DimensionUnit.DP.toPixels(60f).toInt())
   }
 }

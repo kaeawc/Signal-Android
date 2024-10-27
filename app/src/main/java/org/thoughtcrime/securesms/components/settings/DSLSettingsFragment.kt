@@ -104,25 +104,17 @@ abstract class DSLSettingsFragment(
     toolbar?.title = title
   }
 
-  open fun createAdapters(): Array<MappingAdapter> {
-    return arrayOf(DSLSettingsAdapter())
-  }
+  open fun createAdapters(): Array<MappingAdapter> = arrayOf(DSLSettingsAdapter())
 
-  open fun bindAdapter(adapter: MappingAdapter) {
-    throw UnsupportedOperationException("This method is not implemented.")
-  }
+  open fun bindAdapter(adapter: MappingAdapter): Unit = throw UnsupportedOperationException("This method is not implemented.")
 
-  open fun bindAdapters(adapter: ConcatAdapter) {
-    throw UnsupportedOperationException("This method is not implemented.")
-  }
+  open fun bindAdapters(adapter: ConcatAdapter): Unit = throw UnsupportedOperationException("This method is not implemented.")
 
   private class EdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
-    override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
-      return super.createEdgeEffect(view, direction).apply {
-        if (Build.VERSION.SDK_INT > 21) {
-          color =
-            requireNotNull(ContextCompat.getColor(view.context, R.color.settings_ripple_color))
-        }
+    override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect = super.createEdgeEffect(view, direction).apply {
+      if (Build.VERSION.SDK_INT > 21) {
+        color =
+          requireNotNull(ContextCompat.getColor(view.context, R.color.settings_ripple_color))
       }
     }
   }

@@ -57,30 +57,22 @@ object StoriesLandingItem {
     val onLockList: () -> Unit,
     val onUnlockList: () -> Unit
   ) : MappingModel<Model> {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return data.storyRecipient.id == newItem.data.storyRecipient.id
+    override fun areItemsTheSame(newItem: Model): Boolean = data.storyRecipient.id == newItem.data.storyRecipient.id
+
+    override fun areContentsTheSame(newItem: Model): Boolean = data.storyRecipient.hasSameContent(newItem.data.storyRecipient) &&
+      data == newItem.data &&
+      !hasStatusChange(newItem) &&
+      !hasThumbChange(newItem) &&
+      (data.sendingCount == newItem.data.sendingCount && data.failureCount == newItem.data.failureCount) &&
+      data.storyViewState == newItem.data.storyViewState
+
+    override fun getChangePayload(newItem: Model): Any? = if (isSameRecord(newItem) && hasStatusChange(newItem)) {
+      STATUS_CHANGE
+    } else {
+      null
     }
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return data.storyRecipient.hasSameContent(newItem.data.storyRecipient) &&
-        data == newItem.data &&
-        !hasStatusChange(newItem) &&
-        !hasThumbChange(newItem) &&
-        (data.sendingCount == newItem.data.sendingCount && data.failureCount == newItem.data.failureCount) &&
-        data.storyViewState == newItem.data.storyViewState
-    }
-
-    override fun getChangePayload(newItem: Model): Any? {
-      return if (isSameRecord(newItem) && hasStatusChange(newItem)) {
-        STATUS_CHANGE
-      } else {
-        null
-      }
-    }
-
-    private fun isSameRecord(newItem: Model): Boolean {
-      return data.primaryStory.messageRecord.id == newItem.data.primaryStory.messageRecord.id
-    }
+    private fun isSameRecord(newItem: Model): Boolean = data.primaryStory.messageRecord.id == newItem.data.primaryStory.messageRecord.id
 
     private fun hasStatusChange(newItem: Model): Boolean {
       val oldRecord = data.primaryStory.messageRecord
@@ -280,9 +272,7 @@ object StoriesLandingItem {
       }
     }
 
-    private fun getGroupPresentation(model: Model): String {
-      return model.data.storyRecipient.getDisplayName(context)
-    }
+    private fun getGroupPresentation(model: Model): String = model.data.storyRecipient.getDisplayName(context)
 
     private fun getReleaseNotesPresentation(model: Model): CharSequence {
       val official = ContextUtil.requireDrawable(context, R.drawable.ic_official_20)
@@ -308,9 +298,9 @@ object StoriesLandingItem {
     }
 
     private inner class HideBlurAfterLoadListener : RequestListener<Drawable> {
-      override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean = false
+      override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean = false
 
-      override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+      override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>?, dataSource: DataSource, isFirstResource: Boolean): Boolean {
         storyBlur.visible = false
         return false
       }

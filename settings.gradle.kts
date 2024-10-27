@@ -1,4 +1,6 @@
 pluginManagement {
+  includeBuild("build-logic")
+
   repositories {
     google()
     mavenCentral()
@@ -10,14 +12,12 @@ pluginManagement {
 //      }
     }
   }
-  includeBuild("build-logic")
 }
 dependencyResolutionManagement {
   //repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
     google()
     mavenCentral()
-    mavenLocal()
     maven {
       url = uri("https://raw.githubusercontent.com/signalapp/maven/master/sqlcipher/release/")
       content {
@@ -105,5 +105,3 @@ project(":video").projectDir = file("video/lib")
 project(":video-app").projectDir = file("video/app")
 
 rootProject.name = "Signal"
-
-apply(from = "dependencies.gradle.kts")

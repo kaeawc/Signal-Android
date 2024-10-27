@@ -24,9 +24,7 @@ class ConversationLayoutManager(context: Context) : LinearLayoutManager(context,
 
   private var afterScroll: (() -> Unit)? = null
 
-  override fun supportsPredictiveItemAnimations(): Boolean {
-    return false
-  }
+  override fun supportsPredictiveItemAnimations(): Boolean = false
 
   /**
    * Scroll to the desired position and be notified when the layout manager has completed the request

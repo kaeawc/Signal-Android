@@ -62,16 +62,12 @@ class RestoreAttachmentThumbnailJob private constructor(
     attachmentId
   )
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putLong(KEY_MESSAGE_ID, messageId)
-      .putLong(KEY_ATTACHMENT_ID, attachmentId.id)
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putLong(KEY_MESSAGE_ID, messageId)
+    .putLong(KEY_ATTACHMENT_ID, attachmentId.id)
+    .serialize()
 
-  override fun getFactoryKey(): String {
-    return KEY
-  }
+  override fun getFactoryKey(): String = KEY
 
   override fun onAdded() {
     SignalDatabase.attachments.setThumbnailRestoreState(attachmentId, AttachmentTable.ThumbnailRestoreState.IN_PROGRESS)

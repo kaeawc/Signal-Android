@@ -15,15 +15,13 @@ class ExportAccountDataRepository(
   private val accountManager: SignalServiceAccountManager = AppDependencies.signalServiceAccountManager
 ) {
 
-  fun downloadAccountDataReport(exportAsJson: Boolean): Single<ExportedReport> {
-    return Single.create {
-      try {
-        it.onSuccess(generateAccountDataReport(accountManager.accountDataReport, exportAsJson))
-      } catch (e: IOException) {
-        it.onError(e)
-      }
-    }.subscribeOn(Schedulers.io())
-  }
+  fun downloadAccountDataReport(exportAsJson: Boolean): Single<ExportedReport> = Single.create {
+    try {
+      it.onSuccess(generateAccountDataReport(accountManager.accountDataReport, exportAsJson))
+    } catch (e: IOException) {
+      it.onError(e)
+    }
+  }.subscribeOn(Schedulers.io())
 
   private fun generateAccountDataReport(report: String, exportAsJson: Boolean): ExportedReport {
     val mimeType: String

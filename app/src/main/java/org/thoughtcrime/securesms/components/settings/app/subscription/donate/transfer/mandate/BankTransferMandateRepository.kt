@@ -13,11 +13,9 @@ import java.util.Locale
 
 class BankTransferMandateRepository {
 
-  fun getMandate(paymentSourceType: PaymentSourceType.Stripe): Single<String> {
-    return Single
-      .fromCallable { AppDependencies.donationsService.getBankMandate(Locale.getDefault(), paymentSourceType.paymentMethod) }
-      .flatMap { it.flattenResult() }
-      .map { it.mandate }
-      .subscribeOn(Schedulers.io())
-  }
+  fun getMandate(paymentSourceType: PaymentSourceType.Stripe): Single<String> = Single
+    .fromCallable { AppDependencies.donationsService.getBankMandate(Locale.getDefault(), paymentSourceType.paymentMethod) }
+    .flatMap { it.flattenResult() }
+    .map { it.mandate }
+    .subscribeOn(Schedulers.io())
 }

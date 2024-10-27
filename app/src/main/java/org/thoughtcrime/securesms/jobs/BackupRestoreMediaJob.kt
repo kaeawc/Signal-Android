@@ -110,15 +110,11 @@ class BackupRestoreMediaJob private constructor(parameters: Parameters) : BaseJo
     jobManager.add(CheckRestoreMediaLeftJob(RestoreAttachmentJob.constructQueueString(RestoreAttachmentJob.RestoreOperation.INITIAL_RESTORE)))
   }
 
-  private fun shouldRestoreFullSize(message: MmsMessageRecord, restoreTime: Long, optimizeStorage: Boolean): Boolean {
-    return !optimizeStorage || ((restoreTime - message.dateReceived) < 30.days.inWholeMilliseconds)
-  }
+  private fun shouldRestoreFullSize(message: MmsMessageRecord, restoreTime: Long, optimizeStorage: Boolean): Boolean = !optimizeStorage || ((restoreTime - message.dateReceived) < 30.days.inWholeMilliseconds)
 
   override fun onShouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<BackupRestoreMediaJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): BackupRestoreMediaJob {
-      return BackupRestoreMediaJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): BackupRestoreMediaJob = BackupRestoreMediaJob(parameters)
   }
 }

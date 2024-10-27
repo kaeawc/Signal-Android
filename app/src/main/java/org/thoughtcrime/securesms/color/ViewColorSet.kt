@@ -24,12 +24,10 @@ data class ViewColorSet(
       background = ViewColor.ColorResource(R.color.signal_colorPrimary)
     )
 
-    fun forCustomColor(@ColorInt customColor: Int): ViewColorSet {
-      return ViewColorSet(
-        foreground = ViewColor.ColorResource(R.color.signal_colorOnCustom),
-        background = ViewColor.ColorValue(customColor)
-      )
-    }
+    fun forCustomColor(@ColorInt customColor: Int): ViewColorSet = ViewColorSet(
+      foreground = ViewColor.ColorResource(R.color.signal_colorOnCustom),
+      background = ViewColor.ColorValue(customColor)
+    )
   }
 
   @Parcelize
@@ -40,16 +38,12 @@ data class ViewColorSet(
 
     @Parcelize
     data class ColorValue(@ColorInt val colorInt: Int) : ViewColor() {
-      override fun resolve(context: Context): Int {
-        return colorInt
-      }
+      override fun resolve(context: Context): Int = colorInt
     }
 
     @Parcelize
     data class ColorResource(@ColorRes val colorRes: Int) : ViewColor() {
-      override fun resolve(context: Context): Int {
-        return ContextCompat.getColor(context, colorRes)
-      }
+      override fun resolve(context: Context): Int = ContextCompat.getColor(context, colorRes)
     }
   }
 }

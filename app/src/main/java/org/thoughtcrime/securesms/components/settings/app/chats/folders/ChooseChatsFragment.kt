@@ -22,7 +22,9 @@ import org.thoughtcrime.securesms.util.ViewUtil
 import java.util.Optional
 import java.util.function.Consumer
 
-class ChooseChatsFragment : LoggingFragment(), ContactSelectionListFragment.OnContactSelectedListener {
+class ChooseChatsFragment :
+  LoggingFragment(),
+  ContactSelectionListFragment.OnContactSelectedListener {
 
   private val viewModel: ChatFoldersViewModel by activityViewModels()
 
@@ -138,14 +140,12 @@ class ChooseChatsFragment : LoggingFragment(), ContactSelectionListFragment.OnCo
 
   override fun onSelectionChanged() = Unit
 
-  private fun getDefaultDisplayMode(): Int {
-    return ContactSelectionDisplayMode.FLAG_PUSH or
-      ContactSelectionDisplayMode.FLAG_ACTIVE_GROUPS or
-      ContactSelectionDisplayMode.FLAG_HIDE_NEW or
-      ContactSelectionDisplayMode.FLAG_GROUPS_AFTER_CONTACTS or
-      ContactSelectionDisplayMode.FLAG_HIDE_GROUPS_V1 or
-      ContactSelectionDisplayMode.FLAG_SELF
-  }
+  private fun getDefaultDisplayMode(): Int = ContactSelectionDisplayMode.FLAG_PUSH or
+    ContactSelectionDisplayMode.FLAG_ACTIVE_GROUPS or
+    ContactSelectionDisplayMode.FLAG_HIDE_NEW or
+    ContactSelectionDisplayMode.FLAG_GROUPS_AFTER_CONTACTS or
+    ContactSelectionDisplayMode.FLAG_HIDE_GROUPS_V1 or
+    ContactSelectionDisplayMode.FLAG_SELF
 
   private fun updateEnabledButton() {
     doneButton.isEnabled = viewModel.enableButton()

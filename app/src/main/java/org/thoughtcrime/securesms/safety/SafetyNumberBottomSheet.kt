@@ -25,11 +25,9 @@ object SafetyNumberBottomSheet {
    * Create a factory to generate a legacy dialog for the given recipient id.
    */
   @JvmStatic
-  fun forRecipientId(recipientId: RecipientId): Factory {
-    return object : Factory {
-      override fun show(fragmentManager: FragmentManager) {
-        SafetyNumberChangeDialog.show(fragmentManager, recipientId)
-      }
+  fun forRecipientId(recipientId: RecipientId): Factory = object : Factory {
+    override fun show(fragmentManager: FragmentManager) {
+      SafetyNumberChangeDialog.show(fragmentManager, recipientId)
     }
   }
 
@@ -38,11 +36,9 @@ object SafetyNumberBottomSheet {
    * trying to place an outgoing call.
    */
   @JvmStatic
-  fun forCall(recipientId: RecipientId): Factory {
-    return object : Factory {
-      override fun show(fragmentManager: FragmentManager) {
-        SafetyNumberChangeDialog.showForCall(fragmentManager, recipientId)
-      }
+  fun forCall(recipientId: RecipientId): Factory = object : Factory {
+    override fun show(fragmentManager: FragmentManager) {
+      SafetyNumberChangeDialog.showForCall(fragmentManager, recipientId)
     }
   }
 
@@ -51,11 +47,9 @@ object SafetyNumberBottomSheet {
    * to place a group call.
    */
   @JvmStatic
-  fun forGroupCall(identityRecords: List<IdentityRecord>): Factory {
-    return object : Factory {
-      override fun show(fragmentManager: FragmentManager) {
-        SafetyNumberChangeDialog.showForGroupCall(fragmentManager, identityRecords)
-      }
+  fun forGroupCall(identityRecords: List<IdentityRecord>): Factory = object : Factory {
+    override fun show(fragmentManager: FragmentManager) {
+      SafetyNumberChangeDialog.showForGroupCall(fragmentManager, identityRecords)
     }
   }
 
@@ -64,11 +58,9 @@ object SafetyNumberBottomSheet {
    * a group call
    */
   @JvmStatic
-  fun forDuringGroupCall(recipientIds: Collection<RecipientId>): Factory {
-    return object : Factory {
-      override fun show(fragmentManager: FragmentManager) {
-        SafetyNumberChangeDialog.showForDuringGroupCall(fragmentManager, recipientIds)
-      }
+  fun forDuringGroupCall(recipientIds: Collection<RecipientId>): Factory = object : Factory {
+    override fun show(fragmentManager: FragmentManager) {
+      SafetyNumberChangeDialog.showForDuringGroupCall(fragmentManager, recipientIds)
     }
   }
 

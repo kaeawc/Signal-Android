@@ -39,11 +39,9 @@ class DonationReceiptTable(context: Context, databaseHelper: SignalDatabase) : D
     )
   }
 
-  fun hasReceipts(): Boolean {
-    return readableDatabase.query(TABLE_NAME, SqlUtil.COUNT, null, null, null, null, null, null).use {
-      it.moveToFirst()
-      it.getInt(0) > 0
-    }
+  fun hasReceipts(): Boolean = readableDatabase.query(TABLE_NAME, SqlUtil.COUNT, null, null, null, null, null, null).use {
+    it.moveToFirst()
+    it.getInt(0) > 0
   }
 
   fun addReceipt(record: InAppPaymentReceiptRecord) {
@@ -87,16 +85,14 @@ class DonationReceiptTable(context: Context, databaseHelper: SignalDatabase) : D
     }
   }
 
-  private fun readRecord(cursor: Cursor): InAppPaymentReceiptRecord {
-    return InAppPaymentReceiptRecord(
-      id = CursorUtil.requireLong(cursor, ID),
-      type = InAppPaymentReceiptRecord.Type.fromCode(CursorUtil.requireString(cursor, TYPE)),
-      amount = FiatMoney(
-        BigDecimal(CursorUtil.requireString(cursor, AMOUNT)),
-        Currency.getInstance(CursorUtil.requireString(cursor, CURRENCY))
-      ),
-      timestamp = CursorUtil.requireLong(cursor, DATE),
-      subscriptionLevel = CursorUtil.requireInt(cursor, SUBSCRIPTION_LEVEL)
-    )
-  }
+  private fun readRecord(cursor: Cursor): InAppPaymentReceiptRecord = InAppPaymentReceiptRecord(
+    id = CursorUtil.requireLong(cursor, ID),
+    type = InAppPaymentReceiptRecord.Type.fromCode(CursorUtil.requireString(cursor, TYPE)),
+    amount = FiatMoney(
+      BigDecimal(CursorUtil.requireString(cursor, AMOUNT)),
+      Currency.getInstance(CursorUtil.requireString(cursor, CURRENCY))
+    ),
+    timestamp = CursorUtil.requireLong(cursor, DATE),
+    subscriptionLevel = CursorUtil.requireInt(cursor, SUBSCRIPTION_LEVEL)
+  )
 }

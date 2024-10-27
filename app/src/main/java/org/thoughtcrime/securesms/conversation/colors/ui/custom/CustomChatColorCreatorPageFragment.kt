@@ -43,8 +43,7 @@ private const val PAGE_ARG = "page"
 private const val SINGLE_PAGE = 0
 private const val GRADIENT_PAGE = 1
 
-class CustomChatColorCreatorPageFragment :
-  Fragment(R.layout.custom_chat_color_creator_fragment_page) {
+class CustomChatColorCreatorPageFragment : Fragment(R.layout.custom_chat_color_creator_fragment_page) {
 
   private lateinit var hueSlider: AppCompatSeekBar
   private lateinit var saturationSlider: AppCompatSeekBar
@@ -220,9 +219,7 @@ class CustomChatColorCreatorPageFragment :
     }
   }
 
-  private fun createRepository(): CustomChatColorCreatorRepository {
-    return CustomChatColorCreatorRepository(requireContext())
-  }
+  private fun createRepository(): CustomChatColorCreatorRepository = CustomChatColorCreatorRepository(requireContext())
 
   @ColorInt
   private fun ColorSlidersState.getHueColor(): Int {
@@ -288,17 +285,11 @@ class CustomChatColorCreatorPageFragment :
     return interpolate(point1, point2, hue)
   }
 
-  private fun interpolate(point1: PointF, point2: PointF, x: Float): Float {
-    return ((point1.y * (point2.x - x)) + (point2.y * (x - point1.x))) / (point2.x - point1.x)
-  }
+  private fun interpolate(point1: PointF, point2: PointF, x: Float): Float = ((point1.y * (point2.x - x)) + (point2.y * (x - point1.x))) / (point2.x - point1.x)
 
-  private fun Number.toHue(max: Number): Float {
-    return Util.clamp(toFloat() * (MAX_HUE / max.toFloat()), 0f, MAX_HUE.toFloat())
-  }
+  private fun Number.toHue(max: Number): Float = Util.clamp(toFloat() * (MAX_HUE / max.toFloat()), 0f, MAX_HUE.toFloat())
 
-  private fun Number.toUnit(max: Number): Float {
-    return Util.clamp(toFloat() / max.toFloat(), 0f, 1f)
-  }
+  private fun Number.toUnit(max: Number): Float = Util.clamp(toFloat() / max.toFloat(), 0f, 1f)
 
   private fun Drawable.forSeekBar(): Drawable {
     val height: Int = ViewUtil.dpToPx(8)
@@ -320,8 +311,7 @@ class CustomChatColorCreatorPageFragment :
     }
   }
 
-  private class OnProgressChangedListener(private val updateFn: (Int) -> Unit) :
-    SeekBar.OnSeekBarChangeListener {
+  private class OnProgressChangedListener(private val updateFn: (Int) -> Unit) : SeekBar.OnSeekBarChangeListener {
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
       updateFn(progress)
     }

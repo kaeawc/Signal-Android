@@ -26,8 +26,6 @@ object Environment {
 
   object Calling {
     @JvmStatic
-    fun defaultSfuUrl(): String {
-      return if (IS_STAGING) BuildConfig.SIGNAL_STAGING_SFU_URL else BuildConfig.SIGNAL_SFU_URL
-    }
+    fun defaultSfuUrl(): String = if (IS_STAGING) BuildConfig.SIGNAL_STAGING_SFU_URL else BuildConfig.SIGNAL_SFU_URL
   }
 }

@@ -6,7 +6,5 @@
 package org.thoughtcrime.securesms.registration.util
 
 data class CountryPrefix(val digits: Int, val regionCode: String) {
-  override fun toString(): String {
-    return "+$digits"
-  }
+  override fun toString(): String = "+$digits"
 }

@@ -22,7 +22,9 @@ import org.thoughtcrime.securesms.components.voice.VoiceNoteMediaController
 import org.thoughtcrime.securesms.components.voice.VoiceNoteMediaControllerOwner
 import org.thoughtcrime.securesms.util.WindowUtil
 
-class MediaPreviewV2Activity : PassphraseRequiredActivity(), VoiceNoteMediaControllerOwner {
+class MediaPreviewV2Activity :
+  PassphraseRequiredActivity(),
+  VoiceNoteMediaControllerOwner {
 
   override lateinit var voiceNoteMediaController: VoiceNoteMediaController
 

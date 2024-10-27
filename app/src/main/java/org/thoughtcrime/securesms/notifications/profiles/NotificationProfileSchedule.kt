@@ -47,9 +47,7 @@ data class NotificationProfileSchedule(
     }
   }
 
-  fun startTime(): LocalTime {
-    return LocalTime.of(start / 100, start % 100)
-  }
+  fun startTime(): LocalTime = LocalTime.of(start / 100, start % 100)
 
   fun startDateTime(localNow: LocalDateTime): LocalDateTime {
     val localStart: LocalDateTime = start.toLocalDateTime(localNow)

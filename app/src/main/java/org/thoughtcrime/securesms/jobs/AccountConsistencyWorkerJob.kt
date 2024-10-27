@@ -87,13 +87,9 @@ class AccountConsistencyWorkerJob private constructor(parameters: Parameters) : 
     SignalStore.misc.lastConsistencyCheckTime = System.currentTimeMillis()
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return e is IOException
-  }
+  override fun onShouldRetry(e: Exception): Boolean = e is IOException
 
   class Factory : Job.Factory<AccountConsistencyWorkerJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): AccountConsistencyWorkerJob {
-      return AccountConsistencyWorkerJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): AccountConsistencyWorkerJob = AccountConsistencyWorkerJob(parameters)
   }
 }

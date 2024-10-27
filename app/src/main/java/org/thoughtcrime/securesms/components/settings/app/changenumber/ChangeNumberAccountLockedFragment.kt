@@ -60,13 +60,9 @@ class ChangeNumberAccountLockedFragment : LoggingFragment(R.layout.fragment_chan
     startActivity(intent)
   }
 
-  private fun durationToDays(duration: Long): Long {
-    return if (duration != 0L) getLockoutDays(duration).toLong() else 7
-  }
+  private fun durationToDays(duration: Long): Long = if (duration != 0L) getLockoutDays(duration).toLong() else 7
 
-  private fun getLockoutDays(timeRemainingMs: Long): Int {
-    return TimeUnit.MILLISECONDS.toDays(timeRemainingMs).toInt() + 1
-  }
+  private fun getLockoutDays(timeRemainingMs: Long): Int = TimeUnit.MILLISECONDS.toDays(timeRemainingMs).toInt() + 1
 
   fun onNext() {
     findNavController().navigateUp()

@@ -100,74 +100,70 @@ class AdvancedPrivacySettingsFragment : DSLSettingsFragment(R.string.preferences
     }
   }
 
-  private fun getConfiguration(state: AdvancedPrivacySettingsState): DSLConfiguration {
-    return configure {
-      switchPref(
-        title = DSLSettingsText.from(R.string.preferences_advanced__always_relay_calls),
-        summary = DSLSettingsText.from(R.string.preferences_advanced__relay_all_calls_through_the_signal_server_to_avoid_revealing_your_ip_address),
-        isChecked = state.alwaysRelayCalls
-      ) {
-        viewModel.setAlwaysRelayCalls(!state.alwaysRelayCalls)
-      }
-
-      dividerPref()
-
-      sectionHeaderPref(R.string.preferences_communication__category_censorship_circumvention)
-
-      val censorshipSummaryResId: Int = when (state.censorshipCircumventionState) {
-        CensorshipCircumventionState.AVAILABLE -> R.string.preferences_communication__censorship_circumvention_if_enabled_signal_will_attempt_to_circumvent_censorship
-        CensorshipCircumventionState.AVAILABLE_MANUALLY_DISABLED -> R.string.preferences_communication__censorship_circumvention_you_have_manually_disabled
-        CensorshipCircumventionState.AVAILABLE_AUTOMATICALLY_ENABLED -> R.string.preferences_communication__censorship_circumvention_has_been_activated_based_on_your_accounts_phone_number
-        CensorshipCircumventionState.UNAVAILABLE_CONNECTED -> R.string.preferences_communication__censorship_circumvention_is_not_necessary_you_are_already_connected
-        CensorshipCircumventionState.UNAVAILABLE_NO_INTERNET -> R.string.preferences_communication__censorship_circumvention_can_only_be_activated_when_connected_to_the_internet
-      }
-
-      switchPref(
-        title = DSLSettingsText.from(R.string.preferences_communication__censorship_circumvention),
-        summary = DSLSettingsText.from(censorshipSummaryResId),
-        isChecked = state.censorshipCircumventionEnabled,
-        isEnabled = state.censorshipCircumventionState.available,
-        onClick = {
-          viewModel.setCensorshipCircumventionEnabled(!state.censorshipCircumventionEnabled)
-        }
-      )
-
-      dividerPref()
-
-      sectionHeaderPref(R.string.preferences_communication__category_sealed_sender)
-
-      switchPref(
-        title = DSLSettingsText.from(
-          SpannableStringBuilder(getString(R.string.AdvancedPrivacySettingsFragment__show_status_icon))
-            .append(" ")
-            .append(statusIcon)
-        ),
-        summary = DSLSettingsText.from(R.string.AdvancedPrivacySettingsFragment__show_an_icon),
-        isChecked = state.showSealedSenderStatusIcon
-      ) {
-        viewModel.setShowStatusIconForSealedSender(!state.showSealedSenderStatusIcon)
-      }
-
-      switchPref(
-        title = DSLSettingsText.from(R.string.preferences_communication__sealed_sender_allow_from_anyone),
-        summary = DSLSettingsText.from(R.string.preferences_communication__sealed_sender_allow_from_anyone_description),
-        isChecked = state.allowSealedSenderFromAnyone
-      ) {
-        viewModel.setAllowSealedSenderFromAnyone(!state.allowSealedSenderFromAnyone)
-      }
-
-      textPref(
-        summary = DSLSettingsText.from(sealedSenderSummary)
-      )
+  private fun getConfiguration(state: AdvancedPrivacySettingsState): DSLConfiguration = configure {
+    switchPref(
+      title = DSLSettingsText.from(R.string.preferences_advanced__always_relay_calls),
+      summary = DSLSettingsText.from(R.string.preferences_advanced__relay_all_calls_through_the_signal_server_to_avoid_revealing_your_ip_address),
+      isChecked = state.alwaysRelayCalls
+    ) {
+      viewModel.setAlwaysRelayCalls(!state.alwaysRelayCalls)
     }
+
+    dividerPref()
+
+    sectionHeaderPref(R.string.preferences_communication__category_censorship_circumvention)
+
+    val censorshipSummaryResId: Int = when (state.censorshipCircumventionState) {
+      CensorshipCircumventionState.AVAILABLE -> R.string.preferences_communication__censorship_circumvention_if_enabled_signal_will_attempt_to_circumvent_censorship
+      CensorshipCircumventionState.AVAILABLE_MANUALLY_DISABLED -> R.string.preferences_communication__censorship_circumvention_you_have_manually_disabled
+      CensorshipCircumventionState.AVAILABLE_AUTOMATICALLY_ENABLED -> R.string.preferences_communication__censorship_circumvention_has_been_activated_based_on_your_accounts_phone_number
+      CensorshipCircumventionState.UNAVAILABLE_CONNECTED -> R.string.preferences_communication__censorship_circumvention_is_not_necessary_you_are_already_connected
+      CensorshipCircumventionState.UNAVAILABLE_NO_INTERNET -> R.string.preferences_communication__censorship_circumvention_can_only_be_activated_when_connected_to_the_internet
+    }
+
+    switchPref(
+      title = DSLSettingsText.from(R.string.preferences_communication__censorship_circumvention),
+      summary = DSLSettingsText.from(censorshipSummaryResId),
+      isChecked = state.censorshipCircumventionEnabled,
+      isEnabled = state.censorshipCircumventionState.available,
+      onClick = {
+        viewModel.setCensorshipCircumventionEnabled(!state.censorshipCircumventionEnabled)
+      }
+    )
+
+    dividerPref()
+
+    sectionHeaderPref(R.string.preferences_communication__category_sealed_sender)
+
+    switchPref(
+      title = DSLSettingsText.from(
+        SpannableStringBuilder(getString(R.string.AdvancedPrivacySettingsFragment__show_status_icon))
+          .append(" ")
+          .append(statusIcon)
+      ),
+      summary = DSLSettingsText.from(R.string.AdvancedPrivacySettingsFragment__show_an_icon),
+      isChecked = state.showSealedSenderStatusIcon
+    ) {
+      viewModel.setShowStatusIconForSealedSender(!state.showSealedSenderStatusIcon)
+    }
+
+    switchPref(
+      title = DSLSettingsText.from(R.string.preferences_communication__sealed_sender_allow_from_anyone),
+      summary = DSLSettingsText.from(R.string.preferences_communication__sealed_sender_allow_from_anyone_description),
+      isChecked = state.allowSealedSenderFromAnyone
+    ) {
+      viewModel.setAllowSealedSenderFromAnyone(!state.allowSealedSenderFromAnyone)
+    }
+
+    textPref(
+      summary = DSLSettingsText.from(sealedSenderSummary)
+    )
   }
 
-  private fun getPushToggleSummary(isPushEnabled: Boolean): String {
-    return if (isPushEnabled) {
-      PhoneNumberFormatter.prettyPrint(SignalStore.account.e164!!)
-    } else {
-      getString(R.string.preferences__free_private_messages_and_calls)
-    }
+  private fun getPushToggleSummary(isPushEnabled: Boolean): String = if (isPushEnabled) {
+    PhoneNumberFormatter.prettyPrint(SignalStore.account.e164!!)
+  } else {
+    getString(R.string.preferences__free_private_messages_and_calls)
   }
 
   @Suppress("DEPRECATION")

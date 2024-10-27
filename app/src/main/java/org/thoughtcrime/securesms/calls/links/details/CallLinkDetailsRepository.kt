@@ -21,22 +21,18 @@ import org.thoughtcrime.securesms.service.webrtc.links.SignalCallLinkManager
 class CallLinkDetailsRepository(
   private val callLinkManager: SignalCallLinkManager = AppDependencies.signalCallManager.callLinkManager
 ) {
-  fun refreshCallLinkState(callLinkRoomId: CallLinkRoomId): Disposable {
-    return MaybeCompat.fromCallable { SignalDatabase.callLinks.getCallLinkByRoomId(callLinkRoomId) }
-      .flatMapSingle { callLinkManager.readCallLink(it.credentials!!) }
-      .subscribeOn(Schedulers.io())
-      .subscribeBy { result ->
-        when (result) {
-          is ReadCallLinkResult.Success -> SignalDatabase.callLinks.updateCallLinkState(callLinkRoomId, result.callLinkState)
-          is ReadCallLinkResult.Failure -> Unit
-        }
+  fun refreshCallLinkState(callLinkRoomId: CallLinkRoomId): Disposable = MaybeCompat.fromCallable { SignalDatabase.callLinks.getCallLinkByRoomId(callLinkRoomId) }
+    .flatMapSingle { callLinkManager.readCallLink(it.credentials!!) }
+    .subscribeOn(Schedulers.io())
+    .subscribeBy { result ->
+      when (result) {
+        is ReadCallLinkResult.Success -> SignalDatabase.callLinks.updateCallLinkState(callLinkRoomId, result.callLinkState)
+        is ReadCallLinkResult.Failure -> Unit
       }
-  }
+    }
 
-  fun watchCallLinkRecipient(callLinkRoomId: CallLinkRoomId): Observable<Recipient> {
-    return MaybeCompat.fromCallable { SignalDatabase.recipients.getByCallLinkRoomId(callLinkRoomId).orNull() }
-      .flatMapObservable { Recipient.observable(it) }
-      .distinctUntilChanged { a, b -> a.hasSameContent(b) }
-      .subscribeOn(Schedulers.io())
-  }
+  fun watchCallLinkRecipient(callLinkRoomId: CallLinkRoomId): Observable<Recipient> = MaybeCompat.fromCallable { SignalDatabase.recipients.getByCallLinkRoomId(callLinkRoomId).orNull() }
+    .flatMapObservable { Recipient.observable(it) }
+    .distinctUntilChanged { a, b -> a.hasSameContent(b) }
+    .subscribeOn(Schedulers.io())
 }

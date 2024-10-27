@@ -63,17 +63,13 @@ object SaveAttachmentUtil {
       .show()
   }
 
-  fun getAttachmentsForRecord(record: MmsMessageRecord): Set<SaveAttachment> {
-    return record.slideDeck.slides
-      .filter { it.uri != null && (it.hasImage() || it.hasVideo() || it.hasAudio() || it.hasDocument()) }
-      .map { SaveAttachment(it.uri!!, it.contentType, record.dateSent, it.fileName.orNull()) }
-      .toSet()
-  }
+  fun getAttachmentsForRecord(record: MmsMessageRecord): Set<SaveAttachment> = record.slideDeck.slides
+    .filter { it.uri != null && (it.hasImage() || it.hasVideo() || it.hasAudio() || it.hasDocument()) }
+    .map { SaveAttachment(it.uri!!, it.contentType, record.dateSent, it.fileName.orNull()) }
+    .toSet()
 
-  fun saveAttachments(attachments: Set<SaveAttachment>): Single<SaveResult> {
-    return Single.fromCallable {
-      saveAttachmentsSync(attachments)
-    }
+  fun saveAttachments(attachments: Set<SaveAttachment>): Single<SaveResult> = Single.fromCallable {
+    saveAttachmentsSync(attachments)
   }
 
   @WorkerThread
@@ -138,13 +134,11 @@ object SaveAttachmentUtil {
     return result.outputUri.lastPathSegment
   }
 
-  private fun getMediaStoreContentUriForType(contentType: String): Uri {
-    return when {
-      contentType.startsWith("video/") -> StorageUtil.getVideoUri()
-      contentType.startsWith("audio/") -> StorageUtil.getAudioUri()
-      contentType.startsWith("image/") -> StorageUtil.getImageUri()
-      else -> StorageUtil.getDownloadUri()
-    }
+  private fun getMediaStoreContentUriForType(contentType: String): Uri = when {
+    contentType.startsWith("video/") -> StorageUtil.getVideoUri()
+    contentType.startsWith("audio/") -> StorageUtil.getAudioUri()
+    contentType.startsWith("image/") -> StorageUtil.getImageUri()
+    else -> StorageUtil.getDownloadUri()
   }
 
   @SuppressLint("SimpleDateFormat")
@@ -157,9 +151,7 @@ object SaveAttachmentUtil {
     return "$base.$extension"
   }
 
-  private fun sanitizeOutputFileName(fileName: String): String {
-    return File(fileName).name
-  }
+  private fun sanitizeOutputFileName(fileName: String): String = File(fileName).name
 
   @Throws(IOException::class)
   private fun createMediaUri(outputUri: Uri, contentType: String, fileName: String, nameCache: BatchOperationNameCache): CreateMediaUriResult {
@@ -253,9 +245,7 @@ object SaveAttachmentUtil {
     return storage?.let { ensureExternalPath(storage) }?.absolutePath
   }
 
-  private fun ensureExternalPath(path: File): File? {
-    return path.takeIf { path.exists() || path.mkdirs() }
-  }
+  private fun ensureExternalPath(path: File): File? = path.takeIf { path.exists() || path.mkdirs() }
 
   private fun BatchOperationNameCache.putInCache(outputUri: Uri, dataPath: String) {
     val pathSet: HashSet<String> = this.getOrElse(outputUri) { HashSet() }

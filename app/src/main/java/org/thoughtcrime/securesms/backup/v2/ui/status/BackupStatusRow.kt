@@ -122,29 +122,25 @@ fun BackupStatusRow(
 }
 
 @Composable
-private fun getRestoringMediaString(backupStatusData: BackupStatusData.RestoringMedia): String {
-  return when (backupStatusData.restoreStatus) {
-    BackupStatusData.RestoreStatus.NORMAL -> {
-      stringResource(
-        R.string.BackupStatusRow__downloading_s_of_s_s,
-        backupStatusData.bytesDownloaded.toUnitString(2),
-        backupStatusData.bytesTotal.toUnitString(2),
-        "%d".format((backupStatusData.progress * 100).roundToInt())
-      )
-    }
-    BackupStatusData.RestoreStatus.LOW_BATTERY -> stringResource(R.string.BackupStatus__status_device_has_low_battery)
-    BackupStatusData.RestoreStatus.WAITING_FOR_INTERNET -> stringResource(R.string.BackupStatus__status_no_internet)
-    BackupStatusData.RestoreStatus.WAITING_FOR_WIFI -> stringResource(R.string.BackupStatus__status_waiting_for_wifi)
-    BackupStatusData.RestoreStatus.FINISHED -> stringResource(R.string.BackupStatus__restore_complete)
+private fun getRestoringMediaString(backupStatusData: BackupStatusData.RestoringMedia): String = when (backupStatusData.restoreStatus) {
+  BackupStatusData.RestoreStatus.NORMAL -> {
+    stringResource(
+      R.string.BackupStatusRow__downloading_s_of_s_s,
+      backupStatusData.bytesDownloaded.toUnitString(2),
+      backupStatusData.bytesTotal.toUnitString(2),
+      "%d".format((backupStatusData.progress * 100).roundToInt())
+    )
   }
+  BackupStatusData.RestoreStatus.LOW_BATTERY -> stringResource(R.string.BackupStatus__status_device_has_low_battery)
+  BackupStatusData.RestoreStatus.WAITING_FOR_INTERNET -> stringResource(R.string.BackupStatus__status_no_internet)
+  BackupStatusData.RestoreStatus.WAITING_FOR_WIFI -> stringResource(R.string.BackupStatus__status_waiting_for_wifi)
+  BackupStatusData.RestoreStatus.FINISHED -> stringResource(R.string.BackupStatus__restore_complete)
 }
 
 @Composable
-private fun progressColor(backupStatusData: BackupStatusData): Color {
-  return when (backupStatusData) {
-    is BackupStatusData.RestoringMedia -> MaterialTheme.colorScheme.primary
-    else -> backupStatusData.iconColors.foreground
-  }
+private fun progressColor(backupStatusData: BackupStatusData): Color = when (backupStatusData) {
+  is BackupStatusData.RestoringMedia -> MaterialTheme.colorScheme.primary
+  else -> backupStatusData.iconColors.foreground
 }
 
 @SignalPreview

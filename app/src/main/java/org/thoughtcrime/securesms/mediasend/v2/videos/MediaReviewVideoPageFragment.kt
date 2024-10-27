@@ -17,7 +17,9 @@ private const val VIDEO_EDITOR_TAG = "video.editor.fragment"
  * Page fragment which displays a single editable video (non-gif) to the user. Has an embedded MediaSendVideoFragment
  * and adds some extra support for saving and restoring state, as well as saving a video to disk.
  */
-class MediaReviewVideoPageFragment : Fragment(R.layout.fragment_container), VideoEditorFragment.Controller {
+class MediaReviewVideoPageFragment :
+  Fragment(R.layout.fragment_container),
+  VideoEditorFragment.Controller {
 
   private val sharedViewModel: MediaSelectionViewModel by viewModels(ownerProducer = { requireActivity() })
 
@@ -83,12 +85,10 @@ class MediaReviewVideoPageFragment : Fragment(R.layout.fragment_container), Vide
     private const val ARG_URI = "arg.uri"
     private const val ARG_IS_VIDEO_GIF = "arg.is.video.gif"
 
-    fun newInstance(uri: Uri, isVideoGif: Boolean): Fragment {
-      return MediaReviewVideoPageFragment().apply {
-        arguments = Bundle().apply {
-          putParcelable(ARG_URI, uri)
-          putBoolean(ARG_IS_VIDEO_GIF, isVideoGif)
-        }
+    fun newInstance(uri: Uri, isVideoGif: Boolean): Fragment = MediaReviewVideoPageFragment().apply {
+      arguments = Bundle().apply {
+        putParcelable(ARG_URI, uri)
+        putBoolean(ARG_IS_VIDEO_GIF, isVideoGif)
       }
     }
   }

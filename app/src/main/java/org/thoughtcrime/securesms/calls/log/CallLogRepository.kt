@@ -20,26 +20,18 @@ class CallLogRepository(
   private val callLogPeekHelper: CallLogPeekHelper
 ) : CallLogPagedDataSource.CallRepository {
 
-  override fun getCallsCount(query: String?, filter: CallLogFilter): Int {
-    return SignalDatabase.calls.getCallsCount(query, filter)
+  override fun getCallsCount(query: String?, filter: CallLogFilter): Int = SignalDatabase.calls.getCallsCount(query, filter)
+
+  override fun getCalls(query: String?, filter: CallLogFilter, start: Int, length: Int): List<CallLogRow> = SignalDatabase.calls.getCalls(start, length, query, filter)
+
+  override fun getCallLinksCount(query: String?, filter: CallLogFilter): Int = when (filter) {
+    CallLogFilter.MISSED -> 0
+    CallLogFilter.ALL, CallLogFilter.AD_HOC -> SignalDatabase.callLinks.getCallLinksCount(query)
   }
 
-  override fun getCalls(query: String?, filter: CallLogFilter, start: Int, length: Int): List<CallLogRow> {
-    return SignalDatabase.calls.getCalls(start, length, query, filter)
-  }
-
-  override fun getCallLinksCount(query: String?, filter: CallLogFilter): Int {
-    return when (filter) {
-      CallLogFilter.MISSED -> 0
-      CallLogFilter.ALL, CallLogFilter.AD_HOC -> SignalDatabase.callLinks.getCallLinksCount(query)
-    }
-  }
-
-  override fun getCallLinks(query: String?, filter: CallLogFilter, start: Int, length: Int): List<CallLogRow> {
-    return when (filter) {
-      CallLogFilter.MISSED -> emptyList()
-      CallLogFilter.ALL, CallLogFilter.AD_HOC -> SignalDatabase.callLinks.getCallLinks(query, start, length)
-    }
+  override fun getCallLinks(query: String?, filter: CallLogFilter, start: Int, length: Int): List<CallLogRow> = when (filter) {
+    CallLogFilter.MISSED -> emptyList()
+    CallLogFilter.ALL, CallLogFilter.AD_HOC -> SignalDatabase.callLinks.getCallLinks(query, start, length)
   }
 
   override fun onCallTabPageLoaded(pageData: List<CallLogRow>) {
@@ -56,40 +48,34 @@ class CallLogRepository(
     }
   }
 
-  fun listenForChanges(): Observable<Unit> {
-    return Observable.create { emitter ->
-      fun refresh() {
-        emitter.onNext(Unit)
-      }
+  fun listenForChanges(): Observable<Unit> = Observable.create { emitter ->
+    fun refresh() {
+      emitter.onNext(Unit)
+    }
 
-      val databaseObserver = DatabaseObserver.Observer {
-        refresh()
-      }
+    val databaseObserver = DatabaseObserver.Observer {
+      refresh()
+    }
 
-      AppDependencies.databaseObserver.registerCallUpdateObserver(databaseObserver)
+    AppDependencies.databaseObserver.registerCallUpdateObserver(databaseObserver)
 
-      emitter.setCancellable {
-        AppDependencies.databaseObserver.unregisterObserver(databaseObserver)
-      }
+    emitter.setCancellable {
+      AppDependencies.databaseObserver.unregisterObserver(databaseObserver)
     }
   }
 
   fun deleteSelectedCallLogs(
     selectedCallRowIds: Set<Long>
-  ): Completable {
-    return Completable.fromAction {
-      SignalDatabase.calls.deleteNonAdHocCallEvents(selectedCallRowIds)
-    }.subscribeOn(Schedulers.io())
-  }
+  ): Completable = Completable.fromAction {
+    SignalDatabase.calls.deleteNonAdHocCallEvents(selectedCallRowIds)
+  }.subscribeOn(Schedulers.io())
 
   fun deleteAllCallLogsExcept(
     selectedCallRowIds: Set<Long>,
     missedOnly: Boolean
-  ): Completable {
-    return Completable.fromAction {
-      SignalDatabase.calls.deleteAllNonAdHocCallEventsExcept(selectedCallRowIds, missedOnly)
-    }.subscribeOn(Schedulers.io())
-  }
+  ): Completable = Completable.fromAction {
+    SignalDatabase.calls.deleteAllNonAdHocCallEventsExcept(selectedCallRowIds, missedOnly)
+  }.subscribeOn(Schedulers.io())
 
   /**
    * Delete all call events / unowned links and enqueue clear history job, and then
@@ -120,13 +106,11 @@ class CallLogRepository(
   fun deleteSelectedCallLinks(
     selectedCallRowIds: Set<Long>,
     selectedRoomIds: Set<CallLinkRoomId>
-  ): Single<Int> {
-    return Single.fromCallable {
-      val allCallLinkIds = SignalDatabase.calls.getCallLinkRoomIdsFromCallRowIds(selectedCallRowIds) + selectedRoomIds
-      SignalDatabase.callLinks.deleteNonAdminCallLinks(allCallLinkIds)
-      SignalDatabase.callLinks.getAdminCallLinks(allCallLinkIds)
-    }.flatMap(this::deleteAndCollectResults).subscribeOn(Schedulers.io())
-  }
+  ): Single<Int> = Single.fromCallable {
+    val allCallLinkIds = SignalDatabase.calls.getCallLinkRoomIdsFromCallRowIds(selectedCallRowIds) + selectedRoomIds
+    SignalDatabase.callLinks.deleteNonAdminCallLinks(allCallLinkIds)
+    SignalDatabase.callLinks.getAdminCallLinks(allCallLinkIds)
+  }.flatMap(this::deleteAndCollectResults).subscribeOn(Schedulers.io())
 
   /**
    * Deletes all but the selected call links. We DELETE those links we don't have admin keys for,
@@ -136,25 +120,21 @@ class CallLogRepository(
   fun deleteAllCallLinksExcept(
     selectedCallRowIds: Set<Long>,
     selectedRoomIds: Set<CallLinkRoomId>
-  ): Single<Int> {
-    return Single.fromCallable {
-      val allCallLinkIds = SignalDatabase.calls.getCallLinkRoomIdsFromCallRowIds(selectedCallRowIds) + selectedRoomIds
-      SignalDatabase.callLinks.deleteAllNonAdminCallLinksExcept(allCallLinkIds)
-      SignalDatabase.callLinks.getAllAdminCallLinksExcept(allCallLinkIds)
-    }.flatMap(this::deleteAndCollectResults).subscribeOn(Schedulers.io())
-  }
+  ): Single<Int> = Single.fromCallable {
+    val allCallLinkIds = SignalDatabase.calls.getCallLinkRoomIdsFromCallRowIds(selectedCallRowIds) + selectedRoomIds
+    SignalDatabase.callLinks.deleteAllNonAdminCallLinksExcept(allCallLinkIds)
+    SignalDatabase.callLinks.getAllAdminCallLinksExcept(allCallLinkIds)
+  }.flatMap(this::deleteAndCollectResults).subscribeOn(Schedulers.io())
 
-  private fun deleteAndCollectResults(callLinksToRevoke: Set<CallLinkTable.CallLink>): Single<Int> {
-    return Single.merge(
-      callLinksToRevoke.map {
-        updateCallLinkRepository.deleteCallLink(it.credentials!!)
-      }
-    ).reduce(0) { acc, current ->
-      acc + (if (current is UpdateCallLinkResult.Delete) 0 else 1)
-    }.doOnTerminate {
-      SignalDatabase.calls.updateAdHocCallEventDeletionTimestamps()
-    }.doOnDispose {
-      SignalDatabase.calls.updateAdHocCallEventDeletionTimestamps()
+  private fun deleteAndCollectResults(callLinksToRevoke: Set<CallLinkTable.CallLink>): Single<Int> = Single.merge(
+    callLinksToRevoke.map {
+      updateCallLinkRepository.deleteCallLink(it.credentials!!)
     }
+  ).reduce(0) { acc, current ->
+    acc + (if (current is UpdateCallLinkResult.Delete) 0 else 1)
+  }.doOnTerminate {
+    SignalDatabase.calls.updateAdHocCallEventDeletionTimestamps()
+  }.doOnDispose {
+    SignalDatabase.calls.updateAdHocCallEventDeletionTimestamps()
   }
 }

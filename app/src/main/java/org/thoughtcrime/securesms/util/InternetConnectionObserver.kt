@@ -16,53 +16,47 @@ object InternetConnectionObserver {
   /**
    * Observe network availability changes.
    */
-  fun observe(): Observable<Boolean> {
-    return if (Build.VERSION.SDK_INT >= 24) {
-      observeApi24()
-    } else {
-      observeApi19()
-    }
+  fun observe(): Observable<Boolean> = if (Build.VERSION.SDK_INT >= 24) {
+    observeApi24()
+  } else {
+    observeApi19()
   }
 
   @RequiresApi(24)
-  private fun observeApi24(): Observable<Boolean> {
-    return Observable.create {
-      val application = AppDependencies.application
-      val connectivityManager = ServiceUtil.getConnectivityManager(application)
+  private fun observeApi24(): Observable<Boolean> = Observable.create {
+    val application = AppDependencies.application
+    val connectivityManager = ServiceUtil.getConnectivityManager(application)
 
-      val callback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) {
-          it.onNext(true)
-        }
-
-        override fun onLost(network: Network) {
-          it.onNext(false)
-        }
+    val callback = object : ConnectivityManager.NetworkCallback() {
+      override fun onAvailable(network: Network) {
+        it.onNext(true)
       }
 
-      connectivityManager.registerDefaultNetworkCallback(callback)
-
-      it.setCancellable {
-        connectivityManager.unregisterNetworkCallback(callback)
+      override fun onLost(network: Network) {
+        it.onNext(false)
       }
+    }
+
+    connectivityManager.registerDefaultNetworkCallback(callback)
+
+    it.setCancellable {
+      connectivityManager.unregisterNetworkCallback(callback)
     }
   }
 
   @Suppress("DEPRECATION")
-  private fun observeApi19(): Observable<Boolean> {
-    return Observable.create {
-      val application = AppDependencies.application
+  private fun observeApi19(): Observable<Boolean> = Observable.create {
+    val application = AppDependencies.application
 
-      val observer = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-          if (!it.isDisposed) {
-            it.onNext(NetworkConstraint.isMet(application))
-          }
+    val observer = object : BroadcastReceiver() {
+      override fun onReceive(context: Context?, intent: Intent?) {
+        if (!it.isDisposed) {
+          it.onNext(NetworkConstraint.isMet(application))
         }
       }
-
-      it.setCancellable { application.unregisterReceiver(observer) }
-      application.registerReceiver(observer, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
     }
+
+    it.setCancellable { application.unregisterReceiver(observer) }
+    application.registerReceiver(observer, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
   }
 }

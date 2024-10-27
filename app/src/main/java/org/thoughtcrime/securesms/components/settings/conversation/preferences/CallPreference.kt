@@ -27,13 +27,11 @@ object CallPreference {
   ) : MappingModel<Model> {
     override fun areItemsTheSame(newItem: Model): Boolean = record.id == newItem.record.id
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return call == newItem.call &&
-        record.type == newItem.record.type &&
-        record.isOutgoing == newItem.record.isOutgoing &&
-        record.timestamp == newItem.record.timestamp &&
-        record.id == newItem.record.id
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = call == newItem.call &&
+      record.type == newItem.record.type &&
+      record.isOutgoing == newItem.record.isOutgoing &&
+      record.timestamp == newItem.record.timestamp &&
+      record.id == newItem.record.id
   }
 
   private class ViewHolder(binding: ConversationSettingsCallPreferenceItemBinding) : BindingViewHolder<Model, ConversationSettingsCallPreferenceItemBinding>(binding) {
@@ -44,20 +42,18 @@ object CallPreference {
     }
 
     @DrawableRes
-    private fun getCallIcon(call: CallTable.Call): Int {
-      return when (call.messageType) {
-        MessageTypes.MISSED_VIDEO_CALL_TYPE, MessageTypes.MISSED_AUDIO_CALL_TYPE -> R.drawable.symbol_missed_incoming_24
-        MessageTypes.INCOMING_AUDIO_CALL_TYPE, MessageTypes.INCOMING_VIDEO_CALL_TYPE -> if (call.isDisplayedAsMissedCallInUi) R.drawable.symbol_missed_incoming_24 else R.drawable.symbol_arrow_downleft_24
-        MessageTypes.OUTGOING_AUDIO_CALL_TYPE, MessageTypes.OUTGOING_VIDEO_CALL_TYPE -> R.drawable.symbol_arrow_upright_24
-        MessageTypes.GROUP_CALL_TYPE -> when {
-          call.isDisplayedAsMissedCallInUi -> R.drawable.symbol_missed_incoming_24
-          call.event == CallTable.Event.GENERIC_GROUP_CALL || call.event == CallTable.Event.JOINED -> R.drawable.symbol_group_24
-          call.direction == CallTable.Direction.INCOMING -> R.drawable.symbol_arrow_downleft_24
-          call.direction == CallTable.Direction.OUTGOING -> R.drawable.symbol_arrow_upright_24
-          else -> throw AssertionError()
-        }
-        else -> error("Unexpected type ${call.type}")
+    private fun getCallIcon(call: CallTable.Call): Int = when (call.messageType) {
+      MessageTypes.MISSED_VIDEO_CALL_TYPE, MessageTypes.MISSED_AUDIO_CALL_TYPE -> R.drawable.symbol_missed_incoming_24
+      MessageTypes.INCOMING_AUDIO_CALL_TYPE, MessageTypes.INCOMING_VIDEO_CALL_TYPE -> if (call.isDisplayedAsMissedCallInUi) R.drawable.symbol_missed_incoming_24 else R.drawable.symbol_arrow_downleft_24
+      MessageTypes.OUTGOING_AUDIO_CALL_TYPE, MessageTypes.OUTGOING_VIDEO_CALL_TYPE -> R.drawable.symbol_arrow_upright_24
+      MessageTypes.GROUP_CALL_TYPE -> when {
+        call.isDisplayedAsMissedCallInUi -> R.drawable.symbol_missed_incoming_24
+        call.event == CallTable.Event.GENERIC_GROUP_CALL || call.event == CallTable.Event.JOINED -> R.drawable.symbol_group_24
+        call.direction == CallTable.Direction.INCOMING -> R.drawable.symbol_arrow_downleft_24
+        call.direction == CallTable.Direction.OUTGOING -> R.drawable.symbol_arrow_upright_24
+        else -> throw AssertionError()
       }
+      else -> error("Unexpected type ${call.type}")
     }
 
     private fun getCallType(call: CallTable.Call): String {
@@ -82,24 +78,20 @@ object CallPreference {
     }
 
     @StringRes
-    private fun getMissedCallString(isVideo: Boolean, callEvent: CallTable.Event): Int {
-      return if (callEvent == CallTable.Event.MISSED_NOTIFICATION_PROFILE) {
-        if (isVideo) {
-          R.string.MessageRecord_missed_video_call_notification_profile
-        } else {
-          R.string.MessageRecord_missed_voice_call_notification_profile
-        }
+    private fun getMissedCallString(isVideo: Boolean, callEvent: CallTable.Event): Int = if (callEvent == CallTable.Event.MISSED_NOTIFICATION_PROFILE) {
+      if (isVideo) {
+        R.string.MessageRecord_missed_video_call_notification_profile
       } else {
-        if (isVideo) {
-          R.string.MessageRecord_missed_video_call
-        } else {
-          R.string.MessageRecord_missed_voice_call
-        }
+        R.string.MessageRecord_missed_voice_call_notification_profile
+      }
+    } else {
+      if (isVideo) {
+        R.string.MessageRecord_missed_video_call
+      } else {
+        R.string.MessageRecord_missed_voice_call
       }
     }
 
-    private fun getCallTime(messageRecord: MessageRecord): String {
-      return DateUtils.getOnlyTimeString(context, messageRecord.timestamp)
-    }
+    private fun getCallTime(messageRecord: MessageRecord): String = DateUtils.getOnlyTimeString(context, messageRecord.timestamp)
   }
 }

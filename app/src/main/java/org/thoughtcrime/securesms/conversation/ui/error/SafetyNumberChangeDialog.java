@@ -132,7 +132,7 @@ public final class SafetyNumberChangeDialog extends DialogFragment implements Sa
     int continueText = requireArguments().getInt(CONTINUE_TEXT_RESOURCE_EXTRA, android.R.string.ok);
     int cancelText   = requireArguments().getInt(CANCEL_TEXT_RESOURCE_EXTRA, android.R.string.cancel);
 
-    dialogView = LayoutInflater.from(requireActivity()).inflate(R.layout.safety_number_change_dialog, null);
+    dialogView = getLayoutInflater().inflate(R.layout.safety_number_change_dialog, null);
 
     AlertDialog.Builder builder = new MaterialAlertDialogBuilder(requireActivity());
 

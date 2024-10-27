@@ -48,19 +48,17 @@ object SlowNotificationHeuristics {
     }
   }
 
-  private fun getDefaultConfiguration(): Configuration {
-    return Configuration(
-      minimumEventAgeMs = 3.days.inWholeMilliseconds,
-      minimumServiceEventCount = 10,
-      serviceStartFailurePercentage = 0.5f,
-      minimumMessageLatencyEvents = 50,
-      weeklyFailedQueueDrains = 5,
-      messageLatencyPercentiles = mapOf(
-        90 to 2.hours.inWholeMilliseconds,
-        50 to 30.minutes.inWholeMilliseconds
-      )
+  private fun getDefaultConfiguration(): Configuration = Configuration(
+    minimumEventAgeMs = 3.days.inWholeMilliseconds,
+    minimumServiceEventCount = 10,
+    serviceStartFailurePercentage = 0.5f,
+    minimumMessageLatencyEvents = 50,
+    weeklyFailedQueueDrains = 5,
+    messageLatencyPercentiles = mapOf(
+      90 to 2.hours.inWholeMilliseconds,
+      50 to 30.minutes.inWholeMilliseconds
     )
-  }
+  )
 
   @JvmStatic
   fun shouldPromptUserForDelayedNotificationLogs(): Boolean {
@@ -143,13 +141,9 @@ object SlowNotificationHeuristics {
     return true
   }
 
-  fun getDeviceSpecificShowCondition(): DeviceSpecificNotificationConfig.ShowCondition {
-    return DeviceSpecificNotificationConfig.currentConfig.showCondition
-  }
+  fun getDeviceSpecificShowCondition(): DeviceSpecificNotificationConfig.ShowCondition = DeviceSpecificNotificationConfig.currentConfig.showCondition
 
-  fun shouldShowDeviceSpecificDialog(): Boolean {
-    return LocaleRemoteConfig.isDeviceSpecificNotificationEnabled() && SignalStore.uiHints.lastSupportVersionSeen < DeviceSpecificNotificationConfig.currentConfig.version
-  }
+  fun shouldShowDeviceSpecificDialog(): Boolean = LocaleRemoteConfig.isDeviceSpecificNotificationEnabled() && SignalStore.uiHints.lastSupportVersionSeen < DeviceSpecificNotificationConfig.currentConfig.version
 
   private fun hasRepeatedFailedServiceStarts(metrics: List<LocalMetricsDatabase.EventMetrics>, minimumEventAgeMs: Long, minimumEventCount: Int, failurePercentage: Float): Boolean {
     if (!haveEnoughData(SignalLocalMetrics.FcmServiceStartSuccess.NAME, minimumEventAgeMs) && !haveEnoughData(SignalLocalMetrics.FcmServiceStartFailure.NAME, minimumEventAgeMs)) {

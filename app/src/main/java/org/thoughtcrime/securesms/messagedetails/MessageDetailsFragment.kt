@@ -43,7 +43,9 @@ import org.thoughtcrime.securesms.stickers.StickerLocator
 import org.thoughtcrime.securesms.util.Material3OnScrollHelper
 import org.thoughtcrime.securesms.util.fragments.requireListener
 
-class MessageDetailsFragment : FullScreenDialogFragment(), MessageDetailsAdapter.Callbacks {
+class MessageDetailsFragment :
+  FullScreenDialogFragment(),
+  MessageDetailsAdapter.Callbacks {
   private lateinit var requestManager: RequestManager
   private lateinit var viewModel: MessageDetailsViewModel
   private lateinit var adapter: MessageDetailsAdapter

@@ -106,8 +106,6 @@ class BackupRestoreJob private constructor(parameters: Parameters) : BaseJob(par
   override fun onShouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<BackupRestoreJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): BackupRestoreJob {
-      return BackupRestoreJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): BackupRestoreJob = BackupRestoreJob(parameters)
   }
 }

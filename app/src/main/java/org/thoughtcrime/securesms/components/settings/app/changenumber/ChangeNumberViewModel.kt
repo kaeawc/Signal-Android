@@ -164,16 +164,14 @@ class ChangeNumberViewModel : ViewModel() {
     }
   }
 
-  fun canContinue(): ContinueStatus {
-    return if (oldNumberState.e164Number == initialLocalNumber) {
-      if (number.isValid) {
-        ContinueStatus.CAN_CONTINUE
-      } else {
-        ContinueStatus.INVALID_NUMBER
-      }
+  fun canContinue(): ContinueStatus = if (oldNumberState.e164Number == initialLocalNumber) {
+    if (number.isValid) {
+      ContinueStatus.CAN_CONTINUE
     } else {
-      ContinueStatus.OLD_NUMBER_DOESNT_MATCH
+      ContinueStatus.INVALID_NUMBER
     }
+  } else {
+    ContinueStatus.OLD_NUMBER_DOESNT_MATCH
   }
 
   // endregion

@@ -33,10 +33,8 @@ class ScreenLockSettingsViewModel : ViewModel() {
     }
   }
 
-  private fun getState(): ScreenLockSettingsState {
-    return ScreenLockSettingsState(
-      screenLock = SignalStore.settings.screenLockEnabled,
-      screenLockActivityTimeout = SignalStore.settings.screenLockTimeout
-    )
-  }
+  private fun getState(): ScreenLockSettingsState = ScreenLockSettingsState(
+    screenLock = SignalStore.settings.screenLockEnabled,
+    screenLockActivityTimeout = SignalStore.settings.screenLockTimeout
+  )
 }

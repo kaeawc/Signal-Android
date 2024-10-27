@@ -55,28 +55,24 @@ class RestoreAttachmentJob private constructor(
     /**
      * Create a restore job for the initial large batch of media on a fresh restore
      */
-    fun forInitialRestore(attachmentId: AttachmentId, messageId: Long): RestoreAttachmentJob {
-      return RestoreAttachmentJob(
-        attachmentId = attachmentId,
-        messageId = messageId,
-        manual = false,
-        queue = constructQueueString(RestoreOperation.INITIAL_RESTORE)
-      )
-    }
+    fun forInitialRestore(attachmentId: AttachmentId, messageId: Long): RestoreAttachmentJob = RestoreAttachmentJob(
+      attachmentId = attachmentId,
+      messageId = messageId,
+      manual = false,
+      queue = constructQueueString(RestoreOperation.INITIAL_RESTORE)
+    )
 
     /**
      * Create a restore job for the large batch of media on a full media restore after disabling optimize media.
      *
      * See [RestoreOptimizedMediaJob].
      */
-    fun forOffloadedRestore(attachmentId: AttachmentId, messageId: Long): RestoreAttachmentJob {
-      return RestoreAttachmentJob(
-        attachmentId = attachmentId,
-        messageId = messageId,
-        manual = false,
-        queue = constructQueueString(RestoreOperation.RESTORE_OFFLOADED)
-      )
-    }
+    fun forOffloadedRestore(attachmentId: AttachmentId, messageId: Long): RestoreAttachmentJob = RestoreAttachmentJob(
+      attachmentId = attachmentId,
+      messageId = messageId,
+      manual = false,
+      queue = constructQueueString(RestoreOperation.RESTORE_OFFLOADED)
+    )
 
     /**
      * Restore an attachment when manually triggered by user interaction.
@@ -100,9 +96,7 @@ class RestoreAttachmentJob private constructor(
      * There are three modes of restore and we use separate queues for each to facilitate canceling if necessary.
      */
     @JvmStatic
-    fun constructQueueString(restoreOperation: RestoreOperation): String {
-      return "RestoreAttachmentJob::${restoreOperation.name}"
-    }
+    fun constructQueueString(restoreOperation: RestoreOperation): String = "RestoreAttachmentJob::${restoreOperation.name}"
   }
 
   private constructor(messageId: Long, attachmentId: AttachmentId, manual: Boolean, queue: String) : this(
@@ -117,13 +111,9 @@ class RestoreAttachmentJob private constructor(
     manual
   )
 
-  override fun serialize(): ByteArray {
-    return RestoreAttachmentJobData(messageId = messageId, attachmentId = attachmentId.id, manual = manual).encode()
-  }
+  override fun serialize(): ByteArray = RestoreAttachmentJobData(messageId = messageId, attachmentId = attachmentId.id, manual = manual).encode()
 
-  override fun getFactoryKey(): String {
-    return KEY
-  }
+  override fun getFactoryKey(): String = KEY
 
   override fun onAdded() {
     SignalDatabase.attachments.setRestoreTransferState(attachmentId, AttachmentTable.TRANSFER_RESTORE_IN_PROGRESS)
@@ -175,10 +165,8 @@ class RestoreAttachmentJob private constructor(
     }
   }
 
-  override fun onShouldRetry(exception: Exception): Boolean {
-    return exception is PushNetworkException ||
-      exception is RetryLaterException
-  }
+  override fun onShouldRetry(exception: Exception): Boolean = exception is PushNetworkException ||
+    exception is RetryLaterException
 
   @Throws(IOException::class, RetryLaterException::class)
   private fun retrieveAttachment(
@@ -214,9 +202,7 @@ class RestoreAttachmentJob private constructor(
           EventBus.getDefault().postSticky(PartProgressEvent(attachment, PartProgressEvent.Type.NETWORK, total, progress))
         }
 
-        override fun shouldCancel(): Boolean {
-          return this@RestoreAttachmentJob.isCanceled
-        }
+        override fun shouldCancel(): Boolean = this@RestoreAttachmentJob.isCanceled
       }
 
       val downloadResult = if (useArchiveCdn) {

@@ -50,8 +50,6 @@ internal class SyncCallLinksMigrationJob @JvmOverloads constructor(parameters: P
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<SyncCallLinksMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): SyncCallLinksMigrationJob {
-      return SyncCallLinksMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): SyncCallLinksMigrationJob = SyncCallLinksMigrationJob(parameters)
   }
 }

@@ -24,9 +24,7 @@ abstract class DSLSettingsBottomSheetFragment(
   protected lateinit var recyclerView: RecyclerView
     private set
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.inflate(layoutId, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(layoutId, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     recyclerView = view.findViewById(R.id.recycler)
@@ -48,12 +46,10 @@ abstract class DSLSettingsBottomSheetFragment(
   abstract fun bindAdapter(adapter: DSLSettingsAdapter)
 
   private class EdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
-    override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
-      return super.createEdgeEffect(view, direction).apply {
-        if (Build.VERSION.SDK_INT > 21) {
-          color =
-            requireNotNull(ContextCompat.getColor(view.context, R.color.settings_ripple_color))
-        }
+    override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect = super.createEdgeEffect(view, direction).apply {
+      if (Build.VERSION.SDK_INT > 21) {
+        color =
+          requireNotNull(ContextCompat.getColor(view.context, R.color.settings_ripple_color))
       }
     }
   }

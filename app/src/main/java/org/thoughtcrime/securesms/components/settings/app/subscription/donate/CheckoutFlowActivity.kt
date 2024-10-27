@@ -23,15 +23,15 @@ import org.thoughtcrime.securesms.components.settings.app.subscription.StripeRep
 /**
  * Home base for all checkout flows.
  */
-class CheckoutFlowActivity : FragmentWrapperActivity(), InAppPaymentComponent {
+class CheckoutFlowActivity :
+  FragmentWrapperActivity(),
+  InAppPaymentComponent {
 
   companion object {
     private const val ARG_IN_APP_PAYMENT_TYPE = "in_app_payment_type"
     const val RESULT_DATA = "result_data"
 
-    fun createIntent(context: Context, inAppPaymentType: InAppPaymentType): Intent {
-      return Contract().createIntent(context, inAppPaymentType)
-    }
+    fun createIntent(context: Context, inAppPaymentType: InAppPaymentType): Intent = Contract().createIntent(context, inAppPaymentType)
   }
 
   override val stripeRepository: StripeRepository by lazy { StripeRepository(this) }
@@ -41,9 +41,7 @@ class CheckoutFlowActivity : FragmentWrapperActivity(), InAppPaymentComponent {
     intent.extras!!.getSerializableCompat(ARG_IN_APP_PAYMENT_TYPE, InAppPaymentType::class.java)!!
   }
 
-  override fun getFragment(): Fragment {
-    return CheckoutNavHostFragment.create(inAppPaymentType)
-  }
+  override fun getFragment(): Fragment = CheckoutNavHostFragment.create(inAppPaymentType)
 
   @Suppress("DEPRECATION")
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -53,13 +51,9 @@ class CheckoutFlowActivity : FragmentWrapperActivity(), InAppPaymentComponent {
 
   class Contract : ActivityResultContract<InAppPaymentType, Result?>() {
 
-    override fun createIntent(context: Context, input: InAppPaymentType): Intent {
-      return Intent(context, CheckoutFlowActivity::class.java).putExtra(ARG_IN_APP_PAYMENT_TYPE, input)
-    }
+    override fun createIntent(context: Context, input: InAppPaymentType): Intent = Intent(context, CheckoutFlowActivity::class.java).putExtra(ARG_IN_APP_PAYMENT_TYPE, input)
 
-    override fun parseResult(resultCode: Int, intent: Intent?): Result? {
-      return intent?.getParcelableExtraCompat(RESULT_DATA, Result::class.java)
-    }
+    override fun parseResult(resultCode: Int, intent: Intent?): Result? = intent?.getParcelableExtraCompat(RESULT_DATA, Result::class.java)
   }
 
   @Parcelize

@@ -79,7 +79,9 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
-class MediaPreviewV2Fragment : LoggingFragment(R.layout.fragment_media_preview_v2), MediaPreviewFragment.Events {
+class MediaPreviewV2Fragment :
+  LoggingFragment(R.layout.fragment_media_preview_v2),
+  MediaPreviewFragment.Events {
 
   private val lifecycleDisposable = LifecycleDisposable()
   private val binding by ViewBinderDelegate(FragmentMediaPreviewV2Binding::bind)
@@ -392,30 +394,26 @@ class MediaPreviewV2Fragment : LoggingFragment(R.layout.fragment_media_preview_v
     }
   }
 
-  private fun crossfadeViewIn(view: View, duration: Long = 200): Boolean {
-    return if (!view.isVisible && !fullscreenHelper.isSystemUiVisible) {
-      val viewPropertyAnimator = view.animate()
-        .alpha(1f)
-        .setDuration(duration)
-        .withStartAction {
-          view.visibility = View.VISIBLE
+  private fun crossfadeViewIn(view: View, duration: Long = 200): Boolean = if (!view.isVisible && !fullscreenHelper.isSystemUiVisible) {
+    val viewPropertyAnimator = view.animate()
+      .alpha(1f)
+      .setDuration(duration)
+      .withStartAction {
+        view.visibility = View.VISIBLE
+      }
+      .withEndAction {
+        if (getView() != null && view == binding.mediaPreviewPlaybackControls.recyclerView) {
+          scrollAlbumRailToCurrentAdapterPosition()
         }
-        .withEndAction {
-          if (getView() != null && view == binding.mediaPreviewPlaybackControls.recyclerView) {
-            scrollAlbumRailToCurrentAdapterPosition()
-          }
-        }
-      viewPropertyAnimator.interpolator = PathInterpolator(0.17f, 0.17f, 0f, 1f)
-      viewPropertyAnimator.start()
-      true
-    } else {
-      false
-    }
+      }
+    viewPropertyAnimator.interpolator = PathInterpolator(0.17f, 0.17f, 0f, 1f)
+    viewPropertyAnimator.start()
+    true
+  } else {
+    false
   }
 
-  private fun getMediaPreviewFragmentFromChildFragmentManager(currentPosition: Int): MediaPreviewFragment? {
-    return childFragmentManager.findFragmentByTag(pagerAdapter.getFragmentTag(currentPosition)) as? MediaPreviewFragment
-  }
+  private fun getMediaPreviewFragmentFromChildFragmentManager(currentPosition: Int): MediaPreviewFragment? = childFragmentManager.findFragmentByTag(pagerAdapter.getFragmentTag(currentPosition)) as? MediaPreviewFragment
 
   private fun jumpViewPagerToMedia(media: Media) {
     val position = pagerAdapter.findItemPosition(media)
@@ -667,13 +665,9 @@ class MediaPreviewV2Fragment : LoggingFragment(R.layout.fragment_media_preview_v
   }
 
   private class OffsetSmoothScroller(context: Context, val offset: Int) : LinearSmoothScroller(context) {
-    override fun getHorizontalSnapPreference(): Int {
-      return SNAP_TO_START
-    }
+    override fun getHorizontalSnapPreference(): Int = SNAP_TO_START
 
-    override fun calculateDxToMakeVisible(view: View?, snapPreference: Int): Int {
-      return offset + super.calculateDxToMakeVisible(view, snapPreference)
-    }
+    override fun calculateDxToMakeVisible(view: View?, snapPreference: Int): Int = offset + super.calculateDxToMakeVisible(view, snapPreference)
   }
 
   companion object {
@@ -685,9 +679,7 @@ class MediaPreviewV2Fragment : LoggingFragment(R.layout.fragment_media_preview_v
     const val ARGS_KEY: String = "args"
 
     @JvmStatic
-    fun isContentTypeSupported(contentType: String?): Boolean {
-      return MediaUtil.isImageType(contentType) || MediaUtil.isVideoType(contentType)
-    }
+    fun isContentTypeSupported(contentType: String?): Boolean = MediaUtil.isImageType(contentType) || MediaUtil.isVideoType(contentType)
   }
 }
 

@@ -55,9 +55,7 @@ object RecipientTableCursorUtil {
 
   private val TAG = Log.tag(RecipientTableCursorUtil::class.java)
 
-  fun getRecord(context: Context, cursor: Cursor): RecipientRecord {
-    return getRecord(context, cursor, RecipientTable.ID)
-  }
+  fun getRecord(context: Context, cursor: Cursor): RecipientRecord = getRecord(context, cursor, RecipientTable.ID)
 
   fun getRecord(context: Context, cursor: Cursor, idColumnName: String): RecipientRecord {
     val profileKeyString = cursor.requireString(RecipientTable.PROFILE_KEY)
@@ -205,32 +203,26 @@ object RecipientTableCursorUtil {
     return badges
   }
 
-  fun getSyncExtras(cursor: Cursor): RecipientRecord.SyncExtras {
-    return RecipientRecord.SyncExtras(
-      storageProto = cursor.optionalString(RecipientTable.STORAGE_SERVICE_PROTO).orElse(null)?.let { Base64.decodeOrThrow(it) },
-      groupMasterKey = cursor.optionalBlob(GroupTable.V2_MASTER_KEY).map { GroupUtil.requireMasterKey(it) }.orElse(null),
-      identityKey = cursor.optionalString(RecipientTable.IDENTITY_KEY).map { Base64.decodeOrThrow(it) }.orElse(null),
-      identityStatus = cursor.optionalInt(RecipientTable.IDENTITY_STATUS).map { VerifiedStatus.forState(it) }.orElse(VerifiedStatus.DEFAULT),
-      isArchived = cursor.optionalBoolean(ThreadTable.ARCHIVED).orElse(false),
-      isForcedUnread = cursor.optionalInt(ThreadTable.READ).map { status: Int -> status == ThreadTable.ReadStatus.FORCED_UNREAD.serialize() }.orElse(false),
-      unregisteredTimestamp = cursor.optionalLong(RecipientTable.UNREGISTERED_TIMESTAMP).orElse(0),
-      systemNickname = cursor.optionalString(RecipientTable.SYSTEM_NICKNAME).orElse(null),
-      pniSignatureVerified = cursor.optionalBoolean(RecipientTable.PNI_SIGNATURE_VERIFIED).orElse(false)
-    )
-  }
+  fun getSyncExtras(cursor: Cursor): RecipientRecord.SyncExtras = RecipientRecord.SyncExtras(
+    storageProto = cursor.optionalString(RecipientTable.STORAGE_SERVICE_PROTO).orElse(null)?.let { Base64.decodeOrThrow(it) },
+    groupMasterKey = cursor.optionalBlob(GroupTable.V2_MASTER_KEY).map { GroupUtil.requireMasterKey(it) }.orElse(null),
+    identityKey = cursor.optionalString(RecipientTable.IDENTITY_KEY).map { Base64.decodeOrThrow(it) }.orElse(null),
+    identityStatus = cursor.optionalInt(RecipientTable.IDENTITY_STATUS).map { VerifiedStatus.forState(it) }.orElse(VerifiedStatus.DEFAULT),
+    isArchived = cursor.optionalBoolean(ThreadTable.ARCHIVED).orElse(false),
+    isForcedUnread = cursor.optionalInt(ThreadTable.READ).map { status: Int -> status == ThreadTable.ReadStatus.FORCED_UNREAD.serialize() }.orElse(false),
+    unregisteredTimestamp = cursor.optionalLong(RecipientTable.UNREGISTERED_TIMESTAMP).orElse(0),
+    systemNickname = cursor.optionalString(RecipientTable.SYSTEM_NICKNAME).orElse(null),
+    pniSignatureVerified = cursor.optionalBoolean(RecipientTable.PNI_SIGNATURE_VERIFIED).orElse(false)
+  )
 
-  fun getExtras(cursor: Cursor): Recipient.Extras? {
-    return Recipient.Extras.from(getRecipientExtras(cursor))
-  }
+  fun getExtras(cursor: Cursor): Recipient.Extras? = Recipient.Extras.from(getRecipientExtras(cursor))
 
-  fun getRecipientExtras(cursor: Cursor): RecipientExtras? {
-    return cursor.optionalBlob(RecipientTable.EXTRAS).map { b: ByteArray ->
-      try {
-        RecipientExtras.ADAPTER.decode(b)
-      } catch (e: InvalidProtocolBufferException) {
-        Log.w(TAG, e)
-        throw AssertionError(e)
-      }
-    }.orElse(null)
-  }
+  fun getRecipientExtras(cursor: Cursor): RecipientExtras? = cursor.optionalBlob(RecipientTable.EXTRAS).map { b: ByteArray ->
+    try {
+      RecipientExtras.ADAPTER.decode(b)
+    } catch (e: InvalidProtocolBufferException) {
+      Log.w(TAG, e)
+      throw AssertionError(e)
+    }
+  }.orElse(null)
 }

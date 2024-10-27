@@ -40,13 +40,11 @@ class ChatColorsTable(context: Context, databaseHelper: SignalDatabase) : Databa
     throw IllegalArgumentException("Could not locate chat color $chatColorsId")
   }
 
-  fun saveChatColors(chatColors: ChatColors): ChatColors {
-    return when (chatColors.id) {
-      is ChatColors.Id.Auto -> throw AssertionError("Saving 'auto' does not make sense")
-      is ChatColors.Id.BuiltIn -> chatColors
-      is ChatColors.Id.NotSet -> insertChatColors(chatColors)
-      is ChatColors.Id.Custom -> updateChatColors(chatColors)
-    }
+  fun saveChatColors(chatColors: ChatColors): ChatColors = when (chatColors.id) {
+    is ChatColors.Id.Auto -> throw AssertionError("Saving 'auto' does not make sense")
+    is ChatColors.Id.BuiltIn -> chatColors
+    is ChatColors.Id.NotSet -> insertChatColors(chatColors)
+    is ChatColors.Id.Custom -> updateChatColors(chatColors)
   }
 
   fun getSavedChatColors(): List<ChatColors> {

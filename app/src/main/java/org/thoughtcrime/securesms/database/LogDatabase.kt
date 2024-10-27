@@ -41,18 +41,17 @@ import kotlin.time.Duration.Companion.days
 class LogDatabase private constructor(
   application: Application,
   databaseSecret: DatabaseSecret
-) :
-  SQLiteOpenHelper(
-    application,
-    DATABASE_NAME,
-    databaseSecret.asString(),
-    null,
-    DATABASE_VERSION,
-    0,
-    SqlCipherDeletingErrorHandler(DATABASE_NAME),
-    SqlCipherDatabaseHook(),
-    true
-  ),
+) : SQLiteOpenHelper(
+  application,
+  DATABASE_NAME,
+  databaseSecret.asString(),
+  null,
+  DATABASE_VERSION,
+  0,
+  SqlCipherDeletingErrorHandler(DATABASE_NAME),
+  SqlCipherDatabaseHook(),
+  true
+),
   SignalDatabaseOpenHelper {
 
   companion object {
@@ -124,9 +123,7 @@ class LogDatabase private constructor(
     db.setForeignKeyConstraintsEnabled(true)
   }
 
-  override fun getSqlCipherDatabase(): SQLiteDatabase {
-    return writableDatabase
-  }
+  override fun getSqlCipherDatabase(): SQLiteDatabase = writableDatabase
 
   class LogTable(private val openHelper: LogDatabase) {
     companion object {
@@ -179,24 +176,20 @@ class LogDatabase private constructor(
       }
     }
 
-    fun getAllBeforeTime(time: Long): Reader {
-      return readableDatabase
-        .select(BODY)
-        .from(TABLE_NAME)
-        .where("$CREATED_AT < $time")
-        .run()
-        .toReader()
-    }
+    fun getAllBeforeTime(time: Long): Reader = readableDatabase
+      .select(BODY)
+      .from(TABLE_NAME)
+      .where("$CREATED_AT < $time")
+      .run()
+      .toReader()
 
-    fun getRangeBeforeTime(start: Int, length: Int, time: Long): List<String> {
-      return readableDatabase
-        .select(BODY)
-        .from(TABLE_NAME)
-        .where("$CREATED_AT < $time")
-        .limit(limit = length, offset = start)
-        .run()
-        .readToList { it.requireNonNullString(BODY) }
-    }
+    fun getRangeBeforeTime(start: Int, length: Int, time: Long): List<String> = readableDatabase
+      .select(BODY)
+      .from(TABLE_NAME)
+      .where("$CREATED_AT < $time")
+      .limit(limit = length, offset = start)
+      .run()
+      .readToList { it.requireNonNullString(BODY) }
 
     fun trimToSize() {
       val currentTime = System.currentTimeMillis()
@@ -252,14 +245,12 @@ class LogDatabase private constructor(
       stopwatch.stop(TAG)
     }
 
-    fun getLogCountBeforeTime(time: Long): Int {
-      return readableDatabase
-        .select("COUNT(*)")
-        .from(TABLE_NAME)
-        .where("$CREATED_AT < $time")
-        .run()
-        .readToSingleInt()
-    }
+    fun getLogCountBeforeTime(time: Long): Int = readableDatabase
+      .select("COUNT(*)")
+      .from(TABLE_NAME)
+      .where("$CREATED_AT < $time")
+      .run()
+      .readToSingleInt()
 
     fun clearKeepLonger() {
       writableDatabase
@@ -282,16 +273,14 @@ class LogDatabase private constructor(
       }
     }
 
-    private fun Cursor.toReader(): CursorReader {
-      return CursorReader(this)
-    }
+    private fun Cursor.toReader(): CursorReader = CursorReader(this)
 
-    interface Reader : Iterator<String>, Closeable
+    interface Reader :
+      Iterator<String>,
+      Closeable
 
     class CursorReader(private val cursor: Cursor) : Reader {
-      override fun hasNext(): Boolean {
-        return !cursor.isLast && cursor.count > 0
-      }
+      override fun hasNext(): Boolean = !cursor.isLast && cursor.count > 0
 
       override fun next(): String {
         cursor.moveToNext()
@@ -476,19 +465,17 @@ class LogDatabase private constructor(
       }
     }
 
-    fun getAll(): List<AnrRecord> {
-      return readableDatabase
-        .select()
-        .from(TABLE_NAME)
-        .run()
-        .readToList { cursor ->
-          AnrRecord(
-            createdAt = cursor.requireLong(CREATED_AT),
-            threadDump = cursor.requireNonNullString(THREAD_DUMP)
-          )
-        }
-        .sortedBy { it.createdAt }
-    }
+    fun getAll(): List<AnrRecord> = readableDatabase
+      .select()
+      .from(TABLE_NAME)
+      .run()
+      .readToList { cursor ->
+        AnrRecord(
+          createdAt = cursor.requireLong(CREATED_AT),
+          threadDump = cursor.requireNonNullString(THREAD_DUMP)
+        )
+      }
+      .sortedBy { it.createdAt }
 
     fun clear() {
       writableDatabase.deleteAll(TABLE_NAME)

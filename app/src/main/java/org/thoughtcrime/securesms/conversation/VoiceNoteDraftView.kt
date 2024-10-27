@@ -73,9 +73,7 @@ class VoiceNoteDraftView @JvmOverloads constructor(
       listener?.onVoiceNoteDraftSeekTo(audioUri, progress)
     }
 
-    override fun onStopAndReset(audioUri: Uri) {
-      throw UnsupportedOperationException()
-    }
+    override fun onStopAndReset(audioUri: Uri): Unit = throw UnsupportedOperationException()
 
     override fun onProgressUpdated(durationMillis: Long, playheadMillis: Long) = Unit
 

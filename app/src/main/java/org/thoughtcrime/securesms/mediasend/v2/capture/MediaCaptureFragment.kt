@@ -7,7 +7,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import app.cash.exhaustive.Exhaustive
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.reactivex.rxjava3.core.Flowable
 import org.signal.core.util.concurrent.LifecycleDisposable
@@ -33,7 +32,9 @@ private val TAG = Log.tag(MediaCaptureFragment::class.java)
 /**
  * Fragment which displays the proper camera fragment.
  */
-class MediaCaptureFragment : Fragment(R.layout.fragment_container), CameraFragment.Controller {
+class MediaCaptureFragment :
+  Fragment(R.layout.fragment_container),
+  CameraFragment.Controller {
 
   private val sharedViewModel: MediaSelectionViewModel by viewModels(
     ownerProducer = { requireActivity() }
@@ -61,7 +62,6 @@ class MediaCaptureFragment : Fragment(R.layout.fragment_container), CameraFragme
       .commitNowAllowingStateLoss()
 
     lifecycleDisposable += viewModel.events.subscribe { event ->
-      @Exhaustive
       when (event) {
         MediaCaptureEvent.MediaCaptureRenderFailed -> {
           Log.w(TAG, "Failed to render captured media.")
@@ -175,21 +175,13 @@ class MediaCaptureFragment : Fragment(R.layout.fragment_container), CameraFragme
     viewModel.onQrCodeFound(data)
   }
 
-  override fun getMostRecentMediaItem(): Flowable<Optional<Media>> {
-    return viewModel.getMostRecentMedia()
-  }
+  override fun getMostRecentMediaItem(): Flowable<Optional<Media>> = viewModel.getMostRecentMedia()
 
-  override fun getMediaConstraints(): MediaConstraints {
-    return sharedViewModel.getMediaConstraints()
-  }
+  override fun getMediaConstraints(): MediaConstraints = sharedViewModel.getMediaConstraints()
 
-  override fun getMaxVideoDuration(): Int {
-    return if (sharedViewModel.isStory()) TimeUnit.MILLISECONDS.toSeconds(Stories.MAX_VIDEO_DURATION_MILLIS).toInt() else -1
-  }
+  override fun getMaxVideoDuration(): Int = if (sharedViewModel.isStory()) TimeUnit.MILLISECONDS.toSeconds(Stories.MAX_VIDEO_DURATION_MILLIS).toInt() else -1
 
-  private fun isFirst(): Boolean {
-    return arguments?.getBoolean("first") == true
-  }
+  private fun isFirst(): Boolean = arguments?.getBoolean("first") == true
 
   companion object {
     const val CAPTURE_RESULT = "capture_result"

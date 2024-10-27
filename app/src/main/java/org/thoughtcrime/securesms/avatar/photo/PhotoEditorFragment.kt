@@ -14,7 +14,9 @@ import org.thoughtcrime.securesms.database.SignalDatabase
 import org.thoughtcrime.securesms.providers.BlobProvider
 import org.thoughtcrime.securesms.scribbles.ImageEditorFragment
 
-class PhotoEditorFragment : Fragment(R.layout.avatar_photo_editor_fragment), ImageEditorFragment.Controller {
+class PhotoEditorFragment :
+  Fragment(R.layout.avatar_photo_editor_fragment),
+  ImageEditorFragment.Controller {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     val args = PhotoEditorActivityArgs.fromBundle(requireArguments())

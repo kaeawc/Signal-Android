@@ -50,7 +50,9 @@ import org.whispersystems.signalservice.internal.push.Content
  * - We *don't* really need to optimize for retrieval, since that happens very infrequently. In particular, we don't want to slow down inserts in order to
  *   improve retrieval time. That means we shouldn't be adding indexes that optimize for retrieval.
  */
-class MessageSendLogTables constructor(context: Context?, databaseHelper: SignalDatabase?) : DatabaseTable(context, databaseHelper), RecipientIdDatabaseReference {
+class MessageSendLogTables constructor(context: Context?, databaseHelper: SignalDatabase?) :
+  DatabaseTable(context, databaseHelper),
+  RecipientIdDatabaseReference {
 
   companion object {
     private val TAG = Log.tag(MessageSendLogTables::class.java)

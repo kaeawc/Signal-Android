@@ -1,43 +1,34 @@
 @file:Suppress("UnstableApiUsage")
 
 import org.gradle.accessors.dm.LibrariesForLibs
-import org.gradle.accessors.dm.LibrariesForTestLibs
 import org.gradle.api.JavaVersion
-import org.gradle.kotlin.dsl.extra
 
 val libs = the<LibrariesForLibs>()
-val testLibs = the<LibrariesForTestLibs>()
-
-val signalBuildToolsVersion: String by rootProject.extra
-val signalCompileSdkVersion: String by rootProject.extra
-val signalTargetSdkVersion: Int by rootProject.extra
-val signalMinSdkVersion: Int by rootProject.extra
-val signalJavaVersion: JavaVersion by rootProject.extra
-val signalKotlinJvmTarget: String by rootProject.extra
 
 plugins {
   id("com.android.library")
   id("kotlin-android")
-  id("ktlint")
+  id("org.jlleitschuh.gradle.ktlint")
+  id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
-  buildToolsVersion = signalBuildToolsVersion
-  compileSdkVersion = signalCompileSdkVersion
+  buildToolsVersion = libs.versions.build.android.buildTools.get()
+  compileSdk = libs.versions.build.android.compileSdk.get().toInt()
 
   defaultConfig {
-    minSdk = signalMinSdkVersion
-    targetSdk = signalTargetSdkVersion
+    minSdk = libs.versions.build.android.minSdk.get().toInt()
+    targetSdk = libs.versions.build.android.targetSdk.get().toInt()
   }
 
   compileOptions {
     isCoreLibraryDesugaringEnabled = true
-    sourceCompatibility = signalJavaVersion
-    targetCompatibility = signalJavaVersion
+    sourceCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
+    targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
   }
 
   kotlinOptions {
-    jvmTarget = signalKotlinJvmTarget
+    // jvmTarget.set(JvmTarget.valueOf("JVM_${libs.versions.build.java.target.get()}"))
   }
 
   lint {
@@ -58,14 +49,15 @@ dependencies {
   implementation(libs.rxjava3.rxjava)
   implementation(libs.rxjava3.rxkotlin)
   implementation(libs.kotlin.stdlib.jdk8)
+  implementation(libs.androidx.compose.runtime)
 
   ktlintRuleset(libs.ktlint.twitter.compose)
 
-  testImplementation(testLibs.junit.junit)
-  testImplementation(testLibs.mockito.core)
-  testImplementation(testLibs.mockito.android)
-  testImplementation(testLibs.mockito.kotlin)
-  testImplementation(testLibs.robolectric.robolectric)
-  testImplementation(testLibs.androidx.test.core)
-  testImplementation(testLibs.androidx.test.core.ktx)
+  testImplementation(libs.junit)
+  testImplementation(libs.mockito.core)
+  testImplementation(libs.mockito.android)
+  testImplementation(libs.mockito.kotlin)
+  testImplementation(libs.robolectric)
+  testImplementation(libs.androidx.test.core)
+  testImplementation(libs.androidx.test.core.ktx)
 }

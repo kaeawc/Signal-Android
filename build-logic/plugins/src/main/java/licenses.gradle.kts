@@ -186,29 +186,21 @@ fun printlnError(message: String) {
   out.style(StyledTextOutput.Style.FailureHeader).println(message)
 }
 
-fun pomDependency(locator: String): Dependency {
-  return project.dependencies.create("$locator@pom")
+fun pomDependency(locator: String): Dependency = project.dependencies.create("$locator@pom")
+
+fun Configuration.tryResolveConfiguration(): ResolvedConfiguration? = try {
+  this.resolvedConfiguration
+} catch (e: Exception) {
+  null
 }
 
-fun Configuration.tryResolveConfiguration(): ResolvedConfiguration? {
-  return try {
-    this.resolvedConfiguration
-  } catch (e: Exception) {
-    null
-  }
+fun ResolvedConfiguration.tryToResolveArtifacts(): Set<ResolvedArtifact>? = try {
+  this.resolvedArtifacts
+} catch (e: Exception) {
+  null
 }
 
-fun ResolvedConfiguration.tryToResolveArtifacts(): Set<ResolvedArtifact>? {
-  return try {
-    this.resolvedArtifacts
-  } catch (e: Exception) {
-    null
-  }
-}
-
-fun GPathResult.get(key: String): GPathResult? {
-  return this.getProperty(key) as? GPathResult
-}
+fun GPathResult.get(key: String): GPathResult? = this.getProperty(key) as? GPathResult
 
 val Dependency.id: String
   get() = "${this.group}:${this.name}:${this.version}"

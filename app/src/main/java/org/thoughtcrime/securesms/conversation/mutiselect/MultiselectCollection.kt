@@ -23,15 +23,13 @@ sealed class MultiselectCollection {
   }
 
   companion object {
-    fun fromSet(partsSet: Set<MultiselectPart>): MultiselectCollection {
-      return when (partsSet.size) {
-        1 -> Single(partsSet.first())
-        2 -> {
-          val iter = partsSet.iterator()
-          Double(iter.next(), iter.next())
-        }
-        else -> throw IllegalArgumentException("Unsupported set size: ${partsSet.size}")
+    fun fromSet(partsSet: Set<MultiselectPart>): MultiselectCollection = when (partsSet.size) {
+      1 -> Single(partsSet.first())
+      2 -> {
+        val iter = partsSet.iterator()
+        Double(iter.next(), iter.next())
       }
+      else -> throw IllegalArgumentException("Unsupported set size: ${partsSet.size}")
     }
   }
 
@@ -49,13 +47,9 @@ sealed class MultiselectCollection {
     return mediaParts.any { selectedParts.contains(it) }
   }
 
-  private fun couldContainText(multiselectPart: MultiselectPart): Boolean {
-    return multiselectPart is MultiselectPart.Text || multiselectPart is MultiselectPart.Message
-  }
+  private fun couldContainText(multiselectPart: MultiselectPart): Boolean = multiselectPart is MultiselectPart.Text || multiselectPart is MultiselectPart.Message
 
-  private fun couldContainMedia(multiselectPart: MultiselectPart): Boolean {
-    return multiselectPart is MultiselectPart.Attachments || multiselectPart is MultiselectPart.Message
-  }
+  private fun couldContainMedia(multiselectPart: MultiselectPart): Boolean = multiselectPart is MultiselectPart.Attachments || multiselectPart is MultiselectPart.Message
 
   abstract val size: Int
 

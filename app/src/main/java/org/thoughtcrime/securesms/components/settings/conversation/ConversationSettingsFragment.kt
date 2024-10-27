@@ -24,7 +24,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import app.cash.exhaustive.Exhaustive
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -112,10 +111,11 @@ private const val REQUEST_CODE_ADD_CONTACT = 2
 private const val REQUEST_CODE_ADD_MEMBERS_TO_GROUP = 3
 private const val REQUEST_CODE_RETURN_FROM_MEDIA = 4
 
-class ConversationSettingsFragment : DSLSettingsFragment(
-  layoutId = R.layout.conversation_settings_fragment,
-  menuId = R.menu.conversation_settings
-) {
+class ConversationSettingsFragment :
+  DSLSettingsFragment(
+    layoutId = R.layout.conversation_settings_fragment,
+    menuId = R.menu.conversation_settings
+  ) {
 
   private val args: ConversationSettingsFragmentArgs by navArgs()
   private val alertTint by lazy { ContextCompat.getColor(requireContext(), R.color.signal_alert_primary) }
@@ -205,25 +205,21 @@ class ConversationSettingsFragment : DSLSettingsFragment(
     Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
   }
 
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return if (item.itemId == R.id.action_edit) {
-      val args = ConversationSettingsFragmentArgs.fromBundle(requireArguments())
-      val groupId = args.groupId as ParcelableGroupId
+  override fun onOptionsItemSelected(item: MenuItem): Boolean = if (item.itemId == R.id.action_edit) {
+    val args = ConversationSettingsFragmentArgs.fromBundle(requireArguments())
+    val groupId = args.groupId as ParcelableGroupId
 
-      startActivity(CreateProfileActivity.getIntentForGroupProfile(requireActivity(), requireNotNull(ParcelableGroupId.get(groupId))))
-      true
-    } else {
-      super.onOptionsItemSelected(item)
-    }
+    startActivity(CreateProfileActivity.getIntentForGroupProfile(requireActivity(), requireNotNull(ParcelableGroupId.get(groupId))))
+    true
+  } else {
+    super.onOptionsItemSelected(item)
   }
 
-  override fun getMaterial3OnScrollHelper(toolbar: Toolbar?): Material3OnScrollHelper {
-    return object : Material3OnScrollHelper(requireActivity(), toolbar!!, viewLifecycleOwner) {
-      override val inactiveColorSet = ColorSet(
-        toolbarColorRes = R.color.signal_colorBackground_0,
-        statusBarColorRes = R.color.signal_colorBackground
-      )
-    }
+  override fun getMaterial3OnScrollHelper(toolbar: Toolbar?): Material3OnScrollHelper = object : Material3OnScrollHelper(requireActivity(), toolbar!!, viewLifecycleOwner) {
+    override val inactiveColorSet = ColorSet(
+      toolbarColorRes = R.color.signal_colorBackground_0,
+      statusBarColorRes = R.color.signal_colorBackground
+    )
   }
 
   override fun bindAdapter(adapter: MappingAdapter) {
@@ -286,7 +282,6 @@ class ConversationSettingsFragment : DSLSettingsFragment(
 
     lifecycleDisposable.bindTo(viewLifecycleOwner)
     lifecycleDisposable += viewModel.events.subscribe { event ->
-      @Exhaustive
       when (event) {
         is ConversationSettingsEvent.AddToAGroup -> handleAddToAGroup(event)
         is ConversationSettingsEvent.AddMembersToGroup -> handleAddMembersToGroup(event)
@@ -893,12 +888,10 @@ class ConversationSettingsFragment : DSLSettingsFragment(
     }
   }
 
-  private fun formatDisappearingMessagesLifespan(disappearingMessagesLifespan: Int): String {
-    return if (disappearingMessagesLifespan <= 0) {
-      getString(R.string.preferences_off)
-    } else {
-      ExpirationUtil.getExpirationDisplayValue(requireContext(), disappearingMessagesLifespan)
-    }
+  private fun formatDisappearingMessagesLifespan(disappearingMessagesLifespan: Int): String = if (disappearingMessagesLifespan <= 0) {
+    getString(R.string.preferences_off)
+  } else {
+    ExpirationUtil.getExpirationDisplayValue(requireContext(), disappearingMessagesLifespan)
   }
 
   private fun handleAddToAGroup(addToAGroup: ConversationSettingsEvent.AddToAGroup) {

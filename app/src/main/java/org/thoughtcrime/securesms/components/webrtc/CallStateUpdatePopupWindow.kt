@@ -18,11 +18,12 @@ import java.util.concurrent.TimeUnit
 /**
  * Popup window which is displayed whenever the call state changes from user input.
  */
-class CallStateUpdatePopupWindow(private val parent: ViewGroup) : PopupWindow(
-  LayoutInflater.from(parent.context).inflate(R.layout.call_state_update, parent, false),
-  ViewGroup.LayoutParams.MATCH_PARENT,
-  ViewGroup.LayoutParams.WRAP_CONTENT
-) {
+class CallStateUpdatePopupWindow(private val parent: ViewGroup) :
+  PopupWindow(
+    LayoutInflater.from(parent.context).inflate(R.layout.call_state_update, parent, false),
+    ViewGroup.LayoutParams.MATCH_PARENT,
+    ViewGroup.LayoutParams.WRAP_CONTENT
+  ) {
 
   private var enabled: Boolean = true
   private var pendingUpdate: CallControlsChange? = null

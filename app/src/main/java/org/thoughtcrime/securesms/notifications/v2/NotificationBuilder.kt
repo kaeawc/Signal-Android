@@ -172,14 +172,10 @@ sealed class NotificationBuilder(protected val context: Context) {
     }
   }
 
-  private fun String.parseBlinkPattern(): Pair<Int, Int> {
-    return split(",").let { parts -> parts[0].toInt() to parts[1].toInt() }
-  }
+  private fun String.parseBlinkPattern(): Pair<Int, Int> = split(",").let { parts -> parts[0].toInt() to parts[1].toInt() }
 
   companion object {
-    fun create(context: Context): NotificationBuilder {
-      return NotificationBuilderCompat(context)
-    }
+    fun create(context: Context): NotificationBuilder = NotificationBuilderCompat(context)
   }
 
   /**
@@ -464,9 +460,7 @@ sealed class NotificationBuilder(protected val context: Context) {
       builder.setAutoCancel(autoCancel)
     }
 
-    override fun build(): Notification {
-      return builder.build()
-    }
+    override fun build(): Notification = builder.build()
 
     override fun addPersonActual(recipient: Recipient) {
       builder.addPerson(
@@ -496,18 +490,14 @@ sealed class NotificationBuilder(protected val context: Context) {
   }
 }
 
-private fun Bitmap?.toIconCompat(): IconCompat? {
-  return if (this != null) {
-    IconCompat.createWithBitmap(this)
-  } else {
-    null
-  }
+private fun Bitmap?.toIconCompat(): IconCompat? = if (this != null) {
+  IconCompat.createWithBitmap(this)
+} else {
+  null
 }
 
 @StringRes
-private fun ReplyMethod.toLongDescription(): Int {
-  return when (this) {
-    ReplyMethod.GroupMessage -> R.string.MessageNotifier_reply
-    ReplyMethod.SecureMessage -> R.string.MessageNotifier_signal_message
-  }
+private fun ReplyMethod.toLongDescription(): Int = when (this) {
+  ReplyMethod.GroupMessage -> R.string.MessageNotifier_reply
+  ReplyMethod.SecureMessage -> R.string.MessageNotifier_signal_message
 }

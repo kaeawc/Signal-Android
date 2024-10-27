@@ -81,9 +81,7 @@ class ChatColorsDrawable(
 
   override fun setColorFilter(colorFilter: ColorFilter?) = Unit
 
-  override fun getOpacity(): Int {
-    return PixelFormat.TRANSLUCENT
-  }
+  override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
   /**
    * Note: APIs had the wrong name for setPath here, so we have to use the deprecated method.
@@ -121,9 +119,7 @@ class ChatColorsDrawable(
     invalidateSelf()
   }
 
-  fun isSolidColor(): Boolean {
-    return getChatColors()?.isGradient() == false
-  }
+  fun isSolidColor(): Boolean = getChatColors()?.isGradient() == false
 
   fun setCorners(corners: FloatArray) {
     if (!this.corners.contentEquals(corners)) {

@@ -110,62 +110,54 @@ class ConversationRepository(
   /**
    * Gets image details for an image sent from the keyboard
    */
-  fun getKeyboardImageDetails(uri: Uri): Maybe<KeyboardUtil.ImageDetails> {
-    return MaybeCompat.fromCallable {
-      KeyboardUtil.getImageDetails(Glide.with(applicationContext), uri)
-    }.subscribeOn(Schedulers.io())
-  }
+  fun getKeyboardImageDetails(uri: Uri): Maybe<KeyboardUtil.ImageDetails> = MaybeCompat.fromCallable {
+    KeyboardUtil.getImageDetails(Glide.with(applicationContext), uri)
+  }.subscribeOn(Schedulers.io())
 
   /**
    * Loads the details necessary to display the conversation thread.
    */
-  fun getConversationThreadState(threadId: Long, requestedStartPosition: Int): Single<ConversationThreadState> {
-    return Single.fromCallable {
-      val recipient = SignalDatabase.threads.getRecipientForThreadId(threadId)!!
+  fun getConversationThreadState(threadId: Long, requestedStartPosition: Int): Single<ConversationThreadState> = Single.fromCallable {
+    val recipient = SignalDatabase.threads.getRecipientForThreadId(threadId)!!
 
-      SignalLocalMetrics.ConversationOpen.onMetadataLoadStarted()
-      val metadata = oldConversationRepository.getConversationData(threadId, recipient, requestedStartPosition)
-      SignalLocalMetrics.ConversationOpen.onMetadataLoaded()
+    SignalLocalMetrics.ConversationOpen.onMetadataLoadStarted()
+    val metadata = oldConversationRepository.getConversationData(threadId, recipient, requestedStartPosition)
+    SignalLocalMetrics.ConversationOpen.onMetadataLoaded()
 
-      val messageRequestData = metadata.messageRequestData
-      val dataSource = ConversationDataSource(
-        localContext,
-        threadId,
-        messageRequestData,
-        metadata.showUniversalExpireTimerMessage,
-        metadata.threadSize
-      )
-      val config = PagingConfig.Builder().setPageSize(25)
-        .setBufferPages(2)
-        .setStartIndex(max(metadata.getStartPosition(), 0))
-        .build()
+    val messageRequestData = metadata.messageRequestData
+    val dataSource = ConversationDataSource(
+      localContext,
+      threadId,
+      messageRequestData,
+      metadata.showUniversalExpireTimerMessage,
+      metadata.threadSize
+    )
+    val config = PagingConfig.Builder().setPageSize(25)
+      .setBufferPages(2)
+      .setStartIndex(max(metadata.getStartPosition(), 0))
+      .build()
 
-      ConversationThreadState(
-        items = PagedData.createForObservable(dataSource, config),
-        meta = metadata
-      )
-    }.subscribeOn(Schedulers.io())
-  }
+    ConversationThreadState(
+      items = PagedData.createForObservable(dataSource, config),
+      meta = metadata
+    )
+  }.subscribeOn(Schedulers.io())
 
-  fun sendReactionRemoval(messageRecord: MessageRecord, oldRecord: ReactionRecord): Completable {
-    return Completable.fromAction {
-      MessageSender.sendReactionRemoval(
-        applicationContext,
-        MessageId(messageRecord.id),
-        oldRecord
-      )
-    }.subscribeOn(Schedulers.io())
-  }
+  fun sendReactionRemoval(messageRecord: MessageRecord, oldRecord: ReactionRecord): Completable = Completable.fromAction {
+    MessageSender.sendReactionRemoval(
+      applicationContext,
+      MessageId(messageRecord.id),
+      oldRecord
+    )
+  }.subscribeOn(Schedulers.io())
 
-  fun sendNewReaction(messageRecord: MessageRecord, emoji: String): Completable {
-    return Completable.fromAction {
-      MessageSender.sendNewReaction(
-        applicationContext,
-        MessageId(messageRecord.id),
-        emoji
-      )
-    }.subscribeOn(Schedulers.io())
-  }
+  fun sendNewReaction(messageRecord: MessageRecord, emoji: String): Completable = Completable.fromAction {
+    MessageSender.sendNewReaction(
+      applicationContext,
+      MessageId(messageRecord.id),
+      emoji
+    )
+  }.subscribeOn(Schedulers.io())
 
   fun sendMessage(
     threadId: Long,
@@ -252,81 +244,63 @@ class ConversationRepository(
     oldConversationRepository.markGiftBadgeRevealed(messageId)
   }
 
-  fun getQuotedMessagePosition(threadId: Long, quote: Quote): Single<Int> {
-    return Single.fromCallable {
-      SignalDatabase.messages.getQuotedMessagePosition(threadId, quote.id, quote.author)
-    }.subscribeOn(Schedulers.io())
-  }
+  fun getQuotedMessagePosition(threadId: Long, quote: Quote): Single<Int> = Single.fromCallable {
+    SignalDatabase.messages.getQuotedMessagePosition(threadId, quote.id, quote.author)
+  }.subscribeOn(Schedulers.io())
 
-  fun getMessageResultPosition(threadId: Long, receivedTimestamp: Long): Single<Int> {
-    return Single.fromCallable {
-      SignalDatabase.messages.getMessagePositionInConversation(threadId, receivedTimestamp)
-    }.subscribeOn(Schedulers.io())
-  }
+  fun getMessageResultPosition(threadId: Long, receivedTimestamp: Long): Single<Int> = Single.fromCallable {
+    SignalDatabase.messages.getMessagePositionInConversation(threadId, receivedTimestamp)
+  }.subscribeOn(Schedulers.io())
 
-  fun getNextMentionPosition(threadId: Long): Single<Int> {
-    return Single.fromCallable {
-      val details = SignalDatabase.messages.getOldestUnreadMentionDetails(threadId)
-      if (details == null) {
-        -1
-      } else {
-        SignalDatabase.messages.getMessagePositionInConversation(threadId, details.second(), details.first())
-      }
-    }.subscribeOn(Schedulers.io())
-  }
+  fun getNextMentionPosition(threadId: Long): Single<Int> = Single.fromCallable {
+    val details = SignalDatabase.messages.getOldestUnreadMentionDetails(threadId)
+    if (details == null) {
+      -1
+    } else {
+      SignalDatabase.messages.getMessagePositionInConversation(threadId, details.second(), details.first())
+    }
+  }.subscribeOn(Schedulers.io())
 
-  fun getMessagePosition(threadId: Long, dateReceived: Long, authorId: RecipientId): Single<Int> {
-    return Single.fromCallable {
-      SignalDatabase.messages.getMessagePositionInConversation(threadId, dateReceived, authorId)
-    }.subscribeOn(Schedulers.io())
-  }
+  fun getMessagePosition(threadId: Long, dateReceived: Long, authorId: RecipientId): Single<Int> = Single.fromCallable {
+    SignalDatabase.messages.getMessagePositionInConversation(threadId, dateReceived, authorId)
+  }.subscribeOn(Schedulers.io())
 
-  fun getMessageCounts(threadId: Long): Flowable<MessageCounts> {
-    return RxDatabaseObserver.conversation(threadId)
-      .map { getUnreadCount(threadId) }
-      .distinctUntilChanged()
-      .map { MessageCounts(it, getUnreadMentionsCount(threadId)) }
-  }
+  fun getMessageCounts(threadId: Long): Flowable<MessageCounts> = RxDatabaseObserver.conversation(threadId)
+    .map { getUnreadCount(threadId) }
+    .distinctUntilChanged()
+    .map { MessageCounts(it, getUnreadMentionsCount(threadId)) }
 
-  private fun getUnreadCount(threadId: Long): Int {
-    return SignalDatabase.messages.getUnreadCount(threadId)
-  }
+  private fun getUnreadCount(threadId: Long): Int = SignalDatabase.messages.getUnreadCount(threadId)
 
-  private fun getUnreadMentionsCount(threadId: Long): Int {
-    return SignalDatabase.messages.getUnreadMentionCount(threadId)
-  }
+  private fun getUnreadMentionsCount(threadId: Long): Int = SignalDatabase.messages.getUnreadMentionCount(threadId)
 
   @Suppress("IfThenToElvis")
-  fun getIdentityRecords(recipient: Recipient, groupRecord: GroupRecord?): Single<IdentityRecordsState> {
-    return Single.fromCallable {
-      val recipients = if (groupRecord == null) {
-        listOf(recipient)
-      } else if (groupRecord.isV2Group) {
-        groupRecord.requireV2GroupProperties().getMemberRecipients(GroupTable.MemberSet.FULL_MEMBERS_EXCLUDING_SELF)
-      } else {
-        emptyList()
+  fun getIdentityRecords(recipient: Recipient, groupRecord: GroupRecord?): Single<IdentityRecordsState> = Single.fromCallable {
+    val recipients = if (groupRecord == null) {
+      listOf(recipient)
+    } else if (groupRecord.isV2Group) {
+      groupRecord.requireV2GroupProperties().getMemberRecipients(GroupTable.MemberSet.FULL_MEMBERS_EXCLUDING_SELF)
+    } else {
+      emptyList()
+    }
+
+    val records = AppDependencies.protocolStore.aci().identities().getIdentityRecords(recipients)
+    val isVerified = recipient.registered == RecipientTable.RegisteredState.REGISTERED &&
+      Recipient.self().isRegistered &&
+      records.isVerified &&
+      !recipient.isSelf
+
+    IdentityRecordsState(recipient, groupRecord, isVerified, records, isGroup = groupRecord != null)
+  }.subscribeOn(Schedulers.io())
+
+  fun resetVerifiedStatusToDefault(unverifiedIdentities: List<IdentityRecord>): Completable = Completable.fromCallable {
+    ReentrantSessionLock.INSTANCE.acquire().use {
+      val identityStore = AppDependencies.protocolStore.aci().identities()
+      for ((recipientId, identityKey) in unverifiedIdentities) {
+        identityStore.setVerified(recipientId, identityKey, VerifiedStatus.DEFAULT)
       }
-
-      val records = AppDependencies.protocolStore.aci().identities().getIdentityRecords(recipients)
-      val isVerified = recipient.registered == RecipientTable.RegisteredState.REGISTERED &&
-        Recipient.self().isRegistered &&
-        records.isVerified &&
-        !recipient.isSelf
-
-      IdentityRecordsState(recipient, groupRecord, isVerified, records, isGroup = groupRecord != null)
-    }.subscribeOn(Schedulers.io())
-  }
-
-  fun resetVerifiedStatusToDefault(unverifiedIdentities: List<IdentityRecord>): Completable {
-    return Completable.fromCallable {
-      ReentrantSessionLock.INSTANCE.acquire().use {
-        val identityStore = AppDependencies.protocolStore.aci().identities()
-        for ((recipientId, identityKey) in unverifiedIdentities) {
-          identityStore.setVerified(recipientId, identityKey, VerifiedStatus.DEFAULT)
-        }
-      }
-    }.subscribeOn(Schedulers.io())
-  }
+    }
+  }.subscribeOn(Schedulers.io())
 
   fun dismissRequestReviewState(threadRecipientId: RecipientId) {
     SignalExecutors.BOUNDED_IO.execute {
@@ -407,51 +381,45 @@ class ConversationRepository(
    * Copies the selected content to the clipboard. Maybe will emit either the copied contents or
    * a complete which means there were no contents to be copied.
    */
-  fun copyToClipboard(context: Context, messageParts: Set<MultiselectPart>): Maybe<CharSequence> {
-    return Maybe.fromCallable { extractBodies(context, messageParts) }
-      .subscribeOn(Schedulers.computation())
-      .observeOn(AndroidSchedulers.mainThread())
-      .doOnSuccess {
-        Util.copyToClipboard(context, it)
-      }
-  }
+  fun copyToClipboard(context: Context, messageParts: Set<MultiselectPart>): Maybe<CharSequence> = Maybe.fromCallable { extractBodies(context, messageParts) }
+    .subscribeOn(Schedulers.computation())
+    .observeOn(AndroidSchedulers.mainThread())
+    .doOnSuccess {
+      Util.copyToClipboard(context, it)
+    }
 
-  fun resendMessage(messageRecord: MessageRecord): Completable {
-    return Completable.fromAction {
-      MessageSender.resend(applicationContext, messageRecord)
-    }.subscribeOn(Schedulers.io())
-  }
+  fun resendMessage(messageRecord: MessageRecord): Completable = Completable.fromAction {
+    MessageSender.resend(applicationContext, messageRecord)
+  }.subscribeOn(Schedulers.io())
 
-  private fun extractBodies(context: Context, messageParts: Set<MultiselectPart>): CharSequence {
-    return messageParts
-      .asSequence()
-      .sortedBy { it.getMessageRecord().dateReceived }
-      .map { it.conversationMessage }
-      .distinct()
-      .mapNotNull { message ->
-        if (message.messageRecord.hasTextSlide()) {
-          val textSlideUri = message.messageRecord.requireTextSlide().uri
-          if (textSlideUri == null) {
-            message.getDisplayBody(context)
-          } else {
-            try {
-              PartAuthority.getAttachmentStream(context, textSlideUri).use {
-                val body = StreamUtil.readFullyAsString(it)
-                ConversationMessage.ConversationMessageFactory.createWithUnresolvedData(context, message.messageRecord, body, message.threadRecipient)
-                  .getDisplayBody(context)
-              }
-            } catch (e: IOException) {
-              Log.w(TAG, "failed to read text slide data.")
-              null
-            }
-          }
-        } else {
+  private fun extractBodies(context: Context, messageParts: Set<MultiselectPart>): CharSequence = messageParts
+    .asSequence()
+    .sortedBy { it.getMessageRecord().dateReceived }
+    .map { it.conversationMessage }
+    .distinct()
+    .mapNotNull { message ->
+      if (message.messageRecord.hasTextSlide()) {
+        val textSlideUri = message.messageRecord.requireTextSlide().uri
+        if (textSlideUri == null) {
           message.getDisplayBody(context)
+        } else {
+          try {
+            PartAuthority.getAttachmentStream(context, textSlideUri).use {
+              val body = StreamUtil.readFullyAsString(it)
+              ConversationMessage.ConversationMessageFactory.createWithUnresolvedData(context, message.messageRecord, body, message.threadRecipient)
+                .getDisplayBody(context)
+            }
+          } catch (e: IOException) {
+            Log.w(TAG, "failed to read text slide data.")
+            null
+          }
         }
+      } else {
+        message.getDisplayBody(context)
       }
-      .filterNot(Util::isEmpty)
-      .joinTo(buffer = SpannableStringBuilder(), separator = "\n")
-  }
+    }
+    .filterNot(Util::isEmpty)
+    .joinTo(buffer = SpannableStringBuilder(), separator = "\n")
 
   fun getRecipientContactPhotoBitmap(context: Context, requestManager: RequestManager, recipient: Recipient): Single<ShortcutInfoCompat> {
     val fallback = FallbackAvatarDrawable(context, recipient.getFallbackAvatar())
@@ -518,9 +486,7 @@ class ConversationRepository(
     }
   }
 
-  fun resolveMessageToEdit(conversationMessage: ConversationMessage): Single<ConversationMessage> {
-    return oldConversationRepository.resolveMessageToEdit(conversationMessage)
-  }
+  fun resolveMessageToEdit(conversationMessage: ConversationMessage): Single<ConversationMessage> = oldConversationRepository.resolveMessageToEdit(conversationMessage)
 
   fun deleteSlideData(slides: List<Slide>) {
     SignalExecutors.BOUNDED_IO.execute {
@@ -550,11 +516,9 @@ class ConversationRepository(
     }
   }
 
-  fun getEarliestMessageSentDate(threadId: Long): Single<Long> {
-    return Single
-      .fromCallable { SignalDatabase.messages.getEarliestMessageSentDate(threadId) }
-      .subscribeOn(Schedulers.io())
-  }
+  fun getEarliestMessageSentDate(threadId: Long): Single<Long> = Single
+    .fromCallable { SignalDatabase.messages.getEarliestMessageSentDate(threadId) }
+    .subscribeOn(Schedulers.io())
 
   /**
    * Glide target for a contact photo which expects an error drawable, and publishes
@@ -590,26 +554,22 @@ class ConversationRepository(
     }
 
     class DrawableResult(private val drawable: Drawable) : ContactPhotoResult {
-      override fun transformToFinalBitmap(): Single<Bitmap> {
-        return Single.create {
-          val bitmap = DrawableUtil.wrapBitmapForShortcutInfo(drawable.toBitmap(SHORTCUT_ICON_SIZE, SHORTCUT_ICON_SIZE))
-          it.setCancellable {
-            bitmap.recycle()
-          }
-          it.onSuccess(bitmap)
+      override fun transformToFinalBitmap(): Single<Bitmap> = Single.create {
+        val bitmap = DrawableUtil.wrapBitmapForShortcutInfo(drawable.toBitmap(SHORTCUT_ICON_SIZE, SHORTCUT_ICON_SIZE))
+        it.setCancellable {
+          bitmap.recycle()
         }
+        it.onSuccess(bitmap)
       }
     }
 
     class BitmapResult(private val bitmap: Bitmap) : ContactPhotoResult {
-      override fun transformToFinalBitmap(): Single<Bitmap> {
-        return Single.create {
-          val bitmap = DrawableUtil.wrapBitmapForShortcutInfo(bitmap)
-          it.setCancellable {
-            bitmap.recycle()
-          }
-          it.onSuccess(bitmap)
+      override fun transformToFinalBitmap(): Single<Bitmap> = Single.create {
+        val bitmap = DrawableUtil.wrapBitmapForShortcutInfo(bitmap)
+        it.setCancellable {
+          bitmap.recycle()
         }
+        it.onSuccess(bitmap)
       }
     }
 

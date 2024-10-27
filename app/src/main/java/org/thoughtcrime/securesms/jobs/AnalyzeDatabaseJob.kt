@@ -42,12 +42,10 @@ class AnalyzeDatabaseJob private constructor(
     null
   )
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putString(KEY_LAST_COMPLETED_TABLE, lastCompletedTable)
-      .build()
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putString(KEY_LAST_COMPLETED_TABLE, lastCompletedTable)
+    .build()
+    .serialize()
 
   override fun getFactoryKey(): String = KEY
 

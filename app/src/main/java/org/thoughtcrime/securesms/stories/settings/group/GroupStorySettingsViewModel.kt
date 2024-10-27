@@ -34,13 +34,9 @@ class GroupStorySettingsViewModel(private val groupId: GroupId) : ViewModel() {
     }
   }
 
-  fun getConversationData(): Single<GroupConversationData> {
-    return repository.getConversationData(groupId).observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getConversationData(): Single<GroupConversationData> = repository.getConversationData(groupId).observeOn(AndroidSchedulers.mainThread())
 
   class Factory(private val parcelableGroupId: ParcelableGroupId) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(GroupStorySettingsViewModel(ParcelableGroupId.get(parcelableGroupId)!!)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(GroupStorySettingsViewModel(ParcelableGroupId.get(parcelableGroupId)!!)) as T
   }
 }

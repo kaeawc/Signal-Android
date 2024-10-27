@@ -59,7 +59,9 @@ import java.time.Instant
  * Provides detailed info about a call link and allows the owner of that link
  * to modify call properties.
  */
-class CallLinkDetailsFragment : ComposeFragment(), CallLinkDetailsCallback {
+class CallLinkDetailsFragment :
+  ComposeFragment(),
+  CallLinkDetailsCallback {
 
   companion object {
     private val TAG = Log.tag(CallLinkDetailsFragment::class.java)
@@ -179,11 +181,9 @@ class CallLinkDetailsFragment : ComposeFragment(), CallLinkDetailsCallback {
     }, onError = handleError("setName"))
   }
 
-  private fun handleError(method: String): (throwable: Throwable) -> Unit {
-    return {
-      Log.w(TAG, "Failure during $method", it)
-      toastFailure()
-    }
+  private fun handleError(method: String): (throwable: Throwable) -> Unit = {
+    Log.w(TAG, "Failure during $method", it)
+    toastFailure()
   }
 
   private fun toastFailure() {

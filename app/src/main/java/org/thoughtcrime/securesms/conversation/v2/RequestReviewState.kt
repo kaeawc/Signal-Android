@@ -17,9 +17,7 @@ data class RequestReviewState(
   val groupReviewState: GroupReviewState? = null
 ) {
 
-  fun shouldShowReviewBanner(): Boolean {
-    return individualReviewState != null || groupReviewState != null
-  }
+  fun shouldShowReviewBanner(): Boolean = individualReviewState != null || groupReviewState != null
 
   /** Recipient is in message request state and has similar name as someone else */
   data class IndividualReviewState(val target: Recipient, val firstDuplicate: Recipient)

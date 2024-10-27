@@ -21,9 +21,10 @@ import org.thoughtcrime.securesms.util.ViewUtil
 import org.thoughtcrime.securesms.util.setIncognitoKeyboardEnabled
 import org.thoughtcrime.securesms.util.visible
 
-class TextStoryPostLinkEntryFragment : KeyboardEntryDialogFragment(
-  contentLayoutId = R.layout.stories_text_post_link_entry_fragment
-) {
+class TextStoryPostLinkEntryFragment :
+  KeyboardEntryDialogFragment(
+    contentLayoutId = R.layout.stories_text_post_link_entry_fragment
+  ) {
 
   private lateinit var input: EditText
 

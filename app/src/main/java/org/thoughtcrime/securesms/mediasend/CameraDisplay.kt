@@ -95,9 +95,7 @@ enum class CameraDisplay(
   }
 
   @Px
-  fun getToggleBottomMargin(): Int {
-    return toggleBottomMargin.dp
-  }
+  fun getToggleBottomMargin(): Int = toggleBottomMargin.dp
 
   companion object {
     @Px

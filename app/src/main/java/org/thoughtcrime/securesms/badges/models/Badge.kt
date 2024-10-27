@@ -38,7 +38,8 @@ data class Badge(
   val expirationTimestamp: Long,
   val visible: Boolean,
   val duration: Long
-) : Parcelable, Key {
+) : Parcelable,
+  Key {
 
   fun isExpired(): Boolean = expirationTimestamp < System.currentTimeMillis() && expirationTimestamp > 0
   fun isBoost(): Boolean = id == BOOST_BADGE_ID
@@ -51,9 +52,7 @@ data class Badge(
     messageDigest.update(imageDensity.toByteArray(Key.CHARSET))
   }
 
-  fun resolveDescription(shortName: String): String {
-    return description.replace("{short_name}", shortName)
-  }
+  fun resolveDescription(shortName: String): String = description.replace("{short_name}", shortName)
 
   class EmptyModel : PreferenceModel<EmptyModel>() {
     override fun areItemsTheSame(newItem: EmptyModel): Boolean = true
@@ -80,23 +79,17 @@ data class Badge(
     val isSelected: Boolean = false,
     val isFaded: Boolean = false
   ) : PreferenceModel<Model>() {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return newItem.badge.id == badge.id
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = newItem.badge.id == badge.id
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) &&
-        badge == newItem.badge &&
-        isSelected == newItem.isSelected &&
-        isFaded == newItem.isFaded
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) &&
+      badge == newItem.badge &&
+      isSelected == newItem.isSelected &&
+      isFaded == newItem.isFaded
 
-    override fun getChangePayload(newItem: Model): Any? {
-      return if (badge == newItem.badge && isSelected != newItem.isSelected) {
-        SELECTION_CHANGED
-      } else {
-        null
-      }
+    override fun getChangePayload(newItem: Model): Any? = if (badge == newItem.badge && isSelected != newItem.isSelected) {
+      SELECTION_CHANGED
+    } else {
+      null
     }
   }
 
@@ -155,12 +148,10 @@ data class Badge(
     Testing("testing"); // Will be removed before final release
 
     companion object {
-      fun fromCode(code: String): Category {
-        return when (code) {
-          "donor" -> Donor
-          "testing" -> Testing
-          else -> Other
-        }
+      fun fromCode(code: String): Category = when (code) {
+        "donor" -> Donor
+        "testing" -> Testing
+        else -> Other
       }
     }
   }

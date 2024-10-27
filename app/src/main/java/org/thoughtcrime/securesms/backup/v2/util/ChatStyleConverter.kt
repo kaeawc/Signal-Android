@@ -150,31 +150,29 @@ fun ChatColors.toRemote(): ChatStyle.BubbleColorPreset? {
   return null
 }
 
-fun ChatStyle.WallpaperPreset.toLocal(): ChatWallpaper? {
-  return when (this) {
-    ChatStyle.WallpaperPreset.SOLID_BLUSH -> SingleColorChatWallpaper.BLUSH
-    ChatStyle.WallpaperPreset.SOLID_COPPER -> SingleColorChatWallpaper.COPPER
-    ChatStyle.WallpaperPreset.SOLID_DUST -> SingleColorChatWallpaper.DUST
-    ChatStyle.WallpaperPreset.SOLID_CELADON -> SingleColorChatWallpaper.CELADON
-    ChatStyle.WallpaperPreset.SOLID_RAINFOREST -> SingleColorChatWallpaper.RAINFOREST
-    ChatStyle.WallpaperPreset.SOLID_PACIFIC -> SingleColorChatWallpaper.PACIFIC
-    ChatStyle.WallpaperPreset.SOLID_FROST -> SingleColorChatWallpaper.FROST
-    ChatStyle.WallpaperPreset.SOLID_NAVY -> SingleColorChatWallpaper.NAVY
-    ChatStyle.WallpaperPreset.SOLID_LILAC -> SingleColorChatWallpaper.LILAC
-    ChatStyle.WallpaperPreset.SOLID_PINK -> SingleColorChatWallpaper.PINK
-    ChatStyle.WallpaperPreset.SOLID_EGGPLANT -> SingleColorChatWallpaper.EGGPLANT
-    ChatStyle.WallpaperPreset.SOLID_SILVER -> SingleColorChatWallpaper.SILVER
-    ChatStyle.WallpaperPreset.GRADIENT_SUNSET -> GradientChatWallpaper.SUNSET
-    ChatStyle.WallpaperPreset.GRADIENT_NOIR -> GradientChatWallpaper.NOIR
-    ChatStyle.WallpaperPreset.GRADIENT_HEATMAP -> GradientChatWallpaper.HEATMAP
-    ChatStyle.WallpaperPreset.GRADIENT_AQUA -> GradientChatWallpaper.AQUA
-    ChatStyle.WallpaperPreset.GRADIENT_IRIDESCENT -> GradientChatWallpaper.IRIDESCENT
-    ChatStyle.WallpaperPreset.GRADIENT_MONSTERA -> GradientChatWallpaper.MONSTERA
-    ChatStyle.WallpaperPreset.GRADIENT_BLISS -> GradientChatWallpaper.BLISS
-    ChatStyle.WallpaperPreset.GRADIENT_SKY -> GradientChatWallpaper.SKY
-    ChatStyle.WallpaperPreset.GRADIENT_PEACH -> GradientChatWallpaper.PEACH
-    else -> null
-  }
+fun ChatStyle.WallpaperPreset.toLocal(): ChatWallpaper? = when (this) {
+  ChatStyle.WallpaperPreset.SOLID_BLUSH -> SingleColorChatWallpaper.BLUSH
+  ChatStyle.WallpaperPreset.SOLID_COPPER -> SingleColorChatWallpaper.COPPER
+  ChatStyle.WallpaperPreset.SOLID_DUST -> SingleColorChatWallpaper.DUST
+  ChatStyle.WallpaperPreset.SOLID_CELADON -> SingleColorChatWallpaper.CELADON
+  ChatStyle.WallpaperPreset.SOLID_RAINFOREST -> SingleColorChatWallpaper.RAINFOREST
+  ChatStyle.WallpaperPreset.SOLID_PACIFIC -> SingleColorChatWallpaper.PACIFIC
+  ChatStyle.WallpaperPreset.SOLID_FROST -> SingleColorChatWallpaper.FROST
+  ChatStyle.WallpaperPreset.SOLID_NAVY -> SingleColorChatWallpaper.NAVY
+  ChatStyle.WallpaperPreset.SOLID_LILAC -> SingleColorChatWallpaper.LILAC
+  ChatStyle.WallpaperPreset.SOLID_PINK -> SingleColorChatWallpaper.PINK
+  ChatStyle.WallpaperPreset.SOLID_EGGPLANT -> SingleColorChatWallpaper.EGGPLANT
+  ChatStyle.WallpaperPreset.SOLID_SILVER -> SingleColorChatWallpaper.SILVER
+  ChatStyle.WallpaperPreset.GRADIENT_SUNSET -> GradientChatWallpaper.SUNSET
+  ChatStyle.WallpaperPreset.GRADIENT_NOIR -> GradientChatWallpaper.NOIR
+  ChatStyle.WallpaperPreset.GRADIENT_HEATMAP -> GradientChatWallpaper.HEATMAP
+  ChatStyle.WallpaperPreset.GRADIENT_AQUA -> GradientChatWallpaper.AQUA
+  ChatStyle.WallpaperPreset.GRADIENT_IRIDESCENT -> GradientChatWallpaper.IRIDESCENT
+  ChatStyle.WallpaperPreset.GRADIENT_MONSTERA -> GradientChatWallpaper.MONSTERA
+  ChatStyle.WallpaperPreset.GRADIENT_BLISS -> GradientChatWallpaper.BLISS
+  ChatStyle.WallpaperPreset.GRADIENT_SKY -> GradientChatWallpaper.SKY
+  ChatStyle.WallpaperPreset.GRADIENT_PEACH -> GradientChatWallpaper.PEACH
+  else -> null
 }
 
 fun ChatStyle.parseChatWallpaper(wallpaperAttachmentId: AttachmentId?): ChatWallpaper? {
@@ -193,22 +191,20 @@ fun ChatStyle.parseChatWallpaper(wallpaperAttachmentId: AttachmentId?): ChatWall
   }
 }
 
-private fun Int.toRemoteWallpaperPreset(): ChatStyle.WallpaperPreset {
-  return when (this) {
-    SingleColorChatWallpaper.BLUSH.color -> ChatStyle.WallpaperPreset.SOLID_BLUSH
-    SingleColorChatWallpaper.COPPER.color -> ChatStyle.WallpaperPreset.SOLID_COPPER
-    SingleColorChatWallpaper.DUST.color -> ChatStyle.WallpaperPreset.SOLID_DUST
-    SingleColorChatWallpaper.CELADON.color -> ChatStyle.WallpaperPreset.SOLID_CELADON
-    SingleColorChatWallpaper.RAINFOREST.color -> ChatStyle.WallpaperPreset.SOLID_RAINFOREST
-    SingleColorChatWallpaper.PACIFIC.color -> ChatStyle.WallpaperPreset.SOLID_PACIFIC
-    SingleColorChatWallpaper.FROST.color -> ChatStyle.WallpaperPreset.SOLID_FROST
-    SingleColorChatWallpaper.NAVY.color -> ChatStyle.WallpaperPreset.SOLID_NAVY
-    SingleColorChatWallpaper.LILAC.color -> ChatStyle.WallpaperPreset.SOLID_LILAC
-    SingleColorChatWallpaper.PINK.color -> ChatStyle.WallpaperPreset.SOLID_PINK
-    SingleColorChatWallpaper.EGGPLANT.color -> ChatStyle.WallpaperPreset.SOLID_EGGPLANT
-    SingleColorChatWallpaper.SILVER.color -> ChatStyle.WallpaperPreset.SOLID_SILVER
-    else -> ChatStyle.WallpaperPreset.UNKNOWN_WALLPAPER_PRESET
-  }
+private fun Int.toRemoteWallpaperPreset(): ChatStyle.WallpaperPreset = when (this) {
+  SingleColorChatWallpaper.BLUSH.color -> ChatStyle.WallpaperPreset.SOLID_BLUSH
+  SingleColorChatWallpaper.COPPER.color -> ChatStyle.WallpaperPreset.SOLID_COPPER
+  SingleColorChatWallpaper.DUST.color -> ChatStyle.WallpaperPreset.SOLID_DUST
+  SingleColorChatWallpaper.CELADON.color -> ChatStyle.WallpaperPreset.SOLID_CELADON
+  SingleColorChatWallpaper.RAINFOREST.color -> ChatStyle.WallpaperPreset.SOLID_RAINFOREST
+  SingleColorChatWallpaper.PACIFIC.color -> ChatStyle.WallpaperPreset.SOLID_PACIFIC
+  SingleColorChatWallpaper.FROST.color -> ChatStyle.WallpaperPreset.SOLID_FROST
+  SingleColorChatWallpaper.NAVY.color -> ChatStyle.WallpaperPreset.SOLID_NAVY
+  SingleColorChatWallpaper.LILAC.color -> ChatStyle.WallpaperPreset.SOLID_LILAC
+  SingleColorChatWallpaper.PINK.color -> ChatStyle.WallpaperPreset.SOLID_PINK
+  SingleColorChatWallpaper.EGGPLANT.color -> ChatStyle.WallpaperPreset.SOLID_EGGPLANT
+  SingleColorChatWallpaper.SILVER.color -> ChatStyle.WallpaperPreset.SOLID_SILVER
+  else -> ChatStyle.WallpaperPreset.UNKNOWN_WALLPAPER_PRESET
 }
 
 private fun Wallpaper.LinearGradient.toRemoteWallpaperPreset(): ChatStyle.WallpaperPreset {

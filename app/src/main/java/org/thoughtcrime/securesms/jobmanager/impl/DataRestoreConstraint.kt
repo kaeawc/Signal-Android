@@ -18,17 +18,13 @@ object DataRestoreConstraint : Constraint {
       DataRestoreConstraintObserver.onChange()
     }
 
-  override fun isMet(): Boolean {
-    return !isRestoringData
-  }
+  override fun isMet(): Boolean = !isRestoringData
 
   override fun getFactoryKey(): String = KEY
 
   override fun applyToJobInfo(jobInfoBuilder: JobInfo.Builder) = Unit
 
   class Factory : Constraint.Factory<DataRestoreConstraint> {
-    override fun create(): DataRestoreConstraint {
-      return DataRestoreConstraint
-    }
+    override fun create(): DataRestoreConstraint = DataRestoreConstraint
   }
 }

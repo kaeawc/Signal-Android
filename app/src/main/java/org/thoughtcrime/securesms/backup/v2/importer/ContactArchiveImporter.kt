@@ -64,19 +64,15 @@ object ContactArchiveImporter {
   }
 }
 
-private fun Contact.Visibility.toLocal(): Recipient.HiddenState {
-  return when (this) {
-    Contact.Visibility.VISIBLE -> Recipient.HiddenState.NOT_HIDDEN
-    Contact.Visibility.HIDDEN -> Recipient.HiddenState.HIDDEN
-    Contact.Visibility.HIDDEN_MESSAGE_REQUEST -> Recipient.HiddenState.HIDDEN_MESSAGE_REQUEST
-  }
+private fun Contact.Visibility.toLocal(): Recipient.HiddenState = when (this) {
+  Contact.Visibility.VISIBLE -> Recipient.HiddenState.NOT_HIDDEN
+  Contact.Visibility.HIDDEN -> Recipient.HiddenState.HIDDEN
+  Contact.Visibility.HIDDEN_MESSAGE_REQUEST -> Recipient.HiddenState.HIDDEN_MESSAGE_REQUEST
 }
 
-private fun Contact.toLocalExtras(): RecipientExtras {
-  return RecipientExtras(
-    hideStory = this.hideStory
-  )
-}
+private fun Contact.toLocalExtras(): RecipientExtras = RecipientExtras(
+  hideStory = this.hideStory
+)
 
 private val Contact.formattedE164: String?
   get() {

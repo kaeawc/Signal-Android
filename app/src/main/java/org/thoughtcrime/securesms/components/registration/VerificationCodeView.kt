@@ -8,8 +8,7 @@ import android.widget.FrameLayout
 import com.google.android.material.textfield.TextInputLayout
 import org.thoughtcrime.securesms.R
 
-class VerificationCodeView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) :
-  FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
+class VerificationCodeView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
   private val containers: MutableList<TextInputLayout> = ArrayList(6)
   private val textWatcher = PasteTextWatcher()
   private var listener: OnCodeEnteredListener? = null

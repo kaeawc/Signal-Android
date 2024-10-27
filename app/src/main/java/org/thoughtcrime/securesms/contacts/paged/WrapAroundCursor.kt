@@ -24,46 +24,34 @@ class WrapAroundCursor(delegate: Cursor, @IntRange(from = 0) private val offset:
     check(offset < delegate.count && offset >= 0)
   }
 
-  override fun moveToPosition(position: Int): Boolean {
-    return if (offset == 0) {
+  override fun moveToPosition(position: Int): Boolean = if (offset == 0) {
+    super.moveToPosition(position)
+  } else {
+    if (position == -1 || position == count) {
       super.moveToPosition(position)
     } else {
-      if (position == -1 || position == count) {
-        super.moveToPosition(position)
-      } else {
-        super.moveToPosition((position + offset) % count)
-      }
+      super.moveToPosition((position + offset) % count)
     }
   }
 
-  override fun moveToFirst(): Boolean {
-    return super.moveToPosition(offset)
+  override fun moveToFirst(): Boolean = super.moveToPosition(offset)
+
+  override fun moveToLast(): Boolean = if (offset == 0) {
+    super.moveToLast()
+  } else {
+    super.moveToPosition(offset - 1)
   }
 
-  override fun moveToLast(): Boolean {
-    return if (offset == 0) {
-      super.moveToLast()
-    } else {
-      super.moveToPosition(offset - 1)
-    }
+  override fun move(offset: Int): Boolean = if (offset == 0) {
+    super.move(offset)
+  } else {
+    val position = max(min(offset + position, count), -1)
+    moveToPosition(position)
   }
 
-  override fun move(offset: Int): Boolean {
-    return if (offset == 0) {
-      super.move(offset)
-    } else {
-      val position = max(min(offset + position, count), -1)
-      moveToPosition(position)
-    }
-  }
+  override fun moveToNext(): Boolean = move(1)
 
-  override fun moveToNext(): Boolean {
-    return move(1)
-  }
-
-  override fun moveToPrevious(): Boolean {
-    return move(-1)
-  }
+  override fun moveToPrevious(): Boolean = move(-1)
 
   override fun isLast(): Boolean {
     return if (offset == 0) {

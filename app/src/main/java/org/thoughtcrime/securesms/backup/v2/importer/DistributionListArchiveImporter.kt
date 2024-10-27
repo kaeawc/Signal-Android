@@ -62,11 +62,9 @@ object DistributionListArchiveImporter {
   }
 }
 
-private fun DistributionList.PrivacyMode.toLocalPrivacyMode(): DistributionListPrivacyMode {
-  return when (this) {
-    DistributionList.PrivacyMode.UNKNOWN -> DistributionListPrivacyMode.ALL
-    DistributionList.PrivacyMode.ONLY_WITH -> DistributionListPrivacyMode.ONLY_WITH
-    DistributionList.PrivacyMode.ALL -> DistributionListPrivacyMode.ALL
-    DistributionList.PrivacyMode.ALL_EXCEPT -> DistributionListPrivacyMode.ALL_EXCEPT
-  }
+private fun DistributionList.PrivacyMode.toLocalPrivacyMode(): DistributionListPrivacyMode = when (this) {
+  DistributionList.PrivacyMode.UNKNOWN -> DistributionListPrivacyMode.ALL
+  DistributionList.PrivacyMode.ONLY_WITH -> DistributionListPrivacyMode.ONLY_WITH
+  DistributionList.PrivacyMode.ALL -> DistributionListPrivacyMode.ALL
+  DistributionList.PrivacyMode.ALL_EXCEPT -> DistributionListPrivacyMode.ALL_EXCEPT
 }

@@ -264,9 +264,7 @@ class SignalStore(context: Application, private val store: KeyValueStore) {
     val plaintext: PlainTextSharedPrefsDataStore
       get() = instance!!.plainTextValues
 
-    fun getPreferenceDataStore(): PreferenceDataStore {
-      return SignalPreferenceDataStore(instance!!.store)
-    }
+    fun getPreferenceDataStore(): PreferenceDataStore = SignalPreferenceDataStore(instance!!.store)
 
     /**
      * Ensures any pending writes are finished. Only intended to be called by

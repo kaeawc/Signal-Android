@@ -277,13 +277,11 @@ class InAppPaymentCheckoutDelegate(
       errorHandlerCallback = null
     }
 
-    private fun filterUnnotifiedErrors(inAppPaymentId: InAppPaymentTable.InAppPaymentId): Flowable<InAppPaymentTable.InAppPayment> {
-      return InAppPaymentsRepository.observeUpdates(inAppPaymentId)
-        .subscribeOn(Schedulers.io())
-        .filter {
-          !it.notified && it.data.error != null
-        }
-    }
+    private fun filterUnnotifiedErrors(inAppPaymentId: InAppPaymentTable.InAppPaymentId): Flowable<InAppPaymentTable.InAppPayment> = InAppPaymentsRepository.observeUpdates(inAppPaymentId)
+      .subscribeOn(Schedulers.io())
+      .filter {
+        !it.notified && it.data.error != null
+      }
 
     private fun handleTemporaryError(inAppPayment: InAppPaymentTable.InAppPayment, throwable: Throwable) {
       when (throwable) {
@@ -339,23 +337,19 @@ class InAppPaymentCheckoutDelegate(
     private inner class DialogHandler : DonationErrorDialogs.DialogCallback() {
       var tryAgain = false
 
-      override fun onTryCreditCardAgain(context: Context): DonationErrorParams.ErrorAction<Unit> {
-        return DonationErrorParams.ErrorAction(
-          label = R.string.DeclineCode__try,
-          action = {
-            tryAgain = true
-          }
-        )
-      }
+      override fun onTryCreditCardAgain(context: Context): DonationErrorParams.ErrorAction<Unit> = DonationErrorParams.ErrorAction(
+        label = R.string.DeclineCode__try,
+        action = {
+          tryAgain = true
+        }
+      )
 
-      override fun onTryBankTransferAgain(context: Context): DonationErrorParams.ErrorAction<Unit> {
-        return DonationErrorParams.ErrorAction(
-          label = R.string.DeclineCode__try,
-          action = {
-            tryAgain = true
-          }
-        )
-      }
+      override fun onTryBankTransferAgain(context: Context): DonationErrorParams.ErrorAction<Unit> = DonationErrorParams.ErrorAction(
+        label = R.string.DeclineCode__try,
+        action = {
+          tryAgain = true
+        }
+      )
 
       override fun onDialogDismissed() {
         errorDialog = null

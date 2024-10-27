@@ -250,9 +250,7 @@ class RegistrationLockFragment : LoggingFragment(R.layout.fragment_registration_
       .show()
   }
 
-  private fun getLockoutDays(timeRemainingMs: Long): Int {
-    return TimeUnit.MILLISECONDS.toDays(timeRemainingMs).toInt() + 1
-  }
+  private fun getLockoutDays(timeRemainingMs: Long): Int = TimeUnit.MILLISECONDS.toDays(timeRemainingMs).toInt() + 1
 
   private fun getTriesRemainingDialogMessage(triesRemaining: Int, daysRemaining: Int): String {
     val resources = requireContext().resources

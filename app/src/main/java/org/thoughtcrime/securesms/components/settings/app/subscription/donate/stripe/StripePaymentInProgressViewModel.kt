@@ -87,30 +87,28 @@ class StripePaymentInProgressViewModel(
     }
   }
 
-  private fun resolvePaymentSourceProvider(errorSource: DonationErrorSource): PaymentSourceProvider {
-    return when (val data = stripePaymentData) {
-      is StripePaymentData.GooglePay -> PaymentSourceProvider(
-        PaymentSourceType.Stripe.GooglePay,
-        Single.just<StripeApi.PaymentSource>(GooglePayPaymentSource(data.paymentData)).doAfterTerminate { clearPaymentInformation() }
-      )
+  private fun resolvePaymentSourceProvider(errorSource: DonationErrorSource): PaymentSourceProvider = when (val data = stripePaymentData) {
+    is StripePaymentData.GooglePay -> PaymentSourceProvider(
+      PaymentSourceType.Stripe.GooglePay,
+      Single.just<StripeApi.PaymentSource>(GooglePayPaymentSource(data.paymentData)).doAfterTerminate { clearPaymentInformation() }
+    )
 
-      is StripePaymentData.CreditCard -> PaymentSourceProvider(
-        PaymentSourceType.Stripe.CreditCard,
-        stripeRepository.createCreditCardPaymentSource(errorSource, data.cardData).doAfterTerminate { clearPaymentInformation() }
-      )
+    is StripePaymentData.CreditCard -> PaymentSourceProvider(
+      PaymentSourceType.Stripe.CreditCard,
+      stripeRepository.createCreditCardPaymentSource(errorSource, data.cardData).doAfterTerminate { clearPaymentInformation() }
+    )
 
-      is StripePaymentData.SEPADebit -> PaymentSourceProvider(
-        PaymentSourceType.Stripe.SEPADebit,
-        stripeRepository.createSEPADebitPaymentSource(data.sepaDebitData).doAfterTerminate { clearPaymentInformation() }
-      )
+    is StripePaymentData.SEPADebit -> PaymentSourceProvider(
+      PaymentSourceType.Stripe.SEPADebit,
+      stripeRepository.createSEPADebitPaymentSource(data.sepaDebitData).doAfterTerminate { clearPaymentInformation() }
+    )
 
-      is StripePaymentData.IDEAL -> PaymentSourceProvider(
-        PaymentSourceType.Stripe.IDEAL,
-        stripeRepository.createIdealPaymentSource(data.idealData).doAfterTerminate { clearPaymentInformation() }
-      )
+    is StripePaymentData.IDEAL -> PaymentSourceProvider(
+      PaymentSourceType.Stripe.IDEAL,
+      stripeRepository.createIdealPaymentSource(data.idealData).doAfterTerminate { clearPaymentInformation() }
+    )
 
-      else -> error("This should never happen.")
-    }
+    else -> error("This should never happen.")
   }
 
   fun providePaymentData(paymentData: PaymentData) {
@@ -305,8 +303,6 @@ class StripePaymentInProgressViewModel(
     private val stripeRepository: StripeRepository,
     private val oneTimeInAppPaymentRepository: OneTimeInAppPaymentRepository = OneTimeInAppPaymentRepository(AppDependencies.donationsService)
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(StripePaymentInProgressViewModel(stripeRepository, oneTimeInAppPaymentRepository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(StripePaymentInProgressViewModel(stripeRepository, oneTimeInAppPaymentRepository)) as T
   }
 }

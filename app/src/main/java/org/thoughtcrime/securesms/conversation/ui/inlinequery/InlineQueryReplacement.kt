@@ -14,9 +14,7 @@ sealed interface InlineQueryReplacement {
   fun toCharSequence(context: Context): CharSequence
 
   class Emoji(private val emoji: String) : InlineQueryReplacement {
-    override fun toCharSequence(context: Context): CharSequence {
-      return emoji
-    }
+    override fun toCharSequence(context: Context): CharSequence = emoji
   }
 
   class Mention(private val recipient: Recipient) : InlineQueryReplacement {

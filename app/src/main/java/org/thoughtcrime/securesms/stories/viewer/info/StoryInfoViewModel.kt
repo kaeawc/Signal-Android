@@ -35,8 +35,6 @@ class StoryInfoViewModel(storyId: Long, repository: MessageDetailsRepository = M
   }
 
   class Factory(private val storyId: Long) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(StoryInfoViewModel(storyId)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(StoryInfoViewModel(storyId)) as T
   }
 }

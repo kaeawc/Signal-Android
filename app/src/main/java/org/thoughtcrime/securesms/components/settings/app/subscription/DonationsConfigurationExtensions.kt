@@ -49,14 +49,12 @@ fun SubscriptionsConfiguration.getGiftBadges(): List<Badge> {
 /**
  * Currently, we only support a single gift badge amount per currency
  */
-fun SubscriptionsConfiguration.getGiftBadgeAmounts(paymentMethodAvailability: PaymentMethodAvailability = DefaultPaymentMethodAvailability): Map<Currency, FiatMoney> {
-  return getFilteredCurrencies(paymentMethodAvailability).filter {
-    it.value.oneTime[GIFT_LEVEL]?.isNotEmpty() == true
-  }.mapKeys {
-    Currency.getInstance(it.key.uppercase())
-  }.mapValues {
-    FiatMoney(it.value.oneTime[GIFT_LEVEL]!!.first(), it.key)
-  }
+fun SubscriptionsConfiguration.getGiftBadgeAmounts(paymentMethodAvailability: PaymentMethodAvailability = DefaultPaymentMethodAvailability): Map<Currency, FiatMoney> = getFilteredCurrencies(paymentMethodAvailability).filter {
+  it.value.oneTime[GIFT_LEVEL]?.isNotEmpty() == true
+}.mapKeys {
+  Currency.getInstance(it.key.uppercase())
+}.mapValues {
+  FiatMoney(it.value.oneTime[GIFT_LEVEL]!!.first(), it.key)
 }
 
 /**
@@ -67,14 +65,12 @@ fun SubscriptionsConfiguration.getBoostBadges(): List<Badge> {
   return listOfNotNull(configuration?.badge?.let { Badges.fromServiceBadge(it) })
 }
 
-fun SubscriptionsConfiguration.getBoostAmounts(paymentMethodAvailability: PaymentMethodAvailability = DefaultPaymentMethodAvailability): Map<Currency, List<FiatMoney>> {
-  return getFilteredCurrencies(paymentMethodAvailability).filter {
-    it.value.oneTime[BOOST_LEVEL]?.isNotEmpty() == true
-  }.mapKeys {
-    Currency.getInstance(it.key.uppercase())
-  }.mapValues { (currency, config) ->
-    config.oneTime[BOOST_LEVEL]!!.map { FiatMoney(it, currency) }
-  }
+fun SubscriptionsConfiguration.getBoostAmounts(paymentMethodAvailability: PaymentMethodAvailability = DefaultPaymentMethodAvailability): Map<Currency, List<FiatMoney>> = getFilteredCurrencies(paymentMethodAvailability).filter {
+  it.value.oneTime[BOOST_LEVEL]?.isNotEmpty() == true
+}.mapKeys {
+  Currency.getInstance(it.key.uppercase())
+}.mapValues { (currency, config) ->
+  config.oneTime[BOOST_LEVEL]!!.map { FiatMoney(it, currency) }
 }
 
 fun SubscriptionsConfiguration.getBadge(level: Int): Badge {
@@ -82,23 +78,17 @@ fun SubscriptionsConfiguration.getBadge(level: Int): Badge {
   return Badges.fromServiceBadge(levels[level]!!.badge)
 }
 
-fun SubscriptionsConfiguration.getSubscriptionLevels(): Map<Int, LevelConfiguration> {
-  return levels.filterKeys { SUBSCRIPTION_LEVELS.contains(it) }.toSortedMap()
-}
+fun SubscriptionsConfiguration.getSubscriptionLevels(): Map<Int, LevelConfiguration> = levels.filterKeys { SUBSCRIPTION_LEVELS.contains(it) }.toSortedMap()
 
 /**
  * Get a map describing the minimum donation amounts per currency.
  * This returns only the currencies available to the user.
  */
-fun SubscriptionsConfiguration.getMinimumDonationAmounts(paymentMethodAvailability: PaymentMethodAvailability = DefaultPaymentMethodAvailability): Map<Currency, FiatMoney> {
-  return getFilteredCurrencies(paymentMethodAvailability)
-    .mapKeys { Currency.getInstance(it.key.uppercase()) }
-    .mapValues { FiatMoney(it.value.minimum, it.key) }
-}
+fun SubscriptionsConfiguration.getMinimumDonationAmounts(paymentMethodAvailability: PaymentMethodAvailability = DefaultPaymentMethodAvailability): Map<Currency, FiatMoney> = getFilteredCurrencies(paymentMethodAvailability)
+  .mapKeys { Currency.getInstance(it.key.uppercase()) }
+  .mapValues { FiatMoney(it.value.minimum, it.key) }
 
-fun SubscriptionsConfiguration.getAvailablePaymentMethods(currencyCode: String): Set<String> {
-  return currencies[currencyCode.lowercase()]?.supportedPaymentMethods ?: emptySet()
-}
+fun SubscriptionsConfiguration.getAvailablePaymentMethods(currencyCode: String): Set<String> = currencies[currencyCode.lowercase()]?.supportedPaymentMethods ?: emptySet()
 
 private fun SubscriptionsConfiguration.getFilteredCurrencies(paymentMethodAvailability: PaymentMethodAvailability): Map<String, SubscriptionsConfiguration.CurrencyConfiguration> {
   val userPaymentMethods = paymentMethodAvailability.toSet()

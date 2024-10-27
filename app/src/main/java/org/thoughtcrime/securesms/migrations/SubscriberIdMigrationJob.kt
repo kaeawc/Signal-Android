@@ -50,8 +50,6 @@ internal class SubscriberIdMigrationJob(
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<SubscriberIdMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): SubscriberIdMigrationJob {
-      return SubscriberIdMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): SubscriberIdMigrationJob = SubscriberIdMigrationJob(parameters)
   }
 }

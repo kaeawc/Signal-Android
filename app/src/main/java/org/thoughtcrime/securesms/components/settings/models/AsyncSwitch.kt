@@ -27,9 +27,7 @@ object AsyncSwitch {
     val isProcessing: Boolean,
     val onClick: () -> Unit
   ) : PreferenceModel<Model>() {
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) && isChecked == newItem.isChecked && isProcessing == newItem.isProcessing
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) && isChecked == newItem.isChecked && isProcessing == newItem.isProcessing
   }
 
   class ViewHolder(itemView: View) : PreferenceViewHolder<Model>(itemView) {

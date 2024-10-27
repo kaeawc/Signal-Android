@@ -129,28 +129,22 @@ class DraftViewModel @JvmOverloads constructor(
     return newState
   }
 
-  fun loadShareOrDraftData(lastShareDataTimestamp: Long): Maybe<DraftRepository.ShareOrDraftData> {
-    return repository.getShareOrDraftData(lastShareDataTimestamp)
-      .doOnSuccess { (_, drafts) ->
-        if (drafts != null) {
-          store.update { saveDraftsIfChanged(it, it.copyAndSetDrafts(drafts = drafts)) }
-        }
+  fun loadShareOrDraftData(lastShareDataTimestamp: Long): Maybe<DraftRepository.ShareOrDraftData> = repository.getShareOrDraftData(lastShareDataTimestamp)
+    .doOnSuccess { (_, drafts) ->
+      if (drafts != null) {
+        store.update { saveDraftsIfChanged(it, it.copyAndSetDrafts(drafts = drafts)) }
       }
-      .flatMap { (data, _) ->
-        if (data == null) {
-          Maybe.empty()
-        } else {
-          Maybe.just(data)
-        }
+    }
+    .flatMap { (data, _) ->
+      if (data == null) {
+        Maybe.empty()
+      } else {
+        Maybe.just(data)
       }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 }
 
-private fun String.toTextDraft(): Draft? {
-  return if (isNotEmpty()) Draft(Draft.TEXT, this) else null
-}
+private fun String.toTextDraft(): Draft? = if (isNotEmpty()) Draft(Draft.TEXT, this) else null
 
-private fun BodyRangeList.toDraft(): Draft {
-  return Draft(Draft.BODY_RANGES, Base64.encodeWithPadding(encode()))
-}
+private fun BodyRangeList.toDraft(): Draft = Draft(Draft.BODY_RANGES, Base64.encodeWithPadding(encode()))

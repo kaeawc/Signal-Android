@@ -14,35 +14,21 @@ sealed interface MultiPeerActionProcessorFactory {
   fun createJoiningActionProcessor(webRtcInteractor: WebRtcInteractor): GroupJoiningActionProcessor
   fun createConnectedActionProcessor(webRtcInteractor: WebRtcInteractor): GroupConnectedActionProcessor
 
-  fun createNetworkUnavailableActionProcessor(webRtcInteractor: WebRtcInteractor): GroupNetworkUnavailableActionProcessor {
-    return GroupNetworkUnavailableActionProcessor(this, webRtcInteractor)
-  }
+  fun createNetworkUnavailableActionProcessor(webRtcInteractor: WebRtcInteractor): GroupNetworkUnavailableActionProcessor = GroupNetworkUnavailableActionProcessor(this, webRtcInteractor)
 
   object GroupActionProcessorFactory : MultiPeerActionProcessorFactory {
-    override fun createPreJoinActionProcessor(webRtcInteractor: WebRtcInteractor): GroupPreJoinActionProcessor {
-      return GroupPreJoinActionProcessor(this, webRtcInteractor)
-    }
+    override fun createPreJoinActionProcessor(webRtcInteractor: WebRtcInteractor): GroupPreJoinActionProcessor = GroupPreJoinActionProcessor(this, webRtcInteractor)
 
-    override fun createJoiningActionProcessor(webRtcInteractor: WebRtcInteractor): GroupJoiningActionProcessor {
-      return GroupJoiningActionProcessor(this, webRtcInteractor)
-    }
+    override fun createJoiningActionProcessor(webRtcInteractor: WebRtcInteractor): GroupJoiningActionProcessor = GroupJoiningActionProcessor(this, webRtcInteractor)
 
-    override fun createConnectedActionProcessor(webRtcInteractor: WebRtcInteractor): GroupConnectedActionProcessor {
-      return GroupConnectedActionProcessor(this, webRtcInteractor)
-    }
+    override fun createConnectedActionProcessor(webRtcInteractor: WebRtcInteractor): GroupConnectedActionProcessor = GroupConnectedActionProcessor(this, webRtcInteractor)
   }
 
   object CallLinkActionProcessorFactory : MultiPeerActionProcessorFactory {
-    override fun createPreJoinActionProcessor(webRtcInteractor: WebRtcInteractor): GroupPreJoinActionProcessor {
-      return CallLinkPreJoinActionProcessor(this, webRtcInteractor)
-    }
+    override fun createPreJoinActionProcessor(webRtcInteractor: WebRtcInteractor): GroupPreJoinActionProcessor = CallLinkPreJoinActionProcessor(this, webRtcInteractor)
 
-    override fun createJoiningActionProcessor(webRtcInteractor: WebRtcInteractor): GroupJoiningActionProcessor {
-      return CallLinkJoiningActionProcessor(this, webRtcInteractor)
-    }
+    override fun createJoiningActionProcessor(webRtcInteractor: WebRtcInteractor): GroupJoiningActionProcessor = CallLinkJoiningActionProcessor(this, webRtcInteractor)
 
-    override fun createConnectedActionProcessor(webRtcInteractor: WebRtcInteractor): GroupConnectedActionProcessor {
-      return CallLinkConnectedActionProcessor(this, webRtcInteractor)
-    }
+    override fun createConnectedActionProcessor(webRtcInteractor: WebRtcInteractor): GroupConnectedActionProcessor = CallLinkConnectedActionProcessor(this, webRtcInteractor)
   }
 }

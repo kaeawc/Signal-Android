@@ -26,7 +26,9 @@ import java.util.function.Consumer
 /**
  * Contact Selection for adding recipients to a Notification Profile.
  */
-class SelectRecipientsFragment : LoggingFragment(), ContactSelectionListFragment.OnContactSelectedListener {
+class SelectRecipientsFragment :
+  LoggingFragment(),
+  ContactSelectionListFragment.OnContactSelectedListener {
 
   private val viewModel: SelectRecipientsViewModel by viewModels(factoryProducer = this::createFactory)
   private val lifecycleDisposable = LifecycleDisposable()
@@ -98,14 +100,12 @@ class SelectRecipientsFragment : LoggingFragment(), ContactSelectionListFragment
     addToProfile = null
   }
 
-  private fun getDefaultDisplayMode(): Int {
-    return ContactSelectionDisplayMode.FLAG_PUSH or
-      ContactSelectionDisplayMode.FLAG_ACTIVE_GROUPS or
-      ContactSelectionDisplayMode.FLAG_HIDE_NEW or
-      ContactSelectionDisplayMode.FLAG_HIDE_RECENT_HEADER or
-      ContactSelectionDisplayMode.FLAG_GROUPS_AFTER_CONTACTS or
-      ContactSelectionDisplayMode.FLAG_HIDE_GROUPS_V1
-  }
+  private fun getDefaultDisplayMode(): Int = ContactSelectionDisplayMode.FLAG_PUSH or
+    ContactSelectionDisplayMode.FLAG_ACTIVE_GROUPS or
+    ContactSelectionDisplayMode.FLAG_HIDE_NEW or
+    ContactSelectionDisplayMode.FLAG_HIDE_RECENT_HEADER or
+    ContactSelectionDisplayMode.FLAG_GROUPS_AFTER_CONTACTS or
+    ContactSelectionDisplayMode.FLAG_HIDE_GROUPS_V1
 
   override fun onBeforeContactSelected(isFromUnknownSearchKey: Boolean, recipientId: Optional<RecipientId>, number: String?, chatType: Optional<ChatType>, callback: Consumer<Boolean>) {
     if (recipientId.isPresent) {

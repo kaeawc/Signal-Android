@@ -31,64 +31,54 @@ class OneTimeInAppPaymentRepository(private val donationsService: DonationsServi
   companion object {
     private val TAG = Log.tag(OneTimeInAppPaymentRepository::class.java)
 
-    fun <T : Any> handleCreatePaymentIntentError(throwable: Throwable, badgeRecipient: RecipientId, paymentSourceType: PaymentSourceType): Single<T> {
-      return if (throwable is DonationError) {
-        Single.error(throwable)
-      } else {
-        val recipient = Recipient.resolved(badgeRecipient)
-        val errorSource = if (recipient.isSelf) DonationErrorSource.ONE_TIME else DonationErrorSource.GIFT
-        Single.error(DonationError.getPaymentSetupError(errorSource, throwable, paymentSourceType))
+    fun <T : Any> handleCreatePaymentIntentError(throwable: Throwable, badgeRecipient: RecipientId, paymentSourceType: PaymentSourceType): Single<T> = if (throwable is DonationError) {
+      Single.error(throwable)
+    } else {
+      val recipient = Recipient.resolved(badgeRecipient)
+      val errorSource = if (recipient.isSelf) DonationErrorSource.ONE_TIME else DonationErrorSource.GIFT
+      Single.error(DonationError.getPaymentSetupError(errorSource, throwable, paymentSourceType))
+    }
+
+    fun verifyRecipientIsAllowedToReceiveAGift(badgeRecipient: RecipientId): Completable = Completable.fromAction {
+      Log.d(TAG, "Verifying badge recipient $badgeRecipient", true)
+      val recipient = Recipient.resolved(badgeRecipient)
+
+      if (recipient.isSelf) {
+        Log.d(TAG, "Cannot send a gift to self.", true)
+        throw DonationError.GiftRecipientVerificationError.SelectedRecipientIsInvalid
+      }
+
+      if (recipient.isGroup || recipient.isDistributionList || recipient.registered != RecipientTable.RegisteredState.REGISTERED) {
+        Log.w(TAG, "Invalid badge recipient $badgeRecipient. Verification failed.", true)
+        throw DonationError.GiftRecipientVerificationError.SelectedRecipientIsInvalid
+      }
+    }.subscribeOn(Schedulers.io())
+  }
+
+  fun getBoosts(): Single<Map<Currency, List<Boost>>> = Single.fromCallable { donationsService.getDonationsConfiguration(Locale.getDefault()) }
+    .subscribeOn(Schedulers.io())
+    .flatMap { it.flattenResult() }
+    .map { config ->
+      config.getBoostAmounts().mapValues { (_, value) ->
+        value.map {
+          Boost(it)
+        }
       }
     }
 
-    fun verifyRecipientIsAllowedToReceiveAGift(badgeRecipient: RecipientId): Completable {
-      return Completable.fromAction {
-        Log.d(TAG, "Verifying badge recipient $badgeRecipient", true)
-        val recipient = Recipient.resolved(badgeRecipient)
-
-        if (recipient.isSelf) {
-          Log.d(TAG, "Cannot send a gift to self.", true)
-          throw DonationError.GiftRecipientVerificationError.SelectedRecipientIsInvalid
-        }
-
-        if (recipient.isGroup || recipient.isDistributionList || recipient.registered != RecipientTable.RegisteredState.REGISTERED) {
-          Log.w(TAG, "Invalid badge recipient $badgeRecipient. Verification failed.", true)
-          throw DonationError.GiftRecipientVerificationError.SelectedRecipientIsInvalid
-        }
-      }.subscribeOn(Schedulers.io())
+  fun getBoostBadge(): Single<Badge> = Single
+    .fromCallable {
+      AppDependencies.donationsService
+        .getDonationsConfiguration(Locale.getDefault())
     }
-  }
+    .subscribeOn(Schedulers.io())
+    .flatMap { it.flattenResult() }
+    .map { it.getBoostBadges().first() }
 
-  fun getBoosts(): Single<Map<Currency, List<Boost>>> {
-    return Single.fromCallable { donationsService.getDonationsConfiguration(Locale.getDefault()) }
-      .subscribeOn(Schedulers.io())
-      .flatMap { it.flattenResult() }
-      .map { config ->
-        config.getBoostAmounts().mapValues { (_, value) ->
-          value.map {
-            Boost(it)
-          }
-        }
-      }
-  }
-
-  fun getBoostBadge(): Single<Badge> {
-    return Single
-      .fromCallable {
-        AppDependencies.donationsService
-          .getDonationsConfiguration(Locale.getDefault())
-      }
-      .subscribeOn(Schedulers.io())
-      .flatMap { it.flattenResult() }
-      .map { it.getBoostBadges().first() }
-  }
-
-  fun getMinimumDonationAmounts(): Single<Map<Currency, FiatMoney>> {
-    return Single.fromCallable { donationsService.getDonationsConfiguration(Locale.getDefault()) }
-      .flatMap { it.flattenResult() }
-      .subscribeOn(Schedulers.io())
-      .map { it.getMinimumDonationAmounts() }
-  }
+  fun getMinimumDonationAmounts(): Single<Map<Currency, FiatMoney>> = Single.fromCallable { donationsService.getDonationsConfiguration(Locale.getDefault()) }
+    .flatMap { it.flattenResult() }
+    .subscribeOn(Schedulers.io())
+    .map { it.getMinimumDonationAmounts() }
 
   fun waitForOneTimeRedemption(
     inAppPayment: InAppPaymentTable.InAppPayment,

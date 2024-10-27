@@ -146,25 +146,15 @@ class ContactSearchMediator(
     viewModel.clearSelection()
   }
 
-  fun getSelectedMembersSize(): Int {
-    return viewModel.getSelectedMembersSize()
-  }
+  fun getSelectedMembersSize(): Int = viewModel.getSelectedMembersSize()
 
-  fun getSelectedContacts(): Set<ContactSearchKey> {
-    return viewModel.getSelectedContacts()
-  }
+  fun getSelectedContacts(): Set<ContactSearchKey> = viewModel.getSelectedContacts()
 
-  fun getFixedContactsSize(): Int {
-    return fixedContacts.size
-  }
+  fun getFixedContactsSize(): Int = fixedContacts.size
 
-  fun getSelectionState(): LiveData<Set<ContactSearchKey>> {
-    return viewModel.selectionState
-  }
+  fun getSelectionState(): LiveData<Set<ContactSearchKey>> = viewModel.selectionState
 
-  fun getErrorEvents(): Observable<ContactSearchError> {
-    return viewModel.errorEventsStream.observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getErrorEvents(): Observable<ContactSearchError> = viewModel.errorEventsStream.observeOn(AndroidSchedulers.mainThread())
 
   fun addToVisibleGroupStories(groupStories: Set<ContactSearchKey.RecipientSearchKey>) {
     viewModel.addToVisibleGroupStories(groupStories)
@@ -182,25 +172,21 @@ class ContactSearchMediator(
     }
   }
 
-  private fun toggleSelection(view: View, contactSearchData: ContactSearchData, isSelected: Boolean) {
-    return if (isSelected) {
-      Log.d(TAG, "toggleSelection(OFF) ${contactSearchData.contactSearchKey}")
-      callbacks.onContactDeselected(view, contactSearchData.contactSearchKey)
-      viewModel.setKeysNotSelected(setOf(contactSearchData.contactSearchKey))
-    } else {
-      Log.d(TAG, "toggleSelection(ON) ${contactSearchData.contactSearchKey}")
-      viewModel.setKeysSelected(callbacks.onBeforeContactsSelected(view, setOf(contactSearchData.contactSearchKey)))
-    }
+  private fun toggleSelection(view: View, contactSearchData: ContactSearchData, isSelected: Boolean) = if (isSelected) {
+    Log.d(TAG, "toggleSelection(OFF) ${contactSearchData.contactSearchKey}")
+    callbacks.onContactDeselected(view, contactSearchData.contactSearchKey)
+    viewModel.setKeysNotSelected(setOf(contactSearchData.contactSearchKey))
+  } else {
+    Log.d(TAG, "toggleSelection(ON) ${contactSearchData.contactSearchKey}")
+    viewModel.setKeysSelected(callbacks.onBeforeContactsSelected(view, setOf(contactSearchData.contactSearchKey)))
   }
 
-  private fun toggleChatTypeSelection(view: View, contactSearchData: ContactSearchData, isSelected: Boolean) {
-    return if (isSelected) {
-      Log.d(TAG, "toggleSelection(OFF) ${contactSearchData.contactSearchKey}")
-      viewModel.setKeysNotSelected(setOf(contactSearchData.contactSearchKey))
-    } else {
-      Log.d(TAG, "toggleSelection(ON) ${contactSearchData.contactSearchKey}")
-      viewModel.setKeysSelected(callbacks.onBeforeContactsSelected(view, setOf(contactSearchData.contactSearchKey)))
-    }
+  private fun toggleChatTypeSelection(view: View, contactSearchData: ContactSearchData, isSelected: Boolean) = if (isSelected) {
+    Log.d(TAG, "toggleSelection(OFF) ${contactSearchData.contactSearchKey}")
+    viewModel.setKeysNotSelected(setOf(contactSearchData.contactSearchKey))
+  } else {
+    Log.d(TAG, "toggleSelection(ON) ${contactSearchData.contactSearchKey}")
+    viewModel.setKeysSelected(callbacks.onBeforeContactsSelected(view, setOf(contactSearchData.contactSearchKey)))
   }
 
   private inner class StoryContextMenuCallbacks : ContactSearchAdapter.StoryContextMenuCallbacks {
@@ -276,8 +262,6 @@ class ContactSearchMediator(
       longClickCallbacks: ContactSearchAdapter.LongClickCallbacks,
       storyContextMenuCallbacks: ContactSearchAdapter.StoryContextMenuCallbacks,
       callButtonClickCallbacks: ContactSearchAdapter.CallButtonClickCallbacks
-    ): PagingMappingAdapter<ContactSearchKey> {
-      return ContactSearchAdapter(context, fixedContacts, displayOptions, callbacks, longClickCallbacks, storyContextMenuCallbacks, callButtonClickCallbacks)
-    }
+    ): PagingMappingAdapter<ContactSearchKey> = ContactSearchAdapter(context, fixedContacts, displayOptions, callbacks, longClickCallbacks, storyContextMenuCallbacks, callButtonClickCallbacks)
   }
 }

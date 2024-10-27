@@ -8,13 +8,9 @@ data class ProfileAvatarFileDetails(
   val hashId: Long,
   val lastModified: Long
 ) {
-  fun getDiskCacheKeyBytes(): ByteArray {
-    return toString().toByteArray()
-  }
+  fun getDiskCacheKeyBytes(): ByteArray = toString().toByteArray()
 
-  fun hasFile(): Boolean {
-    return this != NO_DETAILS
-  }
+  fun hasFile(): Boolean = this != NO_DETAILS
 
   companion object {
     @JvmField

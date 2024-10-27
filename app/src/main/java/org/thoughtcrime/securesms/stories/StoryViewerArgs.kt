@@ -78,20 +78,18 @@ data class StoryViewerArgs(
       return this
     }
 
-    fun build(): StoryViewerArgs {
-      return StoryViewerArgs(
-        recipientId = recipientId,
-        isInHiddenStoryMode = isInHiddenStoryMode,
-        storyId = storyId,
-        storyThumbTextModel = storyThumbTextModel,
-        storyThumbUri = storyThumbUri,
-        storyThumbBlur = storyThumbBlur,
-        recipientIds = recipientIds,
-        isFromNotification = isFromNotification,
-        groupReplyStartPosition = groupReplyStartPosition,
-        isFromInfoContextMenuAction = isFromInfoContextMenuAction,
-        isFromQuote = isFromQuote
-      )
-    }
+    fun build(): StoryViewerArgs = StoryViewerArgs(
+      recipientId = recipientId,
+      isInHiddenStoryMode = isInHiddenStoryMode,
+      storyId = storyId,
+      storyThumbTextModel = storyThumbTextModel,
+      storyThumbUri = storyThumbUri,
+      storyThumbBlur = storyThumbBlur,
+      recipientIds = recipientIds,
+      isFromNotification = isFromNotification,
+      groupReplyStartPosition = groupReplyStartPosition,
+      isFromInfoContextMenuAction = isFromInfoContextMenuAction,
+      isFromQuote = isFromQuote
+    )
   }
 }

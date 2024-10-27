@@ -137,34 +137,30 @@ class LinkPreviewViewModelV2(
     return cursorStart < link.position || cursorStart > link.position + link.url.length
   }
 
-  private fun createPlaceholder(url: String): Disposable {
-    return Single.just(url)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribeBy {
-        if (!userCancelled) {
-          if (activeUrl != null && activeUrl == url) {
-            setLinkPreviewState(LinkPreviewState.forLinksWithNoPreview(url, LinkPreviewRepository.Error.PREVIEW_NOT_AVAILABLE))
-          } else {
-            setLinkPreviewState(LinkPreviewState.forNoLinks())
-          }
+  private fun createPlaceholder(url: String): Disposable = Single.just(url)
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeBy {
+      if (!userCancelled) {
+        if (activeUrl != null && activeUrl == url) {
+          setLinkPreviewState(LinkPreviewState.forLinksWithNoPreview(url, LinkPreviewRepository.Error.PREVIEW_NOT_AVAILABLE))
+        } else {
+          setLinkPreviewState(LinkPreviewState.forNoLinks())
         }
       }
-  }
+    }
 
-  private fun performRequest(url: String): Disposable {
-    return linkPreviewRepository.getLinkPreview(url)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribeBy { result ->
-        if (!userCancelled) {
-          val linkPreviewState = when (result) {
-            is Result.Success -> if (activeUrl == result.success.url) LinkPreviewState.forPreview(result.success) else LinkPreviewState.forNoLinks()
-            is Result.Failure -> if (activeUrl != null) LinkPreviewState.forLinksWithNoPreview(activeUrl, result.failure) else LinkPreviewState.forNoLinks()
-          }
-
-          setLinkPreviewState(linkPreviewState)
+  private fun performRequest(url: String): Disposable = linkPreviewRepository.getLinkPreview(url)
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeBy { result ->
+      if (!userCancelled) {
+        val linkPreviewState = when (result) {
+          is Result.Success -> if (activeUrl == result.success.url) LinkPreviewState.forPreview(result.success) else LinkPreviewState.forNoLinks()
+          is Result.Failure -> if (activeUrl != null) LinkPreviewState.forLinksWithNoPreview(activeUrl, result.failure) else LinkPreviewState.forNoLinks()
         }
+
+        setLinkPreviewState(linkPreviewState)
       }
-  }
+    }
 
   private fun setLinkPreviewState(linkPreviewState: LinkPreviewState) {
     linkPreviewStateStore.update { cleanseState(linkPreviewState) }

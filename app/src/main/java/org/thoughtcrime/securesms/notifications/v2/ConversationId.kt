@@ -16,21 +16,15 @@ data class ConversationId(
 ) : Parcelable {
   companion object {
     @JvmStatic
-    fun forConversation(threadId: Long): ConversationId {
-      return ConversationId(
-        threadId = threadId,
-        groupStoryId = null
-      )
-    }
+    fun forConversation(threadId: Long): ConversationId = ConversationId(
+      threadId = threadId,
+      groupStoryId = null
+    )
 
     @JvmStatic
-    fun fromMessageRecord(record: MessageRecord): ConversationId {
-      return ConversationId(record.threadId, ((record as? MmsMessageRecord)?.parentStoryId as? ParentStoryId.GroupReply)?.serialize())
-    }
+    fun fromMessageRecord(record: MessageRecord): ConversationId = ConversationId(record.threadId, ((record as? MmsMessageRecord)?.parentStoryId as? ParentStoryId.GroupReply)?.serialize())
 
     @JvmStatic
-    fun fromThreadAndReply(threadId: Long, groupReply: ParentStoryId.GroupReply?): ConversationId {
-      return ConversationId(threadId, groupReply?.serialize())
-    }
+    fun fromThreadAndReply(threadId: Long, groupReply: ParentStoryId.GroupReply?): ConversationId = ConversationId(threadId, groupReply?.serialize())
   }
 }

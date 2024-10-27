@@ -71,23 +71,19 @@ class DonationReceiptListPageFragment : Fragment(R.layout.donation_receipt_list_
     }
   }
 
-  private fun getBadgeForRecord(record: InAppPaymentReceiptRecord, badges: List<DonationReceiptBadge>): Badge? {
-    return when (record.type) {
-      InAppPaymentReceiptRecord.Type.ONE_TIME_DONATION -> badges.firstOrNull { it.type == InAppPaymentReceiptRecord.Type.ONE_TIME_DONATION }?.badge
-      InAppPaymentReceiptRecord.Type.ONE_TIME_GIFT -> badges.firstOrNull { it.type == InAppPaymentReceiptRecord.Type.ONE_TIME_GIFT }?.badge
-      else -> badges.firstOrNull { it.level == record.subscriptionLevel }?.badge
-    }
+  private fun getBadgeForRecord(record: InAppPaymentReceiptRecord, badges: List<DonationReceiptBadge>): Badge? = when (record.type) {
+    InAppPaymentReceiptRecord.Type.ONE_TIME_DONATION -> badges.firstOrNull { it.type == InAppPaymentReceiptRecord.Type.ONE_TIME_DONATION }?.badge
+    InAppPaymentReceiptRecord.Type.ONE_TIME_GIFT -> badges.firstOrNull { it.type == InAppPaymentReceiptRecord.Type.ONE_TIME_GIFT }?.badge
+    else -> badges.firstOrNull { it.level == record.subscriptionLevel }?.badge
   }
 
   companion object {
 
     private const val ARG_TYPE = "arg_type"
 
-    fun create(type: InAppPaymentReceiptRecord.Type?): Fragment {
-      return DonationReceiptListPageFragment().apply {
-        arguments = Bundle().apply {
-          putString(ARG_TYPE, type?.code)
-        }
+    fun create(type: InAppPaymentReceiptRecord.Type?): Fragment = DonationReceiptListPageFragment().apply {
+      arguments = Bundle().apply {
+        putString(ARG_TYPE, type?.code)
       }
     }
   }

@@ -42,11 +42,9 @@ class Svr3MirrorJob private constructor(parameters: Parameters, private var seri
     null
   )
 
-  override fun serialize(): ByteArray? {
-    return Svr3MirrorJobData(
-      serializedChangeSession = serializedChangeSession
-    ).encode()
-  }
+  override fun serialize(): ByteArray? = Svr3MirrorJobData(
+    serializedChangeSession = serializedChangeSession
+  ).encode()
 
   override fun getFactoryKey(): String = KEY
 
@@ -113,9 +111,7 @@ class Svr3MirrorJob private constructor(parameters: Parameters, private var seri
     }
   }
 
-  private fun Throwable.isUnauthorized(): Boolean {
-    return this is NonSuccessfulResponseCodeException && this.code == 401
-  }
+  private fun Throwable.isUnauthorized(): Boolean = this is NonSuccessfulResponseCodeException && this.code == 401
 
   override fun onFailure() = Unit
 

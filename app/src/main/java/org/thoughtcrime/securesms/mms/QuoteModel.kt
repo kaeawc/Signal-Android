@@ -49,12 +49,10 @@ class QuoteModel(
         return NORMAL
       }
 
-      fun fromProto(type: DataMessage.Quote.Type?): Type {
-        return if (type == DataMessage.Quote.Type.GIFT_BADGE) {
-          GIFT_BADGE
-        } else {
-          NORMAL
-        }
+      fun fromProto(type: DataMessage.Quote.Type?): Type = if (type == DataMessage.Quote.Type.GIFT_BADGE) {
+        GIFT_BADGE
+      } else {
+        NORMAL
       }
     }
   }

@@ -61,10 +61,8 @@ class DraftRepository(
     val TAG = Log.tag(DraftRepository::class.java)
   }
 
-  fun getShareOrDraftData(lastShareDataTimestamp: Long): Maybe<Pair<ShareOrDraftData?, Drafts?>> {
-    return MaybeCompat.fromCallable { getShareOrDraftDataInternal(lastShareDataTimestamp) }
-      .observeOn(Schedulers.io())
-  }
+  fun getShareOrDraftData(lastShareDataTimestamp: Long): Maybe<Pair<ShareOrDraftData?, Drafts?>> = MaybeCompat.fromCallable { getShareOrDraftDataInternal(lastShareDataTimestamp) }
+    .observeOn(Schedulers.io())
 
   /**
    * Loads share data from the intent and draft data from the database and provides a one-spot initial

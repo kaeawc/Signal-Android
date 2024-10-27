@@ -27,9 +27,7 @@ object NotificationProfileAddMembers {
     val profileId: Long,
     val currentSelection: Set<RecipientId>
   ) : PreferenceModel<Model>() {
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) && profileId == newItem.profileId && currentSelection == newItem.currentSelection
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) && profileId == newItem.profileId && currentSelection == newItem.currentSelection
   }
 
   private class ViewHolder(itemView: View) : PreferenceViewHolder<Model>(itemView) {

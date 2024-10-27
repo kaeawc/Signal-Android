@@ -31,16 +31,12 @@ object SafetyNumberRecipientRowItem {
     val groupMembershipCount: Int,
     val getContextMenuActions: (Model) -> List<ActionItem>
   ) : MappingModel<Model> {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return recipient.id == newItem.recipient.id
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = recipient.id == newItem.recipient.id
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return recipient.hasSameContent(newItem.recipient) &&
-        isVerified == newItem.isVerified &&
-        distributionListMembershipCount == newItem.distributionListMembershipCount &&
-        groupMembershipCount == newItem.groupMembershipCount
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = recipient.hasSameContent(newItem.recipient) &&
+      isVerified == newItem.isVerified &&
+      distributionListMembershipCount == newItem.distributionListMembershipCount &&
+      groupMembershipCount == newItem.groupMembershipCount
   }
 
   class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

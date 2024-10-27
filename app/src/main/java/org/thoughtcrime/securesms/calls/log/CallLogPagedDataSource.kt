@@ -95,9 +95,7 @@ class CallLogPagedDataSource(
 
   override fun load(key: CallLogRow.Id?): CallLogRow = error("Not supported")
 
-  private fun Boolean.toInt(): Int {
-    return if (this) 1 else 0
-  }
+  private fun Boolean.toInt(): Int = if (this) 1 else 0
 
   interface CallRepository {
     fun getCallsCount(query: String?, filter: CallLogFilter): Int

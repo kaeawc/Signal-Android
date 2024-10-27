@@ -66,9 +66,7 @@ class PinRestoreViewModel : ViewModel() {
       }
   }
 
-  fun getEvent(): LiveData<Event> {
-    return event
-  }
+  fun getEvent(): LiveData<Event> = event
 
   enum class Event {
     SUCCESS,
@@ -80,8 +78,6 @@ class PinRestoreViewModel : ViewModel() {
   }
 
   class TriesRemaining(val count: Int, private val hasIncorrectGuess: Boolean) {
-    fun hasIncorrectGuess(): Boolean {
-      return hasIncorrectGuess
-    }
+    fun hasIncorrectGuess(): Boolean = hasIncorrectGuess
   }
 }

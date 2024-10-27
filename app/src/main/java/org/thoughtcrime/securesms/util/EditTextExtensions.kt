@@ -26,10 +26,8 @@ fun SearchView.setIncognitoKeyboardEnabled(isIncognitoKeyboardEnabled: Boolean) 
   imeOptions = setIncognitoFlag(imeOptions, isIncognitoKeyboardEnabled)
 }
 
-private fun setIncognitoFlag(imeOptions: Int, isIncognitoKeyboardEnabled: Boolean): Int {
-  return if (isIncognitoKeyboardEnabled) {
-    imeOptions or INCOGNITO_KEYBOARD
-  } else {
-    imeOptions and INCOGNITO_KEYBOARD.inv()
-  }
+private fun setIncognitoFlag(imeOptions: Int, isIncognitoKeyboardEnabled: Boolean): Int = if (isIncognitoKeyboardEnabled) {
+  imeOptions or INCOGNITO_KEYBOARD
+} else {
+  imeOptions and INCOGNITO_KEYBOARD.inv()
 }

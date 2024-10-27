@@ -37,7 +37,6 @@ The following dependencies are licensed under Apache License, Version 2.0:
 * Core Kotlin Extensions (https://developer.android.com/jetpack/androidx)
 * Curtains (https://github.com/square/curtains/)
 * Dexmaker (https://github.com/linkedin/dexmaker)
-* Exhaustive compiler (https://github.com/cashapp/exhasutive/)
 * Experimental annotation (https://developer.android.com/jetpack/androidx/releases/annotation#1.1.0)
 * Experimental annotation (https://developer.android.com/jetpack/androidx/releases/annotation#1.3.1)
 * FindBugs-jsr305 (http://findbugs.sourceforge.net/)

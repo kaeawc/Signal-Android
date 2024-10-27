@@ -28,22 +28,18 @@ class BufferedKyberPreKeyStore(private val selfServiceId: ServiceId) : SignalSer
   private val removedIfNotLastResort: MutableSet<Int> = mutableSetOf()
 
   @kotlin.jvm.Throws(InvalidKeyIdException::class)
-  override fun loadKyberPreKey(kyberPreKeyId: Int): KyberPreKeyRecord {
-    return store.computeIfAbsent(kyberPreKeyId) {
-      SignalDatabase.kyberPreKeys.get(selfServiceId, kyberPreKeyId) ?: throw InvalidKeyIdException("Missing kyber prekey with ID: $kyberPreKeyId")
-    }.record
-  }
+  override fun loadKyberPreKey(kyberPreKeyId: Int): KyberPreKeyRecord = store.computeIfAbsent(kyberPreKeyId) {
+    SignalDatabase.kyberPreKeys.get(selfServiceId, kyberPreKeyId) ?: throw InvalidKeyIdException("Missing kyber prekey with ID: $kyberPreKeyId")
+  }.record
 
-  override fun loadKyberPreKeys(): List<KyberPreKeyRecord> {
-    return if (hasLoadedAll) {
-      store.values.map { it.record }
-    } else {
-      val models = SignalDatabase.kyberPreKeys.getAll(selfServiceId)
-      models.forEach { store[it.record.id] = it }
-      hasLoadedAll = true
+  override fun loadKyberPreKeys(): List<KyberPreKeyRecord> = if (hasLoadedAll) {
+    store.values.map { it.record }
+  } else {
+    val models = SignalDatabase.kyberPreKeys.getAll(selfServiceId)
+    models.forEach { store[it.record.id] = it }
+    hasLoadedAll = true
 
-      models.map { it.record }
-    }
+    models.map { it.record }
   }
 
   override fun loadLastResortKyberPreKeys(): List<KyberPreKeyRecord> {

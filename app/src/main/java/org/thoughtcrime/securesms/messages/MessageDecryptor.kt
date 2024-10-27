@@ -1,5 +1,6 @@
 package org.thoughtcrime.securesms.messages
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
@@ -426,6 +427,7 @@ object MessageDecryptor {
     }
   }
 
+  @SuppressLint("MissingPermission")
   private fun postDecryptionErrorNotification(context: Context) {
     val notification: Notification = NotificationCompat.Builder(context, NotificationChannels.getInstance().FAILURES)
       .setSmallIcon(R.drawable.ic_notification)
@@ -437,6 +439,7 @@ object MessageDecryptor {
     NotificationManagerCompat.from(context).notify(NotificationIds.INTERNAL_ERROR, notification)
   }
 
+  @SuppressLint("MissingPermission")
   private fun postInvalidMessageNotification(context: Context, message: String) {
     val notification: Notification = NotificationCompat.Builder(context, NotificationChannels.getInstance().FAILURES)
       .setSmallIcon(R.drawable.ic_notification)
@@ -448,28 +451,18 @@ object MessageDecryptor {
     NotificationManagerCompat.from(context).notify(NotificationIds.INTERNAL_ERROR, notification)
   }
 
-  private fun logPrefix(envelope: Envelope): String {
-    return logPrefix(envelope.timestamp!!, ServiceId.parseOrNull(envelope.sourceServiceId)?.logString() ?: "<sealed>", envelope.sourceDevice)
-  }
+  private fun logPrefix(envelope: Envelope): String = logPrefix(envelope.timestamp!!, ServiceId.parseOrNull(envelope.sourceServiceId)?.logString() ?: "<sealed>", envelope.sourceDevice)
 
-  private fun logPrefix(envelope: Envelope, sender: ServiceId?): String {
-    return logPrefix(envelope.timestamp!!, sender?.logString() ?: "?", envelope.sourceDevice)
-  }
+  private fun logPrefix(envelope: Envelope, sender: ServiceId?): String = logPrefix(envelope.timestamp!!, sender?.logString() ?: "?", envelope.sourceDevice)
 
-  private fun logPrefix(envelope: Envelope, sender: String): String {
-    return logPrefix(envelope.timestamp!!, ServiceId.parseOrNull(sender)?.logString() ?: "?", envelope.sourceDevice)
-  }
+  private fun logPrefix(envelope: Envelope, sender: String): String = logPrefix(envelope.timestamp!!, ServiceId.parseOrNull(sender)?.logString() ?: "?", envelope.sourceDevice)
 
-  private fun logPrefix(envelope: Envelope, cipherResult: SignalServiceCipherResult): String {
-    return logPrefix(envelope.timestamp!!, cipherResult.metadata.sourceServiceId.logString(), cipherResult.metadata.sourceDeviceId)
-  }
+  private fun logPrefix(envelope: Envelope, cipherResult: SignalServiceCipherResult): String = logPrefix(envelope.timestamp!!, cipherResult.metadata.sourceServiceId.logString(), cipherResult.metadata.sourceDeviceId)
 
-  private fun logPrefix(envelope: Envelope, exception: ProtocolException): String {
-    return if (exception.sender != null) {
-      logPrefix(envelope.timestamp!!, ServiceId.parseOrNull(exception.sender)?.logString() ?: "?", exception.senderDevice)
-    } else {
-      logPrefix(envelope.timestamp!!, envelope.sourceServiceId, envelope.sourceDevice)
-    }
+  private fun logPrefix(envelope: Envelope, exception: ProtocolException): String = if (exception.sender != null) {
+    logPrefix(envelope.timestamp!!, ServiceId.parseOrNull(exception.sender)?.logString() ?: "?", exception.senderDevice)
+  } else {
+    logPrefix(envelope.timestamp!!, envelope.sourceServiceId, envelope.sourceDevice)
   }
 
   private fun logPrefix(timestamp: Long, sender: String?, deviceId: Int?): String {
@@ -494,44 +487,36 @@ object MessageDecryptor {
     return SendRetryReceiptJob(sender.id, Optional.ofNullable(groupId), decryptionErrorMessage)
   }
 
-  private fun ProtocolException.parseGroupId(envelope: Envelope): GroupId? {
-    return if (this.groupId.isPresent) {
-      try {
-        GroupId.push(this.groupId.get())
-      } catch (e: BadGroupIdException) {
-        Log.w(TAG, "[${envelope.timestamp}] Bad groupId!", true)
-        null
-      }
-    } else {
+  private fun ProtocolException.parseGroupId(envelope: Envelope): GroupId? = if (this.groupId.isPresent) {
+    try {
+      GroupId.push(this.groupId.get())
+    } catch (e: BadGroupIdException) {
+      Log.w(TAG, "[${envelope.timestamp}] Bad groupId!", true)
       null
     }
+  } else {
+    null
   }
 
-  private fun Int.toCiphertextMessageType(): Int {
-    return when (this) {
-      Envelope.Type.CIPHERTEXT.value -> CiphertextMessage.WHISPER_TYPE
-      Envelope.Type.PREKEY_BUNDLE.value -> CiphertextMessage.PREKEY_TYPE
-      Envelope.Type.UNIDENTIFIED_SENDER.value -> CiphertextMessage.SENDERKEY_TYPE
-      Envelope.Type.PLAINTEXT_CONTENT.value -> CiphertextMessage.PLAINTEXT_CONTENT_TYPE
-      else -> CiphertextMessage.WHISPER_TYPE
-    }
+  private fun Int.toCiphertextMessageType(): Int = when (this) {
+    Envelope.Type.CIPHERTEXT.value -> CiphertextMessage.WHISPER_TYPE
+    Envelope.Type.PREKEY_BUNDLE.value -> CiphertextMessage.PREKEY_TYPE
+    Envelope.Type.UNIDENTIFIED_SENDER.value -> CiphertextMessage.SENDERKEY_TYPE
+    Envelope.Type.PLAINTEXT_CONTENT.value -> CiphertextMessage.PLAINTEXT_CONTENT_TYPE
+    else -> CiphertextMessage.WHISPER_TYPE
   }
 
-  private fun ProtocolException.toErrorMetadata(): ErrorMetadata {
-    return ErrorMetadata(
-      sender = this.sender,
-      senderDevice = this.senderDevice,
-      groupId = if (this.groupId.isPresent) GroupId.v2(GroupMasterKey(this.groupId.get())) else null
-    )
-  }
+  private fun ProtocolException.toErrorMetadata(): ErrorMetadata = ErrorMetadata(
+    sender = this.sender,
+    senderDevice = this.senderDevice,
+    groupId = if (this.groupId.isPresent) GroupId.v2(GroupMasterKey(this.groupId.get())) else null
+  )
 
-  private fun SignalServiceCipherResult.toErrorMetadata(): ErrorMetadata {
-    return ErrorMetadata(
-      sender = this.metadata.sourceServiceId.toString(),
-      senderDevice = this.metadata.sourceDeviceId,
-      groupId = null
-    )
-  }
+  private fun SignalServiceCipherResult.toErrorMetadata(): ErrorMetadata = ErrorMetadata(
+    sender = this.metadata.sourceServiceId.toString(),
+    senderDevice = this.metadata.sourceDeviceId,
+    groupId = null
+  )
 
   sealed interface Result {
     val envelope: Envelope
@@ -553,7 +538,8 @@ object MessageDecryptor {
       override val serverDeliveredTimestamp: Long,
       override val errorMetadata: ErrorMetadata,
       override val followUpOperations: List<FollowUpOperation>
-    ) : Result, Error
+    ) : Result,
+      Error
 
     /** The envelope used an invalid version of the Signal protocol. */
     class InvalidVersion(
@@ -561,7 +547,8 @@ object MessageDecryptor {
       override val serverDeliveredTimestamp: Long,
       override val errorMetadata: ErrorMetadata,
       override val followUpOperations: List<FollowUpOperation>
-    ) : Result, Error
+    ) : Result,
+      Error
 
     /** The envelope used an old format that hasn't been used since 2015. This shouldn't be happening. */
     class LegacyMessage(
@@ -569,7 +556,8 @@ object MessageDecryptor {
       override val serverDeliveredTimestamp: Long,
       override val errorMetadata: ErrorMetadata,
       override val followUpOperations: List<FollowUpOperation>
-    ) : Result, Error
+    ) : Result,
+      Error
 
     /**
      * Indicates the that the [org.whispersystems.signalservice.internal.push.SignalServiceProtos.DataMessage.getRequiredProtocolVersion]
@@ -580,7 +568,8 @@ object MessageDecryptor {
       override val serverDeliveredTimestamp: Long,
       override val errorMetadata: ErrorMetadata,
       override val followUpOperations: List<FollowUpOperation>
-    ) : Result, Error
+    ) : Result,
+      Error
 
     /** There are no further results from this envelope that need to be processed. There may still be [followUpOperations]. */
     class Ignore(

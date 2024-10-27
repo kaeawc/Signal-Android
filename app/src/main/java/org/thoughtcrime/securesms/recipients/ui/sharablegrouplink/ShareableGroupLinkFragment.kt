@@ -19,9 +19,10 @@ import org.thoughtcrime.securesms.util.views.SimpleProgressDialog
 /**
  * Fragment providing user options to manage group links.
  */
-class ShareableGroupLinkFragment : DSLSettingsFragment(
-  titleId = R.string.ShareableGroupLinkDialogFragment__group_link
-) {
+class ShareableGroupLinkFragment :
+  DSLSettingsFragment(
+    titleId = R.string.ShareableGroupLinkDialogFragment__group_link
+  ) {
 
   private var busyDialog: SimpleProgressDialog.DismissibleDialog? = null
 
@@ -64,48 +65,46 @@ class ShareableGroupLinkFragment : DSLSettingsFragment(
     Toast.makeText(requireContext(), getString(message), Toast.LENGTH_SHORT).show()
   }
 
-  private fun getConfiguration(groupLink: GroupLinkUrlAndStatus, canEdit: Boolean): DSLConfiguration {
-    return configure {
-      switchPref(
-        title = DSLSettingsText.from(R.string.ShareableGroupLinkDialogFragment__group_link),
-        summary = if (groupLink.isEnabled) DSLSettingsText.from(formatForFullWidthWrapping(groupLink.url)) else null,
-        isChecked = groupLink.isEnabled,
-        isEnabled = canEdit,
-        onClick = {
-          viewModel.onToggleGroupLink()
-        }
-      )
+  private fun getConfiguration(groupLink: GroupLinkUrlAndStatus, canEdit: Boolean): DSLConfiguration = configure {
+    switchPref(
+      title = DSLSettingsText.from(R.string.ShareableGroupLinkDialogFragment__group_link),
+      summary = if (groupLink.isEnabled) DSLSettingsText.from(formatForFullWidthWrapping(groupLink.url)) else null,
+      isChecked = groupLink.isEnabled,
+      isEnabled = canEdit,
+      onClick = {
+        viewModel.onToggleGroupLink()
+      }
+    )
 
-      clickPref(
-        title = DSLSettingsText.from(R.string.ShareableGroupLinkDialogFragment__share),
-        icon = DSLSettingsIcon.from(R.drawable.ic_share_24_tinted),
-        isEnabled = groupLink.isEnabled,
-        onClick = {
-          GroupLinkBottomSheetDialogFragment.show(childFragmentManager, groupId)
-        }
-      )
+    clickPref(
+      title = DSLSettingsText.from(R.string.ShareableGroupLinkDialogFragment__share),
+      icon = DSLSettingsIcon.from(R.drawable.ic_share_24_tinted),
+      isEnabled = groupLink.isEnabled,
+      onClick = {
+        GroupLinkBottomSheetDialogFragment.show(childFragmentManager, groupId)
+      }
+    )
 
-      clickPref(
-        title = DSLSettingsText.from(R.string.ShareableGroupLinkDialogFragment__reset_link),
-        icon = DSLSettingsIcon.from(R.drawable.ic_reset_24_tinted),
-        isEnabled = groupLink.isEnabled && canEdit,
-        onClick = {
-          onResetGroupLink()
-        }
-      )
+    clickPref(
+      title = DSLSettingsText.from(R.string.ShareableGroupLinkDialogFragment__reset_link),
+      icon = DSLSettingsIcon.from(R.drawable.ic_reset_24_tinted),
+      isEnabled = groupLink.isEnabled && canEdit,
+      onClick = {
+        onResetGroupLink()
+      }
+    )
 
-      dividerPref()
+    dividerPref()
 
-      switchPref(
-        title = DSLSettingsText.from(R.string.ShareableGroupLinkDialogFragment__require_admin_approval),
-        summary = DSLSettingsText.from(R.string.ShareableGroupLinkDialogFragment__require_an_admin_to_approve_new_members_joining_via_the_group_link),
-        isEnabled = groupLink.isEnabled && canEdit,
-        isChecked = groupLink.isRequiresApproval,
-        onClick = {
-          viewModel.onToggleApproveMembers()
-        }
-      )
-    }
+    switchPref(
+      title = DSLSettingsText.from(R.string.ShareableGroupLinkDialogFragment__require_admin_approval),
+      summary = DSLSettingsText.from(R.string.ShareableGroupLinkDialogFragment__require_an_admin_to_approve_new_members_joining_via_the_group_link),
+      isEnabled = groupLink.isEnabled && canEdit,
+      isChecked = groupLink.isRequiresApproval,
+      onClick = {
+        viewModel.onToggleApproveMembers()
+      }
+    )
   }
 
   private fun onResetGroupLink() {

@@ -88,21 +88,17 @@ object RemoteMegaphoneRepository {
 
   @WorkerThread
   @JvmStatic
-  fun getRemoteMegaphoneToShow(now: Long = System.currentTimeMillis()): RemoteMegaphoneRecord? {
-    return db.getPotentialMegaphonesAndClearOld(now)
-      .asSequence()
-      .filter { it.imageUrl == null || it.imageUri != null }
-      .filter { it.countries == null || LocaleRemoteConfig.shouldShowReleaseNote(it.uuid, it.countries) }
-      .filter { it.conditionalId == null || checkCondition(it.conditionalId) }
-      .filter { it.snoozedAt == 0L || checkSnooze(it, now) }
-      .firstOrNull()
-  }
+  fun getRemoteMegaphoneToShow(now: Long = System.currentTimeMillis()): RemoteMegaphoneRecord? = db.getPotentialMegaphonesAndClearOld(now)
+    .asSequence()
+    .filter { it.imageUrl == null || it.imageUri != null }
+    .filter { it.countries == null || LocaleRemoteConfig.shouldShowReleaseNote(it.uuid, it.countries) }
+    .filter { it.conditionalId == null || checkCondition(it.conditionalId) }
+    .filter { it.snoozedAt == 0L || checkSnooze(it, now) }
+    .firstOrNull()
 
   @AnyThread
   @JvmStatic
-  fun getAction(action: ActionId): Action {
-    return actions[action.id] ?: finish
-  }
+  fun getAction(action: ActionId): Action = actions[action.id] ?: finish
 
   @AnyThread
   @JvmStatic
@@ -112,12 +108,10 @@ object RemoteMegaphoneRepository {
     }
   }
 
-  private fun checkCondition(conditionalId: String): Boolean {
-    return when (conditionalId) {
-      "standard_donate" -> shouldShowDonateMegaphone()
-      "internal_user" -> RemoteConfig.internalUser
-      else -> false
-    }
+  private fun checkCondition(conditionalId: String): Boolean = when (conditionalId) {
+    "standard_donate" -> shouldShowDonateMegaphone()
+    "internal_user" -> RemoteConfig.internalUser
+    else -> false
   }
 
   private fun checkSnooze(record: RemoteMegaphoneRecord, now: Long): Boolean {
@@ -131,16 +125,14 @@ object RemoteMegaphoneRepository {
     return gapDays == null || (record.snoozedAt + gapDays.days.inWholeMilliseconds <= now)
   }
 
-  private fun shouldShowDonateMegaphone(): Boolean {
-    return VersionTracker.getDaysSinceFirstInstalled(context) >= 7 &&
-      InAppDonations.hasAtLeastOnePaymentMethodAvailable() &&
-      !InAppPaymentsRepository.hasPendingDonation() &&
-      Recipient.self()
-        .badges
-        .stream()
-        .filter { obj: Badge? -> Objects.nonNull(obj) }
-        .noneMatch { (_, category): Badge -> category === Badge.Category.Donor }
-  }
+  private fun shouldShowDonateMegaphone(): Boolean = VersionTracker.getDaysSinceFirstInstalled(context) >= 7 &&
+    InAppDonations.hasAtLeastOnePaymentMethodAvailable() &&
+    !InAppPaymentsRepository.hasPendingDonation() &&
+    Recipient.self()
+      .badges
+      .stream()
+      .filter { obj: Badge? -> Objects.nonNull(obj) }
+      .noneMatch { (_, category): Badge -> category === Badge.Category.Donor }
 
   fun interface Action {
     fun run(context: Context, controller: MegaphoneActionController, remoteMegaphone: RemoteMegaphoneRecord)
@@ -149,12 +141,10 @@ object RemoteMegaphoneRepository {
   /**
    * Gets the int at the specified index, or last index of array if larger then array length, or null if unable to parse json
    */
-  private fun JSONArray.getIntOrNull(index: Int): Int? {
-    return try {
-      getInt(min(index, length() - 1))
-    } catch (e: JSONException) {
-      Log.w(TAG, "Unable to parse", e)
-      null
-    }
+  private fun JSONArray.getIntOrNull(index: Int): Int? = try {
+    getInt(min(index, length() - 1))
+  } catch (e: JSONException) {
+    Log.w(TAG, "Unable to parse", e)
+    null
   }
 }

@@ -16,6 +16,8 @@ dependencies {
   implementation(libs.androidx.lifecycle.common.java8)
   implementation(libs.androidx.lifecycle.livedata.core)
 
+//  implementation(libs.androidx.compose.runtime)
+
   implementation(libs.google.guava.android)
   implementation(libs.google.zxing.android.integration)
   implementation(libs.google.zxing.core)

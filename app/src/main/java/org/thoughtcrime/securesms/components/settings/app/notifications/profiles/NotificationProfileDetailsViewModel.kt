@@ -61,36 +61,24 @@ class NotificationProfileDetailsViewModel(private val profileId: Long, private v
     disposables.clear()
   }
 
-  fun addMember(id: RecipientId): Single<NotificationProfile> {
-    return repository.addMember(profileId, id)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun addMember(id: RecipientId): Single<NotificationProfile> = repository.addMember(profileId, id)
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun removeMember(id: RecipientId): Single<Recipient> {
-    return repository.removeMember(profileId, id)
-      .map { Recipient.resolved(id) }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun removeMember(id: RecipientId): Single<Recipient> = repository.removeMember(profileId, id)
+    .map { Recipient.resolved(id) }
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun deleteProfile(): Completable {
-    return repository.deleteProfile(profileId)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun deleteProfile(): Completable = repository.deleteProfile(profileId)
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun toggleEnabled(profile: NotificationProfile): Completable {
-    return repository.manuallyToggleProfile(profile)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun toggleEnabled(profile: NotificationProfile): Completable = repository.manuallyToggleProfile(profile)
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun toggleAllowAllMentions(): Single<NotificationProfile> {
-    return repository.toggleAllowAllMentions(profileId)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun toggleAllowAllMentions(): Single<NotificationProfile> = repository.toggleAllowAllMentions(profileId)
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun toggleAllowAllCalls(): Single<NotificationProfile> {
-    return repository.toggleAllowAllCalls(profileId)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun toggleAllowAllCalls(): Single<NotificationProfile> = repository.toggleAllowAllCalls(profileId)
+    .observeOn(AndroidSchedulers.mainThread())
 
   fun showAllMembers() {
     store.update { s ->
@@ -114,8 +102,6 @@ class NotificationProfileDetailsViewModel(private val profileId: Long, private v
   }
 
   class Factory(private val profileId: Long) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(NotificationProfileDetailsViewModel(profileId, NotificationProfilesRepository()))!!
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(NotificationProfileDetailsViewModel(profileId, NotificationProfilesRepository()))!!
   }
 }

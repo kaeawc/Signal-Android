@@ -56,14 +56,10 @@ object MediaGallerySelectableItem {
   }
 
   class FolderModel(val mediaFolder: MediaFolder) : MappingModel<FolderModel> {
-    override fun areItemsTheSame(newItem: FolderModel): Boolean {
-      return mediaFolder.bucketId == newItem.mediaFolder.bucketId
-    }
+    override fun areItemsTheSame(newItem: FolderModel): Boolean = mediaFolder.bucketId == newItem.mediaFolder.bucketId
 
-    override fun areContentsTheSame(newItem: FolderModel): Boolean {
-      return mediaFolder.bucketId == newItem.mediaFolder.bucketId &&
-        mediaFolder.thumbnailUri == newItem.mediaFolder.thumbnailUri
-    }
+    override fun areContentsTheSame(newItem: FolderModel): Boolean = mediaFolder.bucketId == newItem.mediaFolder.bucketId &&
+      mediaFolder.thumbnailUri == newItem.mediaFolder.thumbnailUri
   }
 
   abstract class BaseViewHolder<T : MappingModel<T>>(itemView: View) : MappingViewHolder<T>(itemView) {
@@ -87,21 +83,15 @@ object MediaGallerySelectableItem {
   }
 
   data class FileModel(val media: Media, val isSelected: Boolean, val selectionOneBasedIndex: Int) : MappingModel<FileModel> {
-    override fun areItemsTheSame(newItem: FileModel): Boolean {
-      return newItem.media == media
-    }
+    override fun areItemsTheSame(newItem: FileModel): Boolean = newItem.media == media
 
-    override fun areContentsTheSame(newItem: FileModel): Boolean {
-      return newItem.media == media && isSelected == newItem.isSelected && selectionOneBasedIndex == newItem.selectionOneBasedIndex
-    }
+    override fun areContentsTheSame(newItem: FileModel): Boolean = newItem.media == media && isSelected == newItem.isSelected && selectionOneBasedIndex == newItem.selectionOneBasedIndex
 
-    override fun getChangePayload(newItem: FileModel): Any? {
-      return when {
-        newItem.media != media -> null
-        newItem.isSelected != isSelected -> PAYLOAD_CHECK_CHANGED
-        newItem.selectionOneBasedIndex != selectionOneBasedIndex -> PAYLOAD_INDEX_CHANGED
-        else -> null
-      }
+    override fun getChangePayload(newItem: FileModel): Any? = when {
+      newItem.media != media -> null
+      newItem.isSelected != isSelected -> PAYLOAD_CHECK_CHANGED
+      newItem.selectionOneBasedIndex != selectionOneBasedIndex -> PAYLOAD_INDEX_CHANGED
+      else -> null
     }
   }
 
@@ -166,11 +156,11 @@ object MediaGallerySelectableItem {
   }
 
   private class ErrorLoggingRequestListener(private val tag: String) : RequestListener<Drawable> {
-    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
       Log.w(tag, "Failed to load media.", e)
       return false
     }
 
-    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean = false
+    override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>?, dataSource: DataSource, isFirstResource: Boolean): Boolean = false
   }
 }

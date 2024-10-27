@@ -15,9 +15,7 @@ data class LinkPreviewViewThumbnailState(
   @IgnoredOnParcel
   val downloadListener: SlidesClickedListener? = null
 ) : Parcelable {
-  fun withDownloadListener(downloadListener: SlidesClickedListener?): LinkPreviewViewThumbnailState {
-    return copy(downloadListener = downloadListener)
-  }
+  fun withDownloadListener(downloadListener: SlidesClickedListener?): LinkPreviewViewThumbnailState = copy(downloadListener = downloadListener)
 
   fun applyState(thumbnail: Stub<OutlinedThumbnailView>) {
     if (thumbnail.resolved()) {

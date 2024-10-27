@@ -27,8 +27,6 @@ internal class ClearGlideCacheMigrationJob(
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<ClearGlideCacheMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): ClearGlideCacheMigrationJob {
-      return ClearGlideCacheMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): ClearGlideCacheMigrationJob = ClearGlideCacheMigrationJob(parameters)
   }
 }

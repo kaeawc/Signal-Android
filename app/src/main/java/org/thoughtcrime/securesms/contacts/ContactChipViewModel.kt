@@ -72,9 +72,7 @@ class ContactChipViewModel : ViewModel() {
     }
   }
 
-  private fun getOrCreateRecipientId(selectedContact: SelectedContact): Single<RecipientId> {
-    return Single.fromCallable {
-      selectedContact.getOrCreateRecipientId(AppDependencies.application)
-    }
+  private fun getOrCreateRecipientId(selectedContact: SelectedContact): Single<RecipientId> = Single.fromCallable {
+    selectedContact.getOrCreateRecipientId(AppDependencies.application)
   }
 }

@@ -94,25 +94,21 @@ sealed class ConversationSettingsViewModel(
     sharedMediaUpdateTrigger.postValue(Unit)
   }
 
-  fun onReportSpam(): Maybe<Unit> {
-    return if (store.state.threadId > 0 && store.state.recipient != Recipient.UNKNOWN) {
-      messageRequestRepository.reportSpamMessageRequest(store.state.recipient.id, store.state.threadId)
-        .observeOn(AndroidSchedulers.mainThread())
-        .toSingle { Unit }
-        .toMaybe()
-    } else {
-      Maybe.empty()
-    }
+  fun onReportSpam(): Maybe<Unit> = if (store.state.threadId > 0 && store.state.recipient != Recipient.UNKNOWN) {
+    messageRequestRepository.reportSpamMessageRequest(store.state.recipient.id, store.state.threadId)
+      .observeOn(AndroidSchedulers.mainThread())
+      .toSingle { Unit }
+      .toMaybe()
+  } else {
+    Maybe.empty()
   }
 
-  fun onBlockAndReportSpam(): Maybe<Result<Unit, GroupChangeFailureReason>> {
-    return if (store.state.threadId > 0 && store.state.recipient != Recipient.UNKNOWN) {
-      messageRequestRepository.blockAndReportSpamMessageRequest(store.state.recipient.id, store.state.threadId)
-        .observeOn(AndroidSchedulers.mainThread())
-        .toMaybe()
-    } else {
-      Maybe.empty()
-    }
+  fun onBlockAndReportSpam(): Maybe<Result<Unit, GroupChangeFailureReason>> = if (store.state.threadId > 0 && store.state.recipient != Recipient.UNKNOWN) {
+    messageRequestRepository.blockAndReportSpamMessageRequest(store.state.recipient.id, store.state.threadId)
+      .observeOn(AndroidSchedulers.mainThread())
+      .toMaybe()
+  } else {
+    Maybe.empty()
   }
 
   open fun refreshRecipient(): Unit = error("This ViewModel does not support this interaction")
@@ -409,12 +405,10 @@ sealed class ConversationSettingsViewModel(
       }
     }
 
-    private fun getLegacyGroupState(): LegacyGroupPreference.State {
-      return if (groupId.isMms) {
-        LegacyGroupPreference.State.MMS_WARNING
-      } else {
-        LegacyGroupPreference.State.NONE
-      }
+    private fun getLegacyGroupState(): LegacyGroupPreference.State = if (groupId.isMms) {
+      LegacyGroupPreference.State.MMS_WARNING
+    } else {
+      LegacyGroupPreference.State.NONE
     }
 
     override fun onAddToGroup() {
@@ -491,17 +485,15 @@ sealed class ConversationSettingsViewModel(
     private val messageRequestRepository: MessageRequestRepository
   ) : ViewModelProvider.Factory {
 
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(
-        modelClass.cast(
-          when {
-            recipientId != null -> RecipientSettingsViewModel(recipientId, callMessageIds, repository, messageRequestRepository)
-            groupId != null -> GroupSettingsViewModel(groupId, callMessageIds, repository, messageRequestRepository)
-            else -> error("One of RecipientId or GroupId required.")
-          }
-        )
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(
+      modelClass.cast(
+        when {
+          recipientId != null -> RecipientSettingsViewModel(recipientId, callMessageIds, repository, messageRequestRepository)
+          groupId != null -> GroupSettingsViewModel(groupId, callMessageIds, repository, messageRequestRepository)
+          else -> error("One of RecipientId or GroupId required.")
+        }
       )
-    }
+    )
   }
 
   private class DescriptionState(

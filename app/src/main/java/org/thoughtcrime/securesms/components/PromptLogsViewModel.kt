@@ -54,8 +54,6 @@ class PromptLogsViewModel(private val context: Application, private val purpose:
   }
 
   class Factory(private val context: Application, private val purpose: DebugLogsPromptDialogFragment.Purpose) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(PromptLogsViewModel(context, purpose))!!
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(PromptLogsViewModel(context, purpose))!!
   }
 }

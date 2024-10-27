@@ -32,11 +32,7 @@ sealed class UsernameState {
     override val username: Username
   ) : UsernameState()
 
-  fun getNickname(): String? {
-    return username?.nickname
-  }
+  fun getNickname(): String? = username?.nickname
 
-  fun getDiscriminator(): String? {
-    return username?.discriminator
-  }
+  fun getDiscriminator(): String? = username?.discriminator
 }

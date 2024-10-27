@@ -34,14 +34,12 @@ sealed class DSLSettingsIcon {
     @ColorRes private val backgroundTint: Int,
     @Px private val insetPx: Int
   ) : DSLSettingsIcon() {
-    override fun resolve(context: Context): Drawable {
-      return LayerDrawable(
-        arrayOf(
-          FromResource(backgroundId, backgroundTint).resolve(context),
-          InsetDrawable(FromResource(iconId, iconTintId).resolve(context), insetPx, insetPx, insetPx, insetPx)
-        )
+    override fun resolve(context: Context): Drawable = LayerDrawable(
+      arrayOf(
+        FromResource(backgroundId, backgroundTint).resolve(context),
+        InsetDrawable(FromResource(iconId, iconTintId).resolve(context), insetPx, insetPx, insetPx, insetPx)
       )
-    }
+    )
   }
 
   private data class FromDrawable(
@@ -60,9 +58,7 @@ sealed class DSLSettingsIcon {
       @DrawableRes backgroundId: Int,
       @ColorRes backgroundTint: Int,
       @Px insetPx: Int = 0
-    ): DSLSettingsIcon {
-      return FromResourceWithBackground(iconId, iconTintId, backgroundId, backgroundTint, insetPx)
-    }
+    ): DSLSettingsIcon = FromResourceWithBackground(iconId, iconTintId, backgroundId, backgroundTint, insetPx)
 
     @JvmStatic
     fun from(@DrawableRes iconId: Int, @ColorRes iconTintId: Int = R.color.signal_icon_tint_primary): DSLSettingsIcon = FromResource(iconId, iconTintId)

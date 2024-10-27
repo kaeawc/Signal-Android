@@ -58,8 +58,6 @@ internal class StorageFixLocalUnknownMigrationJob(
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<StorageFixLocalUnknownMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): StorageFixLocalUnknownMigrationJob {
-      return StorageFixLocalUnknownMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): StorageFixLocalUnknownMigrationJob = StorageFixLocalUnknownMigrationJob(parameters)
   }
 }

@@ -76,7 +76,9 @@ import org.thoughtcrime.securesms.util.viewModel
 /**
  * Fragment for inputting necessary bank transfer information for iDEAL donation
  */
-class IdealTransferDetailsFragment : ComposeFragment(), InAppPaymentCheckoutDelegate.ErrorHandlerCallback {
+class IdealTransferDetailsFragment :
+  ComposeFragment(),
+  InAppPaymentCheckoutDelegate.ErrorHandlerCallback {
 
   private val args: IdealTransferDetailsFragmentArgs by navArgs()
   private val viewModel: IdealTransferDetailsViewModel by viewModel {

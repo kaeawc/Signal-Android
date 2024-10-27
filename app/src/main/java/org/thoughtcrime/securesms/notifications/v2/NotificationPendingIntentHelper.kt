@@ -11,21 +11,17 @@ import org.signal.core.util.logging.Log
 object NotificationPendingIntentHelper {
   private val TAG = Log.tag(NotificationPendingIntentHelper::class.java)
 
-  fun getBroadcast(context: Context, requestCode: Int, intent: Intent, flags: Int): PendingIntent? {
-    return try {
-      PendingIntent.getBroadcast(context, requestCode, intent, flags)
-    } catch (e: SecurityException) {
-      Log.w(TAG, "Too many pending intents device quirk: ${e.message}")
-      null
-    }
+  fun getBroadcast(context: Context, requestCode: Int, intent: Intent, flags: Int): PendingIntent? = try {
+    PendingIntent.getBroadcast(context, requestCode, intent, flags)
+  } catch (e: SecurityException) {
+    Log.w(TAG, "Too many pending intents device quirk: ${e.message}")
+    null
   }
 
-  fun getActivity(context: Context, requestCode: Int, intent: Intent, flags: Int): PendingIntent? {
-    return try {
-      PendingIntent.getActivity(context, requestCode, intent, flags)
-    } catch (e: SecurityException) {
-      Log.w(TAG, "Too many pending intents device quirk: ${e.message}")
-      null
-    }
+  fun getActivity(context: Context, requestCode: Int, intent: Intent, flags: Int): PendingIntent? = try {
+    PendingIntent.getActivity(context, requestCode, intent, flags)
+  } catch (e: SecurityException) {
+    Log.w(TAG, "Too many pending intents device quirk: ${e.message}")
+    null
   }
 }

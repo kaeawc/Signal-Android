@@ -31,7 +31,9 @@ import org.thoughtcrime.securesms.util.ViewUtil
 import kotlin.math.max
 import kotlin.math.min
 
-class StoryViewerActivity : PassphraseRequiredActivity(), VoiceNoteMediaControllerOwner {
+class StoryViewerActivity :
+  PassphraseRequiredActivity(),
+  VoiceNoteMediaControllerOwner {
 
   private val viewModel: StoryVolumeViewModel by viewModels()
   private val storyViewStateViewModel: StoryViewStateViewModel by viewModels()
@@ -174,8 +176,6 @@ class StoryViewerActivity : PassphraseRequiredActivity(), VoiceNoteMediaControll
     fun createIntent(
       context: Context,
       storyViewerArgs: StoryViewerArgs
-    ): Intent {
-      return Intent(context, StoryViewerActivity::class.java).putExtra(ARGS, storyViewerArgs)
-    }
+    ): Intent = Intent(context, StoryViewerActivity::class.java).putExtra(ARGS, storyViewerArgs)
   }
 }

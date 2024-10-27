@@ -29,11 +29,7 @@ data class BatchArchiveMediaResult(
       .asSequence()
       .filter { it.status == 410 }
 
-  fun mediaIdToAttachmentId(mediaId: String): AttachmentId {
-    return mediaIdToAttachmentId[mediaId]!!
-  }
+  fun mediaIdToAttachmentId(mediaId: String): AttachmentId = mediaIdToAttachmentId[mediaId]!!
 
-  fun attachmentIdToMediaName(attachmentId: AttachmentId): String {
-    return attachmentIdToMediaName[attachmentId]!!
-  }
+  fun attachmentIdToMediaName(attachmentId: AttachmentId): String = attachmentIdToMediaName[attachmentId]!!
 }

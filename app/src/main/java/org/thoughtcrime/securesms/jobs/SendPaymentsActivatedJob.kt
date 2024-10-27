@@ -56,17 +56,13 @@ class SendPaymentsActivatedJob(parameters: Parameters) : BaseJob(parameters) {
     }
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return false
-  }
+  override fun onShouldRetry(e: Exception): Boolean = false
 
   override fun onFailure() {
     Log.w(TAG, "Failed to submit send of payments activated messages")
   }
 
   class Factory : Job.Factory<SendPaymentsActivatedJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): SendPaymentsActivatedJob {
-      return SendPaymentsActivatedJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): SendPaymentsActivatedJob = SendPaymentsActivatedJob(parameters)
   }
 }

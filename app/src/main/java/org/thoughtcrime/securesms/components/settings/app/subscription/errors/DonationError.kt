@@ -136,39 +136,35 @@ sealed class DonationError(val source: DonationErrorSource, cause: Throwable) : 
     }
 
     @JvmStatic
-    fun getErrorsForSource(donationErrorSource: DonationErrorSource): Observable<DonationError> {
-      return donationErrorSubjectSourceMap[donationErrorSource]!!
-    }
+    fun getErrorsForSource(donationErrorSource: DonationErrorSource): Observable<DonationError> = donationErrorSubjectSourceMap[donationErrorSource]!!
 
     @JvmStatic
-    fun DonationError.toDonationErrorValue(): DonationErrorValue {
-      return when (this) {
-        is PaymentSetupError.GenericError -> DonationErrorValue(
-          type = DonationErrorValue.Type.PAYMENT,
-          code = ""
-        )
-        is PaymentSetupError.StripeCodedError -> DonationErrorValue(
-          type = DonationErrorValue.Type.PROCESSOR_CODE,
-          code = this.errorCode
-        )
-        is PaymentSetupError.StripeDeclinedError -> DonationErrorValue(
-          type = DonationErrorValue.Type.DECLINE_CODE,
-          code = this.declineCode.rawCode
-        )
-        is PaymentSetupError.StripeFailureCodeError -> DonationErrorValue(
-          type = DonationErrorValue.Type.FAILURE_CODE,
-          code = this.failureCode.rawCode
-        )
-        is PaymentSetupError.PayPalCodedError -> DonationErrorValue(
-          type = DonationErrorValue.Type.PROCESSOR_CODE,
-          code = this.errorCode.toString()
-        )
-        is PaymentSetupError.PayPalDeclinedError -> DonationErrorValue(
-          type = DonationErrorValue.Type.DECLINE_CODE,
-          code = this.code.code.toString()
-        )
-        else -> error("Don't know how to convert error $this")
-      }
+    fun DonationError.toDonationErrorValue(): DonationErrorValue = when (this) {
+      is PaymentSetupError.GenericError -> DonationErrorValue(
+        type = DonationErrorValue.Type.PAYMENT,
+        code = ""
+      )
+      is PaymentSetupError.StripeCodedError -> DonationErrorValue(
+        type = DonationErrorValue.Type.PROCESSOR_CODE,
+        code = this.errorCode
+      )
+      is PaymentSetupError.StripeDeclinedError -> DonationErrorValue(
+        type = DonationErrorValue.Type.DECLINE_CODE,
+        code = this.declineCode.rawCode
+      )
+      is PaymentSetupError.StripeFailureCodeError -> DonationErrorValue(
+        type = DonationErrorValue.Type.FAILURE_CODE,
+        code = this.failureCode.rawCode
+      )
+      is PaymentSetupError.PayPalCodedError -> DonationErrorValue(
+        type = DonationErrorValue.Type.PROCESSOR_CODE,
+        code = this.errorCode.toString()
+      )
+      is PaymentSetupError.PayPalDeclinedError -> DonationErrorValue(
+        type = DonationErrorValue.Type.DECLINE_CODE,
+        code = this.code.code.toString()
+      )
+      else -> error("Don't know how to convert error $this")
     }
 
     @JvmStatic

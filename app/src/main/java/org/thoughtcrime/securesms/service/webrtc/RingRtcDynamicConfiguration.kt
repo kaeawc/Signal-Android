@@ -35,24 +35,16 @@ object RingRtcDynamicConfiguration {
     }
   }
 
-  fun isTelecomAllowedForDevice(): Boolean {
-    return RemoteConfig.telecomManufacturerAllowList.lowercase().asListContains(Build.MANUFACTURER.lowercase()) &&
-      !RemoteConfig.telecomModelBlocklist.lowercase().asListContains(Build.MODEL.lowercase())
-  }
+  fun isTelecomAllowedForDevice(): Boolean = RemoteConfig.telecomManufacturerAllowList.lowercase().asListContains(Build.MANUFACTURER.lowercase()) &&
+    !RemoteConfig.telecomModelBlocklist.lowercase().asListContains(Build.MODEL.lowercase())
 
-  private fun isHardwareBlocklisted(): Boolean {
-    return RemoteConfig.hardwareAecBlocklistModels.asListContains(Build.MODEL)
-  }
+  private fun isHardwareBlocklisted(): Boolean = RemoteConfig.hardwareAecBlocklistModels.asListContains(Build.MODEL)
 
-  private fun isKnownFaultyHardwareImplementation(): Boolean {
-    return Build.PRODUCT.contains(KNOWN_ISSUE_ROMS) ||
-      Build.DISPLAY.contains(KNOWN_ISSUE_ROMS) ||
-      Build.HOST.contains(KNOWN_ISSUE_ROMS)
-  }
+  private fun isKnownFaultyHardwareImplementation(): Boolean = Build.PRODUCT.contains(KNOWN_ISSUE_ROMS) ||
+    Build.DISPLAY.contains(KNOWN_ISSUE_ROMS) ||
+    Build.HOST.contains(KNOWN_ISSUE_ROMS)
 
-  private fun isSoftwareBlocklisted(): Boolean {
-    return RemoteConfig.softwareAecBlocklistModels.asListContains(Build.MODEL)
-  }
+  private fun isSoftwareBlocklisted(): Boolean = RemoteConfig.softwareAecBlocklistModels.asListContains(Build.MODEL)
 
   @JvmStatic
   fun shouldUseOboeAdm(): Boolean {
@@ -64,11 +56,7 @@ object RingRtcDynamicConfiguration {
     return RemoteConfig.oboeDeployment && isKnownFaultyHardwareImplementation() && !shouldUseJavaAdm()
   }
 
-  private fun shouldUseJavaAdm(): Boolean {
-    return RemoteConfig.useJavaAdmModels.asListContains(Build.MODEL)
-  }
+  private fun shouldUseJavaAdm(): Boolean = RemoteConfig.useJavaAdmModels.asListContains(Build.MODEL)
 
-  private fun shouldUseSoftwareAecForOboe(): Boolean {
-    return RemoteConfig.useSoftwareAecForOboeModels.asListContains(Build.MODEL)
-  }
+  private fun shouldUseSoftwareAecForOboe(): Boolean = RemoteConfig.useSoftwareAecForOboeModels.asListContains(Build.MODEL)
 }

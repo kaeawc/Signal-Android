@@ -18,30 +18,24 @@ data class DraftState(
   val messageEditDraft: DraftTable.Draft? = null
 ) {
 
-  fun copyAndClearDrafts(threadId: Long = this.threadId): DraftState {
-    return DraftState(threadId = threadId)
+  fun copyAndClearDrafts(threadId: Long = this.threadId): DraftState = DraftState(threadId = threadId)
+
+  fun toDrafts(): Drafts = Drafts().apply {
+    addIfNotNull(messageEditDraft)
+    addIfNotNull(textDraft)
+    addIfNotNull(bodyRangesDraft)
+    addIfNotNull(quoteDraft)
+    addIfNotNull(locationDraft)
+    addIfNotNull(voiceNoteDraft)
   }
 
-  fun toDrafts(): Drafts {
-    return Drafts().apply {
-      addIfNotNull(messageEditDraft)
-      addIfNotNull(textDraft)
-      addIfNotNull(bodyRangesDraft)
-      addIfNotNull(quoteDraft)
-      addIfNotNull(locationDraft)
-      addIfNotNull(voiceNoteDraft)
-    }
-  }
-
-  fun copyAndSetDrafts(threadId: Long = this.threadId, drafts: Drafts): DraftState {
-    return copy(
-      threadId = threadId,
-      textDraft = drafts.getDraftOfType(DraftTable.Draft.TEXT),
-      bodyRangesDraft = drafts.getDraftOfType(DraftTable.Draft.BODY_RANGES),
-      quoteDraft = drafts.getDraftOfType(DraftTable.Draft.QUOTE),
-      locationDraft = drafts.getDraftOfType(DraftTable.Draft.LOCATION),
-      voiceNoteDraft = drafts.getDraftOfType(DraftTable.Draft.VOICE_NOTE),
-      messageEditDraft = drafts.getDraftOfType(DraftTable.Draft.MESSAGE_EDIT)
-    )
-  }
+  fun copyAndSetDrafts(threadId: Long = this.threadId, drafts: Drafts): DraftState = copy(
+    threadId = threadId,
+    textDraft = drafts.getDraftOfType(DraftTable.Draft.TEXT),
+    bodyRangesDraft = drafts.getDraftOfType(DraftTable.Draft.BODY_RANGES),
+    quoteDraft = drafts.getDraftOfType(DraftTable.Draft.QUOTE),
+    locationDraft = drafts.getDraftOfType(DraftTable.Draft.LOCATION),
+    voiceNoteDraft = drafts.getDraftOfType(DraftTable.Draft.VOICE_NOTE),
+    messageEditDraft = drafts.getDraftOfType(DraftTable.Draft.MESSAGE_EDIT)
+  )
 }

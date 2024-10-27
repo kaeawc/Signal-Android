@@ -67,16 +67,14 @@ class InternalSearchViewModel : ViewModel() {
     disposable.clear()
   }
 
-  private fun RecipientRecord.displayName(): String {
-    return when {
-      this.recipientType == RecipientTable.RecipientType.GV1 -> "GV1::${this.groupId}"
-      this.recipientType == RecipientTable.RecipientType.GV2 -> "GV2::${this.groupId}"
-      this.recipientType == RecipientTable.RecipientType.MMS -> "MMS_GROUP::${this.groupId}"
-      this.recipientType == RecipientTable.RecipientType.DISTRIBUTION_LIST -> "DLIST::${this.distributionListId}"
-      this.systemDisplayName?.isNotBlank() == true -> this.systemDisplayName
-      this.signalProfileName.toString().isNotBlank() -> this.signalProfileName.serialize()
-      this.e164 != null -> this.e164
-      else -> "Unknown"
-    }
+  private fun RecipientRecord.displayName(): String = when {
+    this.recipientType == RecipientTable.RecipientType.GV1 -> "GV1::${this.groupId}"
+    this.recipientType == RecipientTable.RecipientType.GV2 -> "GV2::${this.groupId}"
+    this.recipientType == RecipientTable.RecipientType.MMS -> "MMS_GROUP::${this.groupId}"
+    this.recipientType == RecipientTable.RecipientType.DISTRIBUTION_LIST -> "DLIST::${this.distributionListId}"
+    this.systemDisplayName?.isNotBlank() == true -> this.systemDisplayName
+    this.signalProfileName.toString().isNotBlank() -> this.signalProfileName.serialize()
+    this.e164 != null -> this.e164
+    else -> "Unknown"
   }
 }

@@ -88,13 +88,11 @@ class GroupsV2StateProcessor private constructor(
       serviceIds: ServiceIds,
       groupMasterKey: GroupMasterKey,
       groupSecretParams: GroupSecretParams? = null
-    ): GroupsV2StateProcessor {
-      return GroupsV2StateProcessor(
-        serviceIds = serviceIds,
-        groupMasterKey = groupMasterKey,
-        groupSecretParams = groupSecretParams ?: GroupSecretParams.deriveFromMasterKey(groupMasterKey)
-      )
-    }
+    ): GroupsV2StateProcessor = GroupsV2StateProcessor(
+      serviceIds = serviceIds,
+      groupMasterKey = groupMasterKey,
+      groupSecretParams = groupSecretParams ?: GroupSecretParams.deriveFromMasterKey(groupMasterKey)
+    )
   }
 
   private val groupsApi = AppDependencies.signalServiceAccountManager.getGroupsV2Api()
@@ -780,9 +778,7 @@ class GroupsV2StateProcessor private constructor(
 
     companion object {
       @VisibleForTesting
-      fun create(aci: ACI, masterKey: GroupMasterKey, groupId: GroupId.V2): ProfileAndMessageHelper {
-        return ProfileAndMessageHelper(aci, masterKey, groupId)
-      }
+      fun create(aci: ACI, masterKey: GroupMasterKey, groupId: GroupId.V2): ProfileAndMessageHelper = ProfileAndMessageHelper(aci, masterKey, groupId)
     }
   }
 
@@ -793,14 +789,12 @@ class GroupsV2StateProcessor private constructor(
     class UpdateFailed(val throwable: Throwable) : InternalUpdateResult
 
     companion object {
-      fun from(cause: Throwable): InternalUpdateResult {
-        return when (cause) {
-          is NotInGroupException,
-          is GroupNotFoundException -> NotAMember(GroupNotAMemberException(cause))
+      fun from(cause: Throwable): InternalUpdateResult = when (cause) {
+        is NotInGroupException,
+        is GroupNotFoundException -> NotAMember(GroupNotAMemberException(cause))
 
-          is IOException -> UpdateFailed(cause)
-          else -> UpdateFailed(IOException(cause))
-        }
+        is IOException -> UpdateFailed(cause)
+        else -> UpdateFailed(IOException(cause))
       }
     }
   }

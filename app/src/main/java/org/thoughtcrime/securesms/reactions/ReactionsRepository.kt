@@ -13,25 +13,23 @@ import org.thoughtcrime.securesms.recipients.Recipient
 
 class ReactionsRepository {
 
-  fun getReactions(messageId: MessageId): Observable<List<ReactionDetails>> {
-    return Observable.create { emitter: ObservableEmitter<List<ReactionDetails>> ->
-      val databaseObserver: DatabaseObserver = AppDependencies.databaseObserver
+  fun getReactions(messageId: MessageId): Observable<List<ReactionDetails>> = Observable.create { emitter: ObservableEmitter<List<ReactionDetails>> ->
+    val databaseObserver: DatabaseObserver = AppDependencies.databaseObserver
 
-      val messageObserver = DatabaseObserver.MessageObserver { reactionMessageId ->
-        if (reactionMessageId == messageId) {
-          emitter.onNext(fetchReactionDetails(reactionMessageId))
-        }
+    val messageObserver = DatabaseObserver.MessageObserver { reactionMessageId ->
+      if (reactionMessageId == messageId) {
+        emitter.onNext(fetchReactionDetails(reactionMessageId))
       }
+    }
 
-      databaseObserver.registerMessageUpdateObserver(messageObserver)
+    databaseObserver.registerMessageUpdateObserver(messageObserver)
 
-      emitter.setCancellable {
-        databaseObserver.unregisterObserver(messageObserver)
-      }
+    emitter.setCancellable {
+      databaseObserver.unregisterObserver(messageObserver)
+    }
 
-      emitter.onNext(fetchReactionDetails(messageId))
-    }.subscribeOn(Schedulers.io())
-  }
+    emitter.onNext(fetchReactionDetails(messageId))
+  }.subscribeOn(Schedulers.io())
 
   private fun fetchReactionDetails(messageId: MessageId): List<ReactionDetails> {
     val reactions: List<ReactionRecord> = SignalDatabase.reactions.getReactions(messageId)

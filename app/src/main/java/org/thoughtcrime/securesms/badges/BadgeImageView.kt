@@ -100,9 +100,7 @@ class BadgeImageView @JvmOverloads constructor(
     }
   }
 
-  fun isShowingBadge(): Boolean {
-    return drawable != null
-  }
+  fun isShowingBadge(): Boolean = drawable != null
 
   private fun clearDrawable() {
     if (drawable != null) {
@@ -111,12 +109,10 @@ class BadgeImageView @JvmOverloads constructor(
     }
   }
 
-  private fun getGlideRequestManager(): RequestManager? {
-    return try {
-      Glide.with(this)
-    } catch (e: IllegalArgumentException) {
-      // View not attached to an activity or activity destroyed
-      null
-    }
+  private fun getGlideRequestManager(): RequestManager? = try {
+    Glide.with(this)
+  } catch (e: IllegalArgumentException) {
+    // View not attached to an activity or activity destroyed
+    null
   }
 }

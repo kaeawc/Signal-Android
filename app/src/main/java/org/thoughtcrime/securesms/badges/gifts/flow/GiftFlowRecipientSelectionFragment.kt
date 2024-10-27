@@ -22,7 +22,10 @@ import org.thoughtcrime.securesms.util.navigation.safeNavigate
 /**
  * Allows the user to select a recipient to send a gift to.
  */
-class GiftFlowRecipientSelectionFragment : Fragment(R.layout.gift_flow_recipient_selection_fragment), MultiselectForwardFragment.Callback, SearchConfigurationProvider {
+class GiftFlowRecipientSelectionFragment :
+  Fragment(R.layout.gift_flow_recipient_selection_fragment),
+  MultiselectForwardFragment.Callback,
+  SearchConfigurationProvider {
 
   private val viewModel: GiftFlowViewModel by viewModels(
     ownerProducer = { requireActivity() }
@@ -48,28 +51,26 @@ class GiftFlowRecipientSelectionFragment : Fragment(R.layout.gift_flow_recipient
     }
   }
 
-  override fun getSearchConfiguration(fragmentManager: FragmentManager, contactSearchState: ContactSearchState): ContactSearchConfiguration {
-    return ContactSearchConfiguration.build {
-      query = contactSearchState.query
+  override fun getSearchConfiguration(fragmentManager: FragmentManager, contactSearchState: ContactSearchState): ContactSearchConfiguration = ContactSearchConfiguration.build {
+    query = contactSearchState.query
 
-      if (query.isNullOrEmpty()) {
-        addSection(
-          ContactSearchConfiguration.Section.Recents(
-            includeSelf = false,
-            includeHeader = true,
-            mode = ContactSearchConfiguration.Section.Recents.Mode.INDIVIDUALS
-          )
-        )
-      }
-
+    if (query.isNullOrEmpty()) {
       addSection(
-        ContactSearchConfiguration.Section.Individuals(
+        ContactSearchConfiguration.Section.Recents(
           includeSelf = false,
-          transportType = ContactSearchConfiguration.TransportType.PUSH,
-          includeHeader = true
+          includeHeader = true,
+          mode = ContactSearchConfiguration.Section.Recents.Mode.INDIVIDUALS
         )
       )
     }
+
+    addSection(
+      ContactSearchConfiguration.Section.Individuals(
+        includeSelf = false,
+        transportType = ContactSearchConfiguration.TransportType.PUSH,
+        includeHeader = true
+      )
+    )
   }
 
   override fun onFinishForwardAction() = Unit

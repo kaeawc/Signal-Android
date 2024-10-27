@@ -146,30 +146,26 @@ object NotificationStateProvider {
         isGroupStoryReply &&
         (isParentStorySentBySelf || messageRecord.hasSelfMention() || (hasSelfRepliedToStory && !messageRecord.isStoryReaction()))
 
-    fun includeMessage(notificationProfile: NotificationProfile?): MessageInclusion {
-      return if (isUnreadIncoming || stickyThread || isNotifiableGroupStoryMessage || isIncomingMissedCall) {
-        if (threadRecipient.isMuted && (threadRecipient.isDoNotNotifyMentions || !messageRecord.hasSelfMention())) {
-          MessageInclusion.MUTE_FILTERED
-        } else if (notificationProfile != null && !notificationProfile.isRecipientAllowed(threadRecipient.id) && !(notificationProfile.allowAllMentions && messageRecord.hasSelfMention())) {
-          MessageInclusion.PROFILE_FILTERED
-        } else {
-          MessageInclusion.INCLUDE
-        }
+    fun includeMessage(notificationProfile: NotificationProfile?): MessageInclusion = if (isUnreadIncoming || stickyThread || isNotifiableGroupStoryMessage || isIncomingMissedCall) {
+      if (threadRecipient.isMuted && (threadRecipient.isDoNotNotifyMentions || !messageRecord.hasSelfMention())) {
+        MessageInclusion.MUTE_FILTERED
+      } else if (notificationProfile != null && !notificationProfile.isRecipientAllowed(threadRecipient.id) && !(notificationProfile.allowAllMentions && messageRecord.hasSelfMention())) {
+        MessageInclusion.PROFILE_FILTERED
       } else {
-        MessageInclusion.EXCLUDE
+        MessageInclusion.INCLUDE
       }
+    } else {
+      MessageInclusion.EXCLUDE
     }
 
-    fun includeReaction(reaction: ReactionRecord, notificationProfile: NotificationProfile?): MessageInclusion {
-      return if (threadRecipient.isMuted) {
-        MessageInclusion.MUTE_FILTERED
-      } else if (notificationProfile != null && !notificationProfile.isRecipientAllowed(threadRecipient.id)) {
-        MessageInclusion.PROFILE_FILTERED
-      } else if (reaction.author != Recipient.self().id && messageRecord.isOutgoing && reaction.dateReceived > lastReactionRead) {
-        MessageInclusion.INCLUDE
-      } else {
-        MessageInclusion.EXCLUDE
-      }
+    fun includeReaction(reaction: ReactionRecord, notificationProfile: NotificationProfile?): MessageInclusion = if (threadRecipient.isMuted) {
+      MessageInclusion.MUTE_FILTERED
+    } else if (notificationProfile != null && !notificationProfile.isRecipientAllowed(threadRecipient.id)) {
+      MessageInclusion.PROFILE_FILTERED
+    } else if (reaction.author != Recipient.self().id && messageRecord.isOutgoing && reaction.dateReceived > lastReactionRead) {
+      MessageInclusion.INCLUDE
+    } else {
+      MessageInclusion.EXCLUDE
     }
 
     private val Recipient.isDoNotNotifyMentions: Boolean

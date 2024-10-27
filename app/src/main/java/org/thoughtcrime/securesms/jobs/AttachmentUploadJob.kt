@@ -100,12 +100,10 @@ class AttachmentUploadJob private constructor(
     null
   )
 
-  override fun serialize(): ByteArray {
-    return AttachmentUploadJobData(
-      attachmentId = attachmentId.id,
-      uploadSpec = uploadSpec
-    ).encode()
-  }
+  override fun serialize(): ByteArray = AttachmentUploadJobData(
+    attachmentId = attachmentId.id,
+    uploadSpec = uploadSpec
+  ).encode()
 
   override fun getFactoryKey(): String = KEY
 
@@ -224,12 +222,10 @@ class AttachmentUploadJob private constructor(
     }
   }
 
-  private fun getAttachmentNotificationIfNeeded(attachment: Attachment): AttachmentProgressService.Controller? {
-    return if (attachment.size >= FOREGROUND_LIMIT) {
-      AttachmentProgressService.start(context, context.getString(R.string.AttachmentUploadJob_uploading_media))
-    } else {
-      null
-    }
+  private fun getAttachmentNotificationIfNeeded(attachment: Attachment): AttachmentProgressService.Controller? = if (attachment.size >= FOREGROUND_LIMIT) {
+    AttachmentProgressService.start(context, context.getString(R.string.AttachmentUploadJob_uploading_media))
+  } else {
+    null
   }
 
   private fun resetProgressListeners(attachment: DatabaseAttachment) {
@@ -247,9 +243,7 @@ class AttachmentUploadJob private constructor(
     database.setTransferProgressFailed(attachmentId, databaseAttachment.mmsId)
   }
 
-  override fun onShouldRetry(exception: Exception): Boolean {
-    return exception is IOException && exception !is NotPushRegisteredException
-  }
+  override fun onShouldRetry(exception: Exception): Boolean = exception is IOException && exception !is NotPushRegisteredException
 
   @Throws(InvalidAttachmentException::class)
   private fun buildAttachmentStream(attachment: Attachment, notification: AttachmentProgressService.Controller?, resumableUploadSpec: ResumableUpload): SignalServiceAttachmentStream {
@@ -278,9 +272,7 @@ class AttachmentUploadJob private constructor(
             }
           }
 
-          override fun shouldCancel(): Boolean {
-            return isCanceled
-          }
+          override fun shouldCancel(): Boolean = isCanceled
         }
       )
     } catch (e: IOException) {

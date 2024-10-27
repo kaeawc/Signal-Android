@@ -27,9 +27,7 @@ class VerifyScanFragment : Fragment() {
   private lateinit var cameraScrim: ShapeScrim
   private lateinit var cameraMarks: ImageView
 
-  override fun onCreateView(inflater: LayoutInflater, viewGroup: ViewGroup?, bundle: Bundle?): View? {
-    return ViewUtil.inflate(inflater, viewGroup!!, R.layout.verify_scan_fragment)
-  }
+  override fun onCreateView(inflater: LayoutInflater, viewGroup: ViewGroup?, bundle: Bundle?): View? = ViewUtil.inflate(inflater, viewGroup!!, R.layout.verify_scan_fragment)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     cameraView = view.findViewById(R.id.scanner)

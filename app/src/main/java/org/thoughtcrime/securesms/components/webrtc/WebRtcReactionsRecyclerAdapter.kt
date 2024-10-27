@@ -22,9 +22,7 @@ import org.thoughtcrime.securesms.recipients.Recipient
  * This adapter also encapsulates logic for whether the reaction should be displayed, such as expiration and maximum visible count.
  */
 class WebRtcReactionsRecyclerAdapter : ListAdapter<GroupCallReactionEvent, WebRtcReactionsRecyclerAdapter.ViewHolder>(DiffCallback()) {
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-    return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.webrtc_call_reaction_recycler_item, parent, false))
-  }
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.webrtc_call_reaction_recycler_item, parent, false))
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
     val item = getItem(position)
@@ -55,23 +53,17 @@ class WebRtcReactionsRecyclerAdapter : ListAdapter<GroupCallReactionEvent, WebRt
       emojiView.isClickable = false
     }
 
-    private fun getName(recipient: Recipient): String {
-      return if (recipient.isSelf) {
-        itemView.context.getString(R.string.CallParticipant__you)
-      } else {
-        recipient.getDisplayName(itemView.context)
-      }
+    private fun getName(recipient: Recipient): String = if (recipient.isSelf) {
+      itemView.context.getString(R.string.CallParticipant__you)
+    } else {
+      recipient.getDisplayName(itemView.context)
     }
   }
 
   private class DiffCallback : DiffUtil.ItemCallback<GroupCallReactionEvent>() {
-    override fun areItemsTheSame(oldItem: GroupCallReactionEvent, newItem: GroupCallReactionEvent): Boolean {
-      return oldItem == newItem
-    }
+    override fun areItemsTheSame(oldItem: GroupCallReactionEvent, newItem: GroupCallReactionEvent): Boolean = oldItem == newItem
 
-    override fun areContentsTheSame(oldItem: GroupCallReactionEvent, newItem: GroupCallReactionEvent): Boolean {
-      return oldItem == newItem
-    }
+    override fun areContentsTheSame(oldItem: GroupCallReactionEvent, newItem: GroupCallReactionEvent): Boolean = oldItem == newItem
   }
 
   companion object {

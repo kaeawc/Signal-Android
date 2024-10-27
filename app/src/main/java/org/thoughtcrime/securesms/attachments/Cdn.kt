@@ -27,27 +27,19 @@ enum class Cdn(private val value: Int) {
       }
     }
 
-  fun serialize(): Int {
-    return Serializer.serialize(this)
-  }
+  fun serialize(): Int = Serializer.serialize(this)
 
   companion object Serializer : IntSerializer<Cdn> {
-    override fun serialize(data: Cdn): Int {
-      return data.value
-    }
+    override fun serialize(data: Cdn): Int = data.value
 
-    override fun deserialize(data: Int): Cdn {
-      return values().first { it.value == data }
-    }
+    override fun deserialize(data: Int): Cdn = values().first { it.value == data }
 
-    fun fromCdnNumber(cdnNumber: Int): Cdn {
-      return when (cdnNumber) {
-        -1 -> S3
-        0 -> CDN_0
-        2 -> CDN_2
-        3 -> CDN_3
-        else -> throw UnsupportedOperationException("Invalid CDN number: $cdnNumber")
-      }
+    fun fromCdnNumber(cdnNumber: Int): Cdn = when (cdnNumber) {
+      -1 -> S3
+      0 -> CDN_0
+      2 -> CDN_2
+      3 -> CDN_3
+      else -> throw UnsupportedOperationException("Invalid CDN number: $cdnNumber")
     }
   }
 }

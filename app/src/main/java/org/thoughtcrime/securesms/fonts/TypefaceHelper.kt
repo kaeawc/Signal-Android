@@ -7,15 +7,13 @@ import android.os.Build
  * API independent, best-effort way of creating [Typeface]s of various family/weight.
  */
 object TypefaceHelper {
-  fun typefaceFor(family: Family, weightName: String, weight: Weight): Typeface {
-    return when {
-      Build.VERSION.SDK_INT >= 28 -> Typeface.create(
-        Typeface.create(family.familyName, Typeface.NORMAL),
-        weight.value,
-        false
-      )
-      else -> Typeface.create("${family.familyName}-$weightName", Typeface.NORMAL)
-    }
+  fun typefaceFor(family: Family, weightName: String, weight: Weight): Typeface = when {
+    Build.VERSION.SDK_INT >= 28 -> Typeface.create(
+      Typeface.create(family.familyName, Typeface.NORMAL),
+      weight.value,
+      false
+    )
+    else -> Typeface.create("${family.familyName}-$weightName", Typeface.NORMAL)
   }
 
   enum class Family(val familyName: String) {

@@ -57,14 +57,12 @@ fun NavController.safeNavigate(directions: NavDirections, navOptions: NavOptions
   }
 }
 
-private fun getDisplayName(id: Int): String? {
-  return if (id <= 0x00FFFFFF) {
+private fun getDisplayName(id: Int): String? = if (id <= 0x00FFFFFF) {
+  id.toString()
+} else {
+  try {
+    AppDependencies.application.resources.getResourceName(id)
+  } catch (e: Resources.NotFoundException) {
     id.toString()
-  } else {
-    try {
-      AppDependencies.application.resources.getResourceName(id)
-    } catch (e: Resources.NotFoundException) {
-      id.toString()
-    }
   }
 }

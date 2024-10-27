@@ -19,18 +19,14 @@ enum class RestoreState(val id: Int, val inProgress: Boolean) {
   }
 
   class Serializer : LongSerializer<RestoreState> {
-    override fun serialize(data: RestoreState): Long {
-      return data.id.toLong()
-    }
+    override fun serialize(data: RestoreState): Long = data.id.toLong()
 
-    override fun deserialize(data: Long): RestoreState {
-      return when (data.toInt()) {
-        FAILED.id -> FAILED
-        PENDING.id -> PENDING
-        RESTORING_DB.id -> RESTORING_DB
-        RESTORING_MEDIA.id -> RESTORING_MEDIA
-        else -> NONE
-      }
+    override fun deserialize(data: Long): RestoreState = when (data.toInt()) {
+      FAILED.id -> FAILED
+      PENDING.id -> PENDING
+      RESTORING_DB.id -> RESTORING_DB
+      RESTORING_MEDIA.id -> RESTORING_MEDIA
+      else -> NONE
     }
   }
 }

@@ -73,27 +73,25 @@ class StoryViewsFragment :
     recyclerView?.isNestedScrollingEnabled = child == StoryViewsAndRepliesPagerParent.Child.VIEWS
   }
 
-  private fun getConfiguration(state: StoryViewsState): DSLConfiguration {
-    return configure {
-      state.views.sortedBy { it.recipient.getDisplayName(requireContext()) }.forEach { storyViewItemData ->
-        customPref(
-          StoryViewItem.Model(
-            storyViewItemData = storyViewItemData,
-            canRemoveMember = state.storyRecipient?.isDistributionList ?: false,
-            goToChat = { model ->
-              lifecycleDisposable += ConversationIntents.createBuilder(requireContext(), model.storyViewItemData.recipient.id, -1L).subscribeBy {
-                val chatIntent = it.build()
-                startActivity(chatIntent)
-              }
-            },
-            removeFromStory = {
-              if (state.storyRecipient?.isDistributionList == true) {
-                confirmRemoveFromStory(it.storyViewItemData.recipient, state.storyRecipient)
-              }
+  private fun getConfiguration(state: StoryViewsState): DSLConfiguration = configure {
+    state.views.sortedBy { it.recipient.getDisplayName(requireContext()) }.forEach { storyViewItemData ->
+      customPref(
+        StoryViewItem.Model(
+          storyViewItemData = storyViewItemData,
+          canRemoveMember = state.storyRecipient?.isDistributionList ?: false,
+          goToChat = { model ->
+            lifecycleDisposable += ConversationIntents.createBuilder(requireContext(), model.storyViewItemData.recipient.id, -1L).subscribeBy {
+              val chatIntent = it.build()
+              startActivity(chatIntent)
             }
-          )
+          },
+          removeFromStory = {
+            if (state.storyRecipient?.isDistributionList == true) {
+              confirmRemoveFromStory(it.storyViewItemData.recipient, state.storyRecipient)
+            }
+          }
         )
-      }
+      )
     }
   }
 
@@ -111,11 +109,9 @@ class StoryViewsFragment :
   companion object {
     private const val ARG_STORY_ID = "arg.story.id"
 
-    fun create(storyId: Long): Fragment {
-      return StoryViewsFragment().apply {
-        arguments = Bundle().apply {
-          putLong(ARG_STORY_ID, storyId)
-        }
+    fun create(storyId: Long): Fragment = StoryViewsFragment().apply {
+      arguments = Bundle().apply {
+        putLong(ARG_STORY_ID, storyId)
       }
     }
   }

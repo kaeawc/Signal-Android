@@ -46,55 +46,53 @@ class UsernameShareBottomSheet : DSLSettingsBottomSheetFragment() {
     }
   }
 
-  private fun getConfiguration(recipient: Recipient): DSLConfiguration {
-    return configure {
-      noPadTextPref(
-        title = DSLSettingsText.from(
-          R.string.UsernameShareBottomSheet__copy_or_share_a_username_link,
-          DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_BodyMedium),
-          DSLSettingsText.CenterModifier,
-          DSLSettingsText.ColorModifier(
-            ContextCompat.getColor(requireContext(), R.color.signal_colorOnSurfaceVariant)
-          )
+  private fun getConfiguration(recipient: Recipient): DSLConfiguration = configure {
+    noPadTextPref(
+      title = DSLSettingsText.from(
+        R.string.UsernameShareBottomSheet__copy_or_share_a_username_link,
+        DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_BodyMedium),
+        DSLSettingsText.CenterModifier,
+        DSLSettingsText.ColorModifier(
+          ContextCompat.getColor(requireContext(), R.color.signal_colorOnSurfaceVariant)
         )
       )
+    )
 
-      space(DimensionUnit.DP.toPixels(32f).toInt())
+    space(DimensionUnit.DP.toPixels(32f).toInt())
 
-      val username = recipient.username.get()
-      customPref(
-        CopyButton.Model(
-          text = username,
-          onClick = {
-            copyToClipboard(it)
-          }
-        )
+    val username = recipient.username.get()
+    customPref(
+      CopyButton.Model(
+        text = username,
+        onClick = {
+          copyToClipboard(it)
+        }
       )
+    )
 
-      space(DimensionUnit.DP.toPixels(20f).toInt())
+    space(DimensionUnit.DP.toPixels(20f).toInt())
 
-      customPref(
-        CopyButton.Model(
-          text = getString(R.string.signal_me_username_url, Base64.encodeUrlSafeWithoutPadding(Username.hash(username))),
-          onClick = {
-            copyToClipboard(it)
-          }
-        )
+    customPref(
+      CopyButton.Model(
+        text = getString(R.string.signal_me_username_url, Base64.encodeUrlSafeWithoutPadding(Username.hash(username))),
+        onClick = {
+          copyToClipboard(it)
+        }
       )
+    )
 
-      space(DimensionUnit.DP.toPixels(24f).toInt())
+    space(DimensionUnit.DP.toPixels(24f).toInt())
 
-      customPref(
-        ShareButton.Model(
-          text = getString(R.string.signal_me_username_url, Base64.encodeUrlSafeWithoutPadding(Username.hash(username))),
-          onClick = {
-            openShareSheet(it.text)
-          }
-        )
+    customPref(
+      ShareButton.Model(
+        text = getString(R.string.signal_me_username_url, Base64.encodeUrlSafeWithoutPadding(Username.hash(username))),
+        onClick = {
+          openShareSheet(it.text)
+        }
       )
+    )
 
-      space(DimensionUnit.DP.toPixels(18f).toInt())
-    }
+    space(DimensionUnit.DP.toPixels(18f).toInt())
   }
 
   private fun copyToClipboard(model: CopyButton.Model) {
@@ -119,8 +117,6 @@ class UsernameShareBottomSheet : DSLSettingsBottomSheetFragment() {
   }
 
   object ResultContract : FragmentResultContract<Boolean>(REQUEST_KEY) {
-    override fun getResult(bundle: Bundle): Boolean {
-      return bundle.getBoolean(REQUEST_KEY, false)
-    }
+    override fun getResult(bundle: Bundle): Boolean = bundle.getBoolean(REQUEST_KEY, false)
   }
 }

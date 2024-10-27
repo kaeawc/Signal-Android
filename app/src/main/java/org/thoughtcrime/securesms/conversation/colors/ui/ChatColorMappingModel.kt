@@ -11,11 +11,7 @@ class ChatColorMappingModel(
 
   val isCustom: Boolean = chatColors.id is ChatColors.Id.Custom
 
-  override fun areItemsTheSame(newItem: ChatColorMappingModel): Boolean {
-    return chatColors == newItem.chatColors && isAuto == newItem.isAuto
-  }
+  override fun areItemsTheSame(newItem: ChatColorMappingModel): Boolean = chatColors == newItem.chatColors && isAuto == newItem.isAuto
 
-  override fun areContentsTheSame(newItem: ChatColorMappingModel): Boolean {
-    return areItemsTheSame(newItem) && isSelected == newItem.isSelected
-  }
+  override fun areContentsTheSame(newItem: ChatColorMappingModel): Boolean = areItemsTheSame(newItem) && isSelected == newItem.isSelected
 }

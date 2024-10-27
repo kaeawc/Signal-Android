@@ -77,8 +77,6 @@ class CustomNotificationsSettingsViewModel(
     private val recipientId: RecipientId,
     private val repository: CustomNotificationsSettingsRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(CustomNotificationsSettingsViewModel(recipientId, repository)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(CustomNotificationsSettingsViewModel(recipientId, repository)))
   }
 }

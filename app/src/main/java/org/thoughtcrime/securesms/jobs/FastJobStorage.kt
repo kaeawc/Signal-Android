@@ -114,14 +114,10 @@ class FastJobStorage(private val jobDatabase: JobDatabase) : JobStorage {
   }
 
   @Synchronized
-  override fun getJobSpec(id: String): JobSpec? {
-    return minimalJobs.firstOrNull { it.id == id }?.toJobSpec()
-  }
+  override fun getJobSpec(id: String): JobSpec? = minimalJobs.firstOrNull { it.id == id }?.toJobSpec()
 
   @Synchronized
-  override fun getAllMatchingFilter(predicate: Predicate<JobSpec>): List<JobSpec> {
-    return jobDatabase.getAllMatchingFilter(predicate)
-  }
+  override fun getAllMatchingFilter(predicate: Predicate<JobSpec>): List<JobSpec> = jobDatabase.getAllMatchingFilter(predicate)
 
   @Synchronized
   override fun getNextEligibleJob(currentTime: Long, filter: (MinimalJobSpec) -> Boolean): JobSpec? {
@@ -149,30 +145,22 @@ class FastJobStorage(private val jobDatabase: JobDatabase) : JobStorage {
   }
 
   @Synchronized
-  override fun getJobsInQueue(queue: String): List<JobSpec> {
-    return minimalJobs
-      .filter { it.queueKey == queue }
-      .mapNotNull { it.toJobSpec() }
-  }
+  override fun getJobsInQueue(queue: String): List<JobSpec> = minimalJobs
+    .filter { it.queueKey == queue }
+    .mapNotNull { it.toJobSpec() }
 
   @Synchronized
-  override fun getJobCountForFactory(factoryKey: String): Int {
-    return minimalJobs
-      .filter { it.factoryKey == factoryKey }
-      .size
-  }
+  override fun getJobCountForFactory(factoryKey: String): Int = minimalJobs
+    .filter { it.factoryKey == factoryKey }
+    .size
 
   @Synchronized
-  override fun getJobCountForFactoryAndQueue(factoryKey: String, queueKey: String): Int {
-    return minimalJobs
-      .filter { it.factoryKey == factoryKey && it.queueKey == queueKey }
-      .size
-  }
+  override fun getJobCountForFactoryAndQueue(factoryKey: String, queueKey: String): Int = minimalJobs
+    .filter { it.factoryKey == factoryKey && it.queueKey == queueKey }
+    .size
 
   @Synchronized
-  override fun areQueuesEmpty(queueKeys: Set<String>): Boolean {
-    return minimalJobs.none { it.queueKey != null && queueKeys.contains(it.queueKey) }
-  }
+  override fun areQueuesEmpty(queueKeys: Set<String>): Boolean = minimalJobs.none { it.queueKey != null && queueKeys.contains(it.queueKey) }
 
   @Synchronized
   override fun markJobAsRunning(id: String, currentTime: Long) {
@@ -339,10 +327,8 @@ class FastJobStorage(private val jobDatabase: JobDatabase) : JobStorage {
   }
 
   @Synchronized
-  override fun getConstraintSpecs(jobId: String): List<ConstraintSpec> {
-    return constraintsByJobId.getOrPut(jobId) {
-      jobDatabase.getConstraintSpecsForJobs(listOf(jobId)).toMutableList()
-    }
+  override fun getConstraintSpecs(jobId: String): List<ConstraintSpec> = constraintsByJobId.getOrPut(jobId) {
+    jobDatabase.getConstraintSpecsForJobs(listOf(jobId)).toMutableList()
   }
 
   @Synchronized
@@ -363,19 +349,13 @@ class FastJobStorage(private val jobDatabase: JobDatabase) : JobStorage {
   }
 
   @Synchronized
-  override fun debugGetJobSpecs(limit: Int): List<JobSpec> {
-    return jobDatabase.getJobSpecs(limit)
-  }
+  override fun debugGetJobSpecs(limit: Int): List<JobSpec> = jobDatabase.getJobSpecs(limit)
 
   @Synchronized
-  override fun debugGetConstraintSpecs(limit: Int): List<ConstraintSpec> {
-    return jobDatabase.getConstraintSpecs(limit)
-  }
+  override fun debugGetConstraintSpecs(limit: Int): List<ConstraintSpec> = jobDatabase.getConstraintSpecs(limit)
 
   @Synchronized
-  override fun debugGetAllDependencySpecs(): List<DependencySpec> {
-    return dependenciesByJobId.values.flatten()
-  }
+  override fun debugGetAllDependencySpecs(): List<DependencySpec> = dependenciesByJobId.values.flatten()
 
   private fun updateCachedJobSpecs(filter: (MinimalJobSpec) -> Boolean, transformer: (MinimalJobSpec) -> MinimalJobSpec, singleUpdate: Boolean = false) {
     val iterator = minimalJobs.listIterator()
@@ -500,16 +480,12 @@ class FastJobStorage(private val jobDatabase: JobDatabase) : JobStorage {
   /**
    * Whether or not the job's eligible to be run based off of it's [Job.nextBackoffInterval] and other properties.
    */
-  private fun MinimalJobSpec.hasEligibleRunTime(currentTime: Long): Boolean {
-    return this.lastRunAttemptTime > currentTime || (this.lastRunAttemptTime + this.nextBackoffInterval) < currentTime
-  }
+  private fun MinimalJobSpec.hasEligibleRunTime(currentTime: Long): Boolean = this.lastRunAttemptTime > currentTime || (this.lastRunAttemptTime + this.nextBackoffInterval) < currentTime
 
-  private fun getSingleLayerOfDependencySpecsThatDependOnJob(jobSpecId: String): List<DependencySpec> {
-    return dependenciesByJobId
-      .values
-      .flatten()
-      .filter { it.dependsOnJobId == jobSpecId }
-  }
+  private fun getSingleLayerOfDependencySpecsThatDependOnJob(jobSpecId: String): List<DependencySpec> = dependenciesByJobId
+    .values
+    .flatten()
+    .filter { it.dependsOnJobId == jobSpecId }
 
   /**
    * Converts a [MinimalJobSpec] to a [JobSpec]. We prefer using the cache, but if it's not found, we'll hit the database.
@@ -543,37 +519,31 @@ class FastJobStorage(private val jobDatabase: JobDatabase) : JobStorage {
    * Identical to [EligibleMinJobComparator], but for full jobs.
    */
   private object EligibleFullJobComparator : Comparator<JobSpec> {
-    override fun compare(o1: JobSpec, o2: JobSpec): Int {
-      return when {
-        o1.globalPriority > o2.globalPriority -> -1
-        o1.globalPriority < o2.globalPriority -> 1
-        o1.createTime < o2.createTime -> -1
-        o1.createTime > o2.createTime -> 1
-        else -> o1.id.compareTo(o2.id)
-      }
+    override fun compare(o1: JobSpec, o2: JobSpec): Int = when {
+      o1.globalPriority > o2.globalPriority -> -1
+      o1.globalPriority < o2.globalPriority -> 1
+      o1.createTime < o2.createTime -> -1
+      o1.createTime > o2.createTime -> 1
+      else -> o1.id.compareTo(o2.id)
     }
   }
 
-  private fun debugStopwatch(label: String): Stopwatch? {
-    return if (DEBUG) Stopwatch(label, decimalPlaces = 2) else null
-  }
+  private fun debugStopwatch(label: String): Stopwatch? = if (DEBUG) Stopwatch(label, decimalPlaces = 2) else null
 }
 
 /**
  * Converts a [JobSpec] to a [MinimalJobSpec], which is just a matter of trimming off unnecessary properties.
  */
 @VisibleForTesting
-fun JobSpec.toMinimalJobSpec(): MinimalJobSpec {
-  return MinimalJobSpec(
-    id = this.id,
-    factoryKey = this.factoryKey,
-    queueKey = this.queueKey,
-    createTime = this.createTime,
-    lastRunAttemptTime = this.lastRunAttemptTime,
-    nextBackoffInterval = this.nextBackoffInterval,
-    globalPriority = this.globalPriority,
-    queuePriority = this.queuePriority,
-    isRunning = this.isRunning,
-    isMemoryOnly = this.isMemoryOnly
-  )
-}
+fun JobSpec.toMinimalJobSpec(): MinimalJobSpec = MinimalJobSpec(
+  id = this.id,
+  factoryKey = this.factoryKey,
+  queueKey = this.queueKey,
+  createTime = this.createTime,
+  lastRunAttemptTime = this.lastRunAttemptTime,
+  nextBackoffInterval = this.nextBackoffInterval,
+  globalPriority = this.globalPriority,
+  queuePriority = this.queuePriority,
+  isRunning = this.isRunning,
+  isMemoryOnly = this.isMemoryOnly
+)

@@ -35,9 +35,7 @@ object WebSocketDrainer {
 
   @JvmStatic
   @WorkerThread
-  fun blockUntilDrainedAndProcessed(): Boolean {
-    return blockUntilDrainedAndProcessed(1.minutes.inWholeMilliseconds)
-  }
+  fun blockUntilDrainedAndProcessed(): Boolean = blockUntilDrainedAndProcessed(1.minutes.inWholeMilliseconds)
 
   /**
    * Blocks until the websocket is drained and all resulting processing jobs have finished, or until the [requestedWebsocketDrainTimeoutMs] has been hit.

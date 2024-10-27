@@ -44,12 +44,10 @@ class Svr2MirrorJob private constructor(parameters: Parameters, private var seri
     null
   )
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putString(KEY_CHANGE_SESSION, serializedChangeSession)
-      .build()
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putString(KEY_CHANGE_SESSION, serializedChangeSession)
+    .build()
+    .serialize()
 
   override fun getFactoryKey(): String = KEY
 
@@ -116,15 +114,11 @@ class Svr2MirrorJob private constructor(parameters: Parameters, private var seri
     }
   }
 
-  private fun Throwable.isUnauthorized(): Boolean {
-    return this is NonSuccessfulResponseCodeException && this.code == 401
-  }
+  private fun Throwable.isUnauthorized(): Boolean = this is NonSuccessfulResponseCodeException && this.code == 401
 
   override fun onFailure() = Unit
 
   class Factory : Job.Factory<Svr2MirrorJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): Svr2MirrorJob {
-      return Svr2MirrorJob(parameters, JsonJobData.deserialize(serializedData).getString(KEY_CHANGE_SESSION))
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): Svr2MirrorJob = Svr2MirrorJob(parameters, JsonJobData.deserialize(serializedData).getString(KEY_CHANGE_SESSION))
   }
 }

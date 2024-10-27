@@ -47,7 +47,8 @@ import java.lang.Integer.max
 class MultiselectItemDecoration(
   context: Context,
   private val chatWallpaperProvider: () -> ChatWallpaper?
-) : RecyclerView.ItemDecoration(), DefaultLifecycleObserver {
+) : RecyclerView.ItemDecoration(),
+  DefaultLifecycleObserver {
 
   private val path = Path()
   private val rect = Rect()
@@ -123,16 +124,12 @@ class MultiselectItemDecoration(
     style = Paint.Style.FILL
   }
 
-  private fun getCurrentSelection(parent: RecyclerView): Set<MultiselectPart> {
-    return parent.findAdapterBridge().selectedItems
-  }
+  private fun getCurrentSelection(parent: RecyclerView): Set<MultiselectPart> = parent.findAdapterBridge().selectedItems
 
-  private fun RecyclerView.findAdapterBridge(): ConversationAdapterBridge {
-    return when (val parentAdapter = adapter!!) {
-      is ConversationAdapterBridge -> parentAdapter
-      is ConcatAdapter -> (parentAdapter.adapters[1] as ConversationAdapterBridge)
-      else -> error("Unexpected adapter configuration")
-    }
+  private fun RecyclerView.findAdapterBridge(): ConversationAdapterBridge = when (val parentAdapter = adapter!!) {
+    is ConversationAdapterBridge -> parentAdapter
+    is ConcatAdapter -> (parentAdapter.adapters[1] as ConversationAdapterBridge)
+    else -> error("Unexpected adapter configuration")
   }
 
   override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -484,9 +481,7 @@ class MultiselectItemDecoration(
     }
   }
 
-  private fun isInitialAnimation(): Boolean {
-    return (enterExitAnimation?.animatedFraction ?: 0f) < 1f
-  }
+  private fun isInitialAnimation(): Boolean = (enterExitAnimation?.animatedFraction ?: 0f) < 1f
 
   // This is reentrant
   private fun updateMultiselectPartAnimator(currentSelection: Set<MultiselectPart>, multiselectPart: MultiselectPart) {
@@ -565,13 +560,9 @@ class MultiselectItemDecoration(
     }
   }
 
-  private fun RecyclerView.getMultiselectableChildren(): Sequence<Multiselectable> {
-    return children.map { getChildViewHolder(it) }.filterIsInstance<Multiselectable>()
-  }
+  private fun RecyclerView.getMultiselectableChildren(): Sequence<Multiselectable> = children.map { getChildViewHolder(it) }.filterIsInstance<Multiselectable>()
 
-  private fun RecyclerView.getInteractableChildren(): Sequence<InteractiveConversationElement> {
-    return children.map { getChildViewHolder(it) }.filterIsInstance<InteractiveConversationElement>() + children.filterIsInstance<InteractiveConversationElement>()
-  }
+  private fun RecyclerView.getInteractableChildren(): Sequence<InteractiveConversationElement> = children.map { getChildViewHolder(it) }.filterIsInstance<InteractiveConversationElement>() + children.filterIsInstance<InteractiveConversationElement>()
 
   private fun resolveMultiselectable(parent: RecyclerView, child: View): Multiselectable? {
     val multiselectable = parent.getChildViewHolder(child) as? Multiselectable
@@ -602,24 +593,20 @@ class MultiselectItemDecoration(
     fun start() = animator.start()
     fun cancel() = animator.cancel()
 
-    private fun pulseInAnimator(pulseColor: Int): Animator {
-      return ValueAnimator.ofInt(Color.TRANSPARENT, pulseColor).apply {
-        duration = 200
-        setEvaluator(ArgbEvaluatorCompat.getInstance())
-        addUpdateListener {
-          this@PulseAnimator.animatedValue = animatedValue as Int
-        }
+    private fun pulseInAnimator(pulseColor: Int): Animator = ValueAnimator.ofInt(Color.TRANSPARENT, pulseColor).apply {
+      duration = 200
+      setEvaluator(ArgbEvaluatorCompat.getInstance())
+      addUpdateListener {
+        this@PulseAnimator.animatedValue = animatedValue as Int
       }
     }
 
-    private fun pulseOutAnimator(pulseColor: Int): Animator {
-      return ValueAnimator.ofInt(pulseColor, Color.TRANSPARENT).apply {
-        startDelay = 200
-        duration = 200
-        setEvaluator(ArgbEvaluatorCompat.getInstance())
-        addUpdateListener {
-          this@PulseAnimator.animatedValue = animatedValue as Int
-        }
+    private fun pulseOutAnimator(pulseColor: Int): Animator = ValueAnimator.ofInt(pulseColor, Color.TRANSPARENT).apply {
+      startDelay = 200
+      duration = 200
+      setEvaluator(ArgbEvaluatorCompat.getInstance())
+      addUpdateListener {
+        this@PulseAnimator.animatedValue = animatedValue as Int
       }
     }
   }

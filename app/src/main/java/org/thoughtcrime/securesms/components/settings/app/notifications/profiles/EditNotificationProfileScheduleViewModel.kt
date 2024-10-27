@@ -40,10 +40,8 @@ class EditNotificationProfileScheduleViewModel(
     disposables.dispose()
   }
 
-  fun schedule(): Observable<NotificationProfileSchedule> {
-    return scheduleSubject.subscribeOn(AndroidSchedulers.mainThread())
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun schedule(): Observable<NotificationProfileSchedule> = scheduleSubject.subscribeOn(AndroidSchedulers.mainThread())
+    .observeOn(AndroidSchedulers.mainThread())
 
   fun toggleDay(day: DayOfWeek) {
     val newDaysEnabled = schedule.daysEnabled.toMutableSet()
@@ -89,9 +87,7 @@ class EditNotificationProfileScheduleViewModel(
   }
 
   class Factory(private val profileId: Long, private val createMode: Boolean) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(EditNotificationProfileScheduleViewModel(profileId, createMode, NotificationProfilesRepository()))!!
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(EditNotificationProfileScheduleViewModel(profileId, createMode, NotificationProfilesRepository()))!!
   }
 
   enum class SaveScheduleResult {

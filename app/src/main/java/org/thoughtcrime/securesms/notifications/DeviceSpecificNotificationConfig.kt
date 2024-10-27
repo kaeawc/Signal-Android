@@ -79,15 +79,11 @@ object DeviceSpecificNotificationConfig {
     return matchedConfigs.firstOrNull() ?: default
   }
 
-  private fun matchesModel(model: String): Boolean {
-    return if (model.isNotEmpty() && model.last() == '*') {
-      Build.MODEL.startsWith(model.substring(0, model.length - 1))
-    } else {
-      model.equals(Build.MODEL, ignoreCase = true)
-    }
+  private fun matchesModel(model: String): Boolean = if (model.isNotEmpty() && model.last() == '*') {
+    Build.MODEL.startsWith(model.substring(0, model.length - 1))
+  } else {
+    model.equals(Build.MODEL, ignoreCase = true)
   }
 
-  private fun matchesManufacturer(manufacturer: String): Boolean {
-    return manufacturer.equals(Build.MANUFACTURER, ignoreCase = true)
-  }
+  private fun matchesManufacturer(manufacturer: String): Boolean = manufacturer.equals(Build.MANUFACTURER, ignoreCase = true)
 }

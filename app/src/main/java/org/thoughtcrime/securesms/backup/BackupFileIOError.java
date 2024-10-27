@@ -1,5 +1,6 @@
 package org.thoughtcrime.securesms.backup;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -40,6 +41,7 @@ public enum BackupFileIOError {
     NotificationCancellationHelper.cancelLegacy(context, BACKUP_FAILED_ID);
   }
 
+  @SuppressLint("MissingPermission")
   public void postNotification(@NonNull Context context) {
     PendingIntent pendingIntent           = PendingIntent.getActivity(context, -1, AppSettingsActivity.backups(context), PendingIntentFlags.mutable());
     Notification backupFailedNotification = new NotificationCompat.Builder(context, NotificationChannels.getInstance().FAILURES)

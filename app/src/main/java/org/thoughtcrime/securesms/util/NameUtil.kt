@@ -29,7 +29,5 @@ object NameUtil {
     }
   }
 
-  private fun String.firstGrapheme(): String {
-    return CharacterIterable(this).first()
-  }
+  private fun String.firstGrapheme(): String = CharacterIterable(this).first()
 }

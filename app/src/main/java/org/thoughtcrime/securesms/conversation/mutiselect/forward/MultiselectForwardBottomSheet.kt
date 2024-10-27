@@ -14,7 +14,9 @@ import org.thoughtcrime.securesms.components.FixedRoundedCornerBottomSheetDialog
 import org.thoughtcrime.securesms.stories.Stories
 import org.thoughtcrime.securesms.util.fragments.findListener
 
-class MultiselectForwardBottomSheet : FixedRoundedCornerBottomSheetDialogFragment(), MultiselectForwardFragment.Callback {
+class MultiselectForwardBottomSheet :
+  FixedRoundedCornerBottomSheetDialogFragment(),
+  MultiselectForwardFragment.Callback {
 
   override val peekHeightPercentage: Float = 0.67f
 
@@ -24,9 +26,7 @@ class MultiselectForwardBottomSheet : FixedRoundedCornerBottomSheetDialogFragmen
     private val TAG = Log.tag(MultiselectForwardBottomSheet::class.java)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.multiselect_bottom_sheet, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.multiselect_bottom_sheet, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     Log.d(TAG, "onViewCreated()")
@@ -43,17 +43,11 @@ class MultiselectForwardBottomSheet : FixedRoundedCornerBottomSheetDialogFragmen
     }
   }
 
-  override fun getContainer(): ViewGroup {
-    return requireView().parent.parent.parent as ViewGroup
-  }
+  override fun getContainer(): ViewGroup = requireView().parent.parent.parent as ViewGroup
 
-  override fun getDialogBackgroundColor(): Int {
-    return backgroundColor
-  }
+  override fun getDialogBackgroundColor(): Int = backgroundColor
 
-  override fun getStorySendRequirements(): Stories.MediaTransform.SendRequirements? {
-    return findListener<Callback>()?.getStorySendRequirements()
-  }
+  override fun getStorySendRequirements(): Stories.MediaTransform.SendRequirements? = findListener<Callback>()?.getStorySendRequirements()
   override fun setResult(bundle: Bundle) {
     setFragmentResult(MultiselectForwardFragment.RESULT_KEY, bundle)
   }

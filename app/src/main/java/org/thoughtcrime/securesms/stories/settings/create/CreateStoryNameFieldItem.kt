@@ -25,9 +25,7 @@ object CreateStoryNameFieldItem {
     val error: CharSequence?
   ) : PreferenceModel<Model>() {
     override fun areItemsTheSame(newItem: Model): Boolean = true
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) && body == newItem.body && error == newItem.error
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) && body == newItem.body && error == newItem.error
   }
 
   class ViewHolder(itemView: View, onTextChanged: (CharSequence) -> Unit) : MappingViewHolder<Model>(itemView) {

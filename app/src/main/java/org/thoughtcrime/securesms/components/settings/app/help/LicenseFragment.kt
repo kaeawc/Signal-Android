@@ -76,6 +76,4 @@ fun LicenseFragmentPreview() {
   LicenseScreen(listOf("Lorem ipsum", "Delor"))
 }
 
-private fun InputStream.readToLines(): List<String> {
-  return this.bufferedReader().use { it.readText().split("\n") }
-}
+private fun InputStream.readToLines(): List<String> = this.bufferedReader().use { it.readText().split("\n") }

@@ -15,9 +15,7 @@ object AudioDeviceMapping {
   )
 
   @JvmStatic
-  fun getEquivalentPlatformTypes(audioDevice: SignalAudioManager.AudioDevice): List<Int> {
-    return systemDeviceTypeMap[audioDevice]!!
-  }
+  fun getEquivalentPlatformTypes(audioDevice: SignalAudioManager.AudioDevice): List<Int> = systemDeviceTypeMap[audioDevice]!!
 
   @JvmStatic
   fun fromPlatformType(type: Int): SignalAudioManager.AudioDevice {

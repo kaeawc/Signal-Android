@@ -129,8 +129,6 @@ class BackupMessagesJob private constructor(parameters: Parameters) : Job(parame
   }
 
   class Factory : Job.Factory<BackupMessagesJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): BackupMessagesJob {
-      return BackupMessagesJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): BackupMessagesJob = BackupMessagesJob(parameters)
   }
 }

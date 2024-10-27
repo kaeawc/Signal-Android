@@ -13,11 +13,9 @@ import org.thoughtcrime.securesms.stories.Stories
 
 class BaseStoryRecipientSelectionRepository {
 
-  fun getRecord(distributionListId: DistributionListId): Single<DistributionListRecord> {
-    return Single.fromCallable {
-      SignalDatabase.distributionLists.getList(distributionListId) ?: error("Record does not exist.")
-    }.subscribeOn(Schedulers.io())
-  }
+  fun getRecord(distributionListId: DistributionListId): Single<DistributionListRecord> = Single.fromCallable {
+    SignalDatabase.distributionLists.getList(distributionListId) ?: error("Record does not exist.")
+  }.subscribeOn(Schedulers.io())
 
   fun updateDistributionListMembership(distributionListRecord: DistributionListRecord, recipients: Set<RecipientId>) {
     SignalExecutors.BOUNDED.execute {
@@ -37,16 +35,14 @@ class BaseStoryRecipientSelectionRepository {
     }
   }
 
-  fun getAllSignalContacts(): Single<Set<RecipientId>> {
-    return Single.fromCallable {
-      SignalDatabase.recipients.getSignalContacts(false)?.use {
-        val recipientSet = mutableSetOf<RecipientId>()
-        while (it.moveToNext()) {
-          recipientSet.add(RecipientId.from(CursorUtil.requireLong(it, RecipientTable.ID)))
-        }
+  fun getAllSignalContacts(): Single<Set<RecipientId>> = Single.fromCallable {
+    SignalDatabase.recipients.getSignalContacts(false)?.use {
+      val recipientSet = mutableSetOf<RecipientId>()
+      while (it.moveToNext()) {
+        recipientSet.add(RecipientId.from(CursorUtil.requireLong(it, RecipientTable.ID)))
+      }
 
-        recipientSet
-      } ?: emptySet()
-    }.subscribeOn(Schedulers.io())
-  }
+      recipientSet
+    } ?: emptySet()
+  }.subscribeOn(Schedulers.io())
 }

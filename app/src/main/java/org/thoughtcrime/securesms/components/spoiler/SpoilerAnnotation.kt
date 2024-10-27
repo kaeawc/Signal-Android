@@ -20,14 +20,10 @@ object SpoilerAnnotation {
   private val revealedSpoilers = mutableSetOf<String>()
 
   @JvmStatic
-  fun spoilerAnnotation(hash: Int): Annotation {
-    return Annotation(SPOILER_ANNOTATION, hash.toString())
-  }
+  fun spoilerAnnotation(hash: Int): Annotation = Annotation(SPOILER_ANNOTATION, hash.toString())
 
   @JvmStatic
-  fun isSpoilerAnnotation(annotation: Any): Boolean {
-    return SPOILER_ANNOTATION == (annotation as? Annotation)?.key
-  }
+  fun isSpoilerAnnotation(annotation: Any): Boolean = SPOILER_ANNOTATION == (annotation as? Annotation)?.key
 
   fun getSpoilerAndClickAnnotations(spanned: Spanned, start: Int = 0, end: Int = spanned.length): Map<Annotation, SpoilerClickableSpan?> {
     val spoilerAnnotations: Map<Pair<Int, Int>, Annotation> = spanned.getSpans(start, end, Annotation::class.java)
@@ -46,11 +42,9 @@ object SpoilerAnnotation {
 
   @JvmStatic
   @JvmOverloads
-  fun getSpoilerAnnotations(spanned: Spanned, start: Int, end: Int, unrevealedOnly: Boolean = false): List<Annotation> {
-    return spanned
-      .getSpans(start, end, Annotation::class.java)
-      .filter { isSpoilerAnnotation(it) && !(unrevealedOnly && revealedSpoilers.contains(it.value)) }
-  }
+  fun getSpoilerAnnotations(spanned: Spanned, start: Int, end: Int, unrevealedOnly: Boolean = false): List<Annotation> = spanned
+    .getSpans(start, end, Annotation::class.java)
+    .filter { isSpoilerAnnotation(it) && !(unrevealedOnly && revealedSpoilers.contains(it.value)) }
 
   @JvmStatic
   fun resetRevealedSpoilers() {

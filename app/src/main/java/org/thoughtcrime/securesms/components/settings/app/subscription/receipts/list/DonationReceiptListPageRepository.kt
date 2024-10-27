@@ -6,9 +6,7 @@ import org.thoughtcrime.securesms.database.SignalDatabase
 import org.thoughtcrime.securesms.database.model.InAppPaymentReceiptRecord
 
 class DonationReceiptListPageRepository {
-  fun getRecords(type: InAppPaymentReceiptRecord.Type?): Single<List<InAppPaymentReceiptRecord>> {
-    return Single.fromCallable {
-      SignalDatabase.donationReceipts.getReceipts(type)
-    }.subscribeOn(Schedulers.io())
-  }
+  fun getRecords(type: InAppPaymentReceiptRecord.Type?): Single<List<InAppPaymentReceiptRecord>> = Single.fromCallable {
+    SignalDatabase.donationReceipts.getReceipts(type)
+  }.subscribeOn(Schedulers.io())
 }

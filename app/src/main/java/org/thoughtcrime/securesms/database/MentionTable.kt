@@ -14,7 +14,10 @@ import org.signal.core.util.withinTransaction
 import org.thoughtcrime.securesms.database.model.Mention
 import org.thoughtcrime.securesms.recipients.RecipientId
 
-class MentionTable(context: Context, databaseHelper: SignalDatabase) : DatabaseTable(context, databaseHelper), RecipientIdDatabaseReference, ThreadIdDatabaseReference {
+class MentionTable(context: Context, databaseHelper: SignalDatabase) :
+  DatabaseTable(context, databaseHelper),
+  RecipientIdDatabaseReference,
+  ThreadIdDatabaseReference {
 
   companion object {
     const val TABLE_NAME = "mention"
@@ -61,20 +64,18 @@ class MentionTable(context: Context, databaseHelper: SignalDatabase) : DatabaseT
     }
   }
 
-  fun getMentionsForMessage(messageId: Long): List<Mention> {
-    return readableDatabase
-      .select()
-      .from("$TABLE_NAME INDEXED BY $MESSAGE_ID_INDEX")
-      .where("$MESSAGE_ID = $messageId")
-      .run()
-      .readToList { cursor ->
-        Mention(
-          RecipientId.from(cursor.requireLong(RECIPIENT_ID)),
-          cursor.requireInt(RANGE_START),
-          cursor.requireInt(RANGE_LENGTH)
-        )
-      }
-  }
+  fun getMentionsForMessage(messageId: Long): List<Mention> = readableDatabase
+    .select()
+    .from("$TABLE_NAME INDEXED BY $MESSAGE_ID_INDEX")
+    .where("$MESSAGE_ID = $messageId")
+    .run()
+    .readToList { cursor ->
+      Mention(
+        RecipientId.from(cursor.requireLong(RECIPIENT_ID)),
+        cursor.requireInt(RANGE_START),
+        cursor.requireInt(RANGE_LENGTH)
+      )
+    }
 
   fun getMentionsForMessages(messageIds: Collection<Long>): Map<Long, List<Mention>> {
     val ids = messageIds.joinToString(separator = ",") { it.toString() }
@@ -87,9 +88,7 @@ class MentionTable(context: Context, databaseHelper: SignalDatabase) : DatabaseT
       .use { cursor -> readMentions(cursor) }
   }
 
-  fun getMentionsContainingRecipients(recipientIds: Collection<RecipientId>, limit: Long): Map<Long, List<Mention>> {
-    return getMentionsContainingRecipients(recipientIds, -1, limit)
-  }
+  fun getMentionsContainingRecipients(recipientIds: Collection<RecipientId>, limit: Long): Map<Long, List<Mention>> = getMentionsContainingRecipients(recipientIds, -1, limit)
 
   fun getMentionsContainingRecipients(recipientIds: Collection<RecipientId>, threadId: Long, limit: Long): Map<Long, List<Mention>> {
     val ids = recipientIds.joinToString(separator = ",") { it.serialize() }
@@ -146,18 +145,16 @@ class MentionTable(context: Context, databaseHelper: SignalDatabase) : DatabaseT
     writableDatabase.deleteAll(TABLE_NAME)
   }
 
-  private fun readMentions(cursor: Cursor): Map<Long, List<Mention>> {
-    return cursor.readToList {
-      val messageId = it.requireLong(MESSAGE_ID)
-      val mention = Mention(
-        RecipientId.from(it.requireLong(RECIPIENT_ID)),
-        it.requireInt(RANGE_START),
-        it.requireInt(RANGE_LENGTH)
-      )
+  private fun readMentions(cursor: Cursor): Map<Long, List<Mention>> = cursor.readToList {
+    val messageId = it.requireLong(MESSAGE_ID)
+    val mention = Mention(
+      RecipientId.from(it.requireLong(RECIPIENT_ID)),
+      it.requireInt(RANGE_START),
+      it.requireInt(RANGE_LENGTH)
+    )
 
-      messageId to mention
-    }.groupBy({ it.first }, { it.second })
-  }
+    messageId to mention
+  }.groupBy({ it.first }, { it.second })
 
   override fun remapRecipient(fromId: RecipientId, toId: RecipientId) {
     writableDatabase

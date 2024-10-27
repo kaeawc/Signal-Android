@@ -56,9 +56,7 @@ class TextStoryPostCreationViewModel(private val repository: TextStoryPostSendRe
       }
   }
 
-  fun compressToBlob(bitmap: Bitmap): Single<Uri> {
-    return repository.compressToBlob(bitmap)
-  }
+  fun compressToBlob(bitmap: Bitmap): Single<Uri> = repository.compressToBlob(bitmap)
 
   override fun onCleared() {
     disposables.clear()
@@ -76,14 +74,10 @@ class TextStoryPostCreationViewModel(private val repository: TextStoryPostSendRe
     }
   }
 
-  fun getBody(): CharSequence {
-    return store.state.body
-  }
+  fun getBody(): CharSequence = store.state.body
 
   @ColorInt
-  fun getTextColor(): Int {
-    return store.state.textColor
-  }
+  fun getTextColor(): Int = store.state.textColor
 
   fun setTextColor(@ColorInt textColor: Int) {
     store.update { it.copy(textColor = textColor) }
@@ -122,19 +116,15 @@ class TextStoryPostCreationViewModel(private val repository: TextStoryPostSendRe
     temporaryBodySubject.onNext(temporaryBody)
   }
 
-  fun send(contacts: Set<ContactSearchKey>, linkPreview: LinkPreview?): Single<TextStoryPostSendResult> {
-    return repository.send(
-      contacts,
-      store.state,
-      linkPreview,
-      identityChangesSince
-    )
-  }
+  fun send(contacts: Set<ContactSearchKey>, linkPreview: LinkPreview?): Single<TextStoryPostSendResult> = repository.send(
+    contacts,
+    store.state,
+    linkPreview,
+    identityChangesSince
+  )
 
   class Factory(private val repository: TextStoryPostSendRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(TextStoryPostCreationViewModel(repository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(TextStoryPostCreationViewModel(repository)) as T
   }
 
   companion object {

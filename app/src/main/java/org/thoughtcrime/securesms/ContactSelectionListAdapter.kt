@@ -169,26 +169,22 @@ class ContactSelectionListAdapter(
       }
     }
 
-    override fun getSize(section: ContactSearchConfiguration.Section.Arbitrary, query: String?): Int {
-      return section.types.size
-    }
+    override fun getSize(section: ContactSearchConfiguration.Section.Arbitrary, query: String?): Int = section.types.size
 
     override fun getData(section: ContactSearchConfiguration.Section.Arbitrary, query: String?, startIndex: Int, endIndex: Int, totalSearchSize: Int): List<ContactSearchData.Arbitrary> {
       check(section.types.size == 1)
       return listOf(ContactSearchData.Arbitrary(section.types.first()))
     }
 
-    override fun getMappingModel(arbitrary: ContactSearchData.Arbitrary): MappingModel<*> {
-      return when (ArbitraryRow.fromCode(arbitrary.type)) {
-        ArbitraryRow.NEW_GROUP -> NewGroupModel()
-        ArbitraryRow.INVITE_TO_SIGNAL -> InviteToSignalModel()
-        ArbitraryRow.MORE_HEADING -> MoreHeaderModel()
-        ArbitraryRow.REFRESH_CONTACTS -> RefreshContactsModel()
-        ArbitraryRow.FIND_CONTACTS -> FindContactsModel()
-        ArbitraryRow.FIND_CONTACTS_BANNER -> FindContactsBannerModel()
-        ArbitraryRow.FIND_BY_PHONE_NUMBER -> FindByPhoneNumberModel()
-        ArbitraryRow.FIND_BY_USERNAME -> FindByUsernameModel()
-      }
+    override fun getMappingModel(arbitrary: ContactSearchData.Arbitrary): MappingModel<*> = when (ArbitraryRow.fromCode(arbitrary.type)) {
+      ArbitraryRow.NEW_GROUP -> NewGroupModel()
+      ArbitraryRow.INVITE_TO_SIGNAL -> InviteToSignalModel()
+      ArbitraryRow.MORE_HEADING -> MoreHeaderModel()
+      ArbitraryRow.REFRESH_CONTACTS -> RefreshContactsModel()
+      ArbitraryRow.FIND_CONTACTS -> FindContactsModel()
+      ArbitraryRow.FIND_CONTACTS_BANNER -> FindContactsBannerModel()
+      ArbitraryRow.FIND_BY_PHONE_NUMBER -> FindByPhoneNumberModel()
+      ArbitraryRow.FIND_BY_USERNAME -> FindByUsernameModel()
     }
   }
 

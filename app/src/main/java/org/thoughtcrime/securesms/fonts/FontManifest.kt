@@ -61,9 +61,7 @@ data class FontManifest(
      * a cached manifest available for the given version.
      */
     @WorkerThread
-    fun get(context: Context, fontVersion: FontVersion): FontManifest? {
-      return fromDisk(context, fontVersion) ?: fromNetwork(context, fontVersion)
-    }
+    fun get(context: Context, fontVersion: FontVersion): FontManifest? = fromDisk(context, fontVersion) ?: fromNetwork(context, fontVersion)
 
     @WorkerThread
     private fun fromDisk(context: Context, fontVersion: FontVersion): FontManifest? {
@@ -82,16 +80,12 @@ data class FontManifest(
     }
 
     @WorkerThread
-    private fun fromNetwork(context: Context, fontVersion: FontVersion): FontManifest? {
-      return if (Fonts.downloadAndVerifyLatestManifest(context, fontVersion, fontVersion.manifestPath())) {
-        fromDisk(context, fontVersion)
-      } else {
-        null
-      }
+    private fun fromNetwork(context: Context, fontVersion: FontVersion): FontManifest? = if (Fonts.downloadAndVerifyLatestManifest(context, fontVersion, fontVersion.manifestPath())) {
+      fromDisk(context, fontVersion)
+    } else {
+      null
     }
 
-    private fun FontVersion.manifestPath(): String {
-      return "$path/$PATH"
-    }
+    private fun FontVersion.manifestPath(): String = "$path/$PATH"
   }
 }

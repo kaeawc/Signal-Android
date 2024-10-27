@@ -31,17 +31,11 @@ class StoryViewerPagerAdapter(
 
   override fun getItemCount(): Int = pages.size
 
-  override fun getItemId(position: Int): Long {
-    return pages[position].toLong()
-  }
+  override fun getItemId(position: Int): Long = pages[position].toLong()
 
-  override fun containsItem(itemId: Long): Boolean {
-    return pages.find { it.toLong() == itemId } != null
-  }
+  override fun containsItem(itemId: Long): Boolean = pages.find { it.toLong() == itemId } != null
 
-  override fun createFragment(position: Int): Fragment {
-    return StoryViewerPageFragment.create(arguments.copy(recipientId = pages[position]))
-  }
+  override fun createFragment(position: Int): Fragment = StoryViewerPageFragment.create(arguments.copy(recipientId = pages[position]))
 
   private class Callback(
     private val oldList: List<RecipientId>,
@@ -51,12 +45,8 @@ class StoryViewerPagerAdapter(
 
     override fun getNewListSize(): Int = newList.size
 
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-      return oldList[oldItemPosition] == newList[newItemPosition]
-    }
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = oldList[oldItemPosition] == newList[newItemPosition]
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-      return oldList[oldItemPosition] == newList[newItemPosition]
-    }
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = oldList[oldItemPosition] == newList[newItemPosition]
   }
 }

@@ -60,7 +60,5 @@ class VoiceNotePlayer @JvmOverloads constructor(
 @OptIn(androidx.media3.common.util.UnstableApi::class)
 class WorkaroundRenderersFactory(val context: Context) : DefaultRenderersFactory(context) {
 
-  override fun buildAudioSink(context: Context, enableFloatOutput: Boolean, enableAudioTrackPlaybackParams: Boolean): AudioSink {
-    return RetryableInitAudioSink(context, enableFloatOutput, enableAudioTrackPlaybackParams)
-  }
+  override fun buildAudioSink(context: Context, enableFloatOutput: Boolean, enableAudioTrackPlaybackParams: Boolean): AudioSink = RetryableInitAudioSink(context, enableFloatOutput, enableAudioTrackPlaybackParams)
 }

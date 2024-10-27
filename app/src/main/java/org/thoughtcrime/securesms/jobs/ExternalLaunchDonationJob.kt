@@ -43,7 +43,9 @@ import org.whispersystems.signalservice.internal.ServiceResponse
 class ExternalLaunchDonationJob private constructor(
   private val stripe3DSData: Stripe3DSData,
   parameters: Parameters
-) : BaseJob(parameters), StripeApi.PaymentIntentFetcher, StripeApi.SetupIntentHelper {
+) : BaseJob(parameters),
+  StripeApi.PaymentIntentFetcher,
+  StripeApi.SetupIntentHelper {
 
   private var donationError: DonationError? = null
 
@@ -60,9 +62,7 @@ class ExternalLaunchDonationJob private constructor(
 
   private val stripeApi = StripeApi(Environment.Donations.STRIPE_CONFIGURATION, this, this, AppDependencies.okHttpClient)
 
-  override fun serialize(): ByteArray {
-    return stripe3DSData.toProtoBytes()
-  }
+  override fun serialize(): ByteArray = stripe3DSData.toProtoBytes()
 
   override fun getFactoryKey(): String = KEY
 
@@ -243,9 +243,7 @@ class ExternalLaunchDonationJob private constructor(
     error("Should never get here.")
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return e is RetryException
-  }
+  override fun onShouldRetry(e: Exception): Boolean = e is RetryException
 
   class RetryException(cause: Throwable? = null) : Exception(cause)
 
@@ -261,9 +259,7 @@ class ExternalLaunchDonationJob private constructor(
     }
 
     companion object {
-      fun parseSerializedData(serializedData: ByteArray): Stripe3DSData {
-        return Stripe3DSData.fromProtoBytes(serializedData)
-      }
+      fun parseSerializedData(serializedData: ByteArray): Stripe3DSData = Stripe3DSData.fromProtoBytes(serializedData)
     }
   }
 

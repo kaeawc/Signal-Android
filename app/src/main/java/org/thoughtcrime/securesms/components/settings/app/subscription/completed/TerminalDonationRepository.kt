@@ -17,12 +17,10 @@ import java.util.Locale
 class TerminalDonationRepository(
   private val donationsService: DonationsService = AppDependencies.donationsService
 ) {
-  fun getBadge(terminalDonation: TerminalDonationQueue.TerminalDonation): Single<Badge> {
-    return Single
-      .fromCallable { donationsService.getDonationsConfiguration(Locale.getDefault()) }
-      .flatMap { it.flattenResult() }
-      .map { it.levels[terminalDonation.level.toInt()]!! }
-      .map { Badges.fromServiceBadge(it.badge) }
-      .subscribeOn(Schedulers.io())
-  }
+  fun getBadge(terminalDonation: TerminalDonationQueue.TerminalDonation): Single<Badge> = Single
+    .fromCallable { donationsService.getDonationsConfiguration(Locale.getDefault()) }
+    .flatMap { it.flattenResult() }
+    .map { it.levels[terminalDonation.level.toInt()]!! }
+    .map { Badges.fromServiceBadge(it.badge) }
+    .subscribeOn(Schedulers.io())
 }

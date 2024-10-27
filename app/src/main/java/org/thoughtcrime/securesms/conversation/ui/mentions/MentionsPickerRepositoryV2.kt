@@ -13,13 +13,11 @@ import org.thoughtcrime.securesms.recipients.RecipientId
 class MentionsPickerRepositoryV2(
   private val recipients: RecipientTable = SignalDatabase.recipients
 ) {
-  fun search(query: String, members: List<RecipientId>): Single<List<Recipient>> {
-    return if (members.isEmpty()) {
-      Single.just(emptyList())
-    } else {
-      Single
-        .fromCallable { recipients.queryRecipientsForMentions(query, members) }
-        .subscribeOn(Schedulers.io())
-    }
+  fun search(query: String, members: List<RecipientId>): Single<List<Recipient>> = if (members.isEmpty()) {
+    Single.just(emptyList())
+  } else {
+    Single
+      .fromCallable { recipients.queryRecipientsForMentions(query, members) }
+      .subscribeOn(Schedulers.io())
   }
 }

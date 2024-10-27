@@ -27,43 +27,41 @@ class BecomeASustainerFragment : DSLSettingsBottomSheetFragment() {
     }
   }
 
-  private fun getConfiguration(state: BecomeASustainerState): DSLConfiguration {
-    return configure {
-      customPref(BadgePreview.BadgeModel.FeaturedModel(badge = state.badge))
+  private fun getConfiguration(state: BecomeASustainerState): DSLConfiguration = configure {
+    customPref(BadgePreview.BadgeModel.FeaturedModel(badge = state.badge))
 
-      sectionHeaderPref(
-        title = DSLSettingsText.from(
-          R.string.BecomeASustainerFragment__get_badges,
-          DSLSettingsText.CenterModifier,
-          DSLSettingsText.TitleLargeModifier
-        )
+    sectionHeaderPref(
+      title = DSLSettingsText.from(
+        R.string.BecomeASustainerFragment__get_badges,
+        DSLSettingsText.CenterModifier,
+        DSLSettingsText.TitleLargeModifier
       )
+    )
 
-      space(DimensionUnit.DP.toPixels(8f).toInt())
+    space(DimensionUnit.DP.toPixels(8f).toInt())
 
-      noPadTextPref(
-        title = DSLSettingsText.from(
-          R.string.BecomeASustainerFragment__signal_is_a_non_profit,
-          DSLSettingsText.CenterModifier,
-          DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_BodyMedium),
-          DSLSettingsText.ColorModifier(ContextCompat.getColor(requireContext(), R.color.signal_colorOnSurfaceVariant))
-        )
+    noPadTextPref(
+      title = DSLSettingsText.from(
+        R.string.BecomeASustainerFragment__signal_is_a_non_profit,
+        DSLSettingsText.CenterModifier,
+        DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_BodyMedium),
+        DSLSettingsText.ColorModifier(ContextCompat.getColor(requireContext(), R.color.signal_colorOnSurfaceVariant))
       )
+    )
 
-      space(DimensionUnit.DP.toPixels(32f).toInt())
+    space(DimensionUnit.DP.toPixels(32f).toInt())
 
-      tonalWrappedButton(
-        text = DSLSettingsText.from(
-          R.string.BecomeASustainerMegaphone__become_a_sustainer
-        ),
-        onClick = {
-          requireActivity().finish()
-          requireActivity().startActivity(AppSettingsActivity.subscriptions(requireContext()).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP))
-        }
-      )
+    tonalWrappedButton(
+      text = DSLSettingsText.from(
+        R.string.BecomeASustainerMegaphone__become_a_sustainer
+      ),
+      onClick = {
+        requireActivity().finish()
+        requireActivity().startActivity(AppSettingsActivity.subscriptions(requireContext()).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP))
+      }
+    )
 
-      space(DimensionUnit.DP.toPixels(32f).toInt())
-    }
+    space(DimensionUnit.DP.toPixels(32f).toInt())
   }
 
   companion object {

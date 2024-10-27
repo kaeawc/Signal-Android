@@ -40,8 +40,6 @@ internal class AccountConsistencyMigrationJob(
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<AccountConsistencyMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): AccountConsistencyMigrationJob {
-      return AccountConsistencyMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): AccountConsistencyMigrationJob = AccountConsistencyMigrationJob(parameters)
   }
 }

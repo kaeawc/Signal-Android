@@ -47,45 +47,41 @@ data class V2ConversationItemTextOnlyBindingBridge(
 /**
  * Wraps the binding in the bridge.
  */
-fun V2ConversationItemTextOnlyIncomingBinding.bridge(): V2ConversationItemTextOnlyBindingBridge {
-  return V2ConversationItemTextOnlyBindingBridge(
-    root = root,
-    senderName = groupMessageSender,
-    senderPhoto = contactPhoto,
-    senderBadge = badge,
-    body = conversationItemBody,
-    bodyWrapper = conversationItemBodyWrapper,
-    reply = conversationItemReply,
-    reactions = conversationItemReactions,
-    deliveryStatus = null,
-    footerDate = conversationItemFooterDate,
-    footerExpiry = conversationItemExpirationTimer,
-    footerBackground = conversationItemFooterBackground,
-    alert = null,
-    footerSpace = footerEndPad,
-    isIncoming = true
-  )
-}
+fun V2ConversationItemTextOnlyIncomingBinding.bridge(): V2ConversationItemTextOnlyBindingBridge = V2ConversationItemTextOnlyBindingBridge(
+  root = root,
+  senderName = groupMessageSender,
+  senderPhoto = contactPhoto,
+  senderBadge = badge,
+  body = conversationItemBody,
+  bodyWrapper = conversationItemBodyWrapper,
+  reply = conversationItemReply,
+  reactions = conversationItemReactions,
+  deliveryStatus = null,
+  footerDate = conversationItemFooterDate,
+  footerExpiry = conversationItemExpirationTimer,
+  footerBackground = conversationItemFooterBackground,
+  alert = null,
+  footerSpace = footerEndPad,
+  isIncoming = true
+)
 
 /**
  * Wraps the binding in the bridge.
  */
-fun V2ConversationItemTextOnlyOutgoingBinding.bridge(): V2ConversationItemTextOnlyBindingBridge {
-  return V2ConversationItemTextOnlyBindingBridge(
-    root = root,
-    senderName = null,
-    senderPhoto = null,
-    senderBadge = null,
-    body = conversationItemBody,
-    bodyWrapper = conversationItemBodyWrapper,
-    reply = conversationItemReply,
-    reactions = conversationItemReactions,
-    deliveryStatus = conversationItemDeliveryStatus,
-    footerDate = conversationItemFooterDate,
-    footerExpiry = conversationItemExpirationTimer,
-    footerBackground = conversationItemFooterBackground,
-    alert = conversationItemAlert,
-    footerSpace = footerEndPad,
-    isIncoming = false
-  )
-}
+fun V2ConversationItemTextOnlyOutgoingBinding.bridge(): V2ConversationItemTextOnlyBindingBridge = V2ConversationItemTextOnlyBindingBridge(
+  root = root,
+  senderName = null,
+  senderPhoto = null,
+  senderBadge = null,
+  body = conversationItemBody,
+  bodyWrapper = conversationItemBodyWrapper,
+  reply = conversationItemReply,
+  reactions = conversationItemReactions,
+  deliveryStatus = conversationItemDeliveryStatus,
+  footerDate = conversationItemFooterDate,
+  footerExpiry = conversationItemExpirationTimer,
+  footerBackground = conversationItemFooterBackground,
+  alert = conversationItemAlert,
+  footerSpace = footerEndPad,
+  isIncoming = false
+)

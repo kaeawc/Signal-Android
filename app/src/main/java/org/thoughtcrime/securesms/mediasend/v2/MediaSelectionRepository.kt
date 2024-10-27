@@ -64,13 +64,11 @@ class MediaSelectionRepository(context: Context) {
   val uploadRepository = MediaUploadRepository(this.context)
   val isMetered: Observable<Boolean> = MeteredConnectivity.isMetered(this.context)
 
-  fun populateAndFilterMedia(media: List<Media>, mediaConstraints: MediaConstraints, maxSelection: Int, isStory: Boolean): Single<MediaValidator.FilterResult> {
-    return Single.fromCallable {
-      val populatedMedia = mediaRepository.getPopulatedMedia(context, media)
+  fun populateAndFilterMedia(media: List<Media>, mediaConstraints: MediaConstraints, maxSelection: Int, isStory: Boolean): Single<MediaValidator.FilterResult> = Single.fromCallable {
+    val populatedMedia = mediaRepository.getPopulatedMedia(context, media)
 
-      MediaValidator.filterMedia(context, populatedMedia, mediaConstraints, maxSelection, isStory)
-    }.subscribeOn(Schedulers.io())
-  }
+    MediaValidator.filterMedia(context, populatedMedia, mediaConstraints, maxSelection, isStory)
+  }.subscribeOn(Schedulers.io())
 
   /**
    * Tries to send the selected media, performing proper transformations for edited images and videos.
@@ -238,14 +236,12 @@ class MediaSelectionRepository(context: Context) {
     }.subscribeOn(Schedulers.io()).cast(MediaSendActivityResult::class.java)
   }
 
-  private fun getTruncatedBody(body: String?): String? {
-    return if (!Stories.isFeatureEnabled() || body.isNullOrEmpty()) {
-      body
-    } else {
-      val iterator = BreakIteratorCompat.getInstance()
-      iterator.setText(body)
-      iterator.take(Stories.MAX_CAPTION_SIZE).toString()
-    }
+  private fun getTruncatedBody(body: String?): String? = if (!Stories.isFeatureEnabled() || body.isNullOrEmpty()) {
+    body
+  } else {
+    val iterator = BreakIteratorCompat.getInstance()
+    iterator.setText(body)
+    iterator.take(Stories.MAX_CAPTION_SIZE).toString()
   }
 
   fun deleteBlobs(media: List<Media>) {
@@ -261,9 +257,7 @@ class MediaSelectionRepository(context: Context) {
     uploadRepository.deleteAbandonedAttachments()
   }
 
-  fun isLocalSelfSend(recipient: Recipient?): Boolean {
-    return MessageSender.isLocalSelfSend(context, recipient, SendType.SIGNAL)
-  }
+  fun isLocalSelfSend(recipient: Recipient?): Boolean = MessageSender.isLocalSelfSend(context, recipient, SendType.SIGNAL)
 
   @WorkerThread
   private fun buildModelsToTransform(
@@ -461,9 +455,7 @@ class MediaSelectionRepository(context: Context) {
     }
   }
 
-  private fun Media.asKey(): MediaKey {
-    return MediaKey(this, this.transformProperties)
-  }
+  private fun Media.asKey(): MediaKey = MediaKey(this, this.transformProperties)
 
   data class MediaKey(val media: Media, val mediaTransform: Optional<TransformProperties>)
 }

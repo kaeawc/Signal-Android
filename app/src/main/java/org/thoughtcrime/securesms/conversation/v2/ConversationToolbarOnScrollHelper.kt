@@ -28,12 +28,8 @@ class ConversationToolbarOnScrollHelper(
     get() = ColorSet(getInactiveToolbarColor(wallpaperProvider() != null))
 
   @ColorRes
-  private fun getActiveToolbarColor(hasWallpaper: Boolean): Int {
-    return if (hasWallpaper) R.color.conversation_toolbar_color_wallpaper_scrolled else R.color.signal_colorSurface2
-  }
+  private fun getActiveToolbarColor(hasWallpaper: Boolean): Int = if (hasWallpaper) R.color.conversation_toolbar_color_wallpaper_scrolled else R.color.signal_colorSurface2
 
   @ColorRes
-  private fun getInactiveToolbarColor(hasWallpaper: Boolean): Int {
-    return if (hasWallpaper) R.color.conversation_toolbar_color_wallpaper else R.color.signal_colorBackground
-  }
+  private fun getInactiveToolbarColor(hasWallpaper: Boolean): Int = if (hasWallpaper) R.color.conversation_toolbar_color_wallpaper else R.color.signal_colorBackground
 }

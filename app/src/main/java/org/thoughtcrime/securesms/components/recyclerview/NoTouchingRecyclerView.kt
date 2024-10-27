@@ -21,11 +21,7 @@ class NoTouchingRecyclerView @JvmOverloads constructor(
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
   @SuppressLint("ClickableViewAccessibility")
-  override fun onTouchEvent(e: MotionEvent?): Boolean {
-    return false
-  }
+  override fun onTouchEvent(e: MotionEvent?): Boolean = false
 
-  override fun onInterceptTouchEvent(e: MotionEvent?): Boolean {
-    return false
-  }
+  override fun onInterceptTouchEvent(e: MotionEvent?): Boolean = false
 }

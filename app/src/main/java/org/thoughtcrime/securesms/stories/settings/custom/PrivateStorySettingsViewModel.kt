@@ -34,9 +34,7 @@ class PrivateStorySettingsViewModel(private val distributionListId: Distribution
       }
   }
 
-  fun getName(): String {
-    return store.state.privateStory?.name ?: ""
-  }
+  fun getName(): String = store.state.privateStory?.name ?: ""
 
   fun remove(recipient: Recipient) {
     disposables += repository.removeMember(store.state.privateStory!!, recipient.id)
@@ -51,15 +49,11 @@ class PrivateStorySettingsViewModel(private val distributionListId: Distribution
       .subscribe { refresh() }
   }
 
-  fun delete(): Completable {
-    return repository.delete(distributionListId)
-      .doOnSubscribe { store.update { it.copy(isActionInProgress = true) } }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun delete(): Completable = repository.delete(distributionListId)
+    .doOnSubscribe { store.update { it.copy(isActionInProgress = true) } }
+    .observeOn(AndroidSchedulers.mainThread())
 
   class Factory(private val privateStoryItemData: DistributionListId, private val repository: PrivateStorySettingsRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(PrivateStorySettingsViewModel(privateStoryItemData, repository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(PrivateStorySettingsViewModel(privateStoryItemData, repository)) as T
   }
 }

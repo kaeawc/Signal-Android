@@ -16,26 +16,22 @@ import org.thoughtcrime.securesms.recipients.RecipientId
 class EditMessageHistoryViewModel(private val originalMessageId: Long, private val conversationRecipient: Recipient) : ViewModel() {
   private val groupAuthorNameColorHelper = GroupAuthorNameColorHelper()
 
-  fun getEditHistory(): Observable<List<ConversationMessage>> {
-    return EditMessageHistoryRepository
-      .getEditHistory(originalMessageId)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getEditHistory(): Observable<List<ConversationMessage>> = EditMessageHistoryRepository
+    .getEditHistory(originalMessageId)
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun getNameColorsMap(): Observable<Map<RecipientId, NameColor>> {
-    return conversationRecipient
-      .live()
-      .observable()
-      .map { recipient ->
-        if (recipient.groupId.isPresent) {
-          groupAuthorNameColorHelper.getColorMap(recipient.groupId.get())
-        } else {
-          emptyMap()
-        }
+  fun getNameColorsMap(): Observable<Map<RecipientId, NameColor>> = conversationRecipient
+    .live()
+    .observable()
+    .map { recipient ->
+      if (recipient.groupId.isPresent) {
+        groupAuthorNameColorHelper.getColorMap(recipient.groupId.get())
+      } else {
+        emptyMap()
       }
-      .subscribeOn(Schedulers.io())
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+    }
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
 
   fun markRevisionsRead() {
     EditMessageHistoryRepository.markRevisionsRead(originalMessageId)

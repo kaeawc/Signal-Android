@@ -1,39 +1,25 @@
 @file:Suppress("UnstableApiUsage")
 
 import com.android.build.api.dsl.ManagedVirtualDevice
-import org.gradle.api.JavaVersion
-import org.gradle.kotlin.dsl.extra
-
-val benchmarkLibs = the<org.gradle.accessors.dm.LibrariesForBenchmarkLibs>()
-
-val signalBuildToolsVersion: String by rootProject.extra
-val signalCompileSdkVersion: String by rootProject.extra
-val signalTargetSdkVersion: Int by rootProject.extra
-val signalMinSdkVersion: Int by rootProject.extra
-val signalJavaVersion: JavaVersion by rootProject.extra
-val signalKotlinJvmTarget: String by rootProject.extra
 
 plugins {
+  `version-catalog`
     id("com.android.test")
     id("org.jetbrains.kotlin.android")
 }
 
 android {
-    namespace = "org.signal.benchmark"
-    compileSdkVersion = signalCompileSdkVersion
+  namespace = "org.signal.benchmark"
+  compileSdk = libs.versions.build.android.compileSdk.get().toInt()
 
     compileOptions {
-        sourceCompatibility = signalJavaVersion
-        targetCompatibility = signalJavaVersion
-    }
-
-    kotlinOptions {
-        jvmTarget = signalKotlinJvmTarget
+      sourceCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
+      targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
     }
 
     defaultConfig {
-        minSdk = 23
-        targetSdk = signalTargetSdkVersion
+      minSdk = 28
+      targetSdk = libs.versions.build.android.targetSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -64,14 +50,13 @@ android {
             }
         }
     }
-
 }
 
 dependencies {
-    implementation(benchmarkLibs.androidx.test.ext.junit)
-    implementation(benchmarkLibs.espresso.core)
-    implementation(benchmarkLibs.uiautomator)
-    implementation(benchmarkLibs.androidx.benchmark.macro)
+    implementation(libs.androidx.junit)
+    implementation(libs.androidx.espresso)
+    implementation(libs.uiautomator)
+    implementation(libs.androidx.benchmark.macro)
 }
 
 androidComponents {

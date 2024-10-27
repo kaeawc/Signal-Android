@@ -99,9 +99,7 @@ class EmojiSource(
       emojiLatch.countDown()
     }
 
-    private fun getEmojiSource(): EmojiSource {
-      return loadRemoteBasedEmojis() ?: loadAssetBasedEmojis()
-    }
+    private fun getEmojiSource(): EmojiSource = loadRemoteBasedEmojis() ?: loadAssetBasedEmojis()
 
     private fun loadRemoteBasedEmojis(): EmojiSource? {
       if (SignalStore.internal.forceBuiltInEmoji()) {

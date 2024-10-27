@@ -54,10 +54,8 @@ object CallLinkArchiveImporter {
   }
 }
 
-private fun CallLink.Restrictions.toLocal(): CallLinkState.Restrictions {
-  return when (this) {
-    CallLink.Restrictions.ADMIN_APPROVAL -> CallLinkState.Restrictions.ADMIN_APPROVAL
-    CallLink.Restrictions.NONE -> CallLinkState.Restrictions.NONE
-    CallLink.Restrictions.UNKNOWN -> CallLinkState.Restrictions.UNKNOWN
-  }
+private fun CallLink.Restrictions.toLocal(): CallLinkState.Restrictions = when (this) {
+  CallLink.Restrictions.ADMIN_APPROVAL -> CallLinkState.Restrictions.ADMIN_APPROVAL
+  CallLink.Restrictions.NONE -> CallLinkState.Restrictions.NONE
+  CallLink.Restrictions.UNKNOWN -> CallLinkState.Restrictions.UNKNOWN
 }

@@ -148,12 +148,10 @@ class StoryDirectReplyDialogFragment :
     private const val ARG_STORY_ID = "arg.story.id"
     private const val ARG_RECIPIENT_ID = "arg.recipient.id"
 
-    fun create(storyId: Long, recipientId: RecipientId? = null): DialogFragment {
-      return StoryDirectReplyDialogFragment().apply {
-        arguments = Bundle().apply {
-          putLong(ARG_STORY_ID, storyId)
-          putParcelable(ARG_RECIPIENT_ID, recipientId)
-        }
+    fun create(storyId: Long, recipientId: RecipientId? = null): DialogFragment = StoryDirectReplyDialogFragment().apply {
+      arguments = Bundle().apply {
+        putLong(ARG_STORY_ID, storyId)
+        putParcelable(ARG_RECIPIENT_ID, recipientId)
       }
     }
   }

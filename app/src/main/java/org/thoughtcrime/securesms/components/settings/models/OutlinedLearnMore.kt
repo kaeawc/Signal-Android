@@ -20,9 +20,7 @@ object OutlinedLearnMore {
     summary: DSLSettingsText,
     val learnMoreUrl: String
   ) : PreferenceModel<Model>(summary = summary) {
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) && learnMoreUrl == newItem.learnMoreUrl
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) && learnMoreUrl == newItem.learnMoreUrl
   }
 
   private class ViewHolder(binding: DslOutlinedLearnMoreBinding) : BindingViewHolder<Model, DslOutlinedLearnMoreBinding>(binding) {

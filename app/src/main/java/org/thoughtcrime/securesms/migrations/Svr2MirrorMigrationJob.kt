@@ -28,8 +28,6 @@ internal class Svr2MirrorMigrationJob(
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<Svr2MirrorMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): Svr2MirrorMigrationJob {
-      return Svr2MirrorMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): Svr2MirrorMigrationJob = Svr2MirrorMigrationJob(parameters)
   }
 }

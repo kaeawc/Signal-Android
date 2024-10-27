@@ -56,7 +56,9 @@ import java.util.Locale
 /**
  * Bottom sheet dialog to view all scheduled messages within a given thread.
  */
-class ScheduledMessagesBottomSheet : FixedRoundedCornerBottomSheetDialogFragment(), ScheduleMessageTimePickerBottomSheet.RescheduleCallback {
+class ScheduledMessagesBottomSheet :
+  FixedRoundedCornerBottomSheetDialogFragment(),
+  ScheduleMessageTimePickerBottomSheet.RescheduleCallback {
 
   override val peekHeightPercentage: Float = 0.66f
   override val themeResId: Int = R.style.Widget_Signal_FixedRoundedCorners_Messages
@@ -192,15 +194,13 @@ class ScheduledMessagesBottomSheet : FixedRoundedCornerBottomSheetDialogFragment
     )
   }
 
-  private fun buildDeleteScheduledMessageConfirmationDialog(messageRecord: MessageRecord): AlertDialog.Builder {
-    return MaterialAlertDialogBuilder(requireContext())
-      .setTitle(resources.getString(R.string.ScheduledMessagesBottomSheet_delete_dialog_message))
-      .setCancelable(true)
-      .setPositiveButton(R.string.ScheduledMessagesBottomSheet_delete_dialog_action) { _: DialogInterface?, _: Int ->
-        deleteMessage(messageRecord.id)
-      }
-      .setNegativeButton(android.R.string.cancel, null)
-  }
+  private fun buildDeleteScheduledMessageConfirmationDialog(messageRecord: MessageRecord): AlertDialog.Builder = MaterialAlertDialogBuilder(requireContext())
+    .setTitle(resources.getString(R.string.ScheduledMessagesBottomSheet_delete_dialog_message))
+    .setCancelable(true)
+    .setPositiveButton(R.string.ScheduledMessagesBottomSheet_delete_dialog_action) { _: DialogInterface?, _: Int ->
+      deleteMessage(messageRecord.id)
+    }
+    .setNegativeButton(android.R.string.cancel, null)
 
   private fun getMessageText(message: ConversationMessage): CharSequence {
     if (message.messageRecord.hasTextSlide()) {

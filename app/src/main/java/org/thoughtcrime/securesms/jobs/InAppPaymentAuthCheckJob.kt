@@ -37,7 +37,10 @@ import kotlin.time.Duration.Companion.days
 /**
  * Responsible for checking payment state after an external launch, such as for iDEAL
  */
-class InAppPaymentAuthCheckJob private constructor(parameters: Parameters) : BaseJob(parameters), StripeApi.PaymentIntentFetcher, StripeApi.SetupIntentHelper {
+class InAppPaymentAuthCheckJob private constructor(parameters: Parameters) :
+  BaseJob(parameters),
+  StripeApi.PaymentIntentFetcher,
+  StripeApi.SetupIntentHelper {
 
   private constructor() : this(
     Parameters.Builder()
@@ -372,8 +375,6 @@ class InAppPaymentAuthCheckJob private constructor(parameters: Parameters) : Bas
   }
 
   class Factory : Job.Factory<InAppPaymentAuthCheckJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): InAppPaymentAuthCheckJob {
-      return InAppPaymentAuthCheckJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): InAppPaymentAuthCheckJob = InAppPaymentAuthCheckJob(parameters)
   }
 }

@@ -11,12 +11,10 @@ sealed class ProcessState<T> {
   data class Failure<T>(val throwable: Throwable?) : ProcessState<T>()
 
   companion object {
-    fun <T> fromResult(result: Result<T>): ProcessState<T> {
-      return if (result.isSuccess) {
-        Success(result.getOrThrow())
-      } else {
-        Failure(result.exceptionOrNull())
-      }
+    fun <T> fromResult(result: Result<T>): ProcessState<T> = if (result.isSuccess) {
+      Success(result.getOrThrow())
+    } else {
+      Failure(result.exceptionOrNull())
     }
   }
 }

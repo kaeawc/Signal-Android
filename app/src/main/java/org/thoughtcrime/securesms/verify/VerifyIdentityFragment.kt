@@ -22,13 +22,14 @@ import org.thoughtcrime.securesms.util.ServiceUtil
 /**
  * Fragment to assist user in verifying recipient identity utilizing keys.
  */
-class VerifyIdentityFragment : Fragment(R.layout.fragment_container), ScanListener, VerifyDisplayFragment.Callback {
+class VerifyIdentityFragment :
+  Fragment(R.layout.fragment_container),
+  ScanListener,
+  VerifyDisplayFragment.Callback {
 
   class Dialog : WrapperDialogFragment() {
-    override fun getWrappedFragment(): Fragment {
-      return VerifyIdentityFragment().apply {
-        arguments = this@Dialog.requireArguments()
-      }
+    override fun getWrappedFragment(): Fragment = VerifyIdentityFragment().apply {
+      arguments = this@Dialog.requireArguments()
     }
   }
 
@@ -42,28 +43,24 @@ class VerifyIdentityFragment : Fragment(R.layout.fragment_container), ScanListen
       recipientId: RecipientId,
       remoteIdentity: IdentityKeyParcelable,
       verified: Boolean
-    ): VerifyIdentityFragment {
-      return VerifyIdentityFragment().apply {
-        arguments = bundleOf(
-          EXTRA_RECIPIENT to recipientId,
-          EXTRA_IDENTITY to remoteIdentity,
-          EXTRA_VERIFIED to verified
-        )
-      }
+    ): VerifyIdentityFragment = VerifyIdentityFragment().apply {
+      arguments = bundleOf(
+        EXTRA_RECIPIENT to recipientId,
+        EXTRA_IDENTITY to remoteIdentity,
+        EXTRA_VERIFIED to verified
+      )
     }
 
     fun createDialog(
       recipientId: RecipientId,
       remoteIdentity: IdentityKeyParcelable,
       verified: Boolean
-    ): Dialog {
-      return Dialog().apply {
-        arguments = bundleOf(
-          EXTRA_RECIPIENT to recipientId,
-          EXTRA_IDENTITY to remoteIdentity,
-          EXTRA_VERIFIED to verified
-        )
-      }
+    ): Dialog = Dialog().apply {
+      arguments = bundleOf(
+        EXTRA_RECIPIENT to recipientId,
+        EXTRA_IDENTITY to remoteIdentity,
+        EXTRA_VERIFIED to verified
+      )
     }
   }
 

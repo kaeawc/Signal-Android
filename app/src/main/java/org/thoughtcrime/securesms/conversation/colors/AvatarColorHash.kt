@@ -29,18 +29,12 @@ object AvatarColorHash {
     return AvatarColor.A100
   }
 
-  fun forGroupId(group: GroupId): AvatarColor {
-    return forData(group.decodedId)
-  }
+  fun forGroupId(group: GroupId): AvatarColor = forData(group.decodedId)
 
-  fun forSeed(seed: String): AvatarColor {
-    return forData(seed.toByteArray())
-  }
+  fun forSeed(seed: String): AvatarColor = forData(seed.toByteArray())
 
   @JvmStatic
-  fun forCallLink(rootKey: ByteArray): AvatarColor {
-    return forIndex(rootKey.first().toInt())
-  }
+  fun forCallLink(rootKey: ByteArray): AvatarColor = forIndex(rootKey.first().toInt())
 
   private fun forData(data: ByteArray): AvatarColor {
     var hash = 0
@@ -51,7 +45,5 @@ object AvatarColorHash {
     return forIndex(hash)
   }
 
-  private fun forIndex(index: Int): AvatarColor {
-    return AvatarColor.RANDOM_OPTIONS[(index.toUInt() % AvatarColor.RANDOM_OPTIONS.size.toUInt()).toInt()]
-  }
+  private fun forIndex(index: Int): AvatarColor = AvatarColor.RANDOM_OPTIONS[(index.toUInt() % AvatarColor.RANDOM_OPTIONS.size.toUInt()).toInt()]
 }

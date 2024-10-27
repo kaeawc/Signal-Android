@@ -29,8 +29,6 @@ internal class SyncKeysMigrationJob(
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<SyncKeysMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): SyncKeysMigrationJob {
-      return SyncKeysMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): SyncKeysMigrationJob = SyncKeysMigrationJob(parameters)
   }
 }

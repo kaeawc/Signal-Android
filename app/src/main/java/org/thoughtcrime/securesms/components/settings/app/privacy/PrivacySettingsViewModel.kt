@@ -66,33 +66,27 @@ class PrivacySettingsViewModel(
     store.update(this::updateState)
   }
 
-  private fun getState(): PrivacySettingsState {
-    return PrivacySettingsState(
-      blockedCount = 0,
-      readReceipts = TextSecurePreferences.isReadReceiptsEnabled(AppDependencies.application),
-      typingIndicators = TextSecurePreferences.isTypingIndicatorsEnabled(AppDependencies.application),
-      screenLock = SignalStore.settings.screenLockEnabled,
-      screenLockActivityTimeout = SignalStore.settings.screenLockTimeout,
-      screenSecurity = TextSecurePreferences.isScreenSecurityEnabled(AppDependencies.application),
-      incognitoKeyboard = TextSecurePreferences.isIncognitoKeyboardEnabled(AppDependencies.application),
-      paymentLock = SignalStore.payments.paymentLock,
-      isObsoletePasswordEnabled = !SignalStore.settings.passphraseDisabled,
-      isObsoletePasswordTimeoutEnabled = SignalStore.settings.passphraseTimeoutEnabled,
-      obsoletePasswordTimeout = SignalStore.settings.passphraseTimeout,
-      universalExpireTimer = SignalStore.settings.universalExpireTimer
-    )
-  }
+  private fun getState(): PrivacySettingsState = PrivacySettingsState(
+    blockedCount = 0,
+    readReceipts = TextSecurePreferences.isReadReceiptsEnabled(AppDependencies.application),
+    typingIndicators = TextSecurePreferences.isTypingIndicatorsEnabled(AppDependencies.application),
+    screenLock = SignalStore.settings.screenLockEnabled,
+    screenLockActivityTimeout = SignalStore.settings.screenLockTimeout,
+    screenSecurity = TextSecurePreferences.isScreenSecurityEnabled(AppDependencies.application),
+    incognitoKeyboard = TextSecurePreferences.isIncognitoKeyboardEnabled(AppDependencies.application),
+    paymentLock = SignalStore.payments.paymentLock,
+    isObsoletePasswordEnabled = !SignalStore.settings.passphraseDisabled,
+    isObsoletePasswordTimeoutEnabled = SignalStore.settings.passphraseTimeoutEnabled,
+    obsoletePasswordTimeout = SignalStore.settings.passphraseTimeout,
+    universalExpireTimer = SignalStore.settings.universalExpireTimer
+  )
 
-  private fun updateState(state: PrivacySettingsState): PrivacySettingsState {
-    return getState().copy(blockedCount = state.blockedCount)
-  }
+  private fun updateState(state: PrivacySettingsState): PrivacySettingsState = getState().copy(blockedCount = state.blockedCount)
 
   class Factory(
     private val sharedPreferences: SharedPreferences,
     private val repository: PrivacySettingsRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(PrivacySettingsViewModel(sharedPreferences, repository)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(PrivacySettingsViewModel(sharedPreferences, repository)))
   }
 }

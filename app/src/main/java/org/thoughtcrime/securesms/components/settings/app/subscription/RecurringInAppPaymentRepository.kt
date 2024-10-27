@@ -46,11 +46,9 @@ object RecurringInAppPaymentRepository {
 
   private val donationsService = AppDependencies.donationsService
 
-  fun getActiveSubscription(type: InAppPaymentSubscriberRecord.Type): Single<ActiveSubscription> {
-    return Single.fromCallable {
-      getActiveSubscriptionSync(type).getOrThrow()
-    }.subscribeOn(Schedulers.io())
-  }
+  fun getActiveSubscription(type: InAppPaymentSubscriberRecord.Type): Single<ActiveSubscription> = Single.fromCallable {
+    getActiveSubscriptionSync(type).getOrThrow()
+  }.subscribeOn(Schedulers.io())
 
   @WorkerThread
   fun getActiveSubscriptionSync(type: InAppPaymentSubscriberRecord.Type): Result<ActiveSubscription> {
@@ -70,30 +68,26 @@ object RecurringInAppPaymentRepository {
     }
   }
 
-  fun getSubscriptions(): Single<List<Subscription>> {
-    return Single
-      .fromCallable { donationsService.getDonationsConfiguration(Locale.getDefault()) }
-      .subscribeOn(Schedulers.io())
-      .flatMap { it.flattenResult() }
-      .map { config ->
-        config.getSubscriptionLevels().map { (level, levelConfig) ->
-          Subscription(
-            id = level.toString(),
-            level = level,
-            name = levelConfig.name,
-            badge = Badges.fromServiceBadge(levelConfig.badge),
-            prices = config.getSubscriptionAmounts(level)
-          )
-        }
+  fun getSubscriptions(): Single<List<Subscription>> = Single
+    .fromCallable { donationsService.getDonationsConfiguration(Locale.getDefault()) }
+    .subscribeOn(Schedulers.io())
+    .flatMap { it.flattenResult() }
+    .map { config ->
+      config.getSubscriptionLevels().map { (level, levelConfig) ->
+        Subscription(
+          id = level.toString(),
+          level = level,
+          name = levelConfig.name,
+          badge = Badges.fromServiceBadge(levelConfig.badge),
+          prices = config.getSubscriptionAmounts(level)
+        )
       }
-  }
+    }
 
-  fun syncAccountRecord(): Completable {
-    return Completable.fromAction {
-      SignalDatabase.recipients.markNeedsSync(Recipient.self().id)
-      StorageSyncHelper.scheduleSyncForDataChange()
-    }.subscribeOn(Schedulers.io())
-  }
+  fun syncAccountRecord(): Completable = Completable.fromAction {
+    SignalDatabase.recipients.markNeedsSync(Recipient.self().id)
+    StorageSyncHelper.scheduleSyncForDataChange()
+  }.subscribeOn(Schedulers.io())
 
   /**
    * Since PayPal and Stripe can't interoperate, we need to be able to rotate the subscriber ID
@@ -156,29 +150,23 @@ object RecurringInAppPaymentRepository {
   }
 
   @CheckResult
-  fun cancelActiveSubscription(subscriberType: InAppPaymentSubscriberRecord.Type): Completable {
-    return Completable
-      .fromAction { cancelActiveSubscriptionSync(subscriberType) }
-      .subscribeOn(Schedulers.io())
-  }
+  fun cancelActiveSubscription(subscriberType: InAppPaymentSubscriberRecord.Type): Completable = Completable
+    .fromAction { cancelActiveSubscriptionSync(subscriberType) }
+    .subscribeOn(Schedulers.io())
 
-  fun cancelActiveSubscriptionIfNecessary(subscriberType: InAppPaymentSubscriberRecord.Type): Completable {
-    return Single.fromCallable { InAppPaymentsRepository.getShouldCancelSubscriptionBeforeNextSubscribeAttempt(subscriberType) }.flatMapCompletable {
-      if (it) {
-        cancelActiveSubscription(subscriberType).doOnComplete {
-          SignalStore.inAppPayments.updateLocalStateForManualCancellation(subscriberType)
-          MultiDeviceSubscriptionSyncRequestJob.enqueue()
-        }
-      } else {
-        Completable.complete()
+  fun cancelActiveSubscriptionIfNecessary(subscriberType: InAppPaymentSubscriberRecord.Type): Completable = Single.fromCallable { InAppPaymentsRepository.getShouldCancelSubscriptionBeforeNextSubscribeAttempt(subscriberType) }.flatMapCompletable {
+    if (it) {
+      cancelActiveSubscription(subscriberType).doOnComplete {
+        SignalStore.inAppPayments.updateLocalStateForManualCancellation(subscriberType)
+        MultiDeviceSubscriptionSyncRequestJob.enqueue()
       }
-    }.subscribeOn(Schedulers.io())
-  }
-
-  fun getPaymentSourceTypeOfLatestSubscription(subscriberType: InAppPaymentSubscriberRecord.Type): Single<PaymentSourceType> {
-    return Single.fromCallable {
-      InAppPaymentsRepository.getLatestPaymentMethodType(subscriberType).toPaymentSourceType()
+    } else {
+      Completable.complete()
     }
+  }.subscribeOn(Schedulers.io())
+
+  fun getPaymentSourceTypeOfLatestSubscription(subscriberType: InAppPaymentSubscriberRecord.Type): Single<PaymentSourceType> = Single.fromCallable {
+    InAppPaymentsRepository.getLatestPaymentMethodType(subscriberType).toPaymentSourceType()
   }
 
   fun setSubscriptionLevel(inAppPayment: InAppPaymentTable.InAppPayment, paymentSourceType: PaymentSourceType): Completable {
@@ -287,13 +275,11 @@ object RecurringInAppPaymentRepository {
    * Update local state information and schedule a storage sync for the change. This method
    * assumes you've already properly called the DELETE method for the stored ID on the server.
    */
-  private fun updateLocalSubscriptionStateAndScheduleDataSync(subscriberType: InAppPaymentSubscriberRecord.Type): Completable {
-    return Completable.fromAction {
-      Log.d(TAG, "Marking subscription cancelled...", true)
-      SignalStore.inAppPayments.updateLocalStateForManualCancellation(subscriberType)
-      MultiDeviceSubscriptionSyncRequestJob.enqueue()
-      SignalDatabase.recipients.markNeedsSync(Recipient.self().id)
-      StorageSyncHelper.scheduleSyncForDataChange()
-    }
+  private fun updateLocalSubscriptionStateAndScheduleDataSync(subscriberType: InAppPaymentSubscriberRecord.Type): Completable = Completable.fromAction {
+    Log.d(TAG, "Marking subscription cancelled...", true)
+    SignalStore.inAppPayments.updateLocalStateForManualCancellation(subscriberType)
+    MultiDeviceSubscriptionSyncRequestJob.enqueue()
+    SignalDatabase.recipients.markNeedsSync(Recipient.self().id)
+    StorageSyncHelper.scheduleSyncForDataChange()
   }
 }

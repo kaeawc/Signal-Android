@@ -16,13 +16,9 @@ object MediaReviewAddItem {
   }
 
   object Model : MappingModel<Model> {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return true
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = true
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return true
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = true
   }
 
   class ViewHolder(itemView: View, onAddMediaItemClicked: OnAddMediaItemClicked) : MappingViewHolder<Model>(itemView) {

@@ -33,7 +33,8 @@ class ConversationListSearchAdapter(
   callButtonClickCallbacks: CallButtonClickCallbacks,
   lifecycleOwner: LifecycleOwner,
   requestManager: RequestManager
-) : ContactSearchAdapter(context, fixedContacts, displayOptions, onClickedCallbacks, longClickCallbacks, storyContextMenuCallbacks, callButtonClickCallbacks), TimestampPayloadSupport {
+) : ContactSearchAdapter(context, fixedContacts, displayOptions, onClickedCallbacks, longClickCallbacks, storyContextMenuCallbacks, callButtonClickCallbacks),
+  TimestampPayloadSupport {
 
   companion object {
     private const val PAYLOAD_TIMESTAMP = 0
@@ -196,9 +197,7 @@ class ConversationListSearchAdapter(
     WITHOUT_TIP("without-tip");
 
     companion object {
-      fun fromCode(code: String): ChatFilterOptions {
-        return values().firstOrNull { it.code == code } ?: WITHOUT_TIP
-      }
+      fun fromCode(code: String): ChatFilterOptions = values().firstOrNull { it.code == code } ?: WITHOUT_TIP
     }
   }
 
@@ -211,10 +210,8 @@ class ConversationListSearchAdapter(
       startIndex: Int,
       endIndex: Int,
       totalSearchSize: Int
-    ): List<ContactSearchData.Arbitrary> {
-      return section.types.map {
-        ContactSearchData.Arbitrary(it, bundleOf("total-size" to totalSearchSize))
-      }
+    ): List<ContactSearchData.Arbitrary> = section.types.map {
+      ContactSearchData.Arbitrary(it, bundleOf("total-size" to totalSearchSize))
     }
 
     override fun getMappingModel(arbitrary: ContactSearchData.Arbitrary): MappingModel<*> {

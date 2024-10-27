@@ -8,7 +8,5 @@ class ConversationSet @JvmOverloads constructor(
     conversations.map { it.threadRecord.threadId }
   }
 
-  fun containsThreadId(id: Long): Boolean {
-    return id in threadIds
-  }
+  fun containsThreadId(id: Long): Boolean = id in threadIds
 }

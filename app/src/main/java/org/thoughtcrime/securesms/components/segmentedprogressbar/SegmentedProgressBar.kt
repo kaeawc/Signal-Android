@@ -41,7 +41,10 @@ import java.util.concurrent.TimeUnit
  * @see Segment
  * And the progress of each segment is animated based on a set speed
  */
-class SegmentedProgressBar : View, ViewPager.OnPageChangeListener, View.OnTouchListener {
+class SegmentedProgressBar :
+  View,
+  ViewPager.OnPageChangeListener,
+  View.OnTouchListener {
 
   companion object {
     /**
@@ -355,12 +358,10 @@ class SegmentedProgressBar : View, ViewPager.OnPageChangeListener, View.OnTouchL
     }
   }
 
-  private fun getSegmentProgressPercentage(segment: Segment, timeSinceLastFrameMillis: Long): Float {
-    return if (segment.animationDurationMillis > 0) {
-      segment.animationProgressPercentage + timeSinceLastFrameMillis.toFloat() / segment.animationDurationMillis
-    } else {
-      listener?.onRequestSegmentProgressPercentage() ?: 0f
-    }
+  private fun getSegmentProgressPercentage(segment: Segment, timeSinceLastFrameMillis: Long): Float = if (segment.animationDurationMillis > 0) {
+    segment.animationProgressPercentage + timeSinceLastFrameMillis.toFloat() / segment.animationDurationMillis
+  } else {
+    listener?.onRequestSegmentProgressPercentage() ?: 0f
   }
 
   private fun initSegments() {

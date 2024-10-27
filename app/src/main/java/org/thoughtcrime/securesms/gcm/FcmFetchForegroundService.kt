@@ -38,10 +38,8 @@ class FcmFetchForegroundService : Service() {
      * The safest thing to do is to just tell it to start so it can call [startForeground] and then stop itself.
      * Fun.
      */
-    private fun buildStopIntent(context: Context): Intent {
-      return Intent(context, FcmFetchForegroundService::class.java).apply {
-        putExtra(KEY_STOP_SELF, true)
-      }
+    private fun buildStopIntent(context: Context): Intent = Intent(context, FcmFetchForegroundService::class.java).apply {
+      putExtra(KEY_STOP_SELF, true)
     }
 
     enum class State {
@@ -160,7 +158,5 @@ class FcmFetchForegroundService : Service() {
     wakeLock = null
   }
 
-  override fun onBind(intent: Intent?): IBinder? {
-    return null
-  }
+  override fun onBind(intent: Intent?): IBinder? = null
 }

@@ -11,56 +11,54 @@ object Licenses {
   /**
    * Maps a license URL to a concrete [LicenseData] that standardizes the naming.
    */
-  fun getLicense(licenseUrl: String): LicenseData? {
-    return when (licenseUrl) {
-      "http://www.opensource.org/licenses/bsd-license.php" -> {
-        BSD_2_CLAUSE
-      }
-      "http://www.apache.org/licenses/LICENSE-2.0.txt",
-      "https://www.apache.org/licenses/LICENSE-2.0.txt",
-      "http://www.apache.org/licenses/LICENSE-2.0",
-      "https://www.apache.org/licenses/LICENSE-2.0" -> {
-        APACHE_2
-      }
-      "https://github.com/google/desugar_jdk_libs/blob/master/LICENSE" -> {
-        GPL_V2_CLASSPATH_EXCEPTION
-      }
-      "https://opensource.org/licenses/BSD-3-Clause",
-      "http://opensource.org/licenses/BSD-3-Clause",
-      "https://asm.ow2.io/license.html" -> {
-        BSD_3_CLAUSE
-      }
-      "https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html",
-      "http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html",
-      "http://www.gnu.org/licenses/licenses.html" -> {
-        LGPL_V2_1
-      }
-      "https://opensource.org/licenses/MIT",
-      "http://opensource.org/licenses/MIT",
-      "http://www.opensource.org/licenses/mit-license.php",
-      "https://github.com/mockito/mockito/blob/main/LICENSE" -> {
-        MIT
-      }
-      "http://www.eclipse.org/legal/epl-v10.html" -> {
-        ECLIPSE_PUBLIC_LICENSE_V1
-      }
-      "https://www.eclipse.org/legal/epl-v20.html" -> {
-        ECLIPSE_PUBLIC_LICENSE_V2
-      }
-      "https://raw.githubusercontent.com/unicode-org/icu/main/icu4c/LICENSE" -> {
-        UNICODE_LICENSE_V3
-      }
-      "http://creativecommons.org/publicdomain/zero/1.0/" -> {
-        CCO_V1
-      }
-      "https://www.bouncycastle.org/licence.html" -> {
-        BOUNCY_CASTLE
-      }
-      "https://github.com/javaee/javax.annotation/blob/master/LICENSE" -> {
-        CDDL_GPL_V2_CLASSPATH_EXCEPTION
-      }
-      else -> null
+  fun getLicense(licenseUrl: String): LicenseData? = when (licenseUrl) {
+    "http://www.opensource.org/licenses/bsd-license.php" -> {
+      BSD_2_CLAUSE
     }
+    "http://www.apache.org/licenses/LICENSE-2.0.txt",
+    "https://www.apache.org/licenses/LICENSE-2.0.txt",
+    "http://www.apache.org/licenses/LICENSE-2.0",
+    "https://www.apache.org/licenses/LICENSE-2.0" -> {
+      APACHE_2
+    }
+    "https://github.com/google/desugar_jdk_libs/blob/master/LICENSE" -> {
+      GPL_V2_CLASSPATH_EXCEPTION
+    }
+    "https://opensource.org/licenses/BSD-3-Clause",
+    "http://opensource.org/licenses/BSD-3-Clause",
+    "https://asm.ow2.io/license.html" -> {
+      BSD_3_CLAUSE
+    }
+    "https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html",
+    "http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html",
+    "http://www.gnu.org/licenses/licenses.html" -> {
+      LGPL_V2_1
+    }
+    "https://opensource.org/licenses/MIT",
+    "http://opensource.org/licenses/MIT",
+    "http://www.opensource.org/licenses/mit-license.php",
+    "https://github.com/mockito/mockito/blob/main/LICENSE" -> {
+      MIT
+    }
+    "http://www.eclipse.org/legal/epl-v10.html" -> {
+      ECLIPSE_PUBLIC_LICENSE_V1
+    }
+    "https://www.eclipse.org/legal/epl-v20.html" -> {
+      ECLIPSE_PUBLIC_LICENSE_V2
+    }
+    "https://raw.githubusercontent.com/unicode-org/icu/main/icu4c/LICENSE" -> {
+      UNICODE_LICENSE_V3
+    }
+    "http://creativecommons.org/publicdomain/zero/1.0/" -> {
+      CCO_V1
+    }
+    "https://www.bouncycastle.org/licence.html" -> {
+      BOUNCY_CASTLE
+    }
+    "https://github.com/javaee/javax.annotation/blob/master/LICENSE" -> {
+      CDDL_GPL_V2_CLASSPATH_EXCEPTION
+    }
+    else -> null
   }
 
   data class LicenseData(val name: String, val text: String)

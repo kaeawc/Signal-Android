@@ -7,19 +7,17 @@ import org.thoughtcrime.securesms.database.model.DistributionListId
 import org.thoughtcrime.securesms.stories.Stories
 
 class EditStoryNameRepository {
-  fun save(privateStoryId: DistributionListId, name: CharSequence): Completable {
-    return Completable.create {
-      if (privateStoryId == DistributionListId.MY_STORY) {
-        error("Cannot set name for My Story")
-      }
+  fun save(privateStoryId: DistributionListId, name: CharSequence): Completable = Completable.create {
+    if (privateStoryId == DistributionListId.MY_STORY) {
+      error("Cannot set name for My Story")
+    }
 
-      if (SignalDatabase.distributionLists.setName(privateStoryId, name.toString())) {
-        Stories.onStorySettingsChanged(privateStoryId)
+    if (SignalDatabase.distributionLists.setName(privateStoryId, name.toString())) {
+      Stories.onStorySettingsChanged(privateStoryId)
 
-        it.onComplete()
-      } else {
-        it.onError(Exception("Could not update story name."))
-      }
-    }.subscribeOn(Schedulers.io())
-  }
+      it.onComplete()
+    } else {
+      it.onError(Exception("Could not update story name."))
+    }
+  }.subscribeOn(Schedulers.io())
 }

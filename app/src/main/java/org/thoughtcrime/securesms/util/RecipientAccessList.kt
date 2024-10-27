@@ -33,7 +33,5 @@ class RecipientAccessList(private val recipients: List<Recipient>) : List<Recipi
     }
   }
 
-  fun requireIdByAddress(address: SignalServiceAddress): RecipientId {
-    return requireByAddress(address).id
-  }
+  fun requireIdByAddress(address: SignalServiceAddress): RecipientId = requireByAddress(address).id
 }

@@ -20,13 +20,9 @@ object NotificationProfileNamePreset {
   }
 
   class Model(val emoji: String, @StringRes val bodyResource: Int, val onClick: (Model) -> Unit) : MappingModel<Model> {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return bodyResource == newItem.bodyResource
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = bodyResource == newItem.bodyResource
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return areItemsTheSame(newItem) && emoji == newItem.emoji
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = areItemsTheSame(newItem) && emoji == newItem.emoji
   }
 
   class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

@@ -149,19 +149,17 @@ class SqlCipherErrorHandler(private val databaseName: String) : DatabaseErrorHan
     )
   }
 
-  private fun queryDatabase(db: SQLiteDatabase): (String) -> String {
-    return { query ->
-      val output = StringBuilder()
+  private fun queryDatabase(db: SQLiteDatabase): (String) -> String = { query ->
+    val output = StringBuilder()
 
-      db.rawQuery(query, null).use { cursor ->
-        while (cursor.moveToNext()) {
-          val row = CursorUtil.readRowAsString(cursor)
-          output.append(row).append("\n")
-        }
+    db.rawQuery(query, null).use { cursor ->
+      while (cursor.moveToNext()) {
+        val row = CursorUtil.readRowAsString(cursor)
+        output.append(row).append("\n")
       }
-
-      output.toString()
     }
+
+    output.toString()
   }
 
   private fun attemptToClearFullTextSearchIndex(db: SQLiteDatabase) {

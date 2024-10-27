@@ -93,9 +93,7 @@ data class PendingParticipantCollection(
   /**
    * Gets all of the pending participants in the [State.PENDING] state.
    */
-  fun getUnresolvedPendingParticipants(): Set<Entry> {
-    return participantMap.values.filter { it.state == State.PENDING }.toSet()
-  }
+  fun getUnresolvedPendingParticipants(): Set<Entry> = participantMap.values.filter { it.state == State.PENDING }.toSet()
 
   /**
    * Gets all of the pending participants regardless of state. Filterable
@@ -105,11 +103,9 @@ data class PendingParticipantCollection(
    *
    * @param since A timestamp, for which we will only return non-[State.PENDING] occurring afterwards.
    */
-  fun getAllPendingParticipants(since: Duration): Set<Entry> {
-    return participantMap.values.filter {
-      it.state == State.PENDING || it.stateChangeAt > since
-    }.toSet()
-  }
+  fun getAllPendingParticipants(since: Duration): Set<Entry> = participantMap.values.filter {
+    it.state == State.PENDING || it.stateChangeAt > since
+  }.toSet()
 
   /**
    * A [Recipient] and some [State] metadata

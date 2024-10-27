@@ -70,17 +70,13 @@ class CreateSvrPinFragment : BaseSvrPinFragment<CreateSvrPinViewModel?>() {
     findNavController(requireView()).safeNavigate(action)
   }
 
-  private fun getLabelText(keyboard: PinKeyboardType): String {
-    return if (keyboard == PinKeyboardType.ALPHA_NUMERIC) {
-      getPinLengthRestrictionText(R.plurals.CreateKbsPinFragment__pin_must_be_at_least_characters)
-    } else {
-      getPinLengthRestrictionText(R.plurals.CreateKbsPinFragment__pin_must_be_at_least_digits)
-    }
+  private fun getLabelText(keyboard: PinKeyboardType): String = if (keyboard == PinKeyboardType.ALPHA_NUMERIC) {
+    getPinLengthRestrictionText(R.plurals.CreateKbsPinFragment__pin_must_be_at_least_characters)
+  } else {
+    getPinLengthRestrictionText(R.plurals.CreateKbsPinFragment__pin_must_be_at_least_digits)
   }
 
-  private fun getPinLengthRestrictionText(@PluralsRes plurals: Int): String {
-    return resources.getQuantityString(plurals, SvrConstants.MINIMUM_PIN_LENGTH, SvrConstants.MINIMUM_PIN_LENGTH)
-  }
+  private fun getPinLengthRestrictionText(@PluralsRes plurals: Int): String = resources.getQuantityString(plurals, SvrConstants.MINIMUM_PIN_LENGTH, SvrConstants.MINIMUM_PIN_LENGTH)
 
   companion object {
     private fun shake(view: EditText, afterwards: Runnable) {

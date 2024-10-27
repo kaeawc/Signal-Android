@@ -15,12 +15,10 @@ data class CreditCardFormState(
     CODE
   }
 
-  fun toCardData(): StripeApi.CardData {
-    return StripeApi.CardData(
-      number,
-      expiration.month.toInt(),
-      expiration.year.toInt(),
-      code
-    )
-  }
+  fun toCardData(): StripeApi.CardData = StripeApi.CardData(
+    number,
+    expiration.month.toInt(),
+    expiration.year.toInt(),
+    code
+  )
 }

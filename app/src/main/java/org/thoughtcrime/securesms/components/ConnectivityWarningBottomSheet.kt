@@ -53,41 +53,39 @@ class ConnectivityWarningBottomSheet : ComposeBottomSheetDialogFragment() {
 }
 
 @Composable
-private fun Sheet(onDismiss: () -> Unit = {}) {
-  return Column(
-    horizontalAlignment = Alignment.CenterHorizontally,
-    modifier = Modifier.fillMaxWidth().wrapContentSize(Alignment.Center)
+private fun Sheet(onDismiss: () -> Unit = {}) = Column(
+  horizontalAlignment = Alignment.CenterHorizontally,
+  modifier = Modifier.fillMaxWidth().wrapContentSize(Alignment.Center)
+) {
+  BottomSheets.Handle()
+  Icon(
+    painterResource(id = R.drawable.ic_connectivity_warning),
+    contentDescription = null,
+    tint = Color.Unspecified,
+    modifier = Modifier.padding(top = 32.dp, bottom = 8.dp)
+  )
+  Text(
+    text = stringResource(id = R.string.ConnectivityWarningBottomSheet_title),
+    style = MaterialTheme.typography.headlineSmall,
+    textAlign = TextAlign.Center,
+    color = MaterialTheme.colorScheme.onSurface,
+    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+  )
+  Text(
+    text = stringResource(id = R.string.ConnectivityWarningBottomSheet_body),
+    style = MaterialTheme.typography.bodyLarge,
+    textAlign = TextAlign.Center,
+    color = MaterialTheme.colorScheme.onSurfaceVariant,
+    modifier = Modifier.padding(horizontal = 24.dp)
+  )
+  Row(
+    modifier = Modifier.padding(top = 60.dp, bottom = 24.dp, start = 24.dp, end = 24.dp)
   ) {
-    BottomSheets.Handle()
-    Icon(
-      painterResource(id = R.drawable.ic_connectivity_warning),
-      contentDescription = null,
-      tint = Color.Unspecified,
-      modifier = Modifier.padding(top = 32.dp, bottom = 8.dp)
-    )
-    Text(
-      text = stringResource(id = R.string.ConnectivityWarningBottomSheet_title),
-      style = MaterialTheme.typography.headlineSmall,
-      textAlign = TextAlign.Center,
-      color = MaterialTheme.colorScheme.onSurface,
-      modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-    )
-    Text(
-      text = stringResource(id = R.string.ConnectivityWarningBottomSheet_body),
-      style = MaterialTheme.typography.bodyLarge,
-      textAlign = TextAlign.Center,
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-      modifier = Modifier.padding(horizontal = 24.dp)
-    )
-    Row(
-      modifier = Modifier.padding(top = 60.dp, bottom = 24.dp, start = 24.dp, end = 24.dp)
+    Buttons.MediumTonal(
+      onClick = onDismiss,
+      modifier = Modifier.padding(end = 12.dp)
     ) {
-      Buttons.MediumTonal(
-        onClick = onDismiss,
-        modifier = Modifier.padding(end = 12.dp)
-      ) {
-        Text(stringResource(id = R.string.ConnectivityWarningBottomSheet_dismiss_button))
-      }
+      Text(stringResource(id = R.string.ConnectivityWarningBottomSheet_dismiss_button))
     }
   }
 }

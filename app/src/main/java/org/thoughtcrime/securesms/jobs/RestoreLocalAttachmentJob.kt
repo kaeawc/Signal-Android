@@ -83,9 +83,7 @@ class RestoreLocalAttachmentJob private constructor(
       AppDependencies.jobManager.addAll(checkDoneJobs)
     }
 
-    private fun queueName(index: Int): String {
-      return "RestoreLocalAttachmentJob_${index % CONCURRENT_QUEUES}"
-    }
+    private fun queueName(index: Int): String = "RestoreLocalAttachmentJob_${index % CONCURRENT_QUEUES}"
   }
 
   private constructor(queue: String, attachment: RestorableAttachment, info: DocumentFileInfo) : this(
@@ -100,18 +98,14 @@ class RestoreLocalAttachmentJob private constructor(
     size = info.size
   )
 
-  override fun serialize(): ByteArray? {
-    return RestoreLocalAttachmentJobData(
-      attachmentId = attachmentId.id,
-      messageId = messageId,
-      fileUri = restoreUri.toString(),
-      fileSize = size
-    ).encode()
-  }
+  override fun serialize(): ByteArray? = RestoreLocalAttachmentJobData(
+    attachmentId = attachmentId.id,
+    messageId = messageId,
+    fileUri = restoreUri.toString(),
+    fileSize = size
+  ).encode()
 
-  override fun getFactoryKey(): String {
-    return KEY
-  }
+  override fun getFactoryKey(): String = KEY
 
   override fun run(): Result {
     Log.i(TAG, "onRun() messageId: $messageId  attachmentId: $attachmentId")

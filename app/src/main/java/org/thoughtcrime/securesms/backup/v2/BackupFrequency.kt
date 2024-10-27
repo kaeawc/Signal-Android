@@ -17,18 +17,14 @@ enum class BackupFrequency(val id: Int) {
   MANUAL(-1);
 
   companion object Serializer : LongSerializer<BackupFrequency> {
-    override fun serialize(data: BackupFrequency): Long {
-      return data.id.toLong()
-    }
+    override fun serialize(data: BackupFrequency): Long = data.id.toLong()
 
-    override fun deserialize(data: Long): BackupFrequency {
-      return when (data.toInt()) {
-        MANUAL.id -> MANUAL
-        DAILY.id -> DAILY
-        WEEKLY.id -> WEEKLY
-        MONTHLY.id -> MONTHLY
-        else -> MANUAL
-      }
+    override fun deserialize(data: Long): BackupFrequency = when (data.toInt()) {
+      MANUAL.id -> MANUAL
+      DAILY.id -> DAILY
+      WEEKLY.id -> WEEKLY
+      MONTHLY.id -> MONTHLY
+      else -> MANUAL
     }
   }
 }

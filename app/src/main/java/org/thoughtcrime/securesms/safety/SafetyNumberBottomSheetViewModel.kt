@@ -70,9 +70,7 @@ class SafetyNumberBottomSheetViewModel(
     store.dispose()
   }
 
-  fun getIdentityRecord(recipientId: RecipientId): Maybe<IdentityRecord> {
-    return repository.getIdentityRecord(recipientId).observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getIdentityRecord(recipientId: RecipientId): Maybe<IdentityRecord> = repository.getIdentityRecord(recipientId).observeOn(AndroidSchedulers.mainThread())
 
   fun removeRecipientFromSelectedStories(recipientId: RecipientId) {
     disposables += repository.removeFromStories(recipientId, destinationStore.state).subscribe()
@@ -91,8 +89,6 @@ class SafetyNumberBottomSheetViewModel(
     private val args: SafetyNumberBottomSheetArgs,
     private val trustAndVerifyRepository: SafetyNumberChangeRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(SafetyNumberBottomSheetViewModel(args = args, trustAndVerifyRepository = trustAndVerifyRepository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(SafetyNumberBottomSheetViewModel(args = args, trustAndVerifyRepository = trustAndVerifyRepository)) as T
   }
 }

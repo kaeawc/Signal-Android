@@ -21,11 +21,9 @@ class StoryViewsAndRepliesPagerAdapter(
     recyclerView.isNestedScrollingEnabled = false
   }
 
-  override fun createFragment(position: Int): Fragment {
-    return when (position) {
-      0 -> StoryViewsFragment.create(storyId)
-      1 -> StoryGroupReplyFragment.create(storyId, groupRecipientId, isFromNotification, groupReplyStartPosition)
-      else -> throw IndexOutOfBoundsException()
-    }
+  override fun createFragment(position: Int): Fragment = when (position) {
+    0 -> StoryViewsFragment.create(storyId)
+    1 -> StoryGroupReplyFragment.create(storyId, groupRecipientId, isFromNotification, groupReplyStartPosition)
+    else -> throw IndexOutOfBoundsException()
   }
 }

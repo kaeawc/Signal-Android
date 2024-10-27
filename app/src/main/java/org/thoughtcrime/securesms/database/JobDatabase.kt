@@ -170,27 +170,23 @@ class JobDatabase(
   }
 
   @Synchronized
-  fun getJobSpecs(limit: Int): List<JobSpec> {
-    return readableDatabase
-      .select()
-      .from(Jobs.TABLE_NAME)
-      .orderBy("${Jobs.CREATE_TIME}, ${Jobs.ID} ASC")
-      .limit(limit)
-      .run()
-      .readToList { it.toJobSpec() }
-  }
+  fun getJobSpecs(limit: Int): List<JobSpec> = readableDatabase
+    .select()
+    .from(Jobs.TABLE_NAME)
+    .orderBy("${Jobs.CREATE_TIME}, ${Jobs.ID} ASC")
+    .limit(limit)
+    .run()
+    .readToList { it.toJobSpec() }
 
   @Synchronized
-  fun getMostEligibleJobInQueue(queue: String): JobSpec? {
-    return readableDatabase
-      .select()
-      .from(Jobs.TABLE_NAME)
-      .where("${Jobs.QUEUE_KEY} = ?", queue)
-      .orderBy("${Jobs.GLOBAL_PRIORITY} DESC, ${Jobs.QUEUE_PRIORITY} DESC, ${Jobs.CREATE_TIME} ASC, ${Jobs.ID} ASC")
-      .limit(1)
-      .run()
-      .readToSingleObject { it.toJobSpec() }
-  }
+  fun getMostEligibleJobInQueue(queue: String): JobSpec? = readableDatabase
+    .select()
+    .from(Jobs.TABLE_NAME)
+    .where("${Jobs.QUEUE_KEY} = ?", queue)
+    .orderBy("${Jobs.GLOBAL_PRIORITY} DESC, ${Jobs.QUEUE_PRIORITY} DESC, ${Jobs.CREATE_TIME} ASC, ${Jobs.ID} ASC")
+    .limit(1)
+    .run()
+    .readToSingleObject { it.toJobSpec() }
 
   @Synchronized
   fun getAllMatchingFilter(predicate: Predicate<JobSpec>): List<JobSpec> {
@@ -211,14 +207,12 @@ class JobDatabase(
   }
 
   @Synchronized
-  fun getJobSpec(id: String): JobSpec? {
-    return readableDatabase
-      .select()
-      .from(Jobs.TABLE_NAME)
-      .where("${Jobs.JOB_SPEC_ID} = ?", id)
-      .run()
-      .readToSingleObject { it.toJobSpec() }
-  }
+  fun getJobSpec(id: String): JobSpec? = readableDatabase
+    .select()
+    .from(Jobs.TABLE_NAME)
+    .where("${Jobs.JOB_SPEC_ID} = ?", id)
+    .run()
+    .readToSingleObject { it.toJobSpec() }
 
   @Synchronized
   fun getAllMinimalJobSpecs(): List<MinimalJobSpec> {
@@ -357,14 +351,12 @@ class JobDatabase(
   }
 
   @Synchronized
-  fun getConstraintSpecs(limit: Int): List<ConstraintSpec> {
-    return readableDatabase
-      .select()
-      .from(Constraints.TABLE_NAME)
-      .limit(limit)
-      .run()
-      .readToList { it.toConstraintSpec() }
-  }
+  fun getConstraintSpecs(limit: Int): List<ConstraintSpec> = readableDatabase
+    .select()
+    .from(Constraints.TABLE_NAME)
+    .limit(limit)
+    .run()
+    .readToList { it.toConstraintSpec() }
 
   fun getConstraintSpecsForJobs(jobIds: Collection<String>): List<ConstraintSpec> {
     val output: MutableList<ConstraintSpec> = mutableListOf()
@@ -384,13 +376,11 @@ class JobDatabase(
   }
 
   @Synchronized
-  fun getAllDependencySpecs(): List<DependencySpec> {
-    return readableDatabase
-      .select()
-      .from(Dependencies.TABLE_NAME)
-      .run()
-      .readToList { it.toDependencySpec() }
-  }
+  fun getAllDependencySpecs(): List<DependencySpec> = readableDatabase
+    .select()
+    .from(Dependencies.TABLE_NAME)
+    .run()
+    .readToList { it.toDependencySpec() }
 
   private fun insertJobSpec(db: SQLiteDatabase, job: JobSpec) {
     if (job.isMemoryOnly) {
@@ -434,69 +424,59 @@ class JobDatabase(
       }
   }
 
-  private fun Cursor.toJobSpec(): JobSpec {
-    return JobSpec(
-      id = this.requireNonNullString(Jobs.JOB_SPEC_ID),
-      factoryKey = this.requireNonNullString(Jobs.FACTORY_KEY),
-      queueKey = this.requireString(Jobs.QUEUE_KEY),
-      createTime = this.requireLong(Jobs.CREATE_TIME),
-      lastRunAttemptTime = this.requireLong(Jobs.LAST_RUN_ATTEMPT_TIME),
-      nextBackoffInterval = this.requireLong(Jobs.NEXT_BACKOFF_INTERVAL),
-      runAttempt = this.requireInt(Jobs.RUN_ATTEMPT),
-      maxAttempts = this.requireInt(Jobs.MAX_ATTEMPTS),
-      lifespan = this.requireLong(Jobs.LIFESPAN),
-      serializedData = this.requireBlob(Jobs.SERIALIZED_DATA),
-      serializedInputData = this.requireBlob(Jobs.SERIALIZED_INPUT_DATA),
-      isRunning = this.requireBoolean(Jobs.IS_RUNNING),
-      isMemoryOnly = false,
-      globalPriority = this.requireInt(Jobs.GLOBAL_PRIORITY),
-      queuePriority = this.requireInt(Jobs.QUEUE_PRIORITY)
-    )
-  }
+  private fun Cursor.toJobSpec(): JobSpec = JobSpec(
+    id = this.requireNonNullString(Jobs.JOB_SPEC_ID),
+    factoryKey = this.requireNonNullString(Jobs.FACTORY_KEY),
+    queueKey = this.requireString(Jobs.QUEUE_KEY),
+    createTime = this.requireLong(Jobs.CREATE_TIME),
+    lastRunAttemptTime = this.requireLong(Jobs.LAST_RUN_ATTEMPT_TIME),
+    nextBackoffInterval = this.requireLong(Jobs.NEXT_BACKOFF_INTERVAL),
+    runAttempt = this.requireInt(Jobs.RUN_ATTEMPT),
+    maxAttempts = this.requireInt(Jobs.MAX_ATTEMPTS),
+    lifespan = this.requireLong(Jobs.LIFESPAN),
+    serializedData = this.requireBlob(Jobs.SERIALIZED_DATA),
+    serializedInputData = this.requireBlob(Jobs.SERIALIZED_INPUT_DATA),
+    isRunning = this.requireBoolean(Jobs.IS_RUNNING),
+    isMemoryOnly = false,
+    globalPriority = this.requireInt(Jobs.GLOBAL_PRIORITY),
+    queuePriority = this.requireInt(Jobs.QUEUE_PRIORITY)
+  )
 
-  private fun Cursor.toConstraintSpec(): ConstraintSpec {
-    return ConstraintSpec(
-      jobSpecId = this.requireNonNullString(Constraints.JOB_SPEC_ID),
-      factoryKey = this.requireNonNullString(Constraints.FACTORY_KEY),
-      isMemoryOnly = false
-    )
-  }
+  private fun Cursor.toConstraintSpec(): ConstraintSpec = ConstraintSpec(
+    jobSpecId = this.requireNonNullString(Constraints.JOB_SPEC_ID),
+    factoryKey = this.requireNonNullString(Constraints.FACTORY_KEY),
+    isMemoryOnly = false
+  )
 
-  private fun Cursor.toDependencySpec(): DependencySpec {
-    return DependencySpec(
-      jobId = this.requireNonNullString(Dependencies.JOB_SPEC_ID),
-      dependsOnJobId = this.requireNonNullString(Dependencies.DEPENDS_ON_JOB_SPEC_ID),
-      isMemoryOnly = false
-    )
-  }
+  private fun Cursor.toDependencySpec(): DependencySpec = DependencySpec(
+    jobId = this.requireNonNullString(Dependencies.JOB_SPEC_ID),
+    dependsOnJobId = this.requireNonNullString(Dependencies.DEPENDS_ON_JOB_SPEC_ID),
+    isMemoryOnly = false
+  )
 
-  override fun getSqlCipherDatabase(): SQLiteDatabase {
-    return writableDatabase
-  }
+  override fun getSqlCipherDatabase(): SQLiteDatabase = writableDatabase
 
   /** Should only be used for debugging! */
   fun debugResetBackoffInterval() {
     writableDatabase.update(Jobs.TABLE_NAME, contentValuesOf(Jobs.NEXT_BACKOFF_INTERVAL to 0), null, null)
   }
 
-  private fun JobSpec.toContentValues(): ContentValues {
-    return contentValuesOf(
-      Jobs.JOB_SPEC_ID to this.id,
-      Jobs.FACTORY_KEY to this.factoryKey,
-      Jobs.QUEUE_KEY to this.queueKey,
-      Jobs.CREATE_TIME to this.createTime,
-      Jobs.LAST_RUN_ATTEMPT_TIME to this.lastRunAttemptTime,
-      Jobs.NEXT_BACKOFF_INTERVAL to this.nextBackoffInterval,
-      Jobs.RUN_ATTEMPT to this.runAttempt,
-      Jobs.MAX_ATTEMPTS to this.maxAttempts,
-      Jobs.LIFESPAN to this.lifespan,
-      Jobs.SERIALIZED_DATA to this.serializedData,
-      Jobs.SERIALIZED_INPUT_DATA to this.serializedInputData,
-      Jobs.IS_RUNNING to if (this.isRunning) 1 else 0,
-      Jobs.GLOBAL_PRIORITY to this.globalPriority,
-      Jobs.QUEUE_PRIORITY to this.queuePriority
-    )
-  }
+  private fun JobSpec.toContentValues(): ContentValues = contentValuesOf(
+    Jobs.JOB_SPEC_ID to this.id,
+    Jobs.FACTORY_KEY to this.factoryKey,
+    Jobs.QUEUE_KEY to this.queueKey,
+    Jobs.CREATE_TIME to this.createTime,
+    Jobs.LAST_RUN_ATTEMPT_TIME to this.lastRunAttemptTime,
+    Jobs.NEXT_BACKOFF_INTERVAL to this.nextBackoffInterval,
+    Jobs.RUN_ATTEMPT to this.runAttempt,
+    Jobs.MAX_ATTEMPTS to this.maxAttempts,
+    Jobs.LIFESPAN to this.lifespan,
+    Jobs.SERIALIZED_DATA to this.serializedData,
+    Jobs.SERIALIZED_INPUT_DATA to this.serializedInputData,
+    Jobs.IS_RUNNING to if (this.isRunning) 1 else 0,
+    Jobs.GLOBAL_PRIORITY to this.globalPriority,
+    Jobs.QUEUE_PRIORITY to this.queuePriority
+  )
 
   companion object {
     private val TAG = Log.tag(JobDatabase::class.java)

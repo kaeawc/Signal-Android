@@ -52,9 +52,7 @@ class VideoControlsDelegate {
     player?.videoPlayer?.unmute()
   }
 
-  fun hasAudioStream(): Boolean {
-    return player?.videoPlayer?.hasAudioTrack() ?: false
-  }
+  fun hasAudioStream(): Boolean = player?.videoPlayer?.hasAudioTrack() ?: false
 
   fun attachPlayer(uri: Uri, videoPlayer: VideoPlayer?, isGif: Boolean) {
     player = Player(uri, videoPlayer, isGif)

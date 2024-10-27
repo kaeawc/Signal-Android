@@ -73,76 +73,74 @@ class CustomNotificationsSettingsFragment : DSLSettingsFragment(R.string.CustomN
     }
   }
 
-  private fun getConfiguration(state: CustomNotificationsSettingsState): DSLConfiguration {
-    return configure {
-      sectionHeaderPref(R.string.CustomNotificationsDialogFragment__messages)
+  private fun getConfiguration(state: CustomNotificationsSettingsState): DSLConfiguration = configure {
+    sectionHeaderPref(R.string.CustomNotificationsDialogFragment__messages)
+
+    if (NotificationChannels.supported()) {
+      switchPref(
+        title = DSLSettingsText.from(R.string.CustomNotificationsDialogFragment__use_custom_notifications),
+        isEnabled = state.isInitialLoadComplete,
+        isChecked = state.hasCustomNotifications,
+        onClick = { viewModel.setHasCustomNotifications(!state.hasCustomNotifications) }
+      )
+    }
+
+    if (Build.VERSION.SDK_INT >= 30) {
+      clickPref(
+        title = DSLSettingsText.from(R.string.CustomNotificationsDialogFragment__customize),
+        summary = DSLSettingsText.from(R.string.CustomNotificationsDialogFragment__change_sound_and_vibration),
+        isEnabled = state.controlsEnabled,
+        onClick = { NotificationChannels.getInstance().openChannelSettings(requireActivity(), state.recipient!!.notificationChannel!!, ConversationUtil.getShortcutId(state.recipient)) }
+      )
+    } else {
+      clickPref(
+        title = DSLSettingsText.from(R.string.CustomNotificationsDialogFragment__notification_sound),
+        summary = DSLSettingsText.from(getRingtoneSummary(requireContext(), state.messageSound, Settings.System.DEFAULT_NOTIFICATION_URI)),
+        isEnabled = state.controlsEnabled,
+        onClick = { requestSound(state.messageSound, false) }
+      )
 
       if (NotificationChannels.supported()) {
         switchPref(
-          title = DSLSettingsText.from(R.string.CustomNotificationsDialogFragment__use_custom_notifications),
-          isEnabled = state.isInitialLoadComplete,
-          isChecked = state.hasCustomNotifications,
-          onClick = { viewModel.setHasCustomNotifications(!state.hasCustomNotifications) }
-        )
-      }
-
-      if (Build.VERSION.SDK_INT >= 30) {
-        clickPref(
-          title = DSLSettingsText.from(R.string.CustomNotificationsDialogFragment__customize),
-          summary = DSLSettingsText.from(R.string.CustomNotificationsDialogFragment__change_sound_and_vibration),
+          title = DSLSettingsText.from(R.string.CustomNotificationsDialogFragment__vibrate),
           isEnabled = state.controlsEnabled,
-          onClick = { NotificationChannels.getInstance().openChannelSettings(requireActivity(), state.recipient!!.notificationChannel!!, ConversationUtil.getShortcutId(state.recipient)) }
+          isChecked = state.messageVibrateEnabled,
+          onClick = { viewModel.setMessageVibrate(RecipientTable.VibrateState.fromBoolean(!state.messageVibrateEnabled)) }
         )
       } else {
-        clickPref(
-          title = DSLSettingsText.from(R.string.CustomNotificationsDialogFragment__notification_sound),
-          summary = DSLSettingsText.from(getRingtoneSummary(requireContext(), state.messageSound, Settings.System.DEFAULT_NOTIFICATION_URI)),
-          isEnabled = state.controlsEnabled,
-          onClick = { requestSound(state.messageSound, false) }
-        )
-
-        if (NotificationChannels.supported()) {
-          switchPref(
-            title = DSLSettingsText.from(R.string.CustomNotificationsDialogFragment__vibrate),
-            isEnabled = state.controlsEnabled,
-            isChecked = state.messageVibrateEnabled,
-            onClick = { viewModel.setMessageVibrate(RecipientTable.VibrateState.fromBoolean(!state.messageVibrateEnabled)) }
-          )
-        } else {
-          radioListPref(
-            title = DSLSettingsText.from(R.string.CustomNotificationsDialogFragment__vibrate),
-            isEnabled = state.controlsEnabled,
-            listItems = vibrateLabels,
-            selected = state.messageVibrateState.id,
-            onSelected = {
-              viewModel.setMessageVibrate(RecipientTable.VibrateState.fromId(it))
-            }
-          )
-        }
-      }
-
-      if (state.showCallingOptions) {
-        dividerPref()
-
-        sectionHeaderPref(R.string.CustomNotificationsDialogFragment__call_settings)
-
-        clickPref(
-          title = DSLSettingsText.from(R.string.CustomNotificationsDialogFragment__ringtone),
-          summary = DSLSettingsText.from(getRingtoneSummary(requireContext(), state.callSound, Settings.System.DEFAULT_RINGTONE_URI)),
-          isEnabled = state.controlsEnabled,
-          onClick = { requestSound(state.callSound, true) }
-        )
-
         radioListPref(
           title = DSLSettingsText.from(R.string.CustomNotificationsDialogFragment__vibrate),
           isEnabled = state.controlsEnabled,
           listItems = vibrateLabels,
-          selected = state.callVibrateState.id,
+          selected = state.messageVibrateState.id,
           onSelected = {
-            viewModel.setCallVibrate(RecipientTable.VibrateState.fromId(it))
+            viewModel.setMessageVibrate(RecipientTable.VibrateState.fromId(it))
           }
         )
       }
+    }
+
+    if (state.showCallingOptions) {
+      dividerPref()
+
+      sectionHeaderPref(R.string.CustomNotificationsDialogFragment__call_settings)
+
+      clickPref(
+        title = DSLSettingsText.from(R.string.CustomNotificationsDialogFragment__ringtone),
+        summary = DSLSettingsText.from(getRingtoneSummary(requireContext(), state.callSound, Settings.System.DEFAULT_RINGTONE_URI)),
+        isEnabled = state.controlsEnabled,
+        onClick = { requestSound(state.callSound, true) }
+      )
+
+      radioListPref(
+        title = DSLSettingsText.from(R.string.CustomNotificationsDialogFragment__vibrate),
+        isEnabled = state.controlsEnabled,
+        listItems = vibrateLabels,
+        selected = state.callVibrateState.id,
+        onSelected = {
+          viewModel.setCallVibrate(RecipientTable.VibrateState.fromId(it))
+        }
+      )
     }
   }
 

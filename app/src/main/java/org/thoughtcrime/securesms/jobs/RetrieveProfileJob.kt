@@ -65,11 +65,9 @@ class RetrieveProfileJob private constructor(parameters: Parameters, private val
     recipientIds.toMutableSet()
   )
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putStringListAsArray(KEY_RECIPIENTS, recipientIds.map { it.serialize() })
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putStringListAsArray(KEY_RECIPIENTS, recipientIds.map { it.serialize() })
+    .serialize()
 
   override fun getFactoryKey(): String = KEY
 
@@ -195,9 +193,7 @@ class RetrieveProfileJob private constructor(parameters: Parameters, private val
     }
   }
 
-  public override fun onShouldRetry(e: Exception): Boolean {
-    return e is RetryLaterException
-  }
+  public override fun onShouldRetry(e: Exception): Boolean = e is RetryLaterException
 
   override fun onFailure() {}
 
@@ -335,25 +331,23 @@ class RetrieveProfileJob private constructor(parameters: Parameters, private val
     }
   }
 
-  private fun deriveUnidentifiedAccessMode(profileKey: ProfileKey?, unidentifiedAccessVerifier: String?, unrestrictedUnidentifiedAccess: Boolean): SealedSenderAccessMode {
-    return if (unrestrictedUnidentifiedAccess && unidentifiedAccessVerifier != null) {
-      SealedSenderAccessMode.UNRESTRICTED
-    } else if (profileKey == null || unidentifiedAccessVerifier == null) {
-      SealedSenderAccessMode.DISABLED
-    } else {
-      val profileCipher = ProfileCipher(profileKey)
-      val verifiedUnidentifiedAccess: Boolean = try {
-        profileCipher.verifyUnidentifiedAccess(decode(unidentifiedAccessVerifier))
-      } catch (e: IOException) {
-        Log.w(TAG, e)
-        false
-      }
+  private fun deriveUnidentifiedAccessMode(profileKey: ProfileKey?, unidentifiedAccessVerifier: String?, unrestrictedUnidentifiedAccess: Boolean): SealedSenderAccessMode = if (unrestrictedUnidentifiedAccess && unidentifiedAccessVerifier != null) {
+    SealedSenderAccessMode.UNRESTRICTED
+  } else if (profileKey == null || unidentifiedAccessVerifier == null) {
+    SealedSenderAccessMode.DISABLED
+  } else {
+    val profileCipher = ProfileCipher(profileKey)
+    val verifiedUnidentifiedAccess: Boolean = try {
+      profileCipher.verifyUnidentifiedAccess(decode(unidentifiedAccessVerifier))
+    } catch (e: IOException) {
+      Log.w(TAG, e)
+      false
+    }
 
-      if (verifiedUnidentifiedAccess) {
-        SealedSenderAccessMode.ENABLED
-      } else {
-        SealedSenderAccessMode.DISABLED
-      }
+    if (verifiedUnidentifiedAccess) {
+      SealedSenderAccessMode.ENABLED
+    } else {
+      SealedSenderAccessMode.DISABLED
     }
   }
 
@@ -500,9 +494,7 @@ class RetrieveProfileJob private constructor(parameters: Parameters, private val
     }
   }
 
-  private fun getRequestType(recipient: Recipient): SignalServiceProfile.RequestType {
-    return if (ExpiringProfileCredentialUtil.isValid(recipient.expiringProfileKeyCredential)) SignalServiceProfile.RequestType.PROFILE else SignalServiceProfile.RequestType.PROFILE_AND_CREDENTIAL
-  }
+  private fun getRequestType(recipient: Recipient): SignalServiceProfile.RequestType = if (ExpiringProfileCredentialUtil.isValid(recipient.expiringProfileKeyCredential)) SignalServiceProfile.RequestType.PROFILE else SignalServiceProfile.RequestType.PROFILE_AND_CREDENTIAL
 
   /**
    * Collective state as responses are processed as they come in.

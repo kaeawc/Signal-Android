@@ -16,9 +16,10 @@ import org.thoughtcrime.securesms.recipients.Recipient
 import org.thoughtcrime.securesms.util.adapter.mapping.MappingAdapter
 import org.thoughtcrime.securesms.util.navigation.safeNavigate
 
-class SoundsAndNotificationsSettingsFragment : DSLSettingsFragment(
-  titleId = R.string.ConversationSettingsFragment__sounds_and_notifications
-) {
+class SoundsAndNotificationsSettingsFragment :
+  DSLSettingsFragment(
+    titleId = R.string.ConversationSettingsFragment__sounds_and_notifications
+  ) {
 
   private val mentionLabels: Array<String> by lazy {
     resources.getStringArray(R.array.SoundsAndNotificationsSettingsFragment__mention_labels)
@@ -46,79 +47,77 @@ class SoundsAndNotificationsSettingsFragment : DSLSettingsFragment(
     }
   }
 
-  private fun getConfiguration(state: SoundsAndNotificationsSettingsState): DSLConfiguration {
-    return configure {
-      val muteSummary = if (state.muteUntil > 0) {
-        state.muteUntil.formatMutedUntil(requireContext())
-      } else {
-        getString(R.string.SoundsAndNotificationsSettingsFragment__not_muted)
-      }
+  private fun getConfiguration(state: SoundsAndNotificationsSettingsState): DSLConfiguration = configure {
+    val muteSummary = if (state.muteUntil > 0) {
+      state.muteUntil.formatMutedUntil(requireContext())
+    } else {
+      getString(R.string.SoundsAndNotificationsSettingsFragment__not_muted)
+    }
 
-      val muteIcon = if (state.muteUntil > 0) {
-        R.drawable.ic_bell_disabled_24
-      } else {
-        R.drawable.ic_bell_24
-      }
+    val muteIcon = if (state.muteUntil > 0) {
+      R.drawable.ic_bell_disabled_24
+    } else {
+      R.drawable.ic_bell_24
+    }
 
-      clickPref(
-        title = DSLSettingsText.from(R.string.SoundsAndNotificationsSettingsFragment__mute_notifications),
-        icon = DSLSettingsIcon.from(muteIcon),
-        summary = DSLSettingsText.from(muteSummary),
-        onClick = {
-          if (state.muteUntil <= 0) {
-            MuteDialog.show(requireContext(), viewModel::setMuteUntil)
-          } else {
-            MaterialAlertDialogBuilder(requireContext())
-              .setMessage(muteSummary)
-              .setPositiveButton(R.string.ConversationSettingsFragment__unmute) { dialog, _ ->
-                viewModel.unmute()
-                dialog.dismiss()
-              }
-              .setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
-              .show()
-          }
-        }
-      )
-
-      if (state.hasMentionsSupport) {
-        val mentionSelection = if (state.mentionSetting == RecipientTable.MentionSetting.ALWAYS_NOTIFY) {
-          0
+    clickPref(
+      title = DSLSettingsText.from(R.string.SoundsAndNotificationsSettingsFragment__mute_notifications),
+      icon = DSLSettingsIcon.from(muteIcon),
+      summary = DSLSettingsText.from(muteSummary),
+      onClick = {
+        if (state.muteUntil <= 0) {
+          MuteDialog.show(requireContext(), viewModel::setMuteUntil)
         } else {
-          1
+          MaterialAlertDialogBuilder(requireContext())
+            .setMessage(muteSummary)
+            .setPositiveButton(R.string.ConversationSettingsFragment__unmute) { dialog, _ ->
+              viewModel.unmute()
+              dialog.dismiss()
+            }
+            .setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .show()
         }
-
-        radioListPref(
-          title = DSLSettingsText.from(R.string.SoundsAndNotificationsSettingsFragment__mentions),
-          icon = DSLSettingsIcon.from(R.drawable.ic_at_24),
-          selected = mentionSelection,
-          listItems = mentionLabels,
-          onSelected = {
-            viewModel.setMentionSetting(
-              if (it == 0) {
-                RecipientTable.MentionSetting.ALWAYS_NOTIFY
-              } else {
-                RecipientTable.MentionSetting.DO_NOT_NOTIFY
-              }
-            )
-          }
-        )
       }
+    )
 
-      val customSoundSummary = if (state.hasCustomNotificationSettings) {
-        R.string.preferences_on
+    if (state.hasMentionsSupport) {
+      val mentionSelection = if (state.mentionSetting == RecipientTable.MentionSetting.ALWAYS_NOTIFY) {
+        0
       } else {
-        R.string.preferences_off
+        1
       }
 
-      clickPref(
-        title = DSLSettingsText.from(R.string.SoundsAndNotificationsSettingsFragment__custom_notifications),
-        icon = DSLSettingsIcon.from(R.drawable.ic_speaker_24),
-        summary = DSLSettingsText.from(customSoundSummary),
-        onClick = {
-          val action = SoundsAndNotificationsSettingsFragmentDirections.actionSoundsAndNotificationsSettingsFragmentToCustomNotificationsSettingsFragment(state.recipientId)
-          Navigation.findNavController(requireView()).safeNavigate(action)
+      radioListPref(
+        title = DSLSettingsText.from(R.string.SoundsAndNotificationsSettingsFragment__mentions),
+        icon = DSLSettingsIcon.from(R.drawable.ic_at_24),
+        selected = mentionSelection,
+        listItems = mentionLabels,
+        onSelected = {
+          viewModel.setMentionSetting(
+            if (it == 0) {
+              RecipientTable.MentionSetting.ALWAYS_NOTIFY
+            } else {
+              RecipientTable.MentionSetting.DO_NOT_NOTIFY
+            }
+          )
         }
       )
     }
+
+    val customSoundSummary = if (state.hasCustomNotificationSettings) {
+      R.string.preferences_on
+    } else {
+      R.string.preferences_off
+    }
+
+    clickPref(
+      title = DSLSettingsText.from(R.string.SoundsAndNotificationsSettingsFragment__custom_notifications),
+      icon = DSLSettingsIcon.from(R.drawable.ic_speaker_24),
+      summary = DSLSettingsText.from(customSoundSummary),
+      onClick = {
+        val action = SoundsAndNotificationsSettingsFragmentDirections.actionSoundsAndNotificationsSettingsFragmentToCustomNotificationsSettingsFragment(state.recipientId)
+        Navigation.findNavController(requireView()).safeNavigate(action)
+      }
+    )
   }
 }

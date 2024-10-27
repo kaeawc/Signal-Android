@@ -28,15 +28,11 @@ object AvatarPreference {
     val onAvatarClick: (AvatarView) -> Unit,
     val onBadgeClick: (Badge) -> Unit
   ) : PreferenceModel<Model>() {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return recipient == newItem.recipient
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = recipient == newItem.recipient
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) &&
-        recipient.hasSameContent(newItem.recipient) &&
-        storyViewState == newItem.storyViewState
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) &&
+      recipient.hasSameContent(newItem.recipient) &&
+      storyViewState == newItem.storyViewState
   }
 
   private class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

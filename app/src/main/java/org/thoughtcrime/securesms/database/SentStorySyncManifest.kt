@@ -36,9 +36,7 @@ data class SentStorySyncManifest(
     val distributionId: DistributionId
   )
 
-  fun getDistributionIdSet(): Set<DistributionId> {
-    return entries.map { it.distributionLists }.flatten().toSet()
-  }
+  fun getDistributionIdSet(): Set<DistributionId> = entries.map { it.distributionLists }.flatten().toSet()
 
   fun toRecipientsSet(): Set<SignalServiceStoryMessageRecipient> {
     val recipients = Recipient.resolvedList(entries.map { it.recipientId })
@@ -54,20 +52,16 @@ data class SentStorySyncManifest(
     }.toSet()
   }
 
-  fun flattenToRows(distributionIdToMessageIdMap: Map<DistributionId, Long>): Set<Row> {
-    return entries.flatMap { getRowsForEntry(it, distributionIdToMessageIdMap) }.toSet()
-  }
+  fun flattenToRows(distributionIdToMessageIdMap: Map<DistributionId, Long>): Set<Row> = entries.flatMap { getRowsForEntry(it, distributionIdToMessageIdMap) }.toSet()
 
-  private fun getRowsForEntry(entry: Entry, distributionIdToMessageIdMap: Map<DistributionId, Long>): List<Row> {
-    return entry.distributionLists.map {
-      Row(
-        recipientId = entry.recipientId,
-        allowsReplies = entry.allowedToReply,
-        messageId = distributionIdToMessageIdMap[it] ?: -1L,
-        distributionId = it
-      )
-    }.filterNot { it.messageId == -1L }
-  }
+  private fun getRowsForEntry(entry: Entry, distributionIdToMessageIdMap: Map<DistributionId, Long>): List<Row> = entry.distributionLists.map {
+    Row(
+      recipientId = entry.recipientId,
+      allowsReplies = entry.allowedToReply,
+      messageId = distributionIdToMessageIdMap[it] ?: -1L,
+      distributionId = it
+    )
+  }.filterNot { it.messageId == -1L }
 
   companion object {
     @WorkerThread

@@ -24,7 +24,10 @@ import org.thoughtcrime.securesms.util.fragments.findListener
 import java.util.Optional
 import java.util.function.Consumer
 
-abstract class BaseStoryRecipientSelectionFragment : Fragment(R.layout.stories_base_recipient_selection_fragment), ContactSelectionListFragment.OnContactSelectedListener, ContactSelectionListFragment.HeaderActionProvider {
+abstract class BaseStoryRecipientSelectionFragment :
+  Fragment(R.layout.stories_base_recipient_selection_fragment),
+  ContactSelectionListFragment.OnContactSelectedListener,
+  ContactSelectionListFragment.HeaderActionProvider {
 
   private val viewModel: BaseStoryRecipientSelectionViewModel by viewModels(
     factoryProducer = {
@@ -101,13 +104,9 @@ abstract class BaseStoryRecipientSelectionFragment : Fragment(R.layout.stories_b
     }
   }
 
-  private fun getAttachedContactSelectionFragment(): ContactSelectionListFragment {
-    return childFragmentManager.findFragmentById(R.id.contacts_container) as ContactSelectionListFragment
-  }
+  private fun getAttachedContactSelectionFragment(): ContactSelectionListFragment = childFragmentManager.findFragmentById(R.id.contacts_container) as ContactSelectionListFragment
 
-  protected open fun goToNextScreen(recipients: Set<RecipientId>) {
-    throw UnsupportedOperationException()
-  }
+  protected open fun goToNextScreen(recipients: Set<RecipientId>): Unit = throw UnsupportedOperationException()
 
   private fun exitFlow() {
     val callback = findListener<Callback>()
@@ -134,12 +133,10 @@ abstract class BaseStoryRecipientSelectionFragment : Fragment(R.layout.stories_b
 
   override fun onSelectionChanged() = Unit
 
-  override fun getHeaderAction(): HeaderAction {
-    return HeaderAction(
-      R.string.BaseStoryRecipientSelectionFragment__select_all
-    ) {
-      viewModel.toggleSelectAll()
-    }
+  override fun getHeaderAction(): HeaderAction = HeaderAction(
+    R.string.BaseStoryRecipientSelectionFragment__select_all
+  ) {
+    viewModel.toggleSelectAll()
   }
 
   private fun initializeContactSelectionFragment() {

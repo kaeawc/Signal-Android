@@ -30,11 +30,7 @@ class OverlayTransformation(
     return outBitmap
   }
 
-  override fun equals(other: Any?): Boolean {
-    return (other as? OverlayTransformation)?.color == color
-  }
+  override fun equals(other: Any?): Boolean = (other as? OverlayTransformation)?.color == color
 
-  override fun hashCode(): Int {
-    return id.hashCode()
-  }
+  override fun hashCode(): Int = id.hashCode()
 }

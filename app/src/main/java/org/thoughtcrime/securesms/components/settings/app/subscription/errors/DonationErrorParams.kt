@@ -29,103 +29,93 @@ class DonationErrorParams<V> private constructor(
       context: Context,
       throwable: Throwable?,
       callback: Callback<V>
-    ): DonationErrorParams<V> {
-      return when (throwable) {
-        is DonationError.GiftRecipientVerificationError -> getVerificationErrorParams(context, callback)
-        is DonationError.PaymentSetupError.StripeDeclinedError -> getStripeDeclinedErrorParams(context, throwable.method, throwable.declineCode, callback, throwable.source.toInAppPaymentType())
-        is DonationError.PaymentSetupError.StripeFailureCodeError -> getStripeFailureCodeErrorParams(context, throwable.method, throwable.failureCode, throwable.source.toInAppPaymentType(), callback)
-        is DonationError.PaymentSetupError.PayPalDeclinedError -> getPayPalDeclinedErrorParams(context, throwable.code, callback, throwable.source.toInAppPaymentType())
-        is DonationError.PaymentSetupError -> getGenericPaymentSetupErrorParams(context, callback, throwable.source.toInAppPaymentType())
-        is DonationError.BadgeRedemptionError.DonationPending -> getStillProcessingErrorParams(context, callback, throwable.source.toInAppPaymentType())
-        is DonationError.BadgeRedemptionError.TimeoutWaitingForTokenError -> getStillProcessingErrorParams(context, callback, throwable.source.toInAppPaymentType())
-        is DonationError.BadgeRedemptionError.FailedToValidateCredentialError -> getBadgeCredentialValidationErrorParams(context, callback)
-        is DonationError.BadgeRedemptionError.GenericError -> getGenericRedemptionError(context, throwable.source.toInAppPaymentType(), callback)
-        else -> getGenericRedemptionError(context, InAppPaymentType.ONE_TIME_DONATION, callback)
-      }
+    ): DonationErrorParams<V> = when (throwable) {
+      is DonationError.GiftRecipientVerificationError -> getVerificationErrorParams(context, callback)
+      is DonationError.PaymentSetupError.StripeDeclinedError -> getStripeDeclinedErrorParams(context, throwable.method, throwable.declineCode, callback, throwable.source.toInAppPaymentType())
+      is DonationError.PaymentSetupError.StripeFailureCodeError -> getStripeFailureCodeErrorParams(context, throwable.method, throwable.failureCode, throwable.source.toInAppPaymentType(), callback)
+      is DonationError.PaymentSetupError.PayPalDeclinedError -> getPayPalDeclinedErrorParams(context, throwable.code, callback, throwable.source.toInAppPaymentType())
+      is DonationError.PaymentSetupError -> getGenericPaymentSetupErrorParams(context, callback, throwable.source.toInAppPaymentType())
+      is DonationError.BadgeRedemptionError.DonationPending -> getStillProcessingErrorParams(context, callback, throwable.source.toInAppPaymentType())
+      is DonationError.BadgeRedemptionError.TimeoutWaitingForTokenError -> getStillProcessingErrorParams(context, callback, throwable.source.toInAppPaymentType())
+      is DonationError.BadgeRedemptionError.FailedToValidateCredentialError -> getBadgeCredentialValidationErrorParams(context, callback)
+      is DonationError.BadgeRedemptionError.GenericError -> getGenericRedemptionError(context, throwable.source.toInAppPaymentType(), callback)
+      else -> getGenericRedemptionError(context, InAppPaymentType.ONE_TIME_DONATION, callback)
     }
 
     fun <V> create(
       context: Context,
       inAppPayment: InAppPaymentTable.InAppPayment,
       callback: Callback<V>
-    ): DonationErrorParams<V> {
-      return when (inAppPayment.data.error?.type) {
-        InAppPaymentData.Error.Type.UNKNOWN -> getGenericRedemptionError(context, inAppPayment.type, callback)
-        InAppPaymentData.Error.Type.GOOGLE_PAY_REQUEST_TOKEN -> getGenericPaymentSetupErrorParams(context, callback, inAppPayment.type)
-        InAppPaymentData.Error.Type.INVALID_GIFT_RECIPIENT -> getVerificationErrorParams(context, callback)
-        InAppPaymentData.Error.Type.ONE_TIME_AMOUNT_TOO_SMALL -> getGenericPaymentSetupErrorParams(context, callback, inAppPayment.type)
-        InAppPaymentData.Error.Type.ONE_TIME_AMOUNT_TOO_LARGE -> getGenericPaymentSetupErrorParams(context, callback, inAppPayment.type)
-        InAppPaymentData.Error.Type.INVALID_CURRENCY -> getGenericPaymentSetupErrorParams(context, callback, inAppPayment.type)
-        InAppPaymentData.Error.Type.PAYMENT_SETUP -> getGenericPaymentSetupErrorParams(context, callback, inAppPayment.type)
-        InAppPaymentData.Error.Type.STRIPE_CODED_ERROR -> getGenericPaymentSetupErrorParams(context, callback, inAppPayment.type)
-        InAppPaymentData.Error.Type.STRIPE_DECLINED_ERROR -> getStripeDeclinedErrorParams(
-          context = context,
-          paymentSourceType = inAppPayment.data.paymentMethodType.toPaymentSourceType() as PaymentSourceType.Stripe,
-          declineCode = StripeDeclineCode.getFromCode(inAppPayment.data.error.data_),
-          callback = callback,
-          inAppPaymentType = inAppPayment.type
-        )
+    ): DonationErrorParams<V> = when (inAppPayment.data.error?.type) {
+      InAppPaymentData.Error.Type.UNKNOWN -> getGenericRedemptionError(context, inAppPayment.type, callback)
+      InAppPaymentData.Error.Type.GOOGLE_PAY_REQUEST_TOKEN -> getGenericPaymentSetupErrorParams(context, callback, inAppPayment.type)
+      InAppPaymentData.Error.Type.INVALID_GIFT_RECIPIENT -> getVerificationErrorParams(context, callback)
+      InAppPaymentData.Error.Type.ONE_TIME_AMOUNT_TOO_SMALL -> getGenericPaymentSetupErrorParams(context, callback, inAppPayment.type)
+      InAppPaymentData.Error.Type.ONE_TIME_AMOUNT_TOO_LARGE -> getGenericPaymentSetupErrorParams(context, callback, inAppPayment.type)
+      InAppPaymentData.Error.Type.INVALID_CURRENCY -> getGenericPaymentSetupErrorParams(context, callback, inAppPayment.type)
+      InAppPaymentData.Error.Type.PAYMENT_SETUP -> getGenericPaymentSetupErrorParams(context, callback, inAppPayment.type)
+      InAppPaymentData.Error.Type.STRIPE_CODED_ERROR -> getGenericPaymentSetupErrorParams(context, callback, inAppPayment.type)
+      InAppPaymentData.Error.Type.STRIPE_DECLINED_ERROR -> getStripeDeclinedErrorParams(
+        context = context,
+        paymentSourceType = inAppPayment.data.paymentMethodType.toPaymentSourceType() as PaymentSourceType.Stripe,
+        declineCode = StripeDeclineCode.getFromCode(inAppPayment.data.error.data_),
+        callback = callback,
+        inAppPaymentType = inAppPayment.type
+      )
 
-        InAppPaymentData.Error.Type.STRIPE_FAILURE -> getStripeFailureCodeErrorParams(
-          context = context,
-          paymentSourceType = inAppPayment.data.paymentMethodType.toPaymentSourceType() as PaymentSourceType.Stripe,
-          failureCode = StripeFailureCode.getFromCode(inAppPayment.data.error.data_),
-          inAppPaymentType = inAppPayment.type,
-          callback = callback
-        )
+      InAppPaymentData.Error.Type.STRIPE_FAILURE -> getStripeFailureCodeErrorParams(
+        context = context,
+        paymentSourceType = inAppPayment.data.paymentMethodType.toPaymentSourceType() as PaymentSourceType.Stripe,
+        failureCode = StripeFailureCode.getFromCode(inAppPayment.data.error.data_),
+        inAppPaymentType = inAppPayment.type,
+        callback = callback
+      )
 
-        InAppPaymentData.Error.Type.PAYPAL_CODED_ERROR -> getGenericPaymentSetupErrorParams(context, callback, inAppPayment.type)
-        InAppPaymentData.Error.Type.PAYPAL_DECLINED_ERROR -> getPayPalDeclinedErrorParams(
-          context = context,
-          payPalDeclineCode = PayPalDeclineCode.KnownCode.fromCode(inAppPayment.data.error.data_!!.toInt())!!,
-          callback = callback,
-          inAppPaymentType = inAppPayment.type
-        )
+      InAppPaymentData.Error.Type.PAYPAL_CODED_ERROR -> getGenericPaymentSetupErrorParams(context, callback, inAppPayment.type)
+      InAppPaymentData.Error.Type.PAYPAL_DECLINED_ERROR -> getPayPalDeclinedErrorParams(
+        context = context,
+        payPalDeclineCode = PayPalDeclineCode.KnownCode.fromCode(inAppPayment.data.error.data_!!.toInt())!!,
+        callback = callback,
+        inAppPaymentType = inAppPayment.type
+      )
 
-        InAppPaymentData.Error.Type.PAYMENT_PROCESSING -> getGenericRedemptionError(context, inAppPayment.type, callback)
-        InAppPaymentData.Error.Type.CREDENTIAL_VALIDATION -> getBadgeCredentialValidationErrorParams(context, callback)
-        InAppPaymentData.Error.Type.REDEMPTION -> getGenericRedemptionError(context, inAppPayment.type, callback)
-        null -> error("No error in data!")
-      }
+      InAppPaymentData.Error.Type.PAYMENT_PROCESSING -> getGenericRedemptionError(context, inAppPayment.type, callback)
+      InAppPaymentData.Error.Type.CREDENTIAL_VALIDATION -> getBadgeCredentialValidationErrorParams(context, callback)
+      InAppPaymentData.Error.Type.REDEMPTION -> getGenericRedemptionError(context, inAppPayment.type, callback)
+      null -> error("No error in data!")
     }
 
-    private fun <V> getGenericRedemptionError(context: Context, type: InAppPaymentType, callback: Callback<V>): DonationErrorParams<V> {
-      return when (type) {
-        InAppPaymentType.ONE_TIME_GIFT -> DonationErrorParams(
-          title = R.string.DonationsErrors__donation_failed,
-          message = R.string.DonationsErrors__your_payment_was_processed_but,
-          positiveAction = callback.onContactSupport(context),
-          negativeAction = null
-        )
+    private fun <V> getGenericRedemptionError(context: Context, type: InAppPaymentType, callback: Callback<V>): DonationErrorParams<V> = when (type) {
+      InAppPaymentType.ONE_TIME_GIFT -> DonationErrorParams(
+        title = R.string.DonationsErrors__donation_failed,
+        message = R.string.DonationsErrors__your_payment_was_processed_but,
+        positiveAction = callback.onContactSupport(context),
+        negativeAction = null
+      )
 
-        else -> DonationErrorParams(
-          title = R.string.DonationsErrors__couldnt_add_badge, // TODO [message-backups] -- This will need a backups-specific string
-          message = R.string.DonationsErrors__your_badge_could_not, // TODO [message-backups] -- This will need a backups-specific string
-          positiveAction = callback.onContactSupport(context),
-          negativeAction = null
-        )
-      }
-    }
-
-    private fun <V> getVerificationErrorParams(context: Context, callback: Callback<V>): DonationErrorParams<V> {
-      return DonationErrorParams(
-        title = R.string.DonationsErrors__cannot_send_donation,
-        message = R.string.DonationsErrors__this_user_cant_receive_donations_until,
-        positiveAction = callback.onOk(context),
+      else -> DonationErrorParams(
+        title = R.string.DonationsErrors__couldnt_add_badge, // TODO [message-backups] -- This will need a backups-specific string
+        message = R.string.DonationsErrors__your_badge_could_not, // TODO [message-backups] -- This will need a backups-specific string
+        positiveAction = callback.onContactSupport(context),
         negativeAction = null
       )
     }
+
+    private fun <V> getVerificationErrorParams(context: Context, callback: Callback<V>): DonationErrorParams<V> = DonationErrorParams(
+      title = R.string.DonationsErrors__cannot_send_donation,
+      message = R.string.DonationsErrors__this_user_cant_receive_donations_until,
+      positiveAction = callback.onOk(context),
+      negativeAction = null
+    )
 
     private fun <V> getPayPalDeclinedErrorParams(
       context: Context,
       payPalDeclineCode: PayPalDeclineCode.KnownCode,
       callback: Callback<V>,
       inAppPaymentType: InAppPaymentType
-    ): DonationErrorParams<V> {
-      return when (payPalDeclineCode) {
-        PayPalDeclineCode.KnownCode.DECLINED -> getLearnMoreParams(context, callback, inAppPaymentType, R.string.DeclineCode__try_another_payment_method_or_contact_your_bank_for_more_information_if_this_was_a_paypal)
-        else -> getLearnMoreParams(context, callback, inAppPaymentType, R.string.DeclineCode__try_another_payment_method_or_contact_your_bank)
-      }
+    ): DonationErrorParams<V> = when (payPalDeclineCode) {
+      PayPalDeclineCode.KnownCode.DECLINED -> getLearnMoreParams(context, callback, inAppPaymentType, R.string.DeclineCode__try_another_payment_method_or_contact_your_bank_for_more_information_if_this_was_a_paypal)
+      else -> getLearnMoreParams(context, callback, inAppPaymentType, R.string.DeclineCode__try_another_payment_method_or_contact_your_bank)
     }
 
     private fun <V> getStripeDeclinedErrorParams(
@@ -297,68 +287,54 @@ class DonationErrorParams<V> private constructor(
       }
     }
 
-    private fun <V> getStillProcessingErrorParams(context: Context, callback: Callback<V>, inAppPaymentType: InAppPaymentType): DonationErrorParams<V> {
-      return DonationErrorParams(
-        title = R.string.DonationsErrors__still_processing,
-        message = InAppPaymentErrorStrings.getStillProcessingErrorMessage(inAppPaymentType),
-        positiveAction = callback.onOk(context),
-        negativeAction = null
-      )
-    }
+    private fun <V> getStillProcessingErrorParams(context: Context, callback: Callback<V>, inAppPaymentType: InAppPaymentType): DonationErrorParams<V> = DonationErrorParams(
+      title = R.string.DonationsErrors__still_processing,
+      message = InAppPaymentErrorStrings.getStillProcessingErrorMessage(inAppPaymentType),
+      positiveAction = callback.onOk(context),
+      negativeAction = null
+    )
 
-    private fun <V> getBadgeCredentialValidationErrorParams(context: Context, callback: Callback<V>): DonationErrorParams<V> {
-      return DonationErrorParams(
-        title = R.string.DonationsErrors__failed_to_validate_badge,
-        message = R.string.DonationsErrors__could_not_validate,
-        positiveAction = callback.onContactSupport(context),
-        negativeAction = null
-      )
-    }
+    private fun <V> getBadgeCredentialValidationErrorParams(context: Context, callback: Callback<V>): DonationErrorParams<V> = DonationErrorParams(
+      title = R.string.DonationsErrors__failed_to_validate_badge,
+      message = R.string.DonationsErrors__could_not_validate,
+      positiveAction = callback.onContactSupport(context),
+      negativeAction = null
+    )
 
-    private fun <V> getGenericPaymentSetupErrorParams(context: Context, callback: Callback<V>, inAppPaymentType: InAppPaymentType): DonationErrorParams<V> {
-      return DonationErrorParams(
-        title = InAppPaymentErrorStrings.getGenericErrorProcessingTitle(inAppPaymentType),
-        message = InAppPaymentErrorStrings.getPaymentSetupErrorMessage(inAppPaymentType),
-        positiveAction = callback.onOk(context),
-        negativeAction = null
-      )
-    }
+    private fun <V> getGenericPaymentSetupErrorParams(context: Context, callback: Callback<V>, inAppPaymentType: InAppPaymentType): DonationErrorParams<V> = DonationErrorParams(
+      title = InAppPaymentErrorStrings.getGenericErrorProcessingTitle(inAppPaymentType),
+      message = InAppPaymentErrorStrings.getPaymentSetupErrorMessage(inAppPaymentType),
+      positiveAction = callback.onOk(context),
+      negativeAction = null
+    )
 
-    private fun <V> getLearnMoreParams(context: Context, callback: Callback<V>, inAppPaymentType: InAppPaymentType, message: Int): DonationErrorParams<V> {
-      return DonationErrorParams(
-        title = InAppPaymentErrorStrings.getGenericErrorProcessingTitle(inAppPaymentType),
-        message = message,
-        positiveAction = callback.onOk(context),
-        negativeAction = callback.onLearnMore(context)
-      )
-    }
+    private fun <V> getLearnMoreParams(context: Context, callback: Callback<V>, inAppPaymentType: InAppPaymentType, message: Int): DonationErrorParams<V> = DonationErrorParams(
+      title = InAppPaymentErrorStrings.getGenericErrorProcessingTitle(inAppPaymentType),
+      message = message,
+      positiveAction = callback.onOk(context),
+      negativeAction = callback.onLearnMore(context)
+    )
 
-    private fun <V> getGoToGooglePayParams(context: Context, callback: Callback<V>, inAppPaymentType: InAppPaymentType, message: Int): DonationErrorParams<V> {
-      return DonationErrorParams(
-        title = InAppPaymentErrorStrings.getGenericErrorProcessingTitle(inAppPaymentType),
-        message = message,
-        positiveAction = callback.onGoToGooglePay(context),
-        negativeAction = callback.onCancel(context)
-      )
-    }
+    private fun <V> getGoToGooglePayParams(context: Context, callback: Callback<V>, inAppPaymentType: InAppPaymentType, message: Int): DonationErrorParams<V> = DonationErrorParams(
+      title = InAppPaymentErrorStrings.getGenericErrorProcessingTitle(inAppPaymentType),
+      message = message,
+      positiveAction = callback.onGoToGooglePay(context),
+      negativeAction = callback.onCancel(context)
+    )
 
-    private fun <V> getTryCreditCardAgainParams(context: Context, callback: Callback<V>, inAppPaymentType: InAppPaymentType, message: Int): DonationErrorParams<V> {
-      return DonationErrorParams(
-        title = InAppPaymentErrorStrings.getGenericErrorProcessingTitle(inAppPaymentType),
-        message = message,
-        positiveAction = callback.onTryCreditCardAgain(context),
-        negativeAction = callback.onCancel(context)
-      )
-    }
+    private fun <V> getTryCreditCardAgainParams(context: Context, callback: Callback<V>, inAppPaymentType: InAppPaymentType, message: Int): DonationErrorParams<V> = DonationErrorParams(
+      title = InAppPaymentErrorStrings.getGenericErrorProcessingTitle(inAppPaymentType),
+      message = message,
+      positiveAction = callback.onTryCreditCardAgain(context),
+      negativeAction = callback.onCancel(context)
+    )
 
-    private fun <V> getTryBankTransferAgainParams(context: Context, callback: Callback<V>, inAppPaymentType: InAppPaymentType, message: Int): DonationErrorParams<V> {
-      return DonationErrorParams(
-        title = InAppPaymentErrorStrings.getGenericErrorProcessingTitle(inAppPaymentType),
-        message = message,
-        positiveAction = callback.onTryBankTransferAgain(context),
-        negativeAction = callback.onCancel(context)
-      )
-    }
+    private fun <V> getTryBankTransferAgainParams(context: Context, callback: Callback<V>, inAppPaymentType: InAppPaymentType, message: Int): DonationErrorParams<V> = DonationErrorParams(
+      title = InAppPaymentErrorStrings.getGenericErrorProcessingTitle(inAppPaymentType),
+      message = message,
+      positiveAction = callback.onTryBankTransferAgain(context),
+      negativeAction = callback.onCancel(context)
+    )
   }
 
   interface Callback<V> {

@@ -45,42 +45,36 @@ class AddToContactsContract : ActivityResultContract<Intent, Unit>() {
       fragment: Fragment,
       launcher: ActivityResultLauncher<Intent>,
       contact: Contact
-    ): Disposable {
-      return launchIntent(
-        fragment = fragment,
-        launcher = launcher,
-        intentProducer = Single.fromCallable { ContactUtil.buildAddToContactsIntent(fragment.requireContext(), contact) }
-      )
-    }
+    ): Disposable = launchIntent(
+      fragment = fragment,
+      launcher = launcher,
+      intentProducer = Single.fromCallable { ContactUtil.buildAddToContactsIntent(fragment.requireContext(), contact) }
+    )
 
     fun createIntentAndLaunch(
       fragment: Fragment,
       launcher: ActivityResultLauncher<Intent>,
       recipient: Recipient
-    ): Disposable {
-      return launchIntent(
-        fragment = fragment,
-        launcher = launcher,
-        intentProducer = Single.just(RecipientExporter.export(recipient).asAddContactIntent())
-      )
-    }
+    ): Disposable = launchIntent(
+      fragment = fragment,
+      launcher = launcher,
+      intentProducer = Single.just(RecipientExporter.export(recipient).asAddContactIntent())
+    )
 
     private fun launchIntent(
       fragment: Fragment,
       launcher: ActivityResultLauncher<Intent>,
       intentProducer: Single<Intent>
-    ): Disposable {
-      return intentProducer
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribeBy {
-          try {
-            launcher.launch(it)
-          } catch (e: ActivityNotFoundException) {
-            Log.w(TAG, "Could not locate contacts activity", e)
-            Toast.makeText(fragment.requireContext(), R.string.ConversationFragment__contacts_app_not_found, Toast.LENGTH_SHORT).show()
-          }
+    ): Disposable = intentProducer
+      .subscribeOn(Schedulers.io())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribeBy {
+        try {
+          launcher.launch(it)
+        } catch (e: ActivityNotFoundException) {
+          Log.w(TAG, "Could not locate contacts activity", e)
+          Toast.makeText(fragment.requireContext(), R.string.ConversationFragment__contacts_app_not_found, Toast.LENGTH_SHORT).show()
         }
-    }
+      }
   }
 }

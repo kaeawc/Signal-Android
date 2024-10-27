@@ -37,18 +37,14 @@ object ActiveSubscriptionPreference {
     val onPendingClick: (FiatMoney) -> Unit,
     val onRowClick: (ManageDonationsState.RedemptionState) -> Unit
   ) : PreferenceModel<Model>() {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return subscription.id == newItem.subscription.id
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = subscription.id == newItem.subscription.id
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) &&
-        subscription == newItem.subscription &&
-        renewalTimestamp == newItem.renewalTimestamp &&
-        redemptionState == newItem.redemptionState &&
-        FiatMoney.equals(price, newItem.price) &&
-        activeSubscription == newItem.activeSubscription
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) &&
+      subscription == newItem.subscription &&
+      renewalTimestamp == newItem.renewalTimestamp &&
+      redemptionState == newItem.redemptionState &&
+      FiatMoney.equals(price, newItem.price) &&
+      activeSubscription == newItem.activeSubscription
   }
 
   class ViewHolder(binding: MySupportPreferenceBinding) : BindingViewHolder<Model, MySupportPreferenceBinding>(binding) {

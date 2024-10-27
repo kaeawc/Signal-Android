@@ -32,8 +32,6 @@ class DonationReceiptListPageViewModel(type: InAppPaymentReceiptRecord.Type?, re
   }
 
   class Factory(private val type: InAppPaymentReceiptRecord.Type?, private val repository: DonationReceiptListPageRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(DonationReceiptListPageViewModel(type, repository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(DonationReceiptListPageViewModel(type, repository)) as T
   }
 }

@@ -49,9 +49,7 @@ class ChooseInitialMyStoryMembershipBottomSheetDialogFragment :
 
   private lateinit var allView: View
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.choose_initial_my_story_membership_fragment, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.choose_initial_my_story_membership_fragment, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     allRow = view.findViewById(R.id.choose_initial_my_story_all_signal_connnections_row)

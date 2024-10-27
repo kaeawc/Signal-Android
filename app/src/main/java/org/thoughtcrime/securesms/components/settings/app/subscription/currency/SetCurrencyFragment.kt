@@ -27,19 +27,17 @@ class SetCurrencyFragment : DSLSettingsBottomSheetFragment() {
     }
   }
 
-  private fun getConfiguration(state: SetCurrencyState): DSLConfiguration {
-    return configure {
-      state.currencies.forEach { currency ->
-        clickPref(
-          title = DSLSettingsText.from(currency.getDisplayName(Locale.getDefault())),
-          summary = DSLSettingsText.from(currency.currencyCode),
-          onClick = {
-            viewModel.setSelectedCurrency(currency.currencyCode)
-            InAppPaymentsRepository.scheduleSyncForAccountRecordChange()
-            dismissAllowingStateLoss()
-          }
-        )
-      }
+  private fun getConfiguration(state: SetCurrencyState): DSLConfiguration = configure {
+    state.currencies.forEach { currency ->
+      clickPref(
+        title = DSLSettingsText.from(currency.getDisplayName(Locale.getDefault())),
+        summary = DSLSettingsText.from(currency.currencyCode),
+        onClick = {
+          viewModel.setSelectedCurrency(currency.currencyCode)
+          InAppPaymentsRepository.scheduleSyncForAccountRecordChange()
+          dismissAllowingStateLoss()
+        }
+      )
     }
   }
 }

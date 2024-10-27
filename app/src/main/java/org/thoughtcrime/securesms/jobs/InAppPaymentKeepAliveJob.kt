@@ -51,18 +51,16 @@ class InAppPaymentKeepAliveJob private constructor(
     const val KEEP_ALIVE = "keep-alive"
     private const val DATA_TYPE = "type"
 
-    fun create(type: InAppPaymentSubscriberRecord.Type): Job {
-      return InAppPaymentKeepAliveJob(
-        parameters = Parameters.Builder()
-          .setQueue(type.jobQueue)
-          .addConstraint(NetworkConstraint.KEY)
-          .setMaxInstancesForQueue(1)
-          .setMaxAttempts(Parameters.UNLIMITED)
-          .setLifespan(TIMEOUT.inWholeSeconds)
-          .build(),
-        type = type
-      )
-    }
+    fun create(type: InAppPaymentSubscriberRecord.Type): Job = InAppPaymentKeepAliveJob(
+      parameters = Parameters.Builder()
+        .setQueue(type.jobQueue)
+        .addConstraint(NetworkConstraint.KEY)
+        .setMaxInstancesForQueue(1)
+        .setMaxAttempts(Parameters.UNLIMITED)
+        .setLifespan(TIMEOUT.inWholeSeconds)
+        .build(),
+      type = type
+    )
 
     @JvmStatic
     fun enqueueAndTrackTimeIfNecessary() {
@@ -318,11 +316,9 @@ class InAppPaymentKeepAliveJob private constructor(
   override fun onShouldRetry(e: Exception): Boolean = e is InAppPaymentRetryException
 
   class Factory : Job.Factory<InAppPaymentKeepAliveJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): InAppPaymentKeepAliveJob {
-      return InAppPaymentKeepAliveJob(
-        parameters,
-        InAppPaymentSubscriberRecord.Type.values().first { it.code == JsonJobData.deserialize(serializedData).getInt(DATA_TYPE) }
-      )
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): InAppPaymentKeepAliveJob = InAppPaymentKeepAliveJob(
+      parameters,
+      InAppPaymentSubscriberRecord.Type.values().first { it.code == JsonJobData.deserialize(serializedData).getInt(DATA_TYPE) }
+    )
   }
 }

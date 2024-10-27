@@ -124,23 +124,13 @@ class V2ConversationItemMediaViewHolder<Model : MappingModel<Model>>(
     }
   }
 
-  private fun hasGroupSenderName(): Boolean {
-    return binding.textBridge.senderName?.visible == true
-  }
+  private fun hasGroupSenderName(): Boolean = binding.textBridge.senderName?.visible == true
 
-  private fun hasThumbnail(): Boolean {
-    return binding.thumbnailStub.isVisible
-  }
+  private fun hasThumbnail(): Boolean = binding.thumbnailStub.isVisible
 
-  private fun hasQuote(): Boolean {
-    return binding.quoteStub.isVisible
-  }
+  private fun hasQuote(): Boolean = binding.quoteStub.isVisible
 
-  private fun hasMedia(): Boolean {
-    return hasThumbnail() || hasQuote()
-  }
+  private fun hasMedia(): Boolean = hasThumbnail() || hasQuote()
 
-  private fun requireMediaMessage(): MmsMessageRecord {
-    return conversationMessage.messageRecord as MmsMessageRecord
-  }
+  private fun requireMediaMessage(): MmsMessageRecord = conversationMessage.messageRecord as MmsMessageRecord
 }

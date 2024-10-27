@@ -58,8 +58,6 @@ class StickerKeyboardPageViewModel(private val repository: StickerKeyboardReposi
   class Factory : ViewModelProvider.Factory {
     private val repository = StickerKeyboardRepository(SignalDatabase.stickers)
 
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(StickerKeyboardPageViewModel(repository)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(StickerKeyboardPageViewModel(repository)))
   }
 }

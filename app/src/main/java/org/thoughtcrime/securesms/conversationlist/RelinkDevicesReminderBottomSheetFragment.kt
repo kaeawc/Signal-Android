@@ -29,51 +29,49 @@ class RelinkDevicesReminderBottomSheetFragment : ComposeBottomSheetDialogFragmen
 
   @Preview
   @Composable
-  override fun SheetContent() {
-    return Column(
-      horizontalAlignment = Alignment.CenterHorizontally,
-      modifier = Modifier
-        .padding(16.dp)
-        .wrapContentSize()
-    ) {
-      BottomSheets.Handle()
-      Column(horizontalAlignment = Alignment.Start) {
-        Text(
-          text = stringResource(id = R.string.RelinkDevicesReminderFragment__relink_your_devices),
-          style = MaterialTheme.typography.headlineMedium,
-          modifier = Modifier
-            .padding(8.dp)
-        )
-        Text(
-          text = stringResource(R.string.RelinkDevicesReminderFragment__the_devices_you_added_were_unlinked),
-          style = MaterialTheme.typography.bodySmall,
-          modifier = Modifier.padding(8.dp)
-        )
-      }
-      Buttons.LargeTonal(
-        onClick = ::launchLinkedDevicesSettingsPage,
+  override fun SheetContent() = Column(
+    horizontalAlignment = Alignment.CenterHorizontally,
+    modifier = Modifier
+      .padding(16.dp)
+      .wrapContentSize()
+  ) {
+    BottomSheets.Handle()
+    Column(horizontalAlignment = Alignment.Start) {
+      Text(
+        text = stringResource(id = R.string.RelinkDevicesReminderFragment__relink_your_devices),
+        style = MaterialTheme.typography.headlineMedium,
         modifier = Modifier
           .padding(8.dp)
-          .fillMaxWidth()
-          .align(Alignment.Start)
-      ) {
-        Text(
-          text = stringResource(R.string.RelinkDevicesReminderFragment__open_settings),
-          style = MaterialTheme.typography.labelLarge,
-          color = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-      }
-      TextButton(
-        onClick = ::dismiss,
-        modifier = Modifier
-          .padding(start = 8.dp, end = 8.dp)
-          .wrapContentSize()
-      ) {
-        Text(
-          text = stringResource(R.string.RelinkDevicesReminderFragment__later),
-          color = MaterialTheme.colorScheme.primary
-        )
-      }
+      )
+      Text(
+        text = stringResource(R.string.RelinkDevicesReminderFragment__the_devices_you_added_were_unlinked),
+        style = MaterialTheme.typography.bodySmall,
+        modifier = Modifier.padding(8.dp)
+      )
+    }
+    Buttons.LargeTonal(
+      onClick = ::launchLinkedDevicesSettingsPage,
+      modifier = Modifier
+        .padding(8.dp)
+        .fillMaxWidth()
+        .align(Alignment.Start)
+    ) {
+      Text(
+        text = stringResource(R.string.RelinkDevicesReminderFragment__open_settings),
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.onPrimaryContainer
+      )
+    }
+    TextButton(
+      onClick = ::dismiss,
+      modifier = Modifier
+        .padding(start = 8.dp, end = 8.dp)
+        .wrapContentSize()
+    ) {
+      Text(
+        text = stringResource(R.string.RelinkDevicesReminderFragment__later),
+        color = MaterialTheme.colorScheme.primary
+      )
     }
   }
 

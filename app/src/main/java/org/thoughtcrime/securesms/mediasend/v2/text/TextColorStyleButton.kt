@@ -26,9 +26,7 @@ class TextColorStyleButton @JvmOverloads constructor(
     }
   }
 
-  override fun setOnClickListener(l: OnClickListener?) {
-    throw UnsupportedOperationException()
-  }
+  override fun setOnClickListener(l: OnClickListener?): Unit = throw UnsupportedOperationException()
 
   fun setTextColorStyle(textColorStyle: TextColorStyle) {
     if (textColorStyle != this.textColorStyle) {

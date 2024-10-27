@@ -22,9 +22,7 @@ import java.util.Optional
 object RecipientCreator {
   @JvmOverloads
   @JvmStatic
-  fun forId(recipientId: RecipientId, resolved: Boolean = false): Recipient {
-    return Recipient(recipientId, isResolving = !resolved)
-  }
+  fun forId(recipientId: RecipientId, resolved: Boolean = false): Recipient = Recipient(recipientId, isResolving = !resolved)
 
   @JvmStatic
   fun forIndividual(context: Context, record: RecipientRecord): Recipient {
@@ -56,52 +54,46 @@ object RecipientCreator {
 
   @JvmOverloads
   @JvmStatic
-  fun forGroup(groupRecord: GroupRecord, recipientRecord: RecipientRecord, resolved: Boolean = true): Recipient {
-    return create(
-      resolved = resolved,
-      groupName = groupRecord.title,
-      systemContactName = null,
-      isSelf = false,
-      registeredState = recipientRecord.registered,
-      record = recipientRecord,
-      participantIds = groupRecord.members,
-      isReleaseChannel = false,
-      avatarColor = null,
-      groupRecord = Optional.of(groupRecord)
-    )
-  }
+  fun forGroup(groupRecord: GroupRecord, recipientRecord: RecipientRecord, resolved: Boolean = true): Recipient = create(
+    resolved = resolved,
+    groupName = groupRecord.title,
+    systemContactName = null,
+    isSelf = false,
+    registeredState = recipientRecord.registered,
+    record = recipientRecord,
+    participantIds = groupRecord.members,
+    isReleaseChannel = false,
+    avatarColor = null,
+    groupRecord = Optional.of(groupRecord)
+  )
 
   @JvmStatic
-  fun forDistributionList(title: String?, members: List<RecipientId>?, record: RecipientRecord): Recipient {
-    return create(
-      resolved = true,
-      groupName = title,
-      systemContactName = null,
-      isSelf = false,
-      registeredState = record.registered,
-      record = record,
-      participantIds = members,
-      isReleaseChannel = false,
-      avatarColor = null,
-      groupRecord = Optional.empty()
-    )
-  }
+  fun forDistributionList(title: String?, members: List<RecipientId>?, record: RecipientRecord): Recipient = create(
+    resolved = true,
+    groupName = title,
+    systemContactName = null,
+    isSelf = false,
+    registeredState = record.registered,
+    record = record,
+    participantIds = members,
+    isReleaseChannel = false,
+    avatarColor = null,
+    groupRecord = Optional.empty()
+  )
 
   @JvmStatic
-  fun forCallLink(name: String?, record: RecipientRecord, avatarColor: AvatarColor): Recipient {
-    return create(
-      resolved = true,
-      groupName = name,
-      systemContactName = null,
-      isSelf = false,
-      registeredState = record.registered,
-      record = record,
-      participantIds = emptyList(),
-      isReleaseChannel = false,
-      avatarColor = avatarColor,
-      groupRecord = Optional.empty()
-    )
-  }
+  fun forCallLink(name: String?, record: RecipientRecord, avatarColor: AvatarColor): Recipient = create(
+    resolved = true,
+    groupName = name,
+    systemContactName = null,
+    isSelf = false,
+    registeredState = record.registered,
+    record = record,
+    participantIds = emptyList(),
+    isReleaseChannel = false,
+    avatarColor = avatarColor,
+    groupRecord = Optional.empty()
+  )
 
   @JvmStatic
   @WorkerThread
@@ -120,18 +112,14 @@ object RecipientCreator {
   }
 
   @JvmStatic
-  fun forUnknown(): Recipient {
-    return Recipient.UNKNOWN
-  }
+  fun forUnknown(): Recipient = Recipient.UNKNOWN
 
   @JvmStatic
-  fun forUnknownGroup(id: RecipientId, groupId: GroupId?): Recipient {
-    return Recipient(
-      id = id,
-      isResolving = true,
-      groupIdValue = groupId
-    )
-  }
+  fun forUnknownGroup(id: RecipientId, groupId: GroupId?): Recipient = Recipient(
+    id = id,
+    isResolving = true,
+    groupIdValue = groupId
+  )
 
   @VisibleForTesting
   fun create(
@@ -145,66 +133,64 @@ object RecipientCreator {
     isReleaseChannel: Boolean,
     avatarColor: AvatarColor?,
     groupRecord: Optional<GroupRecord>
-  ): Recipient {
-    return Recipient(
-      id = record.id,
-      isResolving = !resolved,
-      groupAvatarId = groupRecord.map { if (it.hasAvatar()) it.avatarId else null },
-      systemContactPhoto = Util.uri(record.systemContactPhotoUri),
-      customLabel = record.systemPhoneLabel,
-      contactUri = Util.uri(record.systemContactUri),
-      aciValue = record.aci,
-      pniValue = record.pni,
-      usernameValue = record.username,
-      e164Value = record.e164,
-      emailValue = record.email,
-      groupIdValue = record.groupId,
-      distributionListIdValue = record.distributionListId,
-      messageRingtoneUri = record.messageRingtone,
-      callRingtoneUri = record.callRingtone,
-      muteUntil = record.muteUntil,
-      messageVibrate = record.messageVibrateState,
-      callVibrate = record.callVibrateState,
-      isBlocked = record.isBlocked,
-      expiresInSeconds = record.expireMessages,
-      expireTimerVersion = record.expireTimerVersion,
-      participantIdsValue = participantIds ?: LinkedList(),
-      isActiveGroup = groupRecord.map { it.isActive }.orElse(false),
-      profileName = record.signalProfileName,
-      registeredValue = registeredState,
-      profileKey = record.profileKey,
-      expiringProfileKeyCredential = record.expiringProfileKeyCredential,
-      profileAvatar = record.signalProfileAvatar,
-      profileAvatarFileDetails = record.profileAvatarFileDetails,
-      isProfileSharing = record.profileSharing,
-      hiddenState = record.hiddenState,
-      lastProfileFetchTime = record.lastProfileFetch,
-      isSelf = isSelf,
-      notificationChannelValue = record.notificationChannel,
-      sealedSenderAccessModeValue = record.sealedSenderAccessMode,
-      capabilities = record.capabilities,
-      storageId = record.storageId,
-      mentionSetting = record.mentionSetting,
-      wallpaperValue = record.wallpaper,
-      chatColorsValue = record.chatColors,
-      avatarColor = avatarColor ?: record.avatarColor,
-      about = record.about,
-      aboutEmoji = record.aboutEmoji,
-      systemProfileName = record.systemProfileName,
-      groupName = groupName,
-      systemContactName = systemContactName,
-      extras = Optional.ofNullable(record.extras),
-      hasGroupsInCommon = record.hasGroupsInCommon,
-      badges = record.badges,
-      isReleaseNotes = isReleaseChannel,
-      needsPniSignature = record.needsPniSignature,
-      callLinkRoomId = record.callLinkRoomId,
-      groupRecord = groupRecord,
-      phoneNumberSharing = record.phoneNumberSharing,
-      nickname = record.nickname,
-      note = record.note
-    )
-  }
+  ): Recipient = Recipient(
+    id = record.id,
+    isResolving = !resolved,
+    groupAvatarId = groupRecord.map { if (it.hasAvatar()) it.avatarId else null },
+    systemContactPhoto = Util.uri(record.systemContactPhotoUri),
+    customLabel = record.systemPhoneLabel,
+    contactUri = Util.uri(record.systemContactUri),
+    aciValue = record.aci,
+    pniValue = record.pni,
+    usernameValue = record.username,
+    e164Value = record.e164,
+    emailValue = record.email,
+    groupIdValue = record.groupId,
+    distributionListIdValue = record.distributionListId,
+    messageRingtoneUri = record.messageRingtone,
+    callRingtoneUri = record.callRingtone,
+    muteUntil = record.muteUntil,
+    messageVibrate = record.messageVibrateState,
+    callVibrate = record.callVibrateState,
+    isBlocked = record.isBlocked,
+    expiresInSeconds = record.expireMessages,
+    expireTimerVersion = record.expireTimerVersion,
+    participantIdsValue = participantIds ?: LinkedList(),
+    isActiveGroup = groupRecord.map { it.isActive }.orElse(false),
+    profileName = record.signalProfileName,
+    registeredValue = registeredState,
+    profileKey = record.profileKey,
+    expiringProfileKeyCredential = record.expiringProfileKeyCredential,
+    profileAvatar = record.signalProfileAvatar,
+    profileAvatarFileDetails = record.profileAvatarFileDetails,
+    isProfileSharing = record.profileSharing,
+    hiddenState = record.hiddenState,
+    lastProfileFetchTime = record.lastProfileFetch,
+    isSelf = isSelf,
+    notificationChannelValue = record.notificationChannel,
+    sealedSenderAccessModeValue = record.sealedSenderAccessMode,
+    capabilities = record.capabilities,
+    storageId = record.storageId,
+    mentionSetting = record.mentionSetting,
+    wallpaperValue = record.wallpaper,
+    chatColorsValue = record.chatColors,
+    avatarColor = avatarColor ?: record.avatarColor,
+    about = record.about,
+    aboutEmoji = record.aboutEmoji,
+    systemProfileName = record.systemProfileName,
+    groupName = groupName,
+    systemContactName = systemContactName,
+    extras = Optional.ofNullable(record.extras),
+    hasGroupsInCommon = record.hasGroupsInCommon,
+    badges = record.badges,
+    isReleaseNotes = isReleaseChannel,
+    needsPniSignature = record.needsPniSignature,
+    callLinkRoomId = record.callLinkRoomId,
+    groupRecord = groupRecord,
+    phoneNumberSharing = record.phoneNumberSharing,
+    nickname = record.nickname,
+    note = record.note
+  )
 
   @WorkerThread
   private fun getGroupRecipientDetails(record: RecipientRecord): Recipient {

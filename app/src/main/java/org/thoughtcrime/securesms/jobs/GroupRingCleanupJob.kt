@@ -51,8 +51,6 @@ class GroupRingCleanupJob private constructor(parameters: Parameters) : BaseJob(
   override fun onShouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<GroupRingCleanupJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): GroupRingCleanupJob {
-      return GroupRingCleanupJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): GroupRingCleanupJob = GroupRingCleanupJob(parameters)
   }
 }

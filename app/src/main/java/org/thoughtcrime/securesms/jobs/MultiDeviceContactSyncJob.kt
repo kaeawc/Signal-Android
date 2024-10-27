@@ -36,15 +36,11 @@ class MultiDeviceContactSyncJob(parameters: Parameters, private val attachmentPo
     AttachmentPointerUtil.createAttachmentPointer(contactsAttachment).encode()
   )
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putBlobAsString(KEY_ATTACHMENT_POINTER, attachmentPointer)
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putBlobAsString(KEY_ATTACHMENT_POINTER, attachmentPointer)
+    .serialize()
 
-  override fun getFactoryKey(): String {
-    return KEY
-  }
+  override fun getFactoryKey(): String = KEY
 
   override fun onRun() {
     if (!Recipient.self().isRegistered) {

@@ -33,8 +33,6 @@ internal class PnpLaunchMigrationJob(parameters: Parameters = Parameters.Builder
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<PnpLaunchMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): PnpLaunchMigrationJob {
-      return PnpLaunchMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): PnpLaunchMigrationJob = PnpLaunchMigrationJob(parameters)
   }
 }

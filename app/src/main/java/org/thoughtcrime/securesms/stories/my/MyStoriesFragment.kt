@@ -25,10 +25,11 @@ import org.thoughtcrime.securesms.stories.viewer.StoryViewerActivity
 import org.thoughtcrime.securesms.util.adapter.mapping.MappingAdapter
 import org.thoughtcrime.securesms.util.visible
 
-class MyStoriesFragment : DSLSettingsFragment(
-  layoutId = R.layout.stories_my_stories_fragment,
-  titleId = R.string.StoriesLandingFragment__my_stories
-) {
+class MyStoriesFragment :
+  DSLSettingsFragment(
+    layoutId = R.layout.stories_my_stories_fragment,
+    titleId = R.string.StoriesLandingFragment__my_stories
+  ) {
 
   private val lifecycleDisposable = LifecycleDisposable()
 
@@ -58,52 +59,50 @@ class MyStoriesFragment : DSLSettingsFragment(
     }
   }
 
-  private fun getConfiguration(state: MyStoriesState): DSLConfiguration {
-    return configure {
-      val nonEmptySets = state.distributionSets.filter { it.stories.isNotEmpty() }
-      nonEmptySets
-        .forEachIndexed { index, distributionSet ->
-          sectionHeaderPref(
-            if (distributionSet.label == null) {
-              DSLSettingsText.from(getString(R.string.MyStories__ss_story, Recipient.self().getShortDisplayName(requireContext())))
-            } else {
-              DSLSettingsText.from(distributionSet.label)
-            }
-          )
-          distributionSet.stories.forEach { distributionStory ->
-            customPref(
-              MyStoriesItem.Model(
-                distributionStory = distributionStory,
-                onClick = { it, preview ->
-                  openStoryViewer(it, preview, false)
-                },
-                onSaveClick = {
-                  StoryContextMenu.save(requireContext(), it.distributionStory.messageRecord)
-                },
-                onDeleteClick = this@MyStoriesFragment::handleDeleteClick,
-                onForwardClick = { item ->
-                  MultiselectForwardFragmentArgs.create(
-                    requireContext(),
-                    item.distributionStory.message.multiselectCollection.toSet()
-                  ) {
-                    MultiselectForwardFragment.showBottomSheet(childFragmentManager, it)
-                  }
-                },
-                onShareClick = {
-                  StoryContextMenu.share(this@MyStoriesFragment, it.distributionStory.messageRecord as MmsMessageRecord)
-                },
-                onInfoClick = { model, preview ->
-                  openStoryViewer(model, preview, true)
+  private fun getConfiguration(state: MyStoriesState): DSLConfiguration = configure {
+    val nonEmptySets = state.distributionSets.filter { it.stories.isNotEmpty() }
+    nonEmptySets
+      .forEachIndexed { index, distributionSet ->
+        sectionHeaderPref(
+          if (distributionSet.label == null) {
+            DSLSettingsText.from(getString(R.string.MyStories__ss_story, Recipient.self().getShortDisplayName(requireContext())))
+          } else {
+            DSLSettingsText.from(distributionSet.label)
+          }
+        )
+        distributionSet.stories.forEach { distributionStory ->
+          customPref(
+            MyStoriesItem.Model(
+              distributionStory = distributionStory,
+              onClick = { it, preview ->
+                openStoryViewer(it, preview, false)
+              },
+              onSaveClick = {
+                StoryContextMenu.save(requireContext(), it.distributionStory.messageRecord)
+              },
+              onDeleteClick = this@MyStoriesFragment::handleDeleteClick,
+              onForwardClick = { item ->
+                MultiselectForwardFragmentArgs.create(
+                  requireContext(),
+                  item.distributionStory.message.multiselectCollection.toSet()
+                ) {
+                  MultiselectForwardFragment.showBottomSheet(childFragmentManager, it)
                 }
-              )
+              },
+              onShareClick = {
+                StoryContextMenu.share(this@MyStoriesFragment, it.distributionStory.messageRecord as MmsMessageRecord)
+              },
+              onInfoClick = { model, preview ->
+                openStoryViewer(model, preview, true)
+              }
             )
-          }
-
-          if (index != nonEmptySets.lastIndex) {
-            dividerPref()
-          }
+          )
         }
-    }
+
+        if (index != nonEmptySets.lastIndex) {
+          dividerPref()
+        }
+      }
   }
 
   private fun openStoryViewer(it: MyStoriesItem.Model, preview: View, isFromInfoContextMenuAction: Boolean) {

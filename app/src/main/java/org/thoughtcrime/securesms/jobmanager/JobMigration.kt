@@ -21,17 +21,11 @@ abstract class JobMigration protected constructor(val endVersion: Int) {
     val lifespan: Long,
     val data: ByteArray?
   ) {
-    fun withFactoryKey(newFactoryKey: String): JobData {
-      return copy(factoryKey = newFactoryKey)
-    }
+    fun withFactoryKey(newFactoryKey: String): JobData = copy(factoryKey = newFactoryKey)
 
-    fun withQueueKey(newQueueKey: String?): JobData {
-      return copy(queueKey = newQueueKey)
-    }
+    fun withQueueKey(newQueueKey: String?): JobData = copy(queueKey = newQueueKey)
 
-    fun withData(newData: ByteArray?): JobData {
-      return copy(data = newData)
-    }
+    fun withData(newData: ByteArray?): JobData = copy(data = newData)
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true

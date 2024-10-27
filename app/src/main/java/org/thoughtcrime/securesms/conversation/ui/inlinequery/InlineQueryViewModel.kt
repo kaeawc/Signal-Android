@@ -41,12 +41,10 @@ class InlineQueryViewModel(
     querySubject.onNext(inlineQuery)
   }
 
-  private fun queryEmoji(query: InlineQuery.Emoji): Observable<List<AnyMappingModel>> {
-    return emojiSearchRepository
-      .submitQuery(query.query)
-      .map { r -> toMappingModels(r) }
-      .toObservable()
-  }
+  private fun queryEmoji(query: InlineQuery.Emoji): Observable<List<AnyMappingModel>> = emojiSearchRepository
+    .submitQuery(query.query)
+    .map { r -> toMappingModels(r) }
+    .toObservable()
 
   fun onSelection(model: AnyMappingModel) {
     when (model) {

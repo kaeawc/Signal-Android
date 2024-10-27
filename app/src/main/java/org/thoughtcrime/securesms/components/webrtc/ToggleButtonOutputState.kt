@@ -70,18 +70,14 @@ class ToggleButtonOutputState {
     }
 
   @Deprecated("Used only for onSaveInstanceState.")
-  fun getBackingIndexForBackup(): Int {
-    return selectedDevice
-  }
+  fun getBackingIndexForBackup(): Int = selectedDevice
 
   @Deprecated("Used only for onRestoreInstanceState.")
   fun setBackingIndexForRestore(index: Int) {
     selectedDevice = 0
   }
 
-  fun getCurrentOutput(): WebRtcAudioOutput {
-    return getOutputs()[selectedDevice]
-  }
+  fun getCurrentOutput(): WebRtcAudioOutput = getOutputs()[selectedDevice]
 
   fun setCurrentOutput(outputType: WebRtcAudioOutput): Boolean {
     val newIndex = getOutputs().indexOf(outputType)
@@ -93,9 +89,7 @@ class ToggleButtonOutputState {
     }
   }
 
-  fun getOutputs(): List<WebRtcAudioOutput> {
-    return availableOutputs.toList()
-  }
+  fun getOutputs(): List<WebRtcAudioOutput> = availableOutputs.toList()
 
   fun peekNext(): WebRtcAudioOutput {
     val peekIndex = (selectedDevice + 1) % availableOutputs.size

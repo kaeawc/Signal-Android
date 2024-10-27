@@ -79,16 +79,14 @@ class SecondaryProvisioningCipher private constructor(private val secondaryIdent
     )
   }
 
-  private fun getMac(key: ByteArray, message: ByteArray): ByteArray? {
-    return try {
-      val mac = Mac.getInstance("HmacSHA256")
-      mac.init(SecretKeySpec(key, "HmacSHA256"))
-      mac.doFinal(message)
-    } catch (e: NoSuchAlgorithmException) {
-      throw AssertionError(e)
-    } catch (e: InvalidKeyException) {
-      throw AssertionError(e)
-    }
+  private fun getMac(key: ByteArray, message: ByteArray): ByteArray? = try {
+    val mac = Mac.getInstance("HmacSHA256")
+    mac.init(SecretKeySpec(key, "HmacSHA256"))
+    mac.doFinal(message)
+  } catch (e: NoSuchAlgorithmException) {
+    throw AssertionError(e)
+  } catch (e: InvalidKeyException) {
+    throw AssertionError(e)
   }
 
   private fun getPlaintext(key: ByteArray, iv: ByteArray, message: ByteArray): ByteArray {
@@ -102,9 +100,7 @@ class SecondaryProvisioningCipher private constructor(private val secondaryIdent
     private const val IV_LENGTH = 16
     private const val MAC_LENGTH = 32
 
-    fun generate(): SecondaryProvisioningCipher {
-      return SecondaryProvisioningCipher(IdentityKeyUtil.generateIdentityKeyPair())
-    }
+    fun generate(): SecondaryProvisioningCipher = SecondaryProvisioningCipher(IdentityKeyUtil.generateIdentityKeyPair())
   }
 
   sealed class ProvisionDecryptResult {

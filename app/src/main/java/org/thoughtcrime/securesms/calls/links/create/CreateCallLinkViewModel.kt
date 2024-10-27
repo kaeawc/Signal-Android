@@ -71,41 +71,33 @@ class CreateCallLinkViewModel(
     internalShowAlreadyInACall.update { showAlreadyInACall }
   }
 
-  fun commitCallLink(): Single<EnsureCallLinkCreatedResult> {
-    return repository.ensureCallLinkCreated(credentials)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun commitCallLink(): Single<EnsureCallLinkCreatedResult> = repository.ensureCallLinkCreated(credentials)
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun setApproveAllMembers(approveAllMembers: Boolean): Single<UpdateCallLinkResult> {
-    return commitCallLink()
-      .flatMap {
-        when (it) {
-          is EnsureCallLinkCreatedResult.Success -> mutationRepository.setCallRestrictions(
-            credentials,
-            if (approveAllMembers) Restrictions.ADMIN_APPROVAL else Restrictions.NONE
-          )
-          is EnsureCallLinkCreatedResult.Failure -> Single.just(UpdateCallLinkResult.Failure(it.failure.status))
-        }
+  fun setApproveAllMembers(approveAllMembers: Boolean): Single<UpdateCallLinkResult> = commitCallLink()
+    .flatMap {
+      when (it) {
+        is EnsureCallLinkCreatedResult.Success -> mutationRepository.setCallRestrictions(
+          credentials,
+          if (approveAllMembers) Restrictions.ADMIN_APPROVAL else Restrictions.NONE
+        )
+        is EnsureCallLinkCreatedResult.Failure -> Single.just(UpdateCallLinkResult.Failure(it.failure.status))
       }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun toggleApproveAllMembers(): Single<UpdateCallLinkResult> {
-    return setApproveAllMembers(_callLink.value.state.restrictions != Restrictions.ADMIN_APPROVAL)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun toggleApproveAllMembers(): Single<UpdateCallLinkResult> = setApproveAllMembers(_callLink.value.state.restrictions != Restrictions.ADMIN_APPROVAL)
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun setCallName(callName: String): Single<UpdateCallLinkResult> {
-    return commitCallLink()
-      .flatMap {
-        when (it) {
-          is EnsureCallLinkCreatedResult.Success -> mutationRepository.setCallName(
-            credentials,
-            callName
-          )
-          is EnsureCallLinkCreatedResult.Failure -> Single.just(UpdateCallLinkResult.Failure(it.failure.status))
-        }
+  fun setCallName(callName: String): Single<UpdateCallLinkResult> = commitCallLink()
+    .flatMap {
+      when (it) {
+        is EnsureCallLinkCreatedResult.Success -> mutationRepository.setCallName(
+          credentials,
+          callName
+        )
+        is EnsureCallLinkCreatedResult.Failure -> Single.just(UpdateCallLinkResult.Failure(it.failure.status))
       }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 }

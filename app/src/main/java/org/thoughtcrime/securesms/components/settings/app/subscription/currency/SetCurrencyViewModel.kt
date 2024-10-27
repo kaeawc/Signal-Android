@@ -91,8 +91,6 @@ class SetCurrencyViewModel(
   }
 
   class Factory(private val inAppPaymentType: InAppPaymentType, private val supportedCurrencyCodes: List<String>) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(SetCurrencyViewModel(inAppPaymentType, supportedCurrencyCodes))!!
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(SetCurrencyViewModel(inAppPaymentType, supportedCurrencyCodes))!!
   }
 }

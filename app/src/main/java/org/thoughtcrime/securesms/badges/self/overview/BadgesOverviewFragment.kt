@@ -21,10 +21,11 @@ import org.thoughtcrime.securesms.util.navigation.safeNavigate
 /**
  * Fragment to allow user to manage options related to the badges they've unlocked.
  */
-class BadgesOverviewFragment : DSLSettingsFragment(
-  titleId = R.string.ManageProfileFragment_badges,
-  layoutManagerProducer = Badges::createLayoutManagerForGridWithBadges
-) {
+class BadgesOverviewFragment :
+  DSLSettingsFragment(
+    titleId = R.string.ManageProfileFragment_badges,
+    layoutManagerProducer = Badges::createLayoutManagerForGridWithBadges
+  ) {
 
   private val lifecycleDisposable = LifecycleDisposable()
   private val viewModel: BadgesOverviewViewModel by viewModels(
@@ -57,34 +58,32 @@ class BadgesOverviewFragment : DSLSettingsFragment(
     )
   }
 
-  private fun getConfiguration(state: BadgesOverviewState): DSLConfiguration {
-    return configure {
-      sectionHeaderPref(R.string.BadgesOverviewFragment__my_badges)
+  private fun getConfiguration(state: BadgesOverviewState): DSLConfiguration = configure {
+    sectionHeaderPref(R.string.BadgesOverviewFragment__my_badges)
 
-      displayBadges(
-        context = requireContext(),
-        badges = state.allUnlockedBadges,
-        fadedBadgeId = state.fadedBadgeId
-      )
+    displayBadges(
+      context = requireContext(),
+      badges = state.allUnlockedBadges,
+      fadedBadgeId = state.fadedBadgeId
+    )
 
-      asyncSwitchPref(
-        title = DSLSettingsText.from(R.string.BadgesOverviewFragment__display_badges_on_profile),
-        isChecked = state.displayBadgesOnProfile,
-        isEnabled = state.stage == BadgesOverviewState.Stage.READY && state.hasUnexpiredBadges && state.hasInternet,
-        isProcessing = state.stage == BadgesOverviewState.Stage.UPDATING_BADGE_DISPLAY_STATE,
-        onClick = {
-          viewModel.setDisplayBadgesOnProfile(!state.displayBadgesOnProfile)
-        }
-      )
+    asyncSwitchPref(
+      title = DSLSettingsText.from(R.string.BadgesOverviewFragment__display_badges_on_profile),
+      isChecked = state.displayBadgesOnProfile,
+      isEnabled = state.stage == BadgesOverviewState.Stage.READY && state.hasUnexpiredBadges && state.hasInternet,
+      isProcessing = state.stage == BadgesOverviewState.Stage.UPDATING_BADGE_DISPLAY_STATE,
+      onClick = {
+        viewModel.setDisplayBadgesOnProfile(!state.displayBadgesOnProfile)
+      }
+    )
 
-      clickPref(
-        title = DSLSettingsText.from(R.string.BadgesOverviewFragment__featured_badge),
-        summary = state.featuredBadge?.name?.let { DSLSettingsText.from(it) },
-        isEnabled = state.stage == BadgesOverviewState.Stage.READY && state.hasUnexpiredBadges && state.hasInternet,
-        onClick = {
-          findNavController().safeNavigate(BadgesOverviewFragmentDirections.actionBadgeManageFragmentToFeaturedBadgeFragment())
-        }
-      )
-    }
+    clickPref(
+      title = DSLSettingsText.from(R.string.BadgesOverviewFragment__featured_badge),
+      summary = state.featuredBadge?.name?.let { DSLSettingsText.from(it) },
+      isEnabled = state.stage == BadgesOverviewState.Stage.READY && state.hasUnexpiredBadges && state.hasInternet,
+      onClick = {
+        findNavController().safeNavigate(BadgesOverviewFragmentDirections.actionBadgeManageFragmentToFeaturedBadgeFragment())
+      }
+    )
   }
 }

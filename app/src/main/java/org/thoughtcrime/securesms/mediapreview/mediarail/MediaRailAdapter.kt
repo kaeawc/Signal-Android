@@ -49,18 +49,12 @@ class MediaRailAdapter(
     }
   }
 
-  fun findSelectedItemPosition(): Int {
-    return indexOfFirst(MediaRailItem::class.java) { it.isSelected }.coerceAtLeast(0)
-  }
+  fun findSelectedItemPosition(): Int = indexOfFirst(MediaRailItem::class.java) { it.isSelected }.coerceAtLeast(0)
 
   data class MediaRailItem(val media: Media, val isSelected: Boolean) : MappingModel<MediaRailItem> {
-    override fun areItemsTheSame(newItem: MediaRailItem): Boolean {
-      return media.uri == newItem.media.uri
-    }
+    override fun areItemsTheSame(newItem: MediaRailItem): Boolean = media.uri == newItem.media.uri
 
-    override fun areContentsTheSame(newItem: MediaRailItem): Boolean {
-      return this == newItem
-    }
+    override fun areContentsTheSame(newItem: MediaRailItem): Boolean = this == newItem
   }
 
   private inner class MediaRailViewHolder(itemView: View) : MappingViewHolder<MediaRailItem>(itemView) {
@@ -96,7 +90,7 @@ class MediaRailAdapter(
       activeJobs.decrementAndGet()
     }
 
-    final override fun onLoadFailed(e: GlideException?, model: Any, target: Target<Drawable?>, isFirstResource: Boolean): Boolean {
+    final override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>, isFirstResource: Boolean): Boolean {
       val count = activeJobs.decrementAndGet()
       if (count == 0) {
         onAllRequestsFinished()
@@ -104,7 +98,7 @@ class MediaRailAdapter(
       return false
     }
 
-    final override fun onResourceReady(resource: Drawable?, model: Any, target: Target<Drawable?>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
+    final override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable?>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
       val count = activeJobs.decrementAndGet()
       if (count == 0) {
         onAllRequestsFinished()

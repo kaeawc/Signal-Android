@@ -60,9 +60,7 @@ class ContactSearchViewModel(
     disposables.clear()
   }
 
-  fun getSelectedMembersSize(): Int {
-    return selectionSize
-  }
+  fun getSelectedMembersSize(): Int = selectionSize
   fun setConfiguration(contactSearchConfiguration: ContactSearchConfiguration) {
     val pagedDataSource = ContactSearchPagedDataSource(
       contactSearchConfiguration,
@@ -116,9 +114,7 @@ class ContactSearchViewModel(
     selectionStore.update { it - contactSearchKeys }
   }
 
-  fun getSelectedContacts(): Set<ContactSearchKey> {
-    return selectionStore.state
-  }
+  fun getSelectedContacts(): Set<ContactSearchKey> = selectionStore.state
 
   fun clearSelection() {
     selectionStore.update { emptySet() }
@@ -170,17 +166,15 @@ class ContactSearchViewModel(
     private val searchRepository: SearchRepository,
     private val contactSearchPagedDataSourceRepository: ContactSearchPagedDataSourceRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(
-        ContactSearchViewModel(
-          selectionLimits = selectionLimits,
-          contactSearchRepository = repository,
-          performSafetyNumberChecks = performSafetyNumberChecks,
-          arbitraryRepository = arbitraryRepository,
-          searchRepository = searchRepository,
-          contactSearchPagedDataSourceRepository = contactSearchPagedDataSourceRepository
-        )
-      ) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(
+      ContactSearchViewModel(
+        selectionLimits = selectionLimits,
+        contactSearchRepository = repository,
+        performSafetyNumberChecks = performSafetyNumberChecks,
+        arbitraryRepository = arbitraryRepository,
+        searchRepository = searchRepository,
+        contactSearchPagedDataSourceRepository = contactSearchPagedDataSourceRepository
+      )
+    ) as T
   }
 }

@@ -34,8 +34,6 @@ internal class BackfillDigestsForDuplicatesMigrationJob(
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<BackfillDigestsForDuplicatesMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): BackfillDigestsForDuplicatesMigrationJob {
-      return BackfillDigestsForDuplicatesMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): BackfillDigestsForDuplicatesMigrationJob = BackfillDigestsForDuplicatesMigrationJob(parameters)
   }
 }

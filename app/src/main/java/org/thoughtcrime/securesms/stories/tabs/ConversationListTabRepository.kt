@@ -7,27 +7,19 @@ import org.thoughtcrime.securesms.recipients.Recipient
 
 class ConversationListTabRepository {
 
-  fun getNumberOfUnreadMessages(): Flowable<Long> {
-    return RxDatabaseObserver.conversationList.map { SignalDatabase.threads.getUnreadMessageCount() }
+  fun getNumberOfUnreadMessages(): Flowable<Long> = RxDatabaseObserver.conversationList.map { SignalDatabase.threads.getUnreadMessageCount() }
+
+  fun getNumberOfUnseenStories(): Flowable<Long> = RxDatabaseObserver.conversationList.map {
+    SignalDatabase
+      .messages
+      .getUnreadStoryThreadRecipientIds()
+      .map { Recipient.resolved(it) }
+      .filterNot { it.shouldHideStory }
+      .size
+      .toLong()
   }
 
-  fun getNumberOfUnseenStories(): Flowable<Long> {
-    return RxDatabaseObserver.conversationList.map {
-      SignalDatabase
-        .messages
-        .getUnreadStoryThreadRecipientIds()
-        .map { Recipient.resolved(it) }
-        .filterNot { it.shouldHideStory }
-        .size
-        .toLong()
-    }
-  }
+  fun getHasFailedOutgoingStories(): Flowable<Boolean> = RxDatabaseObserver.conversationList.map { SignalDatabase.messages.hasFailedOutgoingStory() }
 
-  fun getHasFailedOutgoingStories(): Flowable<Boolean> {
-    return RxDatabaseObserver.conversationList.map { SignalDatabase.messages.hasFailedOutgoingStory() }
-  }
-
-  fun getNumberOfUnseenCalls(): Flowable<Long> {
-    return RxDatabaseObserver.conversationList.map { SignalDatabase.calls.getUnreadMissedCallCount() }
-  }
+  fun getNumberOfUnseenCalls(): Flowable<Long> = RxDatabaseObserver.conversationList.map { SignalDatabase.calls.getUnreadMissedCallCount() }
 }

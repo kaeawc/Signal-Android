@@ -74,45 +74,41 @@ class SafetyNumberRepository(
     stopwatch.stop(TAG)
   }
 
-  private fun List<ContactSearchKey>.flattenToRecipientIds(): Set<RecipientId> {
-    return this
-      .map {
-        when {
-          it is ContactSearchKey.RecipientSearchKey && !it.isStory -> {
-            val recipient = Recipient.resolved(it.recipientId)
-            if (recipient.isGroup) {
-              recipient.participantIds
-            } else {
-              listOf(it.recipientId)
-            }
-          }
-          it is ContactSearchKey.RecipientSearchKey -> Recipient.resolved(it.recipientId).participantIds
-          else -> throw AssertionError("Invalid contact selection $it")
-        }
-      }
-      .flatten()
-      .toMutableSet()
-      .apply { remove(Recipient.self().id) }
-  }
-
-  private fun List<Recipient>.createBatchRequestSingle(): Single<List<IdentityCheckResponse.ServiceIdentityPair>> {
-    return profileService
-      .performIdentityCheck(
-        mapNotNull { r ->
-          val identityRecord = aciIdentityStore.getIdentityRecord(r.id)
-          if (identityRecord.isPresent) {
-            r.requireServiceId() to identityRecord.get().identityKey
+  private fun List<ContactSearchKey>.flattenToRecipientIds(): Set<RecipientId> = this
+    .map {
+      when {
+        it is ContactSearchKey.RecipientSearchKey && !it.isStory -> {
+          val recipient = Recipient.resolved(it.recipientId)
+          if (recipient.isGroup) {
+            recipient.participantIds
           } else {
-            null
+            listOf(it.recipientId)
           }
-        }.associate { it }
-      )
-      .map { ServiceResponseProcessor.DefaultProcessor(it).resultOrThrow.serviceIdKeyPairs ?: emptyList() }
-      .onErrorReturn { t ->
-        Log.w(TAG, "Unable to fetch identities", t)
-        emptyList()
+        }
+        it is ContactSearchKey.RecipientSearchKey -> Recipient.resolved(it.recipientId).participantIds
+        else -> throw AssertionError("Invalid contact selection $it")
       }
-  }
+    }
+    .flatten()
+    .toMutableSet()
+    .apply { remove(Recipient.self().id) }
+
+  private fun List<Recipient>.createBatchRequestSingle(): Single<List<IdentityCheckResponse.ServiceIdentityPair>> = profileService
+    .performIdentityCheck(
+      mapNotNull { r ->
+        val identityRecord = aciIdentityStore.getIdentityRecord(r.id)
+        if (identityRecord.isPresent) {
+          r.requireServiceId() to identityRecord.get().identityKey
+        } else {
+          null
+        }
+      }.associate { it }
+    )
+    .map { ServiceResponseProcessor.DefaultProcessor(it).resultOrThrow.serviceIdKeyPairs ?: emptyList() }
+    .onErrorReturn { t ->
+      Log.w(TAG, "Unable to fetch identities", t)
+      emptyList()
+    }
 
   companion object {
     private val TAG = Log.tag(SafetyNumberRepository::class.java)

@@ -104,13 +104,11 @@ class RemoteMegaphoneTable(context: Context, databaseHelper: SignalDatabase) : D
       .run()
   }
 
-  fun getAll(): List<RemoteMegaphoneRecord> {
-    return readableDatabase
-      .select()
-      .from(TABLE_NAME)
-      .run()
-      .readToList { it.toRemoteMegaphoneRecord() }
-  }
+  fun getAll(): List<RemoteMegaphoneRecord> = readableDatabase
+    .select()
+    .from(TABLE_NAME)
+    .run()
+    .readToList { it.toRemoteMegaphoneRecord() }
 
   fun getPotentialMegaphonesAndClearOld(now: Long): List<RemoteMegaphoneRecord> {
     val records: List<RemoteMegaphoneRecord> = readableDatabase
@@ -197,58 +195,54 @@ class RemoteMegaphoneTable(context: Context, databaseHelper: SignalDatabase) : D
     writableDatabase.deleteAll(TABLE_NAME)
   }
 
-  private fun RemoteMegaphoneRecord.toContentValues(): ContentValues {
-    return contentValuesOf(
-      UUID to uuid,
-      PRIORITY to priority,
-      COUNTRIES to countries,
-      MINIMUM_VERSION to minimumVersion,
-      DONT_SHOW_BEFORE to doNotShowBefore,
-      DONT_SHOW_AFTER to doNotShowAfter,
-      SHOW_FOR_DAYS to showForNumberOfDays,
-      CONDITIONAL_ID to conditionalId,
-      PRIMARY_ACTION_ID to primaryActionId?.id,
-      SECONDARY_ACTION_ID to secondaryActionId?.id,
-      IMAGE_URL to imageUrl,
-      TITLE to title,
-      BODY to body,
-      PRIMARY_ACTION_TEXT to primaryActionText,
-      SECONDARY_ACTION_TEXT to secondaryActionText,
-      FINISHED_AT to finishedAt,
-      PRIMARY_ACTION_DATA to primaryActionData?.toString(),
-      SECONDARY_ACTION_DATA to secondaryActionData?.toString(),
-      SNOOZED_AT to snoozedAt,
-      SEEN_COUNT to seenCount
-    )
-  }
+  private fun RemoteMegaphoneRecord.toContentValues(): ContentValues = contentValuesOf(
+    UUID to uuid,
+    PRIORITY to priority,
+    COUNTRIES to countries,
+    MINIMUM_VERSION to minimumVersion,
+    DONT_SHOW_BEFORE to doNotShowBefore,
+    DONT_SHOW_AFTER to doNotShowAfter,
+    SHOW_FOR_DAYS to showForNumberOfDays,
+    CONDITIONAL_ID to conditionalId,
+    PRIMARY_ACTION_ID to primaryActionId?.id,
+    SECONDARY_ACTION_ID to secondaryActionId?.id,
+    IMAGE_URL to imageUrl,
+    TITLE to title,
+    BODY to body,
+    PRIMARY_ACTION_TEXT to primaryActionText,
+    SECONDARY_ACTION_TEXT to secondaryActionText,
+    FINISHED_AT to finishedAt,
+    PRIMARY_ACTION_DATA to primaryActionData?.toString(),
+    SECONDARY_ACTION_DATA to secondaryActionData?.toString(),
+    SNOOZED_AT to snoozedAt,
+    SEEN_COUNT to seenCount
+  )
 
-  private fun Cursor.toRemoteMegaphoneRecord(): RemoteMegaphoneRecord {
-    return RemoteMegaphoneRecord(
-      id = requireLong(ID),
-      uuid = requireNonNullString(UUID),
-      priority = requireLong(PRIORITY),
-      countries = requireString(COUNTRIES),
-      minimumVersion = requireInt(MINIMUM_VERSION),
-      doNotShowBefore = requireLong(DONT_SHOW_BEFORE),
-      doNotShowAfter = requireLong(DONT_SHOW_AFTER),
-      showForNumberOfDays = requireLong(SHOW_FOR_DAYS),
-      conditionalId = requireString(CONDITIONAL_ID),
-      primaryActionId = RemoteMegaphoneRecord.ActionId.from(requireString(PRIMARY_ACTION_ID)),
-      secondaryActionId = RemoteMegaphoneRecord.ActionId.from(requireString(SECONDARY_ACTION_ID)),
-      imageUrl = requireString(IMAGE_URL),
-      imageUri = requireString(IMAGE_BLOB_URI)?.toUri(),
-      title = requireNonNullString(TITLE),
-      body = requireNonNullString(BODY),
-      primaryActionText = requireString(PRIMARY_ACTION_TEXT),
-      secondaryActionText = requireString(SECONDARY_ACTION_TEXT),
-      shownAt = requireLong(SHOWN_AT),
-      finishedAt = requireLong(FINISHED_AT),
-      primaryActionData = requireString(PRIMARY_ACTION_DATA).parseJsonObject(),
-      secondaryActionData = requireString(SECONDARY_ACTION_DATA).parseJsonObject(),
-      snoozedAt = requireLong(SNOOZED_AT),
-      seenCount = requireInt(SEEN_COUNT)
-    )
-  }
+  private fun Cursor.toRemoteMegaphoneRecord(): RemoteMegaphoneRecord = RemoteMegaphoneRecord(
+    id = requireLong(ID),
+    uuid = requireNonNullString(UUID),
+    priority = requireLong(PRIORITY),
+    countries = requireString(COUNTRIES),
+    minimumVersion = requireInt(MINIMUM_VERSION),
+    doNotShowBefore = requireLong(DONT_SHOW_BEFORE),
+    doNotShowAfter = requireLong(DONT_SHOW_AFTER),
+    showForNumberOfDays = requireLong(SHOW_FOR_DAYS),
+    conditionalId = requireString(CONDITIONAL_ID),
+    primaryActionId = RemoteMegaphoneRecord.ActionId.from(requireString(PRIMARY_ACTION_ID)),
+    secondaryActionId = RemoteMegaphoneRecord.ActionId.from(requireString(SECONDARY_ACTION_ID)),
+    imageUrl = requireString(IMAGE_URL),
+    imageUri = requireString(IMAGE_BLOB_URI)?.toUri(),
+    title = requireNonNullString(TITLE),
+    body = requireNonNullString(BODY),
+    primaryActionText = requireString(PRIMARY_ACTION_TEXT),
+    secondaryActionText = requireString(SECONDARY_ACTION_TEXT),
+    shownAt = requireLong(SHOWN_AT),
+    finishedAt = requireLong(FINISHED_AT),
+    primaryActionData = requireString(PRIMARY_ACTION_DATA).parseJsonObject(),
+    secondaryActionData = requireString(SECONDARY_ACTION_DATA).parseJsonObject(),
+    snoozedAt = requireLong(SNOOZED_AT),
+    seenCount = requireInt(SEEN_COUNT)
+  )
 
   private fun String?.parseJsonObject(): JSONObject? {
     if (this == null) {

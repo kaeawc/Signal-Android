@@ -32,16 +32,14 @@ class BackupSubscriptionCheckJob private constructor(parameters: Parameters) : C
     const val KEY = "BackupSubscriptionCheckJob"
 
     @VisibleForTesting
-    fun create(): BackupSubscriptionCheckJob {
-      return BackupSubscriptionCheckJob(
-        Parameters.Builder()
-          .setQueue(InAppPaymentsRepository.getRecurringJobQueueKey(InAppPaymentType.RECURRING_BACKUP))
-          .addConstraint(NetworkConstraint.KEY)
-          .setMaxAttempts(Parameters.UNLIMITED)
-          .setMaxInstancesForFactory(1)
-          .build()
-      )
-    }
+    fun create(): BackupSubscriptionCheckJob = BackupSubscriptionCheckJob(
+      Parameters.Builder()
+        .setQueue(InAppPaymentsRepository.getRecurringJobQueueKey(InAppPaymentType.RECURRING_BACKUP))
+        .addConstraint(NetworkConstraint.KEY)
+        .setMaxAttempts(Parameters.UNLIMITED)
+        .setMaxInstancesForFactory(1)
+        .build()
+    )
 
     @JvmStatic
     fun enqueueIfAble() {
@@ -127,8 +125,6 @@ class BackupSubscriptionCheckJob private constructor(parameters: Parameters) : C
   override fun onFailure() = Unit
 
   class Factory : Job.Factory<BackupSubscriptionCheckJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): BackupSubscriptionCheckJob {
-      return BackupSubscriptionCheckJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): BackupSubscriptionCheckJob = BackupSubscriptionCheckJob(parameters)
   }
 }

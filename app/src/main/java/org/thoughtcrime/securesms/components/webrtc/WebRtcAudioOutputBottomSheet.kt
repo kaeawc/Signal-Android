@@ -39,7 +39,9 @@ import org.thoughtcrime.securesms.webrtc.audio.SignalAudioManager
 /**
  * A bottom sheet that allows the user to select what device they want to route audio to. Intended to be used with Android 31+ APIs.
  */
-class WebRtcAudioOutputBottomSheet : ComposeBottomSheetDialogFragment(), DialogInterface {
+class WebRtcAudioOutputBottomSheet :
+  ComposeBottomSheetDialogFragment(),
+  DialogInterface {
   private val viewModel by viewModels<AudioOutputViewModel>()
 
   @Composable
@@ -144,22 +146,18 @@ class AudioOutputViewModel : ViewModel() {
   var onDismiss: (DialogInterface) -> Unit = {}
 }
 
-private fun getDrawableResourceForDeviceType(deviceType: SignalAudioManager.AudioDevice): Int {
-  return when (deviceType) {
-    SignalAudioManager.AudioDevice.WIRED_HEADSET -> R.drawable.symbol_headphones_outline_24
-    SignalAudioManager.AudioDevice.EARPIECE -> R.drawable.symbol_phone_speaker_outline_24
-    SignalAudioManager.AudioDevice.BLUETOOTH -> R.drawable.symbol_speaker_bluetooth_fill_white_24
-    SignalAudioManager.AudioDevice.SPEAKER_PHONE, SignalAudioManager.AudioDevice.NONE -> R.drawable.symbol_speaker_outline_24
-  }
+private fun getDrawableResourceForDeviceType(deviceType: SignalAudioManager.AudioDevice): Int = when (deviceType) {
+  SignalAudioManager.AudioDevice.WIRED_HEADSET -> R.drawable.symbol_headphones_outline_24
+  SignalAudioManager.AudioDevice.EARPIECE -> R.drawable.symbol_phone_speaker_outline_24
+  SignalAudioManager.AudioDevice.BLUETOOTH -> R.drawable.symbol_speaker_bluetooth_fill_white_24
+  SignalAudioManager.AudioDevice.SPEAKER_PHONE, SignalAudioManager.AudioDevice.NONE -> R.drawable.symbol_speaker_outline_24
 }
 
-private fun getDescriptionStringResourceForDeviceType(deviceType: SignalAudioManager.AudioDevice): Int {
-  return when (deviceType) {
-    SignalAudioManager.AudioDevice.WIRED_HEADSET -> R.string.WebRtcAudioOutputBottomSheet__headset_icon_content_description
-    SignalAudioManager.AudioDevice.EARPIECE -> R.string.WebRtcAudioOutputBottomSheet__earpiece_icon_content_description
-    SignalAudioManager.AudioDevice.BLUETOOTH -> R.string.WebRtcAudioOutputBottomSheet__bluetooth_icon_content_description
-    SignalAudioManager.AudioDevice.SPEAKER_PHONE, SignalAudioManager.AudioDevice.NONE -> R.string.WebRtcAudioOutputBottomSheet__speaker_icon_content_description
-  }
+private fun getDescriptionStringResourceForDeviceType(deviceType: SignalAudioManager.AudioDevice): Int = when (deviceType) {
+  SignalAudioManager.AudioDevice.WIRED_HEADSET -> R.string.WebRtcAudioOutputBottomSheet__headset_icon_content_description
+  SignalAudioManager.AudioDevice.EARPIECE -> R.string.WebRtcAudioOutputBottomSheet__earpiece_icon_content_description
+  SignalAudioManager.AudioDevice.BLUETOOTH -> R.string.WebRtcAudioOutputBottomSheet__bluetooth_icon_content_description
+  SignalAudioManager.AudioDevice.SPEAKER_PHONE, SignalAudioManager.AudioDevice.NONE -> R.string.WebRtcAudioOutputBottomSheet__speaker_icon_content_description
 }
 
 data class AudioOutputOption(val friendlyName: String, val deviceType: SignalAudioManager.AudioDevice, val deviceId: Int)

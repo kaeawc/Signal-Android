@@ -9,9 +9,7 @@ import java.util.concurrent.TimeUnit
 
 data class GroupCallRaiseHandEvent(val sender: CallParticipant, val timestamp: Long) {
 
-  fun getCollapseTimestamp(): Long {
-    return timestamp + TimeUnit.SECONDS.toMillis(LIFESPAN_SECONDS)
-  }
+  fun getCollapseTimestamp(): Long = timestamp + TimeUnit.SECONDS.toMillis(LIFESPAN_SECONDS)
 
   companion object {
     const val LIFESPAN_SECONDS = 4L

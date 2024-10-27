@@ -27,9 +27,7 @@ class WhoCanFindMeByPhoneNumberViewModel : ViewModel() {
     }
   }
 
-  fun onSave(): Completable {
-    return repository.onSave(store.state).observeOn(AndroidSchedulers.mainThread())
-  }
+  fun onSave(): Completable = repository.onSave(store.state).observeOn(AndroidSchedulers.mainThread())
 
   override fun onCleared() {
     disposables.clear()

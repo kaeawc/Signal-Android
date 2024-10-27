@@ -331,21 +331,17 @@ object V188_FixMessageRecipientsAndEditMessageMigration : SignalDatabaseMigratio
     }
   }
 
-  private fun getAllDependentItems(db: SQLiteDatabase, tableName: String): List<SqlItem> {
-    return db.rawQuery("SELECT type, name, sql FROM sqlite_schema WHERE tbl_name='$tableName' AND type != 'table'").readToList { cursor ->
-      SqlItem(
-        type = cursor.requireNonNullString("type"),
-        name = cursor.requireNonNullString("name"),
-        createStatement = cursor.requireNonNullString("sql")
-      )
-    }
+  private fun getAllDependentItems(db: SQLiteDatabase, tableName: String): List<SqlItem> = db.rawQuery("SELECT type, name, sql FROM sqlite_schema WHERE tbl_name='$tableName' AND type != 'table'").readToList { cursor ->
+    SqlItem(
+      type = cursor.requireNonNullString("type"),
+      name = cursor.requireNonNullString("name"),
+      createStatement = cursor.requireNonNullString("sql")
+    )
   }
 
-  private fun columnExists(db: SQLiteDatabase, table: String, column: String): Boolean {
-    return db.query("PRAGMA table_info($table)", null)
-      .readToList { it.requireNonNullString("name") }
-      .any { it == column }
-  }
+  private fun columnExists(db: SQLiteDatabase, table: String, column: String): Boolean = db.query("PRAGMA table_info($table)", null)
+    .readToList { it.requireNonNullString("name") }
+    .any { it == column }
 
   data class SqlItem(
     val type: String,

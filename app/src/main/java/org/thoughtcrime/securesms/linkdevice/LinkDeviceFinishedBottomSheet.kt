@@ -34,38 +34,36 @@ class LinkDeviceFinishedSheet : ComposeBottomSheetDialogFragment() {
 }
 
 @Composable
-fun FinishedSheet(onClick: () -> Unit) {
-  return Column(
-    horizontalAlignment = Alignment.CenterHorizontally,
-    modifier = Modifier
-      .fillMaxWidth()
-      .wrapContentSize(Alignment.Center)
-      .padding(16.dp)
+fun FinishedSheet(onClick: () -> Unit) = Column(
+  horizontalAlignment = Alignment.CenterHorizontally,
+  modifier = Modifier
+    .fillMaxWidth()
+    .wrapContentSize(Alignment.Center)
+    .padding(16.dp)
+) {
+  BottomSheets.Handle()
+  Icon(
+    painter = painterResource(R.drawable.ic_devices),
+    contentDescription = null,
+    tint = Color.Unspecified
+  )
+  Text(
+    text = stringResource(R.string.AddLinkDeviceFragment__finish_linking_on_other_device),
+    style = MaterialTheme.typography.titleLarge,
+    textAlign = TextAlign.Center,
+    modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
+  )
+  Text(
+    text = stringResource(R.string.AddLinkDeviceFragment__finish_linking_signal),
+    textAlign = TextAlign.Center,
+    style = MaterialTheme.typography.bodyMedium,
+    modifier = Modifier.padding(horizontal = 12.dp)
+  )
+  Buttons.LargeTonal(
+    onClick = onClick,
+    modifier = Modifier.defaultMinSize(minWidth = 220.dp).padding(vertical = 20.dp, horizontal = 12.dp)
   ) {
-    BottomSheets.Handle()
-    Icon(
-      painter = painterResource(R.drawable.ic_devices),
-      contentDescription = null,
-      tint = Color.Unspecified
-    )
-    Text(
-      text = stringResource(R.string.AddLinkDeviceFragment__finish_linking_on_other_device),
-      style = MaterialTheme.typography.titleLarge,
-      textAlign = TextAlign.Center,
-      modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
-    )
-    Text(
-      text = stringResource(R.string.AddLinkDeviceFragment__finish_linking_signal),
-      textAlign = TextAlign.Center,
-      style = MaterialTheme.typography.bodyMedium,
-      modifier = Modifier.padding(horizontal = 12.dp)
-    )
-    Buttons.LargeTonal(
-      onClick = onClick,
-      modifier = Modifier.defaultMinSize(minWidth = 220.dp).padding(vertical = 20.dp, horizontal = 12.dp)
-    ) {
-      Text(stringResource(id = R.string.AddLinkDeviceFragment__okay))
-    }
+    Text(stringResource(id = R.string.AddLinkDeviceFragment__okay))
   }
 }
 

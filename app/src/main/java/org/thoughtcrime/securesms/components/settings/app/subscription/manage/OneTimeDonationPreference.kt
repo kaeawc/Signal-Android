@@ -38,9 +38,7 @@ object OneTimeDonationPreference {
   ) : MappingModel<Model> {
     override fun areItemsTheSame(newItem: Model): Boolean = true
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return this.pendingOneTimeDonation == newItem.pendingOneTimeDonation
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = this.pendingOneTimeDonation == newItem.pendingOneTimeDonation
   }
 
   class ViewHolder(binding: MySupportPreferenceBinding) : BindingViewHolder<Model, MySupportPreferenceBinding>(binding) {
@@ -82,20 +80,16 @@ object OneTimeDonationPreference {
       progress.visible = model.pendingOneTimeDonation.paymentMethodType != PendingOneTimeDonation.PaymentMethodType.SEPA_DEBIT
     }
 
-    private fun getErrorSubtitle(error: DonationErrorValue): String {
-      return when (error.type) {
-        DonationErrorValue.Type.REDEMPTION -> context.getString(R.string.DonationsErrors__couldnt_add_badge)
-        else -> context.getString(R.string.DonationsErrors__donation_failed)
-      }
+    private fun getErrorSubtitle(error: DonationErrorValue): String = when (error.type) {
+      DonationErrorValue.Type.REDEMPTION -> context.getString(R.string.DonationsErrors__couldnt_add_badge)
+      else -> context.getString(R.string.DonationsErrors__donation_failed)
     }
 
-    private fun getPendingSubtitle(paymentMethodType: PendingOneTimeDonation.PaymentMethodType): String {
-      return when (paymentMethodType) {
-        PendingOneTimeDonation.PaymentMethodType.CARD -> context.getString(R.string.OneTimeDonationPreference__donation_processing)
-        PendingOneTimeDonation.PaymentMethodType.SEPA_DEBIT -> context.getString(R.string.OneTimeDonationPreference__donation_pending)
-        PendingOneTimeDonation.PaymentMethodType.PAYPAL -> context.getString(R.string.OneTimeDonationPreference__donation_processing)
-        PendingOneTimeDonation.PaymentMethodType.IDEAL -> context.getString(R.string.OneTimeDonationPreference__donation_pending)
-      }
+    private fun getPendingSubtitle(paymentMethodType: PendingOneTimeDonation.PaymentMethodType): String = when (paymentMethodType) {
+      PendingOneTimeDonation.PaymentMethodType.CARD -> context.getString(R.string.OneTimeDonationPreference__donation_processing)
+      PendingOneTimeDonation.PaymentMethodType.SEPA_DEBIT -> context.getString(R.string.OneTimeDonationPreference__donation_pending)
+      PendingOneTimeDonation.PaymentMethodType.PAYPAL -> context.getString(R.string.OneTimeDonationPreference__donation_processing)
+      PendingOneTimeDonation.PaymentMethodType.IDEAL -> context.getString(R.string.OneTimeDonationPreference__donation_pending)
     }
   }
 }

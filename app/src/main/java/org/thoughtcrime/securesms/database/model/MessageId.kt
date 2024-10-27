@@ -10,21 +10,17 @@ import kotlinx.parcelize.Parcelize
 data class MessageId(
   val id: Long
 ) : Parcelable {
-  fun serialize(): String {
-    return "$id|true"
-  }
+  fun serialize(): String = "$id|true"
 
   companion object {
     /**
      * Returns null for invalid IDs. Useful when pulling a possibly-unset ID from a database, or something like that.
      */
     @JvmStatic
-    fun fromNullable(id: Long): MessageId? {
-      return if (id > 0) {
-        MessageId(id)
-      } else {
-        null
-      }
+    fun fromNullable(id: Long): MessageId? = if (id > 0) {
+      MessageId(id)
+    } else {
+      null
     }
 
     @JvmStatic

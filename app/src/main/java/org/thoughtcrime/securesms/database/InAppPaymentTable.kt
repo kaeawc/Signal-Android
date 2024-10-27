@@ -161,99 +161,83 @@ class InAppPaymentTable(context: Context, databaseHelper: SignalDatabase) : Data
     AppDependencies.databaseObserver.notifyInAppPaymentsObservers(inAppPayment)
   }
 
-  fun hasWaitingForAuth(): Boolean {
-    return readableDatabase
-      .exists(TABLE_NAME)
-      .where("$STATE = ?", State.serialize(State.WAITING_FOR_AUTHORIZATION))
-      .run()
-  }
+  fun hasWaitingForAuth(): Boolean = readableDatabase
+    .exists(TABLE_NAME)
+    .where("$STATE = ?", State.serialize(State.WAITING_FOR_AUTHORIZATION))
+    .run()
 
-  fun getAllWaitingForAuth(): List<InAppPayment> {
-    return readableDatabase.select()
-      .from(TABLE_NAME)
-      .where("$STATE = ?", State.serialize(State.WAITING_FOR_AUTHORIZATION))
-      .run()
-      .readToList { InAppPayment.deserialize(it) }
-  }
+  fun getAllWaitingForAuth(): List<InAppPayment> = readableDatabase.select()
+    .from(TABLE_NAME)
+    .where("$STATE = ?", State.serialize(State.WAITING_FOR_AUTHORIZATION))
+    .run()
+    .readToList { InAppPayment.deserialize(it) }
 
   /**
    * Retrieves all InAppPayment objects for donations that have been marked NOTIFIED = 0, and then marks them
    * all as notified.
    */
-  fun consumeDonationPaymentsToNotifyUser(): List<InAppPayment> {
-    return writableDatabase.withinTransaction { db ->
-      val payments = db.select()
-        .from(TABLE_NAME)
-        .where("$NOTIFIED = ? AND $TYPE != ?", 0, InAppPaymentType.serialize(InAppPaymentType.RECURRING_BACKUP))
-        .run()
-        .readToList(mapper = { InAppPayment.deserialize(it) })
+  fun consumeDonationPaymentsToNotifyUser(): List<InAppPayment> = writableDatabase.withinTransaction { db ->
+    val payments = db.select()
+      .from(TABLE_NAME)
+      .where("$NOTIFIED = ? AND $TYPE != ?", 0, InAppPaymentType.serialize(InAppPaymentType.RECURRING_BACKUP))
+      .run()
+      .readToList(mapper = { InAppPayment.deserialize(it) })
 
-      db.update(TABLE_NAME).values(NOTIFIED to 1)
-        .where("$TYPE != ?", InAppPaymentType.serialize(InAppPaymentType.RECURRING_BACKUP))
-        .run()
+    db.update(TABLE_NAME).values(NOTIFIED to 1)
+      .where("$TYPE != ?", InAppPaymentType.serialize(InAppPaymentType.RECURRING_BACKUP))
+      .run()
 
-      payments
-    }
+    payments
   }
 
   /**
    * Retrieves all InAppPayment objects for backups that have been marked NOTIFIED = 0, and then marks them
    * all as notified.
    */
-  fun consumeBackupPaymentsToNotifyUser(): List<InAppPayment> {
-    return writableDatabase.withinTransaction { db ->
-      val payments = db.select()
-        .from(TABLE_NAME)
-        .where("$NOTIFIED = ? AND $TYPE = ?", 0, InAppPaymentType.serialize(InAppPaymentType.RECURRING_BACKUP))
-        .run()
-        .readToList(mapper = { InAppPayment.deserialize(it) })
-
-      db.update(TABLE_NAME).values(NOTIFIED to 1)
-        .where("$TYPE = ?", InAppPaymentType.serialize(InAppPaymentType.RECURRING_BACKUP))
-        .run()
-
-      payments
-    }
-  }
-
-  fun getById(id: InAppPaymentId): InAppPayment? {
-    return readableDatabase.select()
+  fun consumeBackupPaymentsToNotifyUser(): List<InAppPayment> = writableDatabase.withinTransaction { db ->
+    val payments = db.select()
       .from(TABLE_NAME)
-      .where(ID_WHERE, id)
+      .where("$NOTIFIED = ? AND $TYPE = ?", 0, InAppPaymentType.serialize(InAppPaymentType.RECURRING_BACKUP))
       .run()
-      .readToSingleObject(InAppPayment.Companion)
+      .readToList(mapper = { InAppPayment.deserialize(it) })
+
+    db.update(TABLE_NAME).values(NOTIFIED to 1)
+      .where("$TYPE = ?", InAppPaymentType.serialize(InAppPaymentType.RECURRING_BACKUP))
+      .run()
+
+    payments
   }
 
-  fun getByEndOfPeriod(type: InAppPaymentType, endOfPeriod: Duration): InAppPayment? {
-    return readableDatabase.select()
-      .from(TABLE_NAME)
-      .where("$TYPE = ? AND $END_OF_PERIOD = ?", InAppPaymentType.serialize(type), endOfPeriod.inWholeSeconds)
-      .run()
-      .readToSingleObject(InAppPayment.Companion)
-  }
+  fun getById(id: InAppPaymentId): InAppPayment? = readableDatabase.select()
+    .from(TABLE_NAME)
+    .where(ID_WHERE, id)
+    .run()
+    .readToSingleObject(InAppPayment.Companion)
 
-  fun getByLatestEndOfPeriod(type: InAppPaymentType): InAppPayment? {
-    return readableDatabase.select()
-      .from(TABLE_NAME)
-      .where("$TYPE = ? AND $END_OF_PERIOD > 0", InAppPaymentType.serialize(type))
-      .orderBy("$END_OF_PERIOD DESC")
-      .limit(1)
-      .run()
-      .readToSingleObject(InAppPayment.Companion)
-  }
+  fun getByEndOfPeriod(type: InAppPaymentType, endOfPeriod: Duration): InAppPayment? = readableDatabase.select()
+    .from(TABLE_NAME)
+    .where("$TYPE = ? AND $END_OF_PERIOD = ?", InAppPaymentType.serialize(type), endOfPeriod.inWholeSeconds)
+    .run()
+    .readToSingleObject(InAppPayment.Companion)
+
+  fun getByLatestEndOfPeriod(type: InAppPaymentType): InAppPayment? = readableDatabase.select()
+    .from(TABLE_NAME)
+    .where("$TYPE = ? AND $END_OF_PERIOD > 0", InAppPaymentType.serialize(type))
+    .orderBy("$END_OF_PERIOD DESC")
+    .limit(1)
+    .run()
+    .readToSingleObject(InAppPayment.Companion)
 
   /**
    * Returns the latest entry in the table for the given subscriber id.
    */
-  fun getLatestBySubscriberId(subscriberId: SubscriberId): InAppPayment? {
-    return readableDatabase.select()
-      .from(TABLE_NAME)
-      .where("$SUBSCRIBER_ID = ?", subscriberId.serialize())
-      .orderBy("$END_OF_PERIOD DESC")
-      .limit(1)
-      .run()
-      .readToSingleObject(InAppPayment.Companion)
-  }
+  fun getLatestBySubscriberId(subscriberId: SubscriberId): InAppPayment? = readableDatabase.select()
+    .from(TABLE_NAME)
+    .where("$SUBSCRIBER_ID = ?", subscriberId.serialize())
+    .orderBy("$END_OF_PERIOD DESC")
+    .limit(1)
+    .run()
+    .readToSingleObject(InAppPayment.Companion)
 
   fun markSubscriptionManuallyCanceled(subscriberId: SubscriberId) {
     writableDatabase.withinTransaction {
@@ -274,36 +258,32 @@ class InAppPaymentTable(context: Context, databaseHelper: SignalDatabase) : Data
   /**
    * Returns whether there are any pending donations in the database.
    */
-  fun hasPendingDonation(): Boolean {
-    return readableDatabase.exists(TABLE_NAME)
-      .where(
-        "$STATE = ? AND ($TYPE = ? OR $TYPE = ? OR $TYPE = ?)",
-        State.serialize(State.PENDING),
-        InAppPaymentType.serialize(InAppPaymentType.RECURRING_DONATION),
-        InAppPaymentType.serialize(InAppPaymentType.ONE_TIME_DONATION),
-        InAppPaymentType.serialize(InAppPaymentType.ONE_TIME_GIFT)
-      )
-      .run()
-  }
+  fun hasPendingDonation(): Boolean = readableDatabase.exists(TABLE_NAME)
+    .where(
+      "$STATE = ? AND ($TYPE = ? OR $TYPE = ? OR $TYPE = ?)",
+      State.serialize(State.PENDING),
+      InAppPaymentType.serialize(InAppPaymentType.RECURRING_DONATION),
+      InAppPaymentType.serialize(InAppPaymentType.ONE_TIME_DONATION),
+      InAppPaymentType.serialize(InAppPaymentType.ONE_TIME_GIFT)
+    )
+    .run()
 
   /**
    * Retrieves from the database the latest payment of the given type that is either in the PENDING or WAITING_FOR_AUTHORIZATION state.
    */
-  fun getLatestInAppPaymentByType(type: InAppPaymentType): InAppPayment? {
-    return readableDatabase.select()
-      .from(TABLE_NAME)
-      .where(
-        "($STATE = ? OR $STATE = ? OR $STATE = ?) AND $TYPE = ?",
-        State.serialize(State.PENDING),
-        State.serialize(State.WAITING_FOR_AUTHORIZATION),
-        State.serialize(State.END),
-        InAppPaymentType.serialize(type)
-      )
-      .orderBy("$INSERTED_AT DESC")
-      .limit(1)
-      .run()
-      .readToSingleObject(InAppPayment.Companion)
-  }
+  fun getLatestInAppPaymentByType(type: InAppPaymentType): InAppPayment? = readableDatabase.select()
+    .from(TABLE_NAME)
+    .where(
+      "($STATE = ? OR $STATE = ? OR $STATE = ?) AND $TYPE = ?",
+      State.serialize(State.PENDING),
+      State.serialize(State.WAITING_FOR_AUTHORIZATION),
+      State.serialize(State.END),
+      InAppPaymentType.serialize(type)
+    )
+    .orderBy("$INSERTED_AT DESC")
+    .limit(1)
+    .run()
+    .readToSingleObject(InAppPayment.Companion)
 
   /**
    * Represents a database row. Nicer than returning a raw value.
@@ -311,7 +291,8 @@ class InAppPaymentTable(context: Context, databaseHelper: SignalDatabase) : Data
   @Parcelize
   data class InAppPaymentId(
     val rowId: Long
-  ) : DatabaseId, Parcelable {
+  ) : DatabaseId,
+    Parcelable {
     init {
       check(rowId > 0)
     }
@@ -344,33 +325,29 @@ class InAppPaymentTable(context: Context, databaseHelper: SignalDatabase) : Data
 
     companion object : DatabaseSerializer<InAppPayment> {
 
-      override fun serialize(data: InAppPayment): ContentValues {
-        return contentValuesOf(
-          ID to data.id.serialize(),
-          TYPE to data.type.apply { check(this != InAppPaymentType.UNKNOWN) }.code,
-          STATE to data.state.code,
-          INSERTED_AT to data.insertedAt.inWholeSeconds,
-          UPDATED_AT to data.updatedAt.inWholeSeconds,
-          NOTIFIED to data.notified,
-          SUBSCRIBER_ID to data.subscriberId?.serialize(),
-          END_OF_PERIOD to data.endOfPeriod.inWholeSeconds,
-          DATA to data.data.encode()
-        )
-      }
+      override fun serialize(data: InAppPayment): ContentValues = contentValuesOf(
+        ID to data.id.serialize(),
+        TYPE to data.type.apply { check(this != InAppPaymentType.UNKNOWN) }.code,
+        STATE to data.state.code,
+        INSERTED_AT to data.insertedAt.inWholeSeconds,
+        UPDATED_AT to data.updatedAt.inWholeSeconds,
+        NOTIFIED to data.notified,
+        SUBSCRIBER_ID to data.subscriberId?.serialize(),
+        END_OF_PERIOD to data.endOfPeriod.inWholeSeconds,
+        DATA to data.data.encode()
+      )
 
-      override fun deserialize(input: Cursor): InAppPayment {
-        return InAppPayment(
-          id = InAppPaymentId(input.requireLong(ID)),
-          type = InAppPaymentType.deserialize(input.requireInt(TYPE)),
-          state = State.deserialize(input.requireInt(STATE)),
-          insertedAt = input.requireLong(INSERTED_AT).seconds,
-          updatedAt = input.requireLong(UPDATED_AT).seconds,
-          notified = input.requireBoolean(NOTIFIED),
-          subscriberId = input.requireString(SUBSCRIBER_ID)?.let { SubscriberId.deserialize(it) },
-          endOfPeriod = input.requireLong(END_OF_PERIOD).seconds,
-          data = InAppPaymentData.ADAPTER.decode(input.requireNonNullBlob(DATA))
-        )
-      }
+      override fun deserialize(input: Cursor): InAppPayment = InAppPayment(
+        id = InAppPaymentId(input.requireLong(ID)),
+        type = InAppPaymentType.deserialize(input.requireInt(TYPE)),
+        state = State.deserialize(input.requireInt(STATE)),
+        insertedAt = input.requireLong(INSERTED_AT).seconds,
+        updatedAt = input.requireLong(UPDATED_AT).seconds,
+        notified = input.requireBoolean(NOTIFIED),
+        subscriberId = input.requireString(SUBSCRIBER_ID)?.let { SubscriberId.deserialize(it) },
+        endOfPeriod = input.requireLong(END_OF_PERIOD).seconds,
+        data = InAppPaymentData.ADAPTER.decode(input.requireNonNullBlob(DATA))
+      )
     }
   }
 

@@ -29,16 +29,14 @@ object Gifts {
     giftBadge: GiftBadge,
     sentTimestamp: Long,
     expiresIn: Long
-  ): OutgoingMessage {
-    return OutgoingMessage(
-      threadRecipient = recipient,
-      body = Base64.encodeWithPadding(giftBadge.encode()),
-      isSecure = true,
-      sentTimeMillis = sentTimestamp,
-      expiresIn = expiresIn,
-      giftBadge = giftBadge
-    )
-  }
+  ): OutgoingMessage = OutgoingMessage(
+    threadRecipient = recipient,
+    body = Base64.encodeWithPadding(giftBadge.encode()),
+    isSecure = true,
+    sentTimeMillis = sentTimestamp,
+    expiresIn = expiresIn,
+    giftBadge = giftBadge
+  )
 
   /**
    * @return the expiration time from the redemption token, in UNIX epoch seconds.

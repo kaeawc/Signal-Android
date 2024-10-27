@@ -68,9 +68,7 @@ class VerifySafetyNumberViewModel(
     }
   }
 
-  fun getFingerprints(): LiveData<List<SafetyNumberFingerprint>> {
-    return fingerprintListLiveData
-  }
+  fun getFingerprints(): LiveData<List<SafetyNumberFingerprint>> = fingerprintListLiveData
 
   fun updateSafetyNumberVerification(verified: Boolean) {
     val recipientId: RecipientId = recipientId
@@ -112,9 +110,7 @@ class VerifySafetyNumberViewModel(
     private val localIdentity: IdentityKey,
     private val remoteIdentity: IdentityKey
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(VerifySafetyNumberViewModel(recipientId, localIdentity, remoteIdentity))!!
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(VerifySafetyNumberViewModel(recipientId, localIdentity, remoteIdentity))!!
   }
 }
 

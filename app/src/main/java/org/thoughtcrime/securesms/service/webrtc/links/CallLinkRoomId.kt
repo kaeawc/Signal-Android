@@ -30,32 +30,20 @@ class CallLinkRoomId private constructor(private val roomId: ByteArray) : Parcel
     return true
   }
 
-  override fun hashCode(): Int {
-    return roomId.contentHashCode()
-  }
+  override fun hashCode(): Int = roomId.contentHashCode()
 
-  override fun toString(): String {
-    return DatabaseSerializer.serialize(this)
-  }
+  override fun toString(): String = DatabaseSerializer.serialize(this)
 
   object DatabaseSerializer : Serializer<CallLinkRoomId, String> {
-    override fun serialize(data: CallLinkRoomId): String {
-      return Base64.encodeWithPadding(data.roomId)
-    }
+    override fun serialize(data: CallLinkRoomId): String = Base64.encodeWithPadding(data.roomId)
 
-    override fun deserialize(data: String): CallLinkRoomId {
-      return fromBytes(Base64.decode(data))
-    }
+    override fun deserialize(data: String): CallLinkRoomId = fromBytes(Base64.decode(data))
   }
 
   companion object {
     @JvmStatic
-    fun fromBytes(byteArray: ByteArray): CallLinkRoomId {
-      return CallLinkRoomId(byteArray)
-    }
+    fun fromBytes(byteArray: ByteArray): CallLinkRoomId = CallLinkRoomId(byteArray)
 
-    fun fromCallLinkRootKey(callLinkRootKey: CallLinkRootKey): CallLinkRoomId {
-      return CallLinkRoomId(callLinkRootKey.deriveRoomId())
-    }
+    fun fromCallLinkRootKey(callLinkRootKey: CallLinkRootKey): CallLinkRoomId = CallLinkRoomId(callLinkRootKey.deriveRoomId())
   }
 }

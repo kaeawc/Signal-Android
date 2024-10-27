@@ -38,23 +38,19 @@ class ViewAllSignalConnectionsFragment : Fragment(R.layout.view_all_signal_conne
     binding.recycler.adapter = mediator.adapter
   }
 
-  private fun getConfiguration(): ContactSearchConfiguration {
-    return ContactSearchConfiguration.build {
-      addSection(
-        ContactSearchConfiguration.Section.Individuals(
-          includeHeader = false,
-          includeSelf = false,
-          includeLetterHeaders = true,
-          transportType = ContactSearchConfiguration.TransportType.PUSH
-        )
+  private fun getConfiguration(): ContactSearchConfiguration = ContactSearchConfiguration.build {
+    addSection(
+      ContactSearchConfiguration.Section.Individuals(
+        includeHeader = false,
+        includeSelf = false,
+        includeLetterHeaders = true,
+        transportType = ContactSearchConfiguration.TransportType.PUSH
       )
-    }
+    )
   }
 
   class Dialog : WrapperDialogFragment() {
-    override fun getWrappedFragment(): Fragment {
-      return ViewAllSignalConnectionsFragment()
-    }
+    override fun getWrappedFragment(): Fragment = ViewAllSignalConnectionsFragment()
 
     companion object {
       fun show(fragmentManager: FragmentManager) {

@@ -20,20 +20,18 @@ data class ContactSelectionArguments(
   val checkboxResource: Int = R.drawable.contact_selection_checkbox
 ) {
 
-  fun toArgumentBundle(): Bundle {
-    return Bundle().apply {
-      putInt(DISPLAY_MODE, displayMode)
-      putBoolean(REFRESHABLE, isRefreshable)
-      putBoolean(RECENTS, displayRecents)
-      putParcelable(SELECTION_LIMITS, selectionLimits)
-      putBoolean(HIDE_COUNT, !displaySelectionCount)
-      putBoolean(CAN_SELECT_SELF, canSelectSelf)
-      putBoolean(DISPLAY_CHIPS, displayChips)
-      putInt(RV_PADDING_BOTTOM, recyclerPadBottom)
-      putBoolean(RV_CLIP, recyclerChildClipping)
-      putInt(CHECKBOX_RESOURCE, checkboxResource)
-      putParcelableArrayList(CURRENT_SELECTION, ArrayList(currentSelection))
-    }
+  fun toArgumentBundle(): Bundle = Bundle().apply {
+    putInt(DISPLAY_MODE, displayMode)
+    putBoolean(REFRESHABLE, isRefreshable)
+    putBoolean(RECENTS, displayRecents)
+    putParcelable(SELECTION_LIMITS, selectionLimits)
+    putBoolean(HIDE_COUNT, !displaySelectionCount)
+    putBoolean(CAN_SELECT_SELF, canSelectSelf)
+    putBoolean(DISPLAY_CHIPS, displayChips)
+    putInt(RV_PADDING_BOTTOM, recyclerPadBottom)
+    putBoolean(RV_CLIP, recyclerChildClipping)
+    putInt(CHECKBOX_RESOURCE, checkboxResource)
+    putParcelableArrayList(CURRENT_SELECTION, ArrayList(currentSelection))
   }
 
   companion object {

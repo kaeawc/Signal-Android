@@ -43,8 +43,6 @@ class DeleteAbandonedAttachmentsJob private constructor(parameters: Parameters) 
   }
 
   class Factory : Job.Factory<DeleteAbandonedAttachmentsJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): DeleteAbandonedAttachmentsJob {
-      return DeleteAbandonedAttachmentsJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): DeleteAbandonedAttachmentsJob = DeleteAbandonedAttachmentsJob(parameters)
   }
 }

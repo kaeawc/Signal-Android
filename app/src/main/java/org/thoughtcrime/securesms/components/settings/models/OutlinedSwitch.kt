@@ -24,12 +24,10 @@ object OutlinedSwitch {
   ) : MappingModel<Model> {
     override fun areItemsTheSame(newItem: Model): Boolean = newItem.key == key
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return areItemsTheSame(newItem) &&
-        text == newItem.text &&
-        isChecked == newItem.isChecked &&
-        isEnabled == newItem.isEnabled
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = areItemsTheSame(newItem) &&
+      text == newItem.text &&
+      isChecked == newItem.isChecked &&
+      isEnabled == newItem.isEnabled
   }
 
   class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

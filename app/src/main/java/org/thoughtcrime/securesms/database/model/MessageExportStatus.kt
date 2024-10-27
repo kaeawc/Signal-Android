@@ -11,22 +11,16 @@ enum class MessageExportStatus(val code: Int) : DatabaseId {
   EXPORTED(1),
   ERROR(-1);
 
-  override fun serialize(): String {
-    return Serializer.serialize(this).toString()
-  }
+  override fun serialize(): String = Serializer.serialize(this).toString()
 
   companion object Serializer : IntSerializer<MessageExportStatus> {
-    override fun serialize(data: MessageExportStatus): Int {
-      return data.code
-    }
+    override fun serialize(data: MessageExportStatus): Int = data.code
 
-    override fun deserialize(data: Int): MessageExportStatus {
-      return when (data) {
-        UNEXPORTED.code -> UNEXPORTED
-        EXPORTED.code -> EXPORTED
-        ERROR.code -> ERROR
-        else -> throw AssertionError("Unknown message export status: $data")
-      }
+    override fun deserialize(data: Int): MessageExportStatus = when (data) {
+      UNEXPORTED.code -> UNEXPORTED
+      EXPORTED.code -> EXPORTED
+      ERROR.code -> ERROR
+      else -> throw AssertionError("Unknown message export status: $data")
     }
   }
 }

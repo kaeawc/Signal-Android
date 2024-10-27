@@ -238,21 +238,17 @@ abstract class PreferenceModel<T : PreferenceModel<T>>(
   open val iconEnd: DSLSettingsIcon? = null,
   open val isEnabled: Boolean = true
 ) : MappingModel<T> {
-  override fun areItemsTheSame(newItem: T): Boolean {
-    return when {
-      title != null -> title == newItem.title
-      summary != null -> summary == newItem.summary
-      else -> throw AssertionError("Could not determine equality of $newItem. Did you forget to override this method?")
-    }
+  override fun areItemsTheSame(newItem: T): Boolean = when {
+    title != null -> title == newItem.title
+    summary != null -> summary == newItem.summary
+    else -> throw AssertionError("Could not determine equality of $newItem. Did you forget to override this method?")
   }
 
-  override fun areContentsTheSame(newItem: T): Boolean {
-    return areItemsTheSame(newItem) &&
-      newItem.summary == summary &&
-      newItem.icon == icon &&
-      newItem.isEnabled == isEnabled &&
-      newItem.iconEnd == iconEnd
-  }
+  override fun areContentsTheSame(newItem: T): Boolean = areItemsTheSame(newItem) &&
+    newItem.summary == summary &&
+    newItem.icon == icon &&
+    newItem.isEnabled == isEnabled &&
+    newItem.iconEnd == iconEnd
 }
 
 class TextPreference(
@@ -281,9 +277,7 @@ class RadioListPreference(
   val confirmAction: Boolean = false
 ) : PreferenceModel<RadioListPreference>() {
 
-  override fun areContentsTheSame(newItem: RadioListPreference): Boolean {
-    return super.areContentsTheSame(newItem) && listItems.contentEquals(newItem.listItems) && selected == newItem.selected
-  }
+  override fun areContentsTheSame(newItem: RadioListPreference): Boolean = super.areContentsTheSame(newItem) && listItems.contentEquals(newItem.listItems) && selected == newItem.selected
 }
 
 class MultiSelectListPreference(
@@ -293,11 +287,9 @@ class MultiSelectListPreference(
   val selected: BooleanArray,
   val onSelected: (BooleanArray) -> Unit
 ) : PreferenceModel<MultiSelectListPreference>(title = title, isEnabled = isEnabled) {
-  override fun areContentsTheSame(newItem: MultiSelectListPreference): Boolean {
-    return super.areContentsTheSame(newItem) &&
-      listItems.contentEquals(newItem.listItems) &&
-      selected.contentEquals(newItem.selected)
-  }
+  override fun areContentsTheSame(newItem: MultiSelectListPreference): Boolean = super.areContentsTheSame(newItem) &&
+    listItems.contentEquals(newItem.listItems) &&
+    selected.contentEquals(newItem.selected)
 }
 
 class SwitchPreference(
@@ -313,16 +305,12 @@ class SwitchPreference(
     const val PAYLOAD_CHECKED = "payload_checked"
   }
 
-  override fun areContentsTheSame(newItem: SwitchPreference): Boolean {
-    return false
-  }
+  override fun areContentsTheSame(newItem: SwitchPreference): Boolean = false
 
-  override fun getChangePayload(newItem: SwitchPreference): Any? {
-    return if (super.areContentsTheSame(newItem)) {
-      PAYLOAD_CHECKED
-    } else {
-      null
-    }
+  override fun getChangePayload(newItem: SwitchPreference): Any? = if (super.areContentsTheSame(newItem)) {
+    PAYLOAD_CHECKED
+  } else {
+    null
   }
 }
 
@@ -333,9 +321,7 @@ class RadioPreference(
   val isChecked: Boolean,
   val onClick: () -> Unit
 ) : PreferenceModel<RadioPreference>(title = title, summary = summary, isEnabled = isEnabled) {
-  override fun areContentsTheSame(newItem: RadioPreference): Boolean {
-    return super.areContentsTheSame(newItem) && isChecked == newItem.isChecked
-  }
+  override fun areContentsTheSame(newItem: RadioPreference): Boolean = super.areContentsTheSame(newItem) && isChecked == newItem.isChecked
 }
 
 class ClickPreference(

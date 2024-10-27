@@ -123,24 +123,22 @@ class MultiDeviceDeleteSyncJob private constructor(
     }
 
     @WorkerThread
-    private fun createMessageDeletes(messageRecords: Collection<MessageRecord>): List<AddressableMessage> {
-      return messageRecords.mapNotNull { message ->
-        val threadRecipient = SignalDatabase.threads.getRecipientForThreadId(message.threadId)
-        if (threadRecipient == null) {
-          Log.w(TAG, "Unable to find thread recipient for message: ${message.id} thread: ${message.threadId}")
-          null
-        } else if (threadRecipient.isReleaseNotes) {
-          Log.w(TAG, "Syncing release channel deletes are not currently supported")
-          null
-        } else if (threadRecipient.isDistributionList || !message.canDeleteSync()) {
-          null
-        } else {
-          AddressableMessage(
-            threadRecipientId = threadRecipient.id.toLong(),
-            sentTimestamp = message.dateSent,
-            authorRecipientId = message.fromRecipient.id.toLong()
-          )
-        }
+    private fun createMessageDeletes(messageRecords: Collection<MessageRecord>): List<AddressableMessage> = messageRecords.mapNotNull { message ->
+      val threadRecipient = SignalDatabase.threads.getRecipientForThreadId(message.threadId)
+      if (threadRecipient == null) {
+        Log.w(TAG, "Unable to find thread recipient for message: ${message.id} thread: ${message.threadId}")
+        null
+      } else if (threadRecipient.isReleaseNotes) {
+        Log.w(TAG, "Syncing release channel deletes are not currently supported")
+        null
+      } else if (threadRecipient.isDistributionList || !message.canDeleteSync()) {
+        null
+      } else {
+        AddressableMessage(
+          threadRecipientId = threadRecipient.id.toLong(),
+          sentTimestamp = message.dateSent,
+          authorRecipientId = message.fromRecipient.id.toLong()
+        )
       }
     }
 
@@ -187,35 +185,33 @@ class MultiDeviceDeleteSyncJob private constructor(
     }
 
     @WorkerThread
-    private fun createThreadDeletes(threads: List<ThreadTable.ThreadDeleteSyncInfo>, isFullDelete: Boolean): List<ThreadDelete> {
-      return threads.mapNotNull { (threadId, messages, nonExpiringMessages) ->
-        val threadRecipient = SignalDatabase.threads.getRecipientForThreadId(threadId)
-        if (threadRecipient == null) {
-          Log.w(TAG, "Unable to find thread recipient for thread: $threadId")
-          null
-        } else if (threadRecipient.isReleaseNotes) {
-          Log.w(TAG, "Syncing release channel delete is not currently supported")
-          null
-        } else if (threadRecipient.isDistributionList) {
-          null
-        } else {
-          ThreadDelete(
-            threadRecipientId = threadRecipient.id.toLong(),
-            isFullDelete = isFullDelete,
-            messages = messages.map {
-              AddressableMessage(
-                sentTimestamp = it.dateSent,
-                authorRecipientId = it.fromRecipient.id.toLong()
-              )
-            },
-            nonExpiringMessages = nonExpiringMessages.map {
-              AddressableMessage(
-                sentTimestamp = it.dateSent,
-                authorRecipientId = it.fromRecipient.id.toLong()
-              )
-            }
-          )
-        }
+    private fun createThreadDeletes(threads: List<ThreadTable.ThreadDeleteSyncInfo>, isFullDelete: Boolean): List<ThreadDelete> = threads.mapNotNull { (threadId, messages, nonExpiringMessages) ->
+      val threadRecipient = SignalDatabase.threads.getRecipientForThreadId(threadId)
+      if (threadRecipient == null) {
+        Log.w(TAG, "Unable to find thread recipient for thread: $threadId")
+        null
+      } else if (threadRecipient.isReleaseNotes) {
+        Log.w(TAG, "Syncing release channel delete is not currently supported")
+        null
+      } else if (threadRecipient.isDistributionList) {
+        null
+      } else {
+        ThreadDelete(
+          threadRecipientId = threadRecipient.id.toLong(),
+          isFullDelete = isFullDelete,
+          messages = messages.map {
+            AddressableMessage(
+              sentTimestamp = it.dateSent,
+              authorRecipientId = it.fromRecipient.id.toLong()
+            )
+          },
+          nonExpiringMessages = nonExpiringMessages.map {
+            AddressableMessage(
+              sentTimestamp = it.dateSent,
+              authorRecipientId = it.fromRecipient.id.toLong()
+            )
+          }
+        )
       }
     }
   }
@@ -385,14 +381,12 @@ class MultiDeviceDeleteSyncJob private constructor(
     return Content(syncMessage = syncMessage.build())
   }
 
-  private fun Recipient.toDeleteSyncConversationId(): DeleteForMe.ConversationIdentifier? {
-    return when {
-      isGroup -> DeleteForMe.ConversationIdentifier(threadGroupId = requireGroupId().decodedId.toByteString())
-      hasAci -> DeleteForMe.ConversationIdentifier(threadServiceId = requireAci().toString())
-      hasPni -> DeleteForMe.ConversationIdentifier(threadServiceId = requirePni().toString())
-      hasE164 -> DeleteForMe.ConversationIdentifier(threadE164 = requireE164())
-      else -> null
-    }
+  private fun Recipient.toDeleteSyncConversationId(): DeleteForMe.ConversationIdentifier? = when {
+    isGroup -> DeleteForMe.ConversationIdentifier(threadGroupId = requireGroupId().decodedId.toByteString())
+    hasAci -> DeleteForMe.ConversationIdentifier(threadServiceId = requireAci().toString())
+    hasPni -> DeleteForMe.ConversationIdentifier(threadServiceId = requirePni().toString())
+    hasE164 -> DeleteForMe.ConversationIdentifier(threadE164 = requireE164())
+    else -> null
   }
 
   private fun AddressableMessage.toDeleteSyncMessage(): DeleteForMe.AddressableMessage? {
@@ -417,8 +411,6 @@ class MultiDeviceDeleteSyncJob private constructor(
   }
 
   class Factory : Job.Factory<MultiDeviceDeleteSyncJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): MultiDeviceDeleteSyncJob {
-      return MultiDeviceDeleteSyncJob(DeleteSyncJobData.ADAPTER.decode(serializedData!!), parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): MultiDeviceDeleteSyncJob = MultiDeviceDeleteSyncJob(DeleteSyncJobData.ADAPTER.decode(serializedData!!), parameters)
   }
 }

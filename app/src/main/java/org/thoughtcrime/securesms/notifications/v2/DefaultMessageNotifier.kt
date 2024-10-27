@@ -73,9 +73,7 @@ class DefaultMessageNotifier(context: Application) : MessageNotifier {
     }
   }
 
-  override fun getVisibleThread(): Optional<ConversationId> {
-    return Optional.ofNullable(visibleThread)
-  }
+  override fun getVisibleThread(): Optional<ConversationId> = Optional.ofNullable(visibleThread)
 
   override fun clearVisibleThread() {
     setVisibleThread(null)
@@ -317,13 +315,11 @@ class DefaultMessageNotifier(context: Application) : MessageNotifier {
   private data class Reminder(val lastNotified: Long, val count: Int = 0)
 }
 
-private fun StatusBarNotification.isMessageNotification(): Boolean {
-  return id != NotificationIds.MESSAGE_SUMMARY &&
-    id != KeyCachingService.SERVICE_RUNNING_ID &&
-    id != IncomingMessageObserver.FOREGROUND_ID &&
-    id != NotificationIds.PENDING_MESSAGES &&
-    !CallNotificationBuilder.isWebRtcNotification(id)
-}
+private fun StatusBarNotification.isMessageNotification(): Boolean = id != NotificationIds.MESSAGE_SUMMARY &&
+  id != KeyCachingService.SERVICE_RUNNING_ID &&
+  id != IncomingMessageObserver.FOREGROUND_ID &&
+  id != NotificationIds.PENDING_MESSAGES &&
+  !CallNotificationBuilder.isWebRtcNotification(id)
 
 private fun NotificationManager.getDisplayedNotificationIds(): Result<Set<Int>> {
   if (Build.VERSION.SDK_INT < 24) {

@@ -94,41 +94,35 @@ class CallLogContextMenu(
     }
   }
 
-  private fun getGoToChatActionItem(call: CallLogRow.Call): ActionItem? {
-    return when {
-      call.peer.isCallLink -> null
-      else -> ActionItem(
-        iconRes = R.drawable.symbol_open_24,
-        title = fragment.getString(R.string.CallContextMenu__go_to_chat)
-      ) {
-        lifecycleDisposable += ConversationIntents.createBuilder(fragment.requireContext(), call.peer.id, -1L)
-          .subscribeBy {
-            fragment.startActivity(it.build())
-          }
-      }
+  private fun getGoToChatActionItem(call: CallLogRow.Call): ActionItem? = when {
+    call.peer.isCallLink -> null
+    else -> ActionItem(
+      iconRes = R.drawable.symbol_open_24,
+      title = fragment.getString(R.string.CallContextMenu__go_to_chat)
+    ) {
+      lifecycleDisposable += ConversationIntents.createBuilder(fragment.requireContext(), call.peer.id, -1L)
+        .subscribeBy {
+          fragment.startActivity(it.build())
+        }
     }
   }
 
-  private fun getInfoActionItem(peer: Recipient, messageIds: LongArray): ActionItem {
-    return ActionItem(
-      iconRes = R.drawable.symbol_info_24,
-      title = fragment.getString(R.string.CallContextMenu__info)
-    ) {
-      val intent = when {
-        peer.isCallLink -> CallLinkDetailsActivity.createIntent(fragment.requireContext(), peer.requireCallLinkRoomId())
-        else -> ConversationSettingsActivity.forCall(fragment.requireContext(), peer, messageIds)
-      }
-      fragment.startActivity(intent)
+  private fun getInfoActionItem(peer: Recipient, messageIds: LongArray): ActionItem = ActionItem(
+    iconRes = R.drawable.symbol_info_24,
+    title = fragment.getString(R.string.CallContextMenu__info)
+  ) {
+    val intent = when {
+      peer.isCallLink -> CallLinkDetailsActivity.createIntent(fragment.requireContext(), peer.requireCallLinkRoomId())
+      else -> ConversationSettingsActivity.forCall(fragment.requireContext(), peer, messageIds)
     }
+    fragment.startActivity(intent)
   }
 
-  private fun getSelectActionItem(call: CallLogRow): ActionItem {
-    return ActionItem(
-      iconRes = R.drawable.symbol_check_circle_24,
-      title = fragment.getString(R.string.CallContextMenu__select)
-    ) {
-      callbacks.startSelection(call)
-    }
+  private fun getSelectActionItem(call: CallLogRow): ActionItem = ActionItem(
+    iconRes = R.drawable.symbol_check_circle_24,
+    title = fragment.getString(R.string.CallContextMenu__select)
+  ) {
+    callbacks.startSelection(call)
   }
 
   private fun getDeleteActionItem(call: CallLogRow): ActionItem? {

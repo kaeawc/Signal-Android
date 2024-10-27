@@ -11,17 +11,13 @@ object ChangeNumberConstraint : Constraint {
 
   const val KEY = "ChangeNumberConstraint"
 
-  override fun isMet(): Boolean {
-    return !SignalStore.misc.isChangeNumberLocked
-  }
+  override fun isMet(): Boolean = !SignalStore.misc.isChangeNumberLocked
 
   override fun getFactoryKey(): String = KEY
 
   override fun applyToJobInfo(jobInfoBuilder: JobInfo.Builder) = Unit
 
   class Factory : Constraint.Factory<ChangeNumberConstraint> {
-    override fun create(): ChangeNumberConstraint {
-      return ChangeNumberConstraint
-    }
+    override fun create(): ChangeNumberConstraint = ChangeNumberConstraint
   }
 }

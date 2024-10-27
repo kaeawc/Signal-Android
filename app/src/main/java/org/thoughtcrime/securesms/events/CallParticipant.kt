@@ -39,49 +39,35 @@ data class CallParticipant(
   val isHandRaised: Boolean
     get() = handRaisedTimestamp > 0
 
-  fun getRecipientDisplayName(context: Context): String {
-    return if (recipient.isSelf && isPrimary) {
-      context.getString(R.string.CallParticipant__you)
-    } else if (recipient.isSelf) {
-      context.getString(R.string.CallParticipant__you_on_another_device)
-    } else if (isPrimary) {
-      recipient.getDisplayName(context)
-    } else {
-      context.getString(R.string.CallParticipant__s_on_another_device, recipient.getDisplayName(context))
-    }
+  fun getRecipientDisplayName(context: Context): String = if (recipient.isSelf && isPrimary) {
+    context.getString(R.string.CallParticipant__you)
+  } else if (recipient.isSelf) {
+    context.getString(R.string.CallParticipant__you_on_another_device)
+  } else if (isPrimary) {
+    recipient.getDisplayName(context)
+  } else {
+    context.getString(R.string.CallParticipant__s_on_another_device, recipient.getDisplayName(context))
   }
 
-  fun getShortRecipientDisplayName(context: Context): String {
-    return if (recipient.isSelf && isPrimary) {
-      context.getString(R.string.CallParticipant__you)
-    } else if (recipient.isSelf) {
-      context.getString(R.string.CallParticipant__you_on_another_device)
-    } else if (isPrimary) {
-      recipient.getShortDisplayName(context)
-    } else {
-      context.getString(R.string.CallParticipant__s_on_another_device, recipient.getShortDisplayName(context))
-    }
+  fun getShortRecipientDisplayName(context: Context): String = if (recipient.isSelf && isPrimary) {
+    context.getString(R.string.CallParticipant__you)
+  } else if (recipient.isSelf) {
+    context.getString(R.string.CallParticipant__you_on_another_device)
+  } else if (isPrimary) {
+    recipient.getShortDisplayName(context)
+  } else {
+    context.getString(R.string.CallParticipant__s_on_another_device, recipient.getShortDisplayName(context))
   }
 
-  fun withIdentityKey(identityKey: IdentityKey?): CallParticipant {
-    return copy(identityKey = identityKey)
-  }
+  fun withIdentityKey(identityKey: IdentityKey?): CallParticipant = copy(identityKey = identityKey)
 
-  fun withVideoEnabled(videoEnabled: Boolean): CallParticipant {
-    return copy(isVideoEnabled = videoEnabled)
-  }
+  fun withVideoEnabled(videoEnabled: Boolean): CallParticipant = copy(isVideoEnabled = videoEnabled)
 
-  fun withScreenSharingEnabled(enable: Boolean): CallParticipant {
-    return copy(isScreenSharing = enable)
-  }
+  fun withScreenSharingEnabled(enable: Boolean): CallParticipant = copy(isScreenSharing = enable)
 
-  fun withHandRaisedTimestamp(timestamp: Long): CallParticipant {
-    return copy(handRaisedTimestamp = timestamp)
-  }
+  fun withHandRaisedTimestamp(timestamp: Long): CallParticipant = copy(handRaisedTimestamp = timestamp)
 
-  override fun toString(): String {
-    return "CallParticipant(callParticipantId=$callParticipantId, isForwardingVideo=$isForwardingVideo, isVideoEnabled=$isVideoEnabled, isMicrophoneEnabled=$isMicrophoneEnabled, handRaisedTimestamp=$handRaisedTimestamp, isMediaKeysReceived=$isMediaKeysReceived, isScreenSharing=$isScreenSharing)"
-  }
+  override fun toString(): String = "CallParticipant(callParticipantId=$callParticipantId, isForwardingVideo=$isForwardingVideo, isVideoEnabled=$isVideoEnabled, isMicrophoneEnabled=$isMicrophoneEnabled, handRaisedTimestamp=$handRaisedTimestamp, isMediaKeysReceived=$isMediaKeysReceived, isScreenSharing=$isScreenSharing)"
 
   enum class DeviceOrdinal {
     PRIMARY,
@@ -102,14 +88,12 @@ data class CallParticipant(
        * display in the UI.
        */
       @JvmStatic
-      fun fromRawAudioLevel(raw: Int): AudioLevel {
-        return when {
-          raw < 500 -> LOWEST
-          raw < 1000 -> LOW
-          raw < 5000 -> MEDIUM
-          raw < 16000 -> HIGH
-          else -> HIGHEST
-        }
+      fun fromRawAudioLevel(raw: Int): AudioLevel = when {
+        raw < 500 -> LOWEST
+        raw < 1000 -> LOW
+        raw < 5000 -> MEDIUM
+        raw < 16000 -> HIGH
+        else -> HIGHEST
       }
     }
   }
@@ -128,17 +112,15 @@ data class CallParticipant(
       microphoneEnabled: Boolean,
       handRaisedTimestamp: Long,
       callParticipantId: CallParticipantId = CallParticipantId(Recipient.self())
-    ): CallParticipant {
-      return CallParticipant(
-        callParticipantId = callParticipantId,
-        recipient = Recipient.self(),
-        videoSink = renderer,
-        cameraState = cameraState,
-        isVideoEnabled = cameraState.isEnabled && cameraState.cameraCount > 0,
-        isMicrophoneEnabled = microphoneEnabled,
-        handRaisedTimestamp = handRaisedTimestamp
-      )
-    }
+    ): CallParticipant = CallParticipant(
+      callParticipantId = callParticipantId,
+      recipient = Recipient.self(),
+      videoSink = renderer,
+      cameraState = cameraState,
+      isVideoEnabled = cameraState.isEnabled && cameraState.cameraCount > 0,
+      isMicrophoneEnabled = microphoneEnabled,
+      handRaisedTimestamp = handRaisedTimestamp
+    )
 
     @JvmStatic
     fun createRemote(
@@ -155,22 +137,20 @@ data class CallParticipant(
       addedToCallTime: Long,
       isScreenSharing: Boolean,
       deviceOrdinal: DeviceOrdinal
-    ): CallParticipant {
-      return CallParticipant(
-        callParticipantId = callParticipantId,
-        recipient = recipient,
-        identityKey = identityKey,
-        videoSink = renderer,
-        isForwardingVideo = isForwardingVideo,
-        isVideoEnabled = videoEnabled,
-        isMicrophoneEnabled = audioEnabled,
-        handRaisedTimestamp = handRaisedTimestamp,
-        lastSpoke = lastSpoke,
-        isMediaKeysReceived = mediaKeysReceived,
-        addedToCallTime = addedToCallTime,
-        isScreenSharing = isScreenSharing,
-        deviceOrdinal = deviceOrdinal
-      )
-    }
+    ): CallParticipant = CallParticipant(
+      callParticipantId = callParticipantId,
+      recipient = recipient,
+      identityKey = identityKey,
+      videoSink = renderer,
+      isForwardingVideo = isForwardingVideo,
+      isVideoEnabled = videoEnabled,
+      isMicrophoneEnabled = audioEnabled,
+      handRaisedTimestamp = handRaisedTimestamp,
+      lastSpoke = lastSpoke,
+      isMediaKeysReceived = mediaKeysReceived,
+      addedToCallTime = addedToCallTime,
+      isScreenSharing = isScreenSharing,
+      deviceOrdinal = deviceOrdinal
+    )
   }
 }

@@ -34,9 +34,7 @@ class TransferOrRestoreViewModel : ViewModel() {
     }
   }
 
-  fun getBackupRestorationType(): BackupRestorationType? {
-    return store.value.restorationType
-  }
+  fun getBackupRestorationType(): BackupRestorationType? = store.value.restorationType
 }
 
 data class State(val restorationType: BackupRestorationType? = null)

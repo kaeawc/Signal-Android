@@ -84,21 +84,13 @@ data class RecipientRecord(
   val note: String?
 ) {
 
-  fun e164Only(): Boolean {
-    return this.e164 != null && this.aci == null && this.pni == null
-  }
+  fun e164Only(): Boolean = this.e164 != null && this.aci == null && this.pni == null
 
-  fun pniOnly(): Boolean {
-    return this.e164 == null && this.aci == null && this.pni != null
-  }
+  fun pniOnly(): Boolean = this.e164 == null && this.aci == null && this.pni != null
 
-  fun aciOnly(): Boolean {
-    return this.e164 == null && this.pni == null && this.aci != null
-  }
+  fun aciOnly(): Boolean = this.e164 == null && this.pni == null && this.aci != null
 
-  fun pniAndAci(): Boolean {
-    return this.aci != null && this.pni != null
-  }
+  fun pniAndAci(): Boolean = this.aci != null && this.pni != null
 
   val serviceId: ServiceId? = this.aci ?: this.pni
 

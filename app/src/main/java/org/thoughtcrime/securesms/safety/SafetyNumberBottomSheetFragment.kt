@@ -31,7 +31,9 @@ import org.thoughtcrime.securesms.verify.VerifyIdentityFragment
  * Displays a bottom sheet containing information about safety number changes and allows the user to
  * address these changes.
  */
-class SafetyNumberBottomSheetFragment : DSLSettingsBottomSheetFragment(layoutId = R.layout.safety_number_bottom_sheet), WrapperDialogFragment.WrapperDialogFragmentCallback {
+class SafetyNumberBottomSheetFragment :
+  DSLSettingsBottomSheetFragment(layoutId = R.layout.safety_number_bottom_sheet),
+  WrapperDialogFragment.WrapperDialogFragmentCallback {
 
   private lateinit var sendAnyway: MaterialButton
 
@@ -103,113 +105,111 @@ class SafetyNumberBottomSheetFragment : DSLSettingsBottomSheetFragment(layoutId 
 
   override fun onWrapperDialogFragmentDismissed() = Unit
 
-  private fun getConfiguration(state: SafetyNumberBottomSheetState): DSLConfiguration {
-    return configure {
-      customPref(
-        SplashImage.Model(
-          R.drawable.ic_safety_number_24,
-          R.color.signal_colorOnSurface
-        )
+  private fun getConfiguration(state: SafetyNumberBottomSheetState): DSLConfiguration = configure {
+    customPref(
+      SplashImage.Model(
+        R.drawable.ic_safety_number_24,
+        R.color.signal_colorOnSurface
       )
+    )
 
-      textPref(
-        title = DSLSettingsText.from(
-          when {
-            state.isCheckupComplete() && state.hasLargeNumberOfUntrustedRecipients -> R.string.SafetyNumberBottomSheetFragment__safety_number_checkup_complete
-            state.hasLargeNumberOfUntrustedRecipients -> R.string.SafetyNumberBottomSheetFragment__safety_number_checkup
-            else -> R.string.SafetyNumberBottomSheetFragment__safety_number_changes
-          },
-          DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_TitleLarge),
-          DSLSettingsText.CenterModifier
-        )
+    textPref(
+      title = DSLSettingsText.from(
+        when {
+          state.isCheckupComplete() && state.hasLargeNumberOfUntrustedRecipients -> R.string.SafetyNumberBottomSheetFragment__safety_number_checkup_complete
+          state.hasLargeNumberOfUntrustedRecipients -> R.string.SafetyNumberBottomSheetFragment__safety_number_checkup
+          else -> R.string.SafetyNumberBottomSheetFragment__safety_number_changes
+        },
+        DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_TitleLarge),
+        DSLSettingsText.CenterModifier
       )
+    )
 
-      textPref(
+    textPref(
+      title = DSLSettingsText.from(
+        when {
+          state.isCheckupComplete() && state.hasLargeNumberOfUntrustedRecipients -> getString(R.string.SafetyNumberBottomSheetFragment__all_connections_have_been_reviewed)
+          state.hasLargeNumberOfUntrustedRecipients -> resources.getQuantityString(R.plurals.SafetyNumberBottomSheetFragment__you_have_d_connections_plural, args.untrustedRecipients.size, args.untrustedRecipients.size)
+          else -> getString(R.string.SafetyNumberBottomSheetFragment__the_following_people)
+        },
+        DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_BodyLarge),
+        DSLSettingsText.CenterModifier
+      )
+    )
+
+    if (state.isEmpty()) {
+      space(DimensionUnit.DP.toPixels(48f).toInt())
+
+      noPadTextPref(
         title = DSLSettingsText.from(
-          when {
-            state.isCheckupComplete() && state.hasLargeNumberOfUntrustedRecipients -> getString(R.string.SafetyNumberBottomSheetFragment__all_connections_have_been_reviewed)
-            state.hasLargeNumberOfUntrustedRecipients -> resources.getQuantityString(R.plurals.SafetyNumberBottomSheetFragment__you_have_d_connections_plural, args.untrustedRecipients.size, args.untrustedRecipients.size)
-            else -> getString(R.string.SafetyNumberBottomSheetFragment__the_following_people)
-          },
+          R.string.SafetyNumberBottomSheetFragment__no_more_recipients_to_show,
           DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_BodyLarge),
-          DSLSettingsText.CenterModifier
+          DSLSettingsText.CenterModifier,
+          DSLSettingsText.ColorModifier(ContextCompat.getColor(requireContext(), R.color.signal_colorOnSurfaceVariant))
         )
       )
 
-      if (state.isEmpty()) {
-        space(DimensionUnit.DP.toPixels(48f).toInt())
+      space(DimensionUnit.DP.toPixels(48f).toInt())
+    }
 
-        noPadTextPref(
-          title = DSLSettingsText.from(
-            R.string.SafetyNumberBottomSheetFragment__no_more_recipients_to_show,
-            DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_BodyLarge),
-            DSLSettingsText.CenterModifier,
-            DSLSettingsText.ColorModifier(ContextCompat.getColor(requireContext(), R.color.signal_colorOnSurfaceVariant))
-          )
-        )
+    if (!state.hasLargeNumberOfUntrustedRecipients) {
+      state.destinationToRecipientMap.values.flatten().distinct().forEach {
+        customPref(
+          SafetyNumberRecipientRowItem.Model(
+            recipient = it.recipient,
+            isVerified = it.identityRecord.verifiedStatus == IdentityTable.VerifiedStatus.VERIFIED,
+            distributionListMembershipCount = it.distributionListMembershipCount,
+            groupMembershipCount = it.groupMembershipCount,
+            getContextMenuActions = { model ->
+              val actions = mutableListOf<ActionItem>()
 
-        space(DimensionUnit.DP.toPixels(48f).toInt())
-      }
+              actions.add(
+                ActionItem(
+                  iconRes = R.drawable.ic_safety_number_24,
+                  title = getString(R.string.SafetyNumberBottomSheetFragment__verify_safety_number),
+                  tintRes = R.color.signal_colorOnSurface,
+                  action = {
+                    lifecycleDisposable += viewModel.getIdentityRecord(model.recipient.id).subscribe { record ->
+                      VerifyIdentityFragment.createDialog(
+                        model.recipient.id,
+                        IdentityKeyParcelable(record.identityKey),
+                        false
+                      ).show(childFragmentManager, null)
+                    }
+                  }
+                )
+              )
 
-      if (!state.hasLargeNumberOfUntrustedRecipients) {
-        state.destinationToRecipientMap.values.flatten().distinct().forEach {
-          customPref(
-            SafetyNumberRecipientRowItem.Model(
-              recipient = it.recipient,
-              isVerified = it.identityRecord.verifiedStatus == IdentityTable.VerifiedStatus.VERIFIED,
-              distributionListMembershipCount = it.distributionListMembershipCount,
-              groupMembershipCount = it.groupMembershipCount,
-              getContextMenuActions = { model ->
-                val actions = mutableListOf<ActionItem>()
-
+              if (model.distributionListMembershipCount > 0) {
                 actions.add(
                   ActionItem(
-                    iconRes = R.drawable.ic_safety_number_24,
-                    title = getString(R.string.SafetyNumberBottomSheetFragment__verify_safety_number),
+                    iconRes = R.drawable.ic_circle_x_24,
+                    title = getString(R.string.SafetyNumberBottomSheetFragment__remove_from_story),
                     tintRes = R.color.signal_colorOnSurface,
                     action = {
-                      lifecycleDisposable += viewModel.getIdentityRecord(model.recipient.id).subscribe { record ->
-                        VerifyIdentityFragment.createDialog(
-                          model.recipient.id,
-                          IdentityKeyParcelable(record.identityKey),
-                          false
-                        ).show(childFragmentManager, null)
-                      }
+                      viewModel.removeRecipientFromSelectedStories(model.recipient.id)
                     }
                   )
                 )
-
-                if (model.distributionListMembershipCount > 0) {
-                  actions.add(
-                    ActionItem(
-                      iconRes = R.drawable.ic_circle_x_24,
-                      title = getString(R.string.SafetyNumberBottomSheetFragment__remove_from_story),
-                      tintRes = R.color.signal_colorOnSurface,
-                      action = {
-                        viewModel.removeRecipientFromSelectedStories(model.recipient.id)
-                      }
-                    )
-                  )
-                }
-
-                if (model.distributionListMembershipCount == 0 && model.groupMembershipCount == 0) {
-                  actions.add(
-                    ActionItem(
-                      iconRes = R.drawable.ic_circle_x_24,
-                      title = getString(R.string.SafetyNumberReviewConnectionsFragment__remove),
-                      tintRes = R.color.signal_colorOnSurface,
-                      action = {
-                        viewModel.removeDestination(model.recipient.id)
-                      }
-                    )
-                  )
-                }
-
-                actions
               }
-            )
+
+              if (model.distributionListMembershipCount == 0 && model.groupMembershipCount == 0) {
+                actions.add(
+                  ActionItem(
+                    iconRes = R.drawable.ic_circle_x_24,
+                    title = getString(R.string.SafetyNumberReviewConnectionsFragment__remove),
+                    tintRes = R.color.signal_colorOnSurface,
+                    action = {
+                      viewModel.removeDestination(model.recipient.id)
+                    }
+                  )
+                )
+              }
+
+              actions
+            }
           )
-        }
+        )
       }
     }
   }

@@ -15,17 +15,15 @@ class ActionRequestListener<T>(
 
   companion object {
     @JvmStatic
-    fun <T> onEither(onEither: Runnable): ActionRequestListener<T> {
-      return ActionRequestListener(onEither, onEither)
-    }
+    fun <T> onEither(onEither: Runnable): ActionRequestListener<T> = ActionRequestListener(onEither, onEither)
   }
 
-  override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<T>?, isFirstResource: Boolean): Boolean {
+  override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<T>, isFirstResource: Boolean): Boolean {
     onLoadFailed.run()
     return false
   }
 
-  override fun onResourceReady(resource: T, model: Any?, target: Target<T>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+  override fun onResourceReady(resource: T & Any, model: Any, target: Target<T>?, dataSource: DataSource, isFirstResource: Boolean): Boolean {
     onResourceReady.run()
     return false
   }

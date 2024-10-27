@@ -19,9 +19,7 @@ data class InAppPaymentReceiptRecord(
     ONE_TIME_GIFT("gift");
 
     companion object {
-      fun fromCode(code: String): Type {
-        return entries.first { it.code == code }
-      }
+      fun fromCode(code: String): Type = entries.first { it.code == code }
     }
   }
 
@@ -40,24 +38,20 @@ data class InAppPaymentReceiptRecord(
       )
     }
 
-    fun createForBoost(amount: FiatMoney): InAppPaymentReceiptRecord {
-      return InAppPaymentReceiptRecord(
-        id = -1L,
-        amount = amount,
-        timestamp = System.currentTimeMillis(),
-        subscriptionLevel = -1,
-        type = Type.ONE_TIME_DONATION
-      )
-    }
+    fun createForBoost(amount: FiatMoney): InAppPaymentReceiptRecord = InAppPaymentReceiptRecord(
+      id = -1L,
+      amount = amount,
+      timestamp = System.currentTimeMillis(),
+      subscriptionLevel = -1,
+      type = Type.ONE_TIME_DONATION
+    )
 
-    fun createForGift(amount: FiatMoney): InAppPaymentReceiptRecord {
-      return InAppPaymentReceiptRecord(
-        id = -1L,
-        amount = amount,
-        timestamp = System.currentTimeMillis(),
-        subscriptionLevel = -1,
-        type = Type.ONE_TIME_GIFT
-      )
-    }
+    fun createForGift(amount: FiatMoney): InAppPaymentReceiptRecord = InAppPaymentReceiptRecord(
+      id = -1L,
+      amount = amount,
+      timestamp = System.currentTimeMillis(),
+      subscriptionLevel = -1,
+      type = Type.ONE_TIME_GIFT
+    )
   }
 }

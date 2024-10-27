@@ -29,47 +29,39 @@ import org.thoughtcrime.securesms.storage.StorageSyncHelper
 class UpdateCallLinkRepository(
   private val callLinkManager: SignalCallLinkManager = AppDependencies.signalCallManager.callLinkManager
 ) {
-  fun setCallName(credentials: CallLinkCredentials, name: String): Single<UpdateCallLinkResult> {
-    return callLinkManager
-      .updateCallLinkName(
-        credentials = credentials,
-        name = name
-      )
-      .doOnSuccess(updateState(credentials))
-      .subscribeOn(Schedulers.io())
-  }
+  fun setCallName(credentials: CallLinkCredentials, name: String): Single<UpdateCallLinkResult> = callLinkManager
+    .updateCallLinkName(
+      credentials = credentials,
+      name = name
+    )
+    .doOnSuccess(updateState(credentials))
+    .subscribeOn(Schedulers.io())
 
-  fun setCallRestrictions(credentials: CallLinkCredentials, restrictions: CallLinkState.Restrictions): Single<UpdateCallLinkResult> {
-    return callLinkManager
-      .updateCallLinkRestrictions(
-        credentials = credentials,
-        restrictions = restrictions
-      )
-      .doOnSuccess(updateState(credentials))
-      .subscribeOn(Schedulers.io())
-  }
+  fun setCallRestrictions(credentials: CallLinkCredentials, restrictions: CallLinkState.Restrictions): Single<UpdateCallLinkResult> = callLinkManager
+    .updateCallLinkRestrictions(
+      credentials = credentials,
+      restrictions = restrictions
+    )
+    .doOnSuccess(updateState(credentials))
+    .subscribeOn(Schedulers.io())
 
-  fun deleteCallLink(credentials: CallLinkCredentials): Single<UpdateCallLinkResult> {
-    return callLinkManager
-      .deleteCallLink(credentials)
-      .doOnSuccess(updateState(credentials))
-      .subscribeOn(Schedulers.io())
-  }
+  fun deleteCallLink(credentials: CallLinkCredentials): Single<UpdateCallLinkResult> = callLinkManager
+    .deleteCallLink(credentials)
+    .doOnSuccess(updateState(credentials))
+    .subscribeOn(Schedulers.io())
 
-  private fun updateState(credentials: CallLinkCredentials): (UpdateCallLinkResult) -> Unit {
-    return { result ->
-      when (result) {
-        is UpdateCallLinkResult.Update -> {
-          SignalDatabase.callLinks.updateCallLinkState(credentials.roomId, result.state)
-          AppDependencies.jobManager.add(CallLinkUpdateSendJob(credentials.roomId))
-        }
-        is UpdateCallLinkResult.Delete -> {
-          SignalDatabase.callLinks.markRevoked(credentials.roomId)
-          AppDependencies.jobManager.add(CallLinkUpdateSendJob(credentials.roomId))
-          StorageSyncHelper.scheduleSyncForDataChange()
-        }
-        else -> {}
+  private fun updateState(credentials: CallLinkCredentials): (UpdateCallLinkResult) -> Unit = { result ->
+    when (result) {
+      is UpdateCallLinkResult.Update -> {
+        SignalDatabase.callLinks.updateCallLinkState(credentials.roomId, result.state)
+        AppDependencies.jobManager.add(CallLinkUpdateSendJob(credentials.roomId))
       }
+      is UpdateCallLinkResult.Delete -> {
+        SignalDatabase.callLinks.markRevoked(credentials.roomId)
+        AppDependencies.jobManager.add(CallLinkUpdateSendJob(credentials.roomId))
+        StorageSyncHelper.scheduleSyncForDataChange()
+      }
+      else -> {}
     }
   }
 }

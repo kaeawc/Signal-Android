@@ -12,9 +12,10 @@ import org.thoughtcrime.securesms.groups.ParcelableGroupId
 import org.thoughtcrime.securesms.groups.ui.GroupErrors
 import org.thoughtcrime.securesms.util.adapter.mapping.MappingAdapter
 
-class PermissionsSettingsFragment : DSLSettingsFragment(
-  titleId = R.string.ConversationSettingsFragment__permissions
-) {
+class PermissionsSettingsFragment :
+  DSLSettingsFragment(
+    titleId = R.string.ConversationSettingsFragment__permissions
+  ) {
 
   private val permissionsOptions: Array<String> by lazy {
     resources.getStringArray(R.array.PermissionsSettingsFragment__editor_labels)
@@ -46,52 +47,48 @@ class PermissionsSettingsFragment : DSLSettingsFragment(
     Toast.makeText(context, GroupErrors.getUserDisplayMessage(groupChangeError.reason), Toast.LENGTH_LONG).show()
   }
 
-  private fun getConfiguration(state: PermissionsSettingsState): DSLConfiguration {
-    return configure {
-      radioListPref(
-        title = DSLSettingsText.from(R.string.PermissionsSettingsFragment__add_members),
-        isEnabled = state.selfCanEditSettings,
-        listItems = permissionsOptions,
-        dialogTitle = DSLSettingsText.from(R.string.PermissionsSettingsFragment__who_can_add_new_members),
-        selected = getSelected(state.nonAdminCanAddMembers),
-        confirmAction = true,
-        onSelected = {
-          viewModel.setNonAdminCanAddMembers(it == 1)
-        }
-      )
+  private fun getConfiguration(state: PermissionsSettingsState): DSLConfiguration = configure {
+    radioListPref(
+      title = DSLSettingsText.from(R.string.PermissionsSettingsFragment__add_members),
+      isEnabled = state.selfCanEditSettings,
+      listItems = permissionsOptions,
+      dialogTitle = DSLSettingsText.from(R.string.PermissionsSettingsFragment__who_can_add_new_members),
+      selected = getSelected(state.nonAdminCanAddMembers),
+      confirmAction = true,
+      onSelected = {
+        viewModel.setNonAdminCanAddMembers(it == 1)
+      }
+    )
 
-      radioListPref(
-        title = DSLSettingsText.from(R.string.PermissionsSettingsFragment__edit_group_info),
-        isEnabled = state.selfCanEditSettings,
-        listItems = permissionsOptions,
-        dialogTitle = DSLSettingsText.from(R.string.PermissionsSettingsFragment__who_can_edit_this_groups_info),
-        selected = getSelected(state.nonAdminCanEditGroupInfo),
-        confirmAction = true,
-        onSelected = {
-          viewModel.setNonAdminCanEditGroupInfo(it == 1)
-        }
-      )
+    radioListPref(
+      title = DSLSettingsText.from(R.string.PermissionsSettingsFragment__edit_group_info),
+      isEnabled = state.selfCanEditSettings,
+      listItems = permissionsOptions,
+      dialogTitle = DSLSettingsText.from(R.string.PermissionsSettingsFragment__who_can_edit_this_groups_info),
+      selected = getSelected(state.nonAdminCanEditGroupInfo),
+      confirmAction = true,
+      onSelected = {
+        viewModel.setNonAdminCanEditGroupInfo(it == 1)
+      }
+    )
 
-      radioListPref(
-        title = DSLSettingsText.from(R.string.PermissionsSettingsFragment__send_messages),
-        isEnabled = state.selfCanEditSettings,
-        listItems = permissionsOptions,
-        dialogTitle = DSLSettingsText.from(R.string.PermissionsSettingsFragment__who_can_send_messages),
-        selected = getSelected(!state.announcementGroup),
-        confirmAction = true,
-        onSelected = {
-          viewModel.setAnnouncementGroup(it == 0)
-        }
-      )
-    }
+    radioListPref(
+      title = DSLSettingsText.from(R.string.PermissionsSettingsFragment__send_messages),
+      isEnabled = state.selfCanEditSettings,
+      listItems = permissionsOptions,
+      dialogTitle = DSLSettingsText.from(R.string.PermissionsSettingsFragment__who_can_send_messages),
+      selected = getSelected(!state.announcementGroup),
+      confirmAction = true,
+      onSelected = {
+        viewModel.setAnnouncementGroup(it == 0)
+      }
+    )
   }
 
   @StringRes
-  private fun getSelected(isNonAdminAllowed: Boolean): Int {
-    return if (isNonAdminAllowed) {
-      1
-    } else {
-      0
-    }
+  private fun getSelected(isNonAdminAllowed: Boolean): Int = if (isNonAdminAllowed) {
+    1
+  } else {
+    0
   }
 }

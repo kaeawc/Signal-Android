@@ -39,12 +39,10 @@ class AppearanceSettingsViewModel : ViewModel() {
     SignalStore.settings.messageFontSize = size
   }
 
-  private fun getState(): AppearanceSettingsState {
-    return AppearanceSettingsState(
-      SignalStore.settings.theme,
-      SignalStore.settings.messageFontSize,
-      SignalStore.settings.language,
-      SignalStore.settings.useCompactNavigationBar
-    )
-  }
+  private fun getState(): AppearanceSettingsState = AppearanceSettingsState(
+    SignalStore.settings.theme,
+    SignalStore.settings.messageFontSize,
+    SignalStore.settings.language,
+    SignalStore.settings.useCompactNavigationBar
+  )
 }

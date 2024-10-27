@@ -14,7 +14,7 @@ dependencies {
   implementation(libs.jackson.module.kotlin)
   implementation(libs.jackson.core)
 
-  testImplementation(testLibs.robolectric.robolectric) {
+  testImplementation(libs.robolectric) {
     exclude(group = "com.google.protobuf", module = "protobuf-java")
   }
 

@@ -32,24 +32,20 @@ class InAppPaymentPurchaseTokenJob private constructor(
 
     const val KEY = "InAppPaymentPurchaseTokenJob"
 
-    private fun create(inAppPayment: InAppPaymentTable.InAppPayment): Job {
-      return InAppPaymentPurchaseTokenJob(
-        inAppPaymentId = inAppPayment.id,
-        parameters = Parameters.Builder()
-          .addConstraint(NetworkConstraint.KEY)
-          .setQueue(InAppPaymentsRepository.resolveJobQueueKey(inAppPayment))
-          .setLifespan(InAppPaymentsRepository.resolveContextJobLifespan(inAppPayment).inWholeMilliseconds)
-          .setMaxAttempts(Parameters.UNLIMITED)
-          .build()
-      )
-    }
+    private fun create(inAppPayment: InAppPaymentTable.InAppPayment): Job = InAppPaymentPurchaseTokenJob(
+      inAppPaymentId = inAppPayment.id,
+      parameters = Parameters.Builder()
+        .addConstraint(NetworkConstraint.KEY)
+        .setQueue(InAppPaymentsRepository.resolveJobQueueKey(inAppPayment))
+        .setLifespan(InAppPaymentsRepository.resolveContextJobLifespan(inAppPayment).inWholeMilliseconds)
+        .setMaxAttempts(Parameters.UNLIMITED)
+        .build()
+    )
 
-    fun createJobChain(inAppPayment: InAppPaymentTable.InAppPayment): Chain {
-      return AppDependencies.jobManager
-        .startChain(create(inAppPayment))
-        .then(InAppPaymentRecurringContextJob.create(inAppPayment))
-        .then(InAppPaymentRedemptionJob.create(inAppPayment))
-    }
+    fun createJobChain(inAppPayment: InAppPaymentTable.InAppPayment): Chain = AppDependencies.jobManager
+      .startChain(create(inAppPayment))
+      .then(InAppPaymentRecurringContextJob.create(inAppPayment))
+      .then(InAppPaymentRedemptionJob.create(inAppPayment))
   }
 
   override fun serialize(): ByteArray = inAppPaymentId.serialize().toByteArray()
@@ -196,11 +192,9 @@ class InAppPaymentPurchaseTokenJob private constructor(
   }
 
   class Factory : Job.Factory<InAppPaymentPurchaseTokenJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): InAppPaymentPurchaseTokenJob {
-      return InAppPaymentPurchaseTokenJob(
-        InAppPaymentTable.InAppPaymentId(serializedData!!.decodeToString().toLong()),
-        parameters
-      )
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): InAppPaymentPurchaseTokenJob = InAppPaymentPurchaseTokenJob(
+      InAppPaymentTable.InAppPaymentId(serializedData!!.decodeToString().toLong()),
+      parameters
+    )
   }
 }

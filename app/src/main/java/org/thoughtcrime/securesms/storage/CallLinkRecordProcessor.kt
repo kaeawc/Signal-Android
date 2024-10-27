@@ -18,17 +18,13 @@ internal class CallLinkRecordProcessor : DefaultStorageRecordProcessor<SignalCal
     private val TAG = Log.tag(CallLinkRecordProcessor::class)
   }
 
-  override fun compare(o1: SignalCallLinkRecord?, o2: SignalCallLinkRecord?): Int {
-    return if (o1?.rootKey.contentEquals(o2?.rootKey)) {
-      0
-    } else {
-      1
-    }
+  override fun compare(o1: SignalCallLinkRecord?, o2: SignalCallLinkRecord?): Int = if (o1?.rootKey.contentEquals(o2?.rootKey)) {
+    0
+  } else {
+    1
   }
 
-  internal override fun isInvalid(remote: SignalCallLinkRecord): Boolean {
-    return remote.adminPassKey.isNotEmpty() && remote.deletionTimestamp > 0L
-  }
+  internal override fun isInvalid(remote: SignalCallLinkRecord): Boolean = remote.adminPassKey.isNotEmpty() && remote.deletionTimestamp > 0L
 
   internal override fun getMatching(remote: SignalCallLinkRecord, keyGenerator: StorageKeyGenerator): Optional<SignalCallLinkRecord> {
     Log.d(TAG, "Attempting to get matching record...")
@@ -52,20 +48,18 @@ internal class CallLinkRecordProcessor : DefaultStorageRecordProcessor<SignalCal
    * An earlier deletion takes precedence over a later deletion
    * Other fields should not change, except for the clearing of the admin passkey on deletion
    */
-  internal override fun merge(remote: SignalCallLinkRecord, local: SignalCallLinkRecord, keyGenerator: StorageKeyGenerator): SignalCallLinkRecord {
-    return if (remote.isDeleted() && local.isDeleted()) {
-      if (remote.deletionTimestamp < local.deletionTimestamp) {
-        remote
-      } else {
-        local
-      }
-    } else if (remote.isDeleted()) {
+  internal override fun merge(remote: SignalCallLinkRecord, local: SignalCallLinkRecord, keyGenerator: StorageKeyGenerator): SignalCallLinkRecord = if (remote.isDeleted() && local.isDeleted()) {
+    if (remote.deletionTimestamp < local.deletionTimestamp) {
       remote
-    } else if (local.isDeleted()) {
-      local
     } else {
-      remote
+      local
     }
+  } else if (remote.isDeleted()) {
+    remote
+  } else if (local.isDeleted()) {
+    local
+  } else {
+    remote
   }
 
   override fun insertLocal(record: SignalCallLinkRecord) {

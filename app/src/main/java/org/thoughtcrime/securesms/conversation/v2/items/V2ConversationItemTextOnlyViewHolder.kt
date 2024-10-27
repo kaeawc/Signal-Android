@@ -70,7 +70,10 @@ open class V2ConversationItemTextOnlyViewHolder<Model : MappingModel<Model>>(
   private val binding: V2ConversationItemTextOnlyBindingBridge,
   private val conversationContext: V2ConversationContext,
   footerDelegate: V2FooterPositionDelegate = V2FooterPositionDelegate(binding)
-) : V2ConversationItemViewHolder<Model>(binding.root, conversationContext), Multiselectable, InteractiveConversationElement, Observer<Recipient> {
+) : V2ConversationItemViewHolder<Model>(binding.root, conversationContext),
+  Multiselectable,
+  InteractiveConversationElement,
+  Observer<Recipient> {
 
   companion object {
     private val STYLE_FACTORY = SearchUtil.StyleFactory { arrayOf<CharacterStyle>(BackgroundColorSpan(Color.YELLOW), ForegroundColorSpan(Color.BLACK)) }
@@ -130,9 +133,7 @@ open class V2ConversationItemTextOnlyViewHolder<Model : MappingModel<Model>>(
   private val replyDelegate = object : V2ConversationItemLayout.OnMeasureListener {
     override fun onPreMeasure() = Unit
 
-    override fun onPostMeasure(): Boolean {
-      return false
-    }
+    override fun onPostMeasure(): Boolean = false
   }
 
   init {
@@ -276,9 +277,7 @@ open class V2ConversationItemTextOnlyViewHolder<Model : MappingModel<Model>>(
 
   override fun getAdapterPosition(recyclerView: RecyclerView): Int = bindingAdapterPosition
 
-  override fun getSnapshotProjections(coordinateRoot: ViewGroup, clipOutMedia: Boolean): ProjectionList {
-    return getSnapshotProjections(coordinateRoot, clipOutMedia, true)
-  }
+  override fun getSnapshotProjections(coordinateRoot: ViewGroup, clipOutMedia: Boolean): ProjectionList = getSnapshotProjections(coordinateRoot, clipOutMedia, true)
 
   override fun getSnapshotProjections(coordinateRoot: ViewGroup, clipOutMedia: Boolean, outgoingOnly: Boolean): ProjectionList {
     projections.clear()
@@ -298,9 +297,7 @@ open class V2ConversationItemTextOnlyViewHolder<Model : MappingModel<Model>>(
     return projections
   }
 
-  override fun getSnapshotStrategy(): InteractiveConversationElement.SnapshotStrategy {
-    return V2ConversationItemSnapshotStrategy(binding)
-  }
+  override fun getSnapshotStrategy(): InteractiveConversationElement.SnapshotStrategy = V2ConversationItemSnapshotStrategy(binding)
 
   /**
    * Note: This is not necessary for CFV2 Text-Only items because the background is rendered by
@@ -312,26 +309,18 @@ open class V2ConversationItemTextOnlyViewHolder<Model : MappingModel<Model>>(
     return projections
   }
 
-  override fun getTopBoundaryOfMultiselectPart(multiselectPart: MultiselectPart): Int {
-    return root.top
-  }
+  override fun getTopBoundaryOfMultiselectPart(multiselectPart: MultiselectPart): Int = root.top
 
-  override fun getBottomBoundaryOfMultiselectPart(multiselectPart: MultiselectPart): Int {
-    return root.bottom
-  }
+  override fun getBottomBoundaryOfMultiselectPart(multiselectPart: MultiselectPart): Int = root.bottom
 
-  override fun getMultiselectPartForLatestTouch(): MultiselectPart {
-    return conversationMessage.multiselectCollection.asSingle().singlePart
-  }
+  override fun getMultiselectPartForLatestTouch(): MultiselectPart = conversationMessage.multiselectCollection.asSingle().singlePart
 
-  override fun getHorizontalTranslationTarget(): View? {
-    return if (conversationMessage.messageRecord.isOutgoing) {
-      null
-    } else if (conversationMessage.threadRecipient.isGroup) {
-      binding.senderPhoto
-    } else {
-      binding.bodyWrapper
-    }
+  override fun getHorizontalTranslationTarget(): View? = if (conversationMessage.messageRecord.isOutgoing) {
+    null
+  } else if (conversationMessage.threadRecipient.isGroup) {
+    binding.senderPhoto
+  } else {
+    binding.bodyWrapper
   }
 
   override fun hasNonSelectableMedia(): Boolean = false
@@ -339,16 +328,14 @@ open class V2ConversationItemTextOnlyViewHolder<Model : MappingModel<Model>>(
 
   override fun hideProjectionArea() = Unit
 
-  override fun getGiphyMp4PlayableProjection(coordinateRoot: ViewGroup): Projection {
-    return Projection.relativeToParent(
-      coordinateRoot,
-      binding.bodyWrapper,
-      shapeDelegate.cornersLTR
-    )
-      .translateY(root.translationY)
-      .translateX(binding.bodyWrapper.translationX)
-      .translateX(root.translationX)
-  }
+  override fun getGiphyMp4PlayableProjection(coordinateRoot: ViewGroup): Projection = Projection.relativeToParent(
+    coordinateRoot,
+    binding.bodyWrapper,
+    shapeDelegate.cornersLTR
+  )
+    .translateY(root.translationY)
+    .translateX(binding.bodyWrapper.translationX)
+    .translateX(root.translationX)
 
   override fun canPlayContent(): Boolean = false
 
@@ -392,9 +379,7 @@ open class V2ConversationItemTextOnlyViewHolder<Model : MappingModel<Model>>(
     projection.release()
   }
 
-  private fun MessageRecord.buildMessageId(): Long {
-    return if (isMms) -id else id
-  }
+  private fun MessageRecord.buildMessageId(): Long = if (isMms) -id else id
 
   private fun presentBody() {
     binding.body.setTextColor(themeDelegate.getBodyTextColor(conversationMessage))
@@ -488,9 +473,7 @@ open class V2ConversationItemTextOnlyViewHolder<Model : MappingModel<Model>>(
     }
   }
 
-  private fun isContentCondensed(): Boolean {
-    return conversationContext.displayMode is ConversationItemDisplayMode.Condensed && conversationContext.getPreviousMessage(bindingAdapterPosition) == null
-  }
+  private fun isContentCondensed(): Boolean = conversationContext.displayMode is ConversationItemDisplayMode.Condensed && conversationContext.getPreviousMessage(bindingAdapterPosition) == null
 
   private fun presentFooterExpiry() {
     val timer = binding.footerExpiry
@@ -759,23 +742,19 @@ open class V2ConversationItemTextOnlyViewHolder<Model : MappingModel<Model>>(
     }
   }
 
-  override fun disallowSwipe(latestDownX: Float, latestDownY: Float): Boolean {
-    return false
-  }
+  override fun disallowSwipe(latestDownX: Float, latestDownY: Float): Boolean = false
 
-  private fun isForcedFooter(): Boolean {
-    return conversationMessage.messageRecord.isEditMessage || conversationMessage.messageRecord.expiresIn > 0L
-  }
+  private fun isForcedFooter(): Boolean = conversationMessage.messageRecord.isEditMessage || conversationMessage.messageRecord.expiresIn > 0L
 
   private inner class ReactionMeasureListener : V2ConversationItemLayout.OnMeasureListener {
     override fun onPreMeasure() = Unit
 
-    override fun onPostMeasure(): Boolean {
-      return binding.reactions.setBubbleWidth(binding.bodyWrapper.measuredWidth)
-    }
+    override fun onPostMeasure(): Boolean = binding.reactions.setBubbleWidth(binding.bodyWrapper.measuredWidth)
   }
 
-  private inner class PassthroughClickListener : View.OnClickListener, View.OnLongClickListener {
+  private inner class PassthroughClickListener :
+    View.OnClickListener,
+    View.OnLongClickListener {
     override fun onClick(v: View?) {
       binding.root.performClick()
     }

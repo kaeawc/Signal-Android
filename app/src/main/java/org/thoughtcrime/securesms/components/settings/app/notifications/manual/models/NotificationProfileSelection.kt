@@ -43,26 +43,20 @@ object NotificationProfileSelection {
     val onToggleClick: (NotificationProfile) -> Unit
   ) : PreferenceModel<Entry>() {
 
-    override fun areItemsTheSame(newItem: Entry): Boolean {
-      return notificationProfile.id == newItem.notificationProfile.id
-    }
+    override fun areItemsTheSame(newItem: Entry): Boolean = notificationProfile.id == newItem.notificationProfile.id
 
-    override fun areContentsTheSame(newItem: Entry): Boolean {
-      return super.areContentsTheSame(newItem) &&
-        isOn == newItem.isOn &&
-        notificationProfile == newItem.notificationProfile &&
-        isExpanded == newItem.isExpanded &&
-        timeSlotB == newItem.timeSlotB
-    }
+    override fun areContentsTheSame(newItem: Entry): Boolean = super.areContentsTheSame(newItem) &&
+      isOn == newItem.isOn &&
+      notificationProfile == newItem.notificationProfile &&
+      isExpanded == newItem.isExpanded &&
+      timeSlotB == newItem.timeSlotB
 
-    override fun getChangePayload(newItem: Entry): Any? {
-      return if (notificationProfile == newItem.notificationProfile && isExpanded != newItem.isExpanded) {
-        TOGGLE_EXPANSION
-      } else if (notificationProfile == newItem.notificationProfile && timeSlotB != newItem.timeSlotB) {
-        UPDATE_TIMESLOT
-      } else {
-        null
-      }
+    override fun getChangePayload(newItem: Entry): Any? = if (notificationProfile == newItem.notificationProfile && isExpanded != newItem.isExpanded) {
+      TOGGLE_EXPANSION
+    } else if (notificationProfile == newItem.notificationProfile && timeSlotB != newItem.timeSlotB) {
+      UPDATE_TIMESLOT
+    } else {
+      null
     }
   }
 
@@ -121,9 +115,7 @@ object NotificationProfileSelection {
   }
 
   class New(val onClick: () -> Unit) : PreferenceModel<New>() {
-    override fun areItemsTheSame(newItem: New): Boolean {
-      return true
-    }
+    override fun areItemsTheSame(newItem: New): Boolean = true
   }
 
   class NewViewHolder(itemView: View) : MappingViewHolder<New>(itemView) {

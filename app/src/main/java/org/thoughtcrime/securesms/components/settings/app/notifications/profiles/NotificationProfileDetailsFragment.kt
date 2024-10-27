@@ -47,9 +47,7 @@ class NotificationProfileDetailsFragment : DSLSettingsFragment() {
   private val lifecycleDisposable = LifecycleDisposable()
   private var toolbar: Toolbar? = null
 
-  private fun createFactory(): ViewModelProvider.Factory {
-    return NotificationProfileDetailsViewModel.Factory(NotificationProfileDetailsFragmentArgs.fromBundle(requireArguments()).profileId)
-  }
+  private fun createFactory(): ViewModelProvider.Factory = NotificationProfileDetailsViewModel.Factory(NotificationProfileDetailsFragmentArgs.fromBundle(requireArguments()).profileId)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

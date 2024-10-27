@@ -33,9 +33,7 @@ object SignalDownsampleStrategy {
       sourceHeight: Int,
       requestedWidth: Int,
       requestedHeight: Int
-    ): SampleSizeRounding {
-      return SampleSizeRounding.QUALITY
-    }
+    ): SampleSizeRounding = SampleSizeRounding.QUALITY
 
     companion object {
       private const val MAX_SCALE_FACTOR = 1f

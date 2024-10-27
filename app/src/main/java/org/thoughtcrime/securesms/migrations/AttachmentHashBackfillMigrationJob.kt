@@ -32,8 +32,6 @@ internal class AttachmentHashBackfillMigrationJob(parameters: Parameters = Param
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<AttachmentHashBackfillMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): AttachmentHashBackfillMigrationJob {
-      return AttachmentHashBackfillMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): AttachmentHashBackfillMigrationJob = AttachmentHashBackfillMigrationJob(parameters)
   }
 }

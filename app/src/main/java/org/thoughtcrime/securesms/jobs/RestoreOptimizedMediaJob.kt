@@ -76,8 +76,6 @@ class RestoreOptimizedMediaJob private constructor(parameters: Parameters) : Job
   override fun onFailure() = Unit
 
   class Factory : Job.Factory<RestoreOptimizedMediaJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): RestoreOptimizedMediaJob {
-      return RestoreOptimizedMediaJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): RestoreOptimizedMediaJob = RestoreOptimizedMediaJob(parameters)
   }
 }

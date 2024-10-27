@@ -14,9 +14,7 @@ object VersionTracker {
   private val TAG = Log.tag(VersionTracker::class.java)
 
   @JvmStatic
-  fun getLastSeenVersion(context: Context): Int {
-    return TextSecurePreferences.getLastVersionCode(context)
-  }
+  fun getLastSeenVersion(context: Context): Int = TextSecurePreferences.getLastVersionCode(context)
 
   @JvmStatic
   fun updateLastSeenVersion(context: Context) {
@@ -36,13 +34,11 @@ object VersionTracker {
   }
 
   @JvmStatic
-  fun getDaysSinceFirstInstalled(context: Context): Long {
-    return try {
-      val installTimestamp = context.packageManager.getPackageInfo(context.packageName, 0).firstInstallTime
-      Duration.ofMillis(System.currentTimeMillis() - installTimestamp).toDays()
-    } catch (e: PackageManager.NameNotFoundException) {
-      Log.w(TAG, e)
-      0
-    }
+  fun getDaysSinceFirstInstalled(context: Context): Long = try {
+    val installTimestamp = context.packageManager.getPackageInfo(context.packageName, 0).firstInstallTime
+    Duration.ofMillis(System.currentTimeMillis() - installTimestamp).toDays()
+  } catch (e: PackageManager.NameNotFoundException) {
+    Log.w(TAG, e)
+    0
   }
 }

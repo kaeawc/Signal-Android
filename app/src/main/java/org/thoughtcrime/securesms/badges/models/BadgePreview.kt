@@ -40,20 +40,14 @@ object BadgePreview {
 
     data class GiftedBadgeModel(override val badge: Badge?, override val recipient: Recipient) : BadgeModel<GiftedBadgeModel>()
 
-    override fun areItemsTheSame(newItem: T): Boolean {
-      return recipient.id == newItem.recipient.id
-    }
+    override fun areItemsTheSame(newItem: T): Boolean = recipient.id == newItem.recipient.id
 
-    override fun areContentsTheSame(newItem: T): Boolean {
-      return badge == newItem.badge && recipient.hasSameContent(newItem.recipient)
-    }
+    override fun areContentsTheSame(newItem: T): Boolean = badge == newItem.badge && recipient.hasSameContent(newItem.recipient)
 
-    override fun getChangePayload(newItem: T): Any? {
-      return if (recipient.hasSameContent(newItem.recipient) && badge != newItem.badge) {
-        PAYLOAD_BADGE
-      } else {
-        null
-      }
+    override fun getChangePayload(newItem: T): Any? = if (recipient.hasSameContent(newItem.recipient) && badge != newItem.badge) {
+      PAYLOAD_BADGE
+    } else {
+      null
     }
   }
 

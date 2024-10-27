@@ -180,52 +180,50 @@ class MessageBackupsFlowViewModel(
     }
   }
 
-  private fun validateTypeAndUpdateState(state: MessageBackupsFlowState): MessageBackupsFlowState {
-    return when (state.selectedMessageBackupTier!!) {
-      MessageBackupTier.FREE -> {
-        SignalStore.backup.backupTier = MessageBackupTier.FREE
-        SignalStore.uiHints.markHasEverEnabledRemoteBackups()
+  private fun validateTypeAndUpdateState(state: MessageBackupsFlowState): MessageBackupsFlowState = when (state.selectedMessageBackupTier!!) {
+    MessageBackupTier.FREE -> {
+      SignalStore.backup.backupTier = MessageBackupTier.FREE
+      SignalStore.uiHints.markHasEverEnabledRemoteBackups()
 
-        state.copy(stage = MessageBackupsStage.COMPLETED)
-      }
+      state.copy(stage = MessageBackupsStage.COMPLETED)
+    }
 
-      MessageBackupTier.PAID -> {
-        check(state.selectedMessageBackupTier == MessageBackupTier.PAID)
-        check(state.availableBackupTypes.any { it.tier == state.selectedMessageBackupTier })
-        check(state.hasBackupSubscriberAvailable)
+    MessageBackupTier.PAID -> {
+      check(state.selectedMessageBackupTier == MessageBackupTier.PAID)
+      check(state.availableBackupTypes.any { it.tier == state.selectedMessageBackupTier })
+      check(state.hasBackupSubscriberAvailable)
 
-        viewModelScope.launch(Dispatchers.IO) {
-          internalStateFlow.update { it.copy(inAppPayment = null) }
+      viewModelScope.launch(Dispatchers.IO) {
+        internalStateFlow.update { it.copy(inAppPayment = null) }
 
-          val paidFiat = AppDependencies.billingApi.queryProduct()!!.price
+        val paidFiat = AppDependencies.billingApi.queryProduct()!!.price
 
-          SignalDatabase.inAppPayments.clearCreated()
-          val id = SignalDatabase.inAppPayments.insert(
-            type = InAppPaymentType.RECURRING_BACKUP,
-            state = InAppPaymentTable.State.CREATED,
-            subscriberId = InAppPaymentsRepository.requireSubscriber(InAppPaymentSubscriberRecord.Type.BACKUP).subscriberId,
-            endOfPeriod = null,
-            inAppPaymentData = InAppPaymentData(
-              badge = null,
-              label = state.selectedMessageBackupTierLabel!!,
-              amount = paidFiat.toFiatValue(),
-              level = SubscriptionsConfiguration.BACKUPS_LEVEL.toLong(),
-              recipientId = Recipient.self().id.serialize(),
-              paymentMethodType = InAppPaymentData.PaymentMethodType.GOOGLE_PLAY_BILLING,
-              redemption = InAppPaymentData.RedemptionState(
-                stage = InAppPaymentData.RedemptionState.Stage.INIT
-              )
+        SignalDatabase.inAppPayments.clearCreated()
+        val id = SignalDatabase.inAppPayments.insert(
+          type = InAppPaymentType.RECURRING_BACKUP,
+          state = InAppPaymentTable.State.CREATED,
+          subscriberId = InAppPaymentsRepository.requireSubscriber(InAppPaymentSubscriberRecord.Type.BACKUP).subscriberId,
+          endOfPeriod = null,
+          inAppPaymentData = InAppPaymentData(
+            badge = null,
+            label = state.selectedMessageBackupTierLabel!!,
+            amount = paidFiat.toFiatValue(),
+            level = SubscriptionsConfiguration.BACKUPS_LEVEL.toLong(),
+            recipientId = Recipient.self().id.serialize(),
+            paymentMethodType = InAppPaymentData.PaymentMethodType.GOOGLE_PLAY_BILLING,
+            redemption = InAppPaymentData.RedemptionState(
+              stage = InAppPaymentData.RedemptionState.Stage.INIT
             )
           )
+        )
 
-          val inAppPayment = SignalDatabase.inAppPayments.getById(id)!!
-          internalStateFlow.update {
-            it.copy(inAppPayment = inAppPayment, stage = MessageBackupsStage.CHECKOUT_SHEET)
-          }
+        val inAppPayment = SignalDatabase.inAppPayments.getById(id)!!
+        internalStateFlow.update {
+          it.copy(inAppPayment = inAppPayment, stage = MessageBackupsStage.CHECKOUT_SHEET)
         }
-
-        state.copy(stage = MessageBackupsStage.CREATING_IN_APP_PAYMENT)
       }
+
+      state.copy(stage = MessageBackupsStage.CREATING_IN_APP_PAYMENT)
     }
   }
 

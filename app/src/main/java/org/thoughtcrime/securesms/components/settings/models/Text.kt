@@ -26,13 +26,9 @@ data class Text(
   }
 
   class Model(val paddableText: Text) : PreferenceModel<Model>() {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return true
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = true
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) && newItem.paddableText == paddableText
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) && newItem.paddableText == paddableText
   }
 
   class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

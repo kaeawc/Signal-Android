@@ -44,19 +44,15 @@ class ReclaimUsernameAndLinkJob private constructor(parameters: Parameters) : Jo
 
   override fun getFactoryKey(): String = KEY
 
-  override fun run(): Result {
-    return when (UsernameRepository.reclaimUsernameIfNecessary()) {
-      UsernameRepository.UsernameReclaimResult.SUCCESS -> Result.success()
-      UsernameRepository.UsernameReclaimResult.PERMANENT_ERROR -> Result.success()
-      UsernameRepository.UsernameReclaimResult.NETWORK_ERROR -> Result.retry(BackoffUtil.exponentialBackoff(runAttempt + 1, RemoteConfig.defaultMaxBackoff))
-    }
+  override fun run(): Result = when (UsernameRepository.reclaimUsernameIfNecessary()) {
+    UsernameRepository.UsernameReclaimResult.SUCCESS -> Result.success()
+    UsernameRepository.UsernameReclaimResult.PERMANENT_ERROR -> Result.success()
+    UsernameRepository.UsernameReclaimResult.NETWORK_ERROR -> Result.retry(BackoffUtil.exponentialBackoff(runAttempt + 1, RemoteConfig.defaultMaxBackoff))
   }
 
   override fun onFailure() = Unit
 
   class Factory : Job.Factory<ReclaimUsernameAndLinkJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): ReclaimUsernameAndLinkJob {
-      return ReclaimUsernameAndLinkJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): ReclaimUsernameAndLinkJob = ReclaimUsernameAndLinkJob(parameters)
   }
 }

@@ -17,7 +17,9 @@ class AnalogClockStickerRenderer
 @JvmOverloads constructor(
   val time: Long,
   val style: AnalogClockStickerDrawable.Style = AnalogClockStickerDrawable.Style.STANDARD
-) : InvalidateableRenderer(), SelectableRenderer, TappableRenderer {
+) : InvalidateableRenderer(),
+  SelectableRenderer,
+  TappableRenderer {
 
   private val clockStickerDrawable = AnalogClockStickerDrawable(AppDependencies.application)
   private val insetBounds = Rect(
@@ -45,9 +47,7 @@ class AnalogClockStickerRenderer
     bounds.set(Bounds.FULL_BOUNDS)
   }
 
-  override fun describeContents(): Int {
-    return 0
-  }
+  override fun describeContents(): Int = 0
 
   override fun writeToParcel(dest: Parcel, flags: Int) {
     dest.writeLong(time)
@@ -58,17 +58,11 @@ class AnalogClockStickerRenderer
     clockStickerDrawable.draw(rendererContext.canvas)
   }
 
-  override fun hitTest(x: Float, y: Float): Boolean {
-    return Bounds.FULL_BOUNDS.contains(x, y)
-  }
+  override fun hitTest(x: Float, y: Float): Boolean = Bounds.FULL_BOUNDS.contains(x, y)
 
   companion object CREATOR : Parcelable.Creator<AnalogClockStickerRenderer> {
-    override fun createFromParcel(parcel: Parcel): AnalogClockStickerRenderer {
-      return AnalogClockStickerRenderer(parcel.readLong(), AnalogClockStickerDrawable.Style.fromType(parcel.readInt()))
-    }
+    override fun createFromParcel(parcel: Parcel): AnalogClockStickerRenderer = AnalogClockStickerRenderer(parcel.readLong(), AnalogClockStickerDrawable.Style.fromType(parcel.readInt()))
 
-    override fun newArray(size: Int): Array<AnalogClockStickerRenderer?> {
-      return arrayOfNulls(size)
-    }
+    override fun newArray(size: Int): Array<AnalogClockStickerRenderer?> = arrayOfNulls(size)
   }
 }

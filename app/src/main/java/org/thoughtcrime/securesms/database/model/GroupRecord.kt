@@ -140,33 +140,25 @@ class GroupRecord(
     }
   }
 
-  fun hasAvatar(): Boolean {
-    return avatarId != 0L
-  }
+  fun hasAvatar(): Boolean = avatarId != 0L
 
-  fun requireV2GroupProperties(): GroupTable.V2GroupProperties {
-    return v2GroupProperties ?: throw AssertionError()
-  }
+  fun requireV2GroupProperties(): GroupTable.V2GroupProperties = v2GroupProperties ?: throw AssertionError()
 
-  fun isAdmin(recipient: Recipient): Boolean {
-    return isV2Group && requireV2GroupProperties().isAdmin(recipient)
-  }
+  fun isAdmin(recipient: Recipient): Boolean = isV2Group && requireV2GroupProperties().isAdmin(recipient)
 
-  fun memberLevel(recipient: Recipient): GroupTable.MemberLevel {
-    return if (isV2Group) {
-      val memberLevel = requireV2GroupProperties().memberLevel(recipient.serviceId)
-      if (recipient.isSelf && memberLevel == GroupTable.MemberLevel.NOT_A_MEMBER) {
-        requireV2GroupProperties().memberLevel(Optional.ofNullable(SignalStore.account.pni))
-      } else {
-        memberLevel
-      }
-    } else if (isMms && recipient.isSelf) {
-      GroupTable.MemberLevel.FULL_MEMBER
-    } else if (members.contains(recipient.id)) {
-      GroupTable.MemberLevel.FULL_MEMBER
+  fun memberLevel(recipient: Recipient): GroupTable.MemberLevel = if (isV2Group) {
+    val memberLevel = requireV2GroupProperties().memberLevel(recipient.serviceId)
+    if (recipient.isSelf && memberLevel == GroupTable.MemberLevel.NOT_A_MEMBER) {
+      requireV2GroupProperties().memberLevel(Optional.ofNullable(SignalStore.account.pni))
     } else {
-      GroupTable.MemberLevel.NOT_A_MEMBER
+      memberLevel
     }
+  } else if (isMms && recipient.isSelf) {
+    GroupTable.MemberLevel.FULL_MEMBER
+  } else if (members.contains(recipient.id)) {
+    GroupTable.MemberLevel.FULL_MEMBER
+  } else {
+    GroupTable.MemberLevel.NOT_A_MEMBER
   }
 
   /**
@@ -187,8 +179,6 @@ class GroupRecord(
     /**
      * True if the user meets all the requirements to be auto-migrated, otherwise false.
      */
-    private fun Recipient.isAutoMigratable(): Boolean {
-      return hasServiceId && registered === RecipientTable.RegisteredState.REGISTERED && profileKey != null
-    }
+    private fun Recipient.isAutoMigratable(): Boolean = hasServiceId && registered === RecipientTable.RegisteredState.REGISTERED && profileKey != null
   }
 }

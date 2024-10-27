@@ -17,7 +17,9 @@ import org.thoughtcrime.securesms.stories.StoryFirstTimeNavigationView
 import org.thoughtcrime.securesms.stories.viewer.StoryViewerState
 import org.thoughtcrime.securesms.stories.viewer.StoryViewerViewModel
 
-class StoryFirstTimeNavigationFragment : DialogFragment(R.layout.story_viewer_first_time_navigation_stub), StoryFirstTimeNavigationView.Callback {
+class StoryFirstTimeNavigationFragment :
+  DialogFragment(R.layout.story_viewer_first_time_navigation_stub),
+  StoryFirstTimeNavigationView.Callback {
 
   private val viewModel: StoryViewerViewModel by viewModels(ownerProducer = {
     requireParentFragment()
@@ -62,9 +64,7 @@ class StoryFirstTimeNavigationFragment : DialogFragment(R.layout.story_viewer_fi
     }
   }
 
-  override fun userHasSeenFirstNavigationView(): Boolean {
-    return SignalStore.story.userHasSeenFirstNavView
-  }
+  override fun userHasSeenFirstNavigationView(): Boolean = SignalStore.story.userHasSeenFirstNavView
 
   override fun onGotItClicked() {
     dismissAllowingStateLoss()

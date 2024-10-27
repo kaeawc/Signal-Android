@@ -40,9 +40,7 @@ class ChooseGroupStoryBottomSheet : FixedRoundedCornerBottomSheetDialogFragment(
 
   private var animatorSet: AnimatorSet? = null
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.cloneInContext(ContextThemeWrapper(inflater.context, themeResId)).inflate(R.layout.stories_choose_group_bottom_sheet, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.cloneInContext(ContextThemeWrapper(inflater.context, themeResId)).inflate(R.layout.stories_choose_group_bottom_sheet, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     view.minimumHeight = resources.displayMetrics.heightPixels
@@ -160,8 +158,6 @@ class ChooseGroupStoryBottomSheet : FixedRoundedCornerBottomSheetDialogFragment(
   }
 
   object ResultContract {
-    fun getRecipientIds(bundle: Bundle): List<RecipientId> {
-      return bundle.getParcelableArrayListCompat(RESULT_SET, RecipientId::class.java)!!
-    }
+    fun getRecipientIds(bundle: Bundle): List<RecipientId> = bundle.getParcelableArrayListCompat(RESULT_SET, RecipientId::class.java)!!
   }
 }

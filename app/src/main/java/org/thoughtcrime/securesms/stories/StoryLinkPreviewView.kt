@@ -42,17 +42,11 @@ class StoryLinkPreviewView @JvmOverloads constructor(
     binding.linkPreviewLarge.isClickable = false
   }
 
-  private fun getThumbnailTarget(useLargeThumbnail: Boolean): ThumbnailView {
-    return if (useLargeThumbnail) binding.linkPreviewLarge else binding.linkPreviewImage
-  }
+  private fun getThumbnailTarget(useLargeThumbnail: Boolean): ThumbnailView = if (useLargeThumbnail) binding.linkPreviewLarge else binding.linkPreviewImage
 
-  fun getThumbnailViewWidth(useLargeThumbnail: Boolean): Int {
-    return getThumbnailTarget(useLargeThumbnail).measuredWidth
-  }
+  fun getThumbnailViewWidth(useLargeThumbnail: Boolean): Int = getThumbnailTarget(useLargeThumbnail).measuredWidth
 
-  fun getThumbnailViewHeight(useLargeThumbnail: Boolean): Int {
-    return getThumbnailTarget(useLargeThumbnail).measuredHeight
-  }
+  fun getThumbnailViewHeight(useLargeThumbnail: Boolean): Int = getThumbnailTarget(useLargeThumbnail).measuredHeight
 
   fun setThumbnailDrawable(drawable: Drawable?, useLargeThumbnail: Boolean) {
     val image = getThumbnailTarget(useLargeThumbnail)
@@ -88,12 +82,10 @@ class StoryLinkPreviewView @JvmOverloads constructor(
     }
   }
 
-  private fun isPartialLinkPreview(linkPreview: LinkPreview?): Boolean {
-    return linkPreview != null &&
-      TextUtils.isEmpty(linkPreview.description) &&
-      linkPreview.thumbnail.isAbsent() &&
-      linkPreview.attachmentId == null
-  }
+  private fun isPartialLinkPreview(linkPreview: LinkPreview?): Boolean = linkPreview != null &&
+    TextUtils.isEmpty(linkPreview.description) &&
+    linkPreview.thumbnail.isAbsent() &&
+    linkPreview.attachmentId == null
 
   private fun bindPartialLinkPreview(linkPreview: LinkPreview): ListenableFuture<Boolean> {
     visibility = View.VISIBLE

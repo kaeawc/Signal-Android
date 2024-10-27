@@ -93,33 +93,27 @@ object UsernameRepository {
   /**
    * Given a nickname, this will temporarily reserve a matching discriminator that can later be confirmed via [confirmUsernameAndCreateNewLink].
    */
-  fun reserveUsername(nickname: String, discriminator: String?): Single<Result<UsernameState.Reserved, UsernameSetResult>> {
-    return Single
-      .fromCallable { reserveUsernameInternal(nickname, discriminator) }
-      .subscribeOn(Schedulers.io())
-  }
+  fun reserveUsername(nickname: String, discriminator: String?): Single<Result<UsernameState.Reserved, UsernameSetResult>> = Single
+    .fromCallable { reserveUsernameInternal(nickname, discriminator) }
+    .subscribeOn(Schedulers.io())
 
   /**
    * This changes the encrypted username associated with your current username link.
    * The intent of this is to allow users to change the casing of their username without changing the link,
    * since usernames are case-insensitive.
    */
-  fun updateUsernameDisplayForCurrentLink(updatedUsername: Username): Single<UsernameSetResult> {
-    return Single
-      .fromCallable { updateUsernameDisplayForCurrentLinkInternal(updatedUsername) }
-      .subscribeOn(Schedulers.io())
-  }
+  fun updateUsernameDisplayForCurrentLink(updatedUsername: Username): Single<UsernameSetResult> = Single
+    .fromCallable { updateUsernameDisplayForCurrentLinkInternal(updatedUsername) }
+    .subscribeOn(Schedulers.io())
 
   /**
    * Given a reserved username (obtained via [reserveUsername]), this will confirm that reservation, assigning the user that username.
    * It will also create a new username link. Therefore, be sure to call [updateUsernameDisplayForCurrentLink] instead if all that has changed is the
    * casing, and you want to keep the link the same.
    */
-  fun confirmUsernameAndCreateNewLink(username: Username): Single<UsernameSetResult> {
-    return Single
-      .fromCallable { confirmUsernameAndCreateNewLinkInternal(username) }
-      .subscribeOn(Schedulers.io())
-  }
+  fun confirmUsernameAndCreateNewLink(username: Username): Single<UsernameSetResult> = Single
+    .fromCallable { confirmUsernameAndCreateNewLinkInternal(username) }
+    .subscribeOn(Schedulers.io())
 
   /**
    * Attempts to reclaim the username that is currently stored on disk if necessary.
@@ -170,11 +164,9 @@ object UsernameRepository {
    * Deletes the username from the local user's account
    */
   @JvmStatic
-  fun deleteUsernameAndLink(): Single<UsernameDeleteResult> {
-    return Single
-      .fromCallable { deleteUsernameInternal() }
-      .subscribeOn(Schedulers.io())
-  }
+  fun deleteUsernameAndLink(): Single<UsernameDeleteResult> = Single
+    .fromCallable { deleteUsernameInternal() }
+    .subscribeOn(Schedulers.io())
 
   /**
    * Creates or rotates the username link for the local user.
@@ -266,21 +258,19 @@ object UsernameRepository {
   }
 
   @JvmStatic
-  fun fetchAciForUsername(username: String): Single<UsernameAciFetchResult> {
-    return Single.fromCallable {
-      try {
-        val aci: ACI = AppDependencies.signalServiceAccountManager.getAciByUsername(Username(username))
-        UsernameAciFetchResult.Success(aci)
-      } catch (e: UsernameIsNotAssociatedWithAnAccountException) {
-        Log.w(TAG, "[fetchAciFromUsername] Failed to get ACI for username hash", e)
-        UsernameAciFetchResult.NotFound
-      } catch (e: BaseUsernameException) {
-        Log.w(TAG, "[fetchAciFromUsername] Invalid username", e)
-        UsernameAciFetchResult.NotFound
-      } catch (e: IOException) {
-        Log.w(TAG, "[fetchAciFromUsername] Hit network error while trying to resolve ACI from username", e)
-        UsernameAciFetchResult.NetworkError
-      }
+  fun fetchAciForUsername(username: String): Single<UsernameAciFetchResult> = Single.fromCallable {
+    try {
+      val aci: ACI = AppDependencies.signalServiceAccountManager.getAciByUsername(Username(username))
+      UsernameAciFetchResult.Success(aci)
+    } catch (e: UsernameIsNotAssociatedWithAnAccountException) {
+      Log.w(TAG, "[fetchAciFromUsername] Failed to get ACI for username hash", e)
+      UsernameAciFetchResult.NotFound
+    } catch (e: BaseUsernameException) {
+      Log.w(TAG, "[fetchAciFromUsername] Invalid username", e)
+      UsernameAciFetchResult.NotFound
+    } catch (e: IOException) {
+      Log.w(TAG, "[fetchAciFromUsername] Hit network error while trying to resolve ACI from username", e)
+      UsernameAciFetchResult.NetworkError
     }
   }
 
@@ -311,9 +301,7 @@ object UsernameRepository {
     return BASE_URL + base64
   }
 
-  fun isValidLink(url: String): Boolean {
-    return parseLink(url) != null
-  }
+  fun isValidLink(url: String): Boolean = parseLink(url) != null
 
   @JvmStatic
   fun onUsernameConsistencyValidated() {

@@ -76,12 +76,10 @@ class SignalCallLinkManager(
 
   private fun requestCallLinkAuthCredentialPresentation(
     linkRootKey: ByteArray
-  ): CallLinkAuthCredentialPresentation {
-    return AppDependencies.groupsV2Authorization.getCallLinkAuthorizationForToday(
-      genericServerPublicParams,
-      CallLinkSecretParams.deriveFromRootKey(linkRootKey)
-    )
-  }
+  ): CallLinkAuthCredentialPresentation = AppDependencies.groupsV2Authorization.getCallLinkAuthorizationForToday(
+    genericServerPublicParams,
+    CallLinkSecretParams.deriveFromRootKey(linkRootKey)
+  )
 
   fun createCallLink(
     callLinkCredentials: CallLinkCredentials
@@ -136,19 +134,17 @@ class SignalCallLinkManager(
 
   fun readCallLink(
     credentials: CallLinkCredentials
-  ): Single<ReadCallLinkResult> {
-    return Single.create { emitter ->
-      callManager.readCallLink(
-        SignalStore.internal.groupCallingServer(),
-        requestCallLinkAuthCredentialPresentation(credentials.linkKeyBytes).serialize(),
-        CallLinkRootKey(credentials.linkKeyBytes)
-      ) {
-        if (it.isSuccess) {
-          emitter.onSuccess(ReadCallLinkResult.Success(it.value!!.toAppState()))
-        } else {
-          Log.w(TAG, "Failed to read call link with failure status ${it.status}")
-          emitter.onSuccess(ReadCallLinkResult.Failure(it.status))
-        }
+  ): Single<ReadCallLinkResult> = Single.create { emitter ->
+    callManager.readCallLink(
+      SignalStore.internal.groupCallingServer(),
+      requestCallLinkAuthCredentialPresentation(credentials.linkKeyBytes).serialize(),
+      CallLinkRootKey(credentials.linkKeyBytes)
+    ) {
+      if (it.isSuccess) {
+        emitter.onSuccess(ReadCallLinkResult.Success(it.value!!.toAppState()))
+      } else {
+        Log.w(TAG, "Failed to read call link with failure status ${it.status}")
+        emitter.onSuccess(ReadCallLinkResult.Failure(it.status))
       }
     }
   }
@@ -236,13 +232,11 @@ class SignalCallLinkManager(
 
     private val TAG = Log.tag(SignalCallLinkManager::class.java)
 
-    private fun CallLinkState.toAppState(): SignalCallLinkState {
-      return SignalCallLinkState(
-        name = name,
-        expiration = expiration,
-        restrictions = restrictions,
-        revoked = hasBeenRevoked()
-      )
-    }
+    private fun CallLinkState.toAppState(): SignalCallLinkState = SignalCallLinkState(
+      name = name,
+      expiration = expiration,
+      restrictions = restrictions,
+      revoked = hasBeenRevoked()
+    )
   }
 }

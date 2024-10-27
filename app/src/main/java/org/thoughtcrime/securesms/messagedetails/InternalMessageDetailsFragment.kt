@@ -46,12 +46,10 @@ class InternalMessageDetailsFragment : ComposeFullScreenDialogFragment() {
     const val ARG_MESSAGE_ID = "message_id"
 
     @JvmStatic
-    fun create(messageRecord: MessageRecord): InternalMessageDetailsFragment {
-      return InternalMessageDetailsFragment().apply {
-        arguments = bundleOf(
-          ARG_MESSAGE_ID to messageRecord.id
-        )
-      }
+    fun create(messageRecord: MessageRecord): InternalMessageDetailsFragment = InternalMessageDetailsFragment().apply {
+      arguments = bundleOf(
+        ARG_MESSAGE_ID to messageRecord.id
+      )
     }
   }
 

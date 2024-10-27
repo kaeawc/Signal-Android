@@ -92,9 +92,7 @@ class V2ConversationItemShape(
     previousMessage: MessageRecord?,
     nextMessage: MessageRecord?,
     isGroupThread: Boolean
-  ): Boolean {
-    return isStartOfMessageCluster(currentMessage, previousMessage, isGroupThread) && isEndOfMessageCluster(currentMessage, nextMessage)
-  }
+  ): Boolean = isStartOfMessageCluster(currentMessage, previousMessage, isGroupThread) && isEndOfMessageCluster(currentMessage, nextMessage)
 
   private fun isStartOfMessageCluster(
     currentMessage: MessageRecord,
@@ -135,9 +133,7 @@ class V2ConversationItemShape(
     return currentMessage.fromRecipient != nextMessage.fromRecipient
   }
 
-  private fun isWithinClusteringTime(currentMessage: MessageRecord, previousMessage: MessageRecord): Boolean {
-    return abs(currentMessage.dateSent - previousMessage.dateSent) <= clusterTimeout.inWholeMilliseconds
-  }
+  private fun isWithinClusteringTime(currentMessage: MessageRecord, previousMessage: MessageRecord): Boolean = abs(currentMessage.dateSent - previousMessage.dateSent) <= clusterTimeout.inWholeMilliseconds
 
   enum class MessageShape(
     val topPadding: Float,

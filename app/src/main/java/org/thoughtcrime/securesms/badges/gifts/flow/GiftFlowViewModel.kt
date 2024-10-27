@@ -123,9 +123,7 @@ class GiftFlowViewModel(
     }
   }
 
-  fun getSupportedCurrencyCodes(): List<String> {
-    return store.state.giftPrices.keys.map { it.currencyCode }
-  }
+  fun getSupportedCurrencyCodes(): List<String> = store.state.giftPrices.keys.map { it.currencyCode }
 
   private fun getLoadState(
     oldState: GiftFlowState,
@@ -166,12 +164,10 @@ class GiftFlowViewModel(
   class Factory(
     private val repository: GiftFlowRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(
-        GiftFlowViewModel(
-          repository
-        )
-      ) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(
+      GiftFlowViewModel(
+        repository
+      )
+    ) as T
   }
 }

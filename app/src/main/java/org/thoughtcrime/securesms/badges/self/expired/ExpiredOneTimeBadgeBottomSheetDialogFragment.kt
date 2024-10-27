@@ -20,9 +20,10 @@ import org.whispersystems.signalservice.api.subscriptions.ActiveSubscription
 /**
  * Bottom sheet displaying a fading badge with a notice and action for becoming a subscriber again.
  */
-class ExpiredOneTimeBadgeBottomSheetDialogFragment : DSLSettingsBottomSheetFragment(
-  peekHeightPercentage = 1f
-) {
+class ExpiredOneTimeBadgeBottomSheetDialogFragment :
+  DSLSettingsBottomSheetFragment(
+    peekHeightPercentage = 1f
+  ) {
   override fun bindAdapter(adapter: DSLSettingsAdapter) {
     ExpiredBadge.register(adapter)
 

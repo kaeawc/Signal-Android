@@ -23,7 +23,9 @@ import org.thoughtcrime.securesms.util.fragments.findListener
 import org.thoughtcrime.securesms.util.visible
 import kotlin.reflect.KClass
 
-class KeyboardPagerFragment : Fragment(), InputAwareConstraintLayout.InputFragment {
+class KeyboardPagerFragment :
+  Fragment(),
+  InputAwareConstraintLayout.InputFragment {
 
   private lateinit var emojiButton: View
   private lateinit var stickerButton: View
@@ -33,9 +35,7 @@ class KeyboardPagerFragment : Fragment(), InputAwareConstraintLayout.InputFragme
   private val fragments: MutableMap<KClass<*>, Fragment> = mutableMapOf()
   private var currentFragment: Fragment? = null
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return themedInflate(R.layout.keyboard_pager_fragment, inflater, container)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = themedInflate(R.layout.keyboard_pager_fragment, inflater, container)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     emojiButton = view.findViewById(R.id.keyboard_pager_fragment_emoji)

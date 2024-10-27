@@ -26,8 +26,8 @@ import kotlin.math.min
 class DigitalClockStickerDrawable(
   val context: Context,
   private var displayStyle: Style = Style.LIGHT_NO_BG
-) :
-  Drawable(), Animatable {
+) : Drawable(),
+  Animatable {
 
   companion object {
     private const val BG_PADDING = 40f
@@ -152,9 +152,7 @@ class DigitalClockStickerDrawable(
     onBoundsChange(bounds)
   }
 
-  fun getStyle(): Style {
-    return displayStyle
-  }
+  fun getStyle(): Style = displayStyle
 
   private fun styleWhiteTextNoBg() {
     digitPaint.color = Color.WHITE
@@ -189,24 +187,16 @@ class DigitalClockStickerDrawable(
     wrapped = true
   }
 
-  private fun getBgPadding(): Float {
-    return BG_PADDING * scale
-  }
+  private fun getBgPadding(): Float = BG_PADDING * scale
 
-  private fun getBgCornerRadius(): Float {
-    return BG_CORNER_RADIUS * scale
-  }
+  private fun getBgCornerRadius(): Float = BG_CORNER_RADIUS * scale
 
-  private fun getAmPmString(time: LocalDateTime): String {
-    return DateTimeFormatter.ofPattern("a", Locale.getDefault()).format(time)
-  }
+  private fun getAmPmString(time: LocalDateTime): String = DateTimeFormatter.ofPattern("a", Locale.getDefault()).format(time)
 
-  private fun getHoursString(time: LocalDateTime): String {
-    return if (!DateFormat.is24HourFormat(context)) {
-      DateTimeFormatter.ofPattern("h:mm", Locale.getDefault()).format(time)
-    } else {
-      DateTimeFormatter.ofPattern("H:mm", Locale.getDefault()).format(time)
-    }
+  private fun getHoursString(time: LocalDateTime): String = if (!DateFormat.is24HourFormat(context)) {
+    DateTimeFormatter.ofPattern("h:mm", Locale.getDefault()).format(time)
+  } else {
+    DateTimeFormatter.ofPattern("H:mm", Locale.getDefault()).format(time)
   }
 
   fun setTime(newTime: Long?) {
@@ -217,9 +207,7 @@ class DigitalClockStickerDrawable(
   override fun setAlpha(alpha: Int) = Unit
   override fun setColorFilter(colorFilter: ColorFilter?) = Unit
 
-  override fun getOpacity(): Int {
-    return PixelFormat.TRANSLUCENT
-  }
+  override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
   override fun onBoundsChange(bounds: Rect) {
     val dimension = min(bounds.width(), bounds.height())
@@ -238,9 +226,7 @@ class DigitalClockStickerDrawable(
     unscheduleSelf(this::invalidateSelf)
   }
 
-  override fun isRunning(): Boolean {
-    return animating
-  }
+  override fun isRunning(): Boolean = animating
 
   enum class Style(val type: Int) {
     LIGHT_NO_BG(0),

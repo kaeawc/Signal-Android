@@ -136,9 +136,7 @@ abstract class Attachment(
     dest.writeString(uuid?.toString())
   }
 
-  override fun describeContents(): Int {
-    return 0
-  }
+  override fun describeContents(): Int = 0
 
   val isInProgress: Boolean
     get() = transferState != AttachmentTable.TRANSFER_PROGRESS_DONE && transferState != AttachmentTable.TRANSFER_PROGRESS_FAILED && transferState != AttachmentTable.TRANSFER_PROGRESS_PERMANENT_FAILURE && transferState != AttachmentTable.TRANSFER_RESTORE_OFFLOADED
@@ -149,12 +147,10 @@ abstract class Attachment(
   val isSticker: Boolean
     get() = stickerLocator != null
 
-  fun getIncrementalDigest(): ByteArray? {
-    return if (incrementalDigest != null && incrementalDigest.size > 0) {
-      incrementalDigest
-    } else {
-      null
-    }
+  fun getIncrementalDigest(): ByteArray? = if (incrementalDigest != null && incrementalDigest.size > 0) {
+    incrementalDigest
+  } else {
+    null
   }
 
   companion object {

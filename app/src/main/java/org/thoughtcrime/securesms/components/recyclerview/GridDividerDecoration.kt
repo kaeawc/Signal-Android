@@ -14,9 +14,7 @@ open class GridDividerDecoration(
   @Px private val space: Int
 ) : RecyclerView.ItemDecoration() {
 
-  override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-    return setItemOffsets(parent.getChildAdapterPosition(view), view, outRect)
-  }
+  override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) = setItemOffsets(parent.getChildAdapterPosition(view), view, outRect)
 
   protected fun setItemOffsets(position: Int, view: View, outRect: Rect) {
     val column = position % spanCount

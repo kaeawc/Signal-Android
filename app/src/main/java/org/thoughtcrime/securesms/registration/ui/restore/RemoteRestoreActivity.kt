@@ -71,9 +71,7 @@ import java.util.Locale
 
 class RemoteRestoreActivity : BaseActivity() {
   companion object {
-    fun getIntent(context: Context): Intent {
-      return Intent(context, RemoteRestoreActivity::class.java)
-    }
+    fun getIntent(context: Context): Intent = Intent(context, RemoteRestoreActivity::class.java)
   }
 
   private val viewModel: RemoteRestoreViewModel by viewModels()
@@ -122,33 +120,31 @@ class RemoteRestoreActivity : BaseActivity() {
   }
 
   @Composable
-  private fun getFeatureList(tier: MessageBackupTier?): ImmutableList<MessageBackupsTypeFeature> {
-    return when (tier) {
-      null -> persistentListOf()
-      MessageBackupTier.PAID -> {
-        persistentListOf(
-          MessageBackupsTypeFeature(
-            iconResourceId = R.drawable.symbol_thread_compact_bold_16,
-            label = stringResource(id = R.string.RemoteRestoreActivity__all_of_your_media)
-          ),
-          MessageBackupsTypeFeature(
-            iconResourceId = R.drawable.symbol_recent_compact_bold_16,
-            label = stringResource(id = R.string.RemoteRestoreActivity__all_of_your_messages)
-          )
+  private fun getFeatureList(tier: MessageBackupTier?): ImmutableList<MessageBackupsTypeFeature> = when (tier) {
+    null -> persistentListOf()
+    MessageBackupTier.PAID -> {
+      persistentListOf(
+        MessageBackupsTypeFeature(
+          iconResourceId = R.drawable.symbol_thread_compact_bold_16,
+          label = stringResource(id = R.string.RemoteRestoreActivity__all_of_your_media)
+        ),
+        MessageBackupsTypeFeature(
+          iconResourceId = R.drawable.symbol_recent_compact_bold_16,
+          label = stringResource(id = R.string.RemoteRestoreActivity__all_of_your_messages)
         )
-      }
-      MessageBackupTier.FREE -> {
-        persistentListOf(
-          MessageBackupsTypeFeature(
-            iconResourceId = R.drawable.symbol_thread_compact_bold_16,
-            label = stringResource(id = R.string.RemoteRestoreActivity__your_last_d_days_of_media, 30)
-          ),
-          MessageBackupsTypeFeature(
-            iconResourceId = R.drawable.symbol_recent_compact_bold_16,
-            label = stringResource(id = R.string.RemoteRestoreActivity__all_of_your_messages)
-          )
+      )
+    }
+    MessageBackupTier.FREE -> {
+      persistentListOf(
+        MessageBackupsTypeFeature(
+          iconResourceId = R.drawable.symbol_thread_compact_bold_16,
+          label = stringResource(id = R.string.RemoteRestoreActivity__your_last_d_days_of_media, 30)
+        ),
+        MessageBackupsTypeFeature(
+          iconResourceId = R.drawable.symbol_recent_compact_bold_16,
+          label = stringResource(id = R.string.RemoteRestoreActivity__all_of_your_messages)
         )
-      }
+      )
     }
   }
 

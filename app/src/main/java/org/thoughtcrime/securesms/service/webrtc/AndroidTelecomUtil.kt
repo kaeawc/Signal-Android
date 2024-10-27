@@ -80,9 +80,7 @@ object AndroidTelecomUtil {
 
   @JvmStatic
   @RequiresApi(26)
-  fun getPhoneAccountHandle(): PhoneAccountHandle {
-    return PhoneAccountHandle(ComponentName(context, AndroidCallConnectionService::class.java), context.packageName, Process.myUserHandle())
-  }
+  fun getPhoneAccountHandle(): PhoneAccountHandle = PhoneAccountHandle(ComponentName(context, AndroidCallConnectionService::class.java), context.packageName, Process.myUserHandle())
 
   @JvmStatic
   fun addIncomingCall(recipientId: RecipientId, callId: Long, remoteVideoOffer: Boolean): Boolean {

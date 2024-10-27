@@ -12,11 +12,9 @@ class NameColor(
   @ColorInt private val darkColor: Int
 ) {
   @ColorInt
-  fun getColor(context: Context): Int {
-    return if (ThemeUtil.isDarkTheme(context)) {
-      darkColor
-    } else {
-      lightColor
-    }
+  fun getColor(context: Context): Int = if (ThemeUtil.isDarkTheme(context)) {
+    darkColor
+  } else {
+    lightColor
   }
 }

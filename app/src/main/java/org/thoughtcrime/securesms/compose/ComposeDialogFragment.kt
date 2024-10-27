@@ -16,15 +16,13 @@ import org.thoughtcrime.securesms.util.DynamicTheme
  * Generic ComposeFragment which can be subclassed to build UI with compose.
  */
 abstract class ComposeDialogFragment : DialogFragment() {
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return ComposeView(requireContext()).apply {
-      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-      setContent {
-        SignalTheme(
-          isDarkMode = DynamicTheme.isDarkTheme(LocalContext.current)
-        ) {
-          DialogContent()
-        }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = ComposeView(requireContext()).apply {
+    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    setContent {
+      SignalTheme(
+        isDarkMode = DynamicTheme.isDarkTheme(LocalContext.current)
+      ) {
+        DialogContent()
       }
     }
   }

@@ -92,19 +92,15 @@ class RemappedRecordTables internal constructor(context: Context?, databaseHelpe
     addMapping(Threads.TABLE_NAME, Mapping(oldId, newId))
   }
 
-  fun getAllRecipients(): Cursor {
-    return readableDatabase
-      .select()
-      .from(Recipients.TABLE_NAME)
-      .run()
-  }
+  fun getAllRecipients(): Cursor = readableDatabase
+    .select()
+    .from(Recipients.TABLE_NAME)
+    .run()
 
-  fun getAllThreads(): Cursor {
-    return readableDatabase
-      .select()
-      .from(Threads.TABLE_NAME)
-      .run()
-  }
+  fun getAllThreads(): Cursor = readableDatabase
+    .select()
+    .from(Threads.TABLE_NAME)
+    .run()
 
   fun deleteThreadMapping(oldId: Long) {
     writableDatabase.delete(Threads.TABLE_NAME)
@@ -132,17 +128,15 @@ class RemappedRecordTables internal constructor(context: Context?, databaseHelpe
     }
   }
 
-  private fun getAllMappings(db: SQLiteDatabase, table: String): List<Mapping> {
-    return db.select()
-      .from(table)
-      .run()
-      .readToList { cursor ->
-        Mapping(
-          oldId = cursor.requireLong(OLD_ID),
-          newId = cursor.requireLong(NEW_ID)
-        )
-      }
-  }
+  private fun getAllMappings(db: SQLiteDatabase, table: String): List<Mapping> = db.select()
+    .from(table)
+    .run()
+    .readToList { cursor ->
+      Mapping(
+        oldId = cursor.requireLong(OLD_ID),
+        newId = cursor.requireLong(NEW_ID)
+      )
+    }
 
   private fun addMapping(table: String, mapping: Mapping) {
     val values = contentValuesOf(

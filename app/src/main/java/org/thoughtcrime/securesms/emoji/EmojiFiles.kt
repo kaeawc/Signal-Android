@@ -100,9 +100,7 @@ object EmojiFiles {
   }
 
   @JvmStatic
-  fun openForWriting(context: Context, version: Version, uuid: UUID): OutputStream {
-    return getOutputStream(context, version.getFile(context, uuid))
-  }
+  fun openForWriting(context: Context, version: Version, uuid: UUID): OutputStream = getOutputStream(context, version.getFile(context, uuid))
 
   @JvmStatic
   fun getMd5(context: Context, version: Version, uuid: UUID): ByteArray? {

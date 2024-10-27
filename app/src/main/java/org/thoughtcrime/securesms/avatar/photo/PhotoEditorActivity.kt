@@ -32,10 +32,8 @@ class PhotoEditorActivity : FragmentWrapperActivity() {
   }
 
   class Contract : ActivityResultContract<Avatar.Photo, Avatar.Photo?>() {
-    override fun createIntent(context: Context, input: Avatar.Photo): Intent {
-      return Intent(context, PhotoEditorActivity::class.java).apply {
-        putExtras(PhotoEditorActivityArgs.Builder(AvatarBundler.bundlePhoto(input)).build().toBundle())
-      }
+    override fun createIntent(context: Context, input: Avatar.Photo): Intent = Intent(context, PhotoEditorActivity::class.java).apply {
+      putExtras(PhotoEditorActivityArgs.Builder(AvatarBundler.bundlePhoto(input)).build().toBundle())
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Avatar.Photo? {

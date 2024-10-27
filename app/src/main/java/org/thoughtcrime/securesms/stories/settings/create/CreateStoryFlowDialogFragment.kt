@@ -8,7 +8,10 @@ import org.thoughtcrime.securesms.recipients.RecipientId
 import org.thoughtcrime.securesms.stories.settings.select.BaseStoryRecipientSelectionFragment
 import org.thoughtcrime.securesms.util.WindowUtil
 
-class CreateStoryFlowDialogFragment : DialogFragment(R.layout.create_story_flow_dialog_fragment), BaseStoryRecipientSelectionFragment.Callback, CreateStoryWithViewersFragment.Callback {
+class CreateStoryFlowDialogFragment :
+  DialogFragment(R.layout.create_story_flow_dialog_fragment),
+  BaseStoryRecipientSelectionFragment.Callback,
+  CreateStoryWithViewersFragment.Callback {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -33,7 +36,5 @@ class CreateStoryFlowDialogFragment : DialogFragment(R.layout.create_story_flow_
     WindowUtil.setStatusBarColor(requireDialog().window!!, color)
   }
 
-  override fun getStatusBarColor(): Int {
-    return WindowUtil.getStatusBarColor(requireDialog().window!!)
-  }
+  override fun getStatusBarColor(): Int = WindowUtil.getStatusBarColor(requireDialog().window!!)
 }

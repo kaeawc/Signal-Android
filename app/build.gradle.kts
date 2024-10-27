@@ -1,6 +1,5 @@
 import com.android.build.api.dsl.ManagedVirtualDevice
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -12,12 +11,11 @@ plugins {
   id("androidx.navigation.safeargs")
   id("org.jlleitschuh.gradle.ktlint")
   id("org.jetbrains.kotlin.android")
-  id("app.cash.exhaustive")
   id("kotlin-parcelize")
   id("com.squareup.wire")
   id("translations")
   id("licenses")
-//  id("org.jetbrains.kotlin.plugin.compose")
+  id("org.jetbrains.kotlin.plugin.compose")
 }
 
 apply(from = "static-ips.gradle.kts")
@@ -51,13 +49,7 @@ val selectableVariants = listOf(
   "websiteProdRelease"
 )
 
-val signalBuildToolsVersion: String by rootProject.extra
-val signalCompileSdkVersion: String by rootProject.extra
-val signalTargetSdkVersion: Int by rootProject.extra
-val signalMinSdkVersion: Int by rootProject.extra
-val signalNdkVersion: String by rootProject.extra
-val signalJavaVersion: JavaVersion by rootProject.extra
-val signalKotlinJvmTarget: String by rootProject.extra
+// val signalKotlinJvmTarget: String by rootProject.extra
 
 wire {
   kotlin {
@@ -80,9 +72,9 @@ ktlint {
 android {
   namespace = "org.thoughtcrime.securesms"
 
-  buildToolsVersion = signalBuildToolsVersion
-  compileSdkVersion = signalCompileSdkVersion
-  ndkVersion = signalNdkVersion
+  buildToolsVersion = libs.versions.build.android.buildTools.get()
+  compileSdk = libs.versions.build.android.compileSdk.get().toInt()
+  ndkVersion = libs.versions.build.android.ndk.get()
 
   flavorDimensions += listOf("distribution", "environment")
   useLibrary("org.apache.http.legacy")
@@ -91,7 +83,7 @@ android {
   android.bundle.language.enableSplit = false
 
   kotlinOptions {
-    jvmTarget = signalKotlinJvmTarget
+    // jvmTarget = signalKotlinJvmTarget
     freeCompilerArgs = listOf("-Xjvm-default=all")
   }
 
@@ -135,8 +127,8 @@ android {
 
   compileOptions {
     isCoreLibraryDesugaringEnabled = true
-    sourceCompatibility = signalJavaVersion
-    targetCompatibility = signalJavaVersion
+    sourceCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
+    targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
   }
 
   packaging {
@@ -165,23 +157,23 @@ android {
 
   buildFeatures {
     viewBinding = true
-//    compose = true
+    compose = true
   }
 
   defaultConfig {
     versionCode = (canonicalVersionCode * maxHotfixVersions) + currentHotfixVersion
     versionName = canonicalVersionName
 
-    minSdk = signalMinSdkVersion
-    targetSdk = signalTargetSdkVersion
+    minSdk = libs.versions.build.android.minSdk.get().toInt()
+    targetSdk = libs.versions.build.android.targetSdk.get().toInt()
 
     vectorDrawables.useSupportLibrary = true
     project.ext.set("archivesBaseName", "Signal")
 
     manifestPlaceholders["mapsKey"] = "AIzaSyCSx9xea86GwDKGznCAULE9Y5a8b-TfN9U"
 
-    buildConfigField("long", "BUILD_TIMESTAMP", getLastCommitTimestamp() + "L")
-    buildConfigField("String", "GIT_HASH", "\"${getGitHash()}\"")
+    buildConfigField("long", "BUILD_TIMESTAMP", "0L")
+    buildConfigField("String", "GIT_HASH", "\"asdf\"")
     buildConfigField("String", "SIGNAL_URL", "\"https://chat.signal.org\"")
     buildConfigField("String", "STORAGE_URL", "\"https://storage.signal.org\"")
     buildConfigField("String", "SIGNAL_CDN_URL", "\"https://cdn.signal.org\"")
@@ -419,24 +411,24 @@ android {
     outputs
       .map { it as com.android.build.gradle.internal.api.ApkVariantOutputImpl }
       .forEach { output ->
-        if (output.baseName.contains("nightly")) {
-          var tag = getCurrentGitTag()
-          if (!tag.isNullOrEmpty()) {
-            if (tag.startsWith("v")) {
-              tag = tag.substring(1)
-            }
-            output.versionNameOverride = tag
-            output.outputFileName = output.outputFileName.replace(".apk", "-${output.versionNameOverride}.apk")
-          } else {
-            output.outputFileName = output.outputFileName.replace(".apk", "-$versionName.apk")
-          }
-        } else {
-          output.outputFileName = output.outputFileName.replace(".apk", "-$versionName.apk")
-
-          if (currentHotfixVersion >= maxHotfixVersions) {
-            throw AssertionError("Hotfix version is too large!")
-          }
-        }
+//        if (output.baseName.contains("nightly")) {
+//          var tag = getCurrentGitTag()
+//          if (!tag.isNullOrEmpty()) {
+//            if (tag.startsWith("v")) {
+//              tag = tag.substring(1)
+//            }
+//            output.versionNameOverride = tag
+//            output.outputFileName = output.outputFileName.replace(".apk", "-${output.versionNameOverride}.apk")
+//          } else {
+//            output.outputFileName = output.outputFileName.replace(".apk", "-$versionName.apk")
+//          }
+//        } else {
+//          output.outputFileName = output.outputFileName.replace(".apk", "-$versionName.apk")
+//
+//          if (currentHotfixVersion >= maxHotfixVersions) {
+//            throw AssertionError("Hotfix version is too large!")
+//          }
+//        }
       }
   }
 
@@ -498,7 +490,7 @@ dependencies {
   implementation(libs.androidx.gridlayout)
   implementation(libs.androidx.exifinterface)
   implementation(libs.androidx.compose.rxjava3)
-  implementation(libs.androidx.compose.runtime.livedata)
+  implementation(libs.compose.runtime.livedata)
   implementation(libs.androidx.activity.compose)
   implementation(libs.androidx.constraintlayout)
   implementation(libs.androidx.navigation.fragment.ktx)
@@ -586,93 +578,42 @@ dependencies {
     exclude(group = "androidx.test", module = "core")
   }
 
-  testImplementation(testLibs.junit.junit)
-  testImplementation(testLibs.assertj.core)
-  testImplementation(testLibs.mockito.core)
-  testImplementation(testLibs.mockito.kotlin)
-  testImplementation(testLibs.androidx.test.core)
-  testImplementation(testLibs.robolectric.robolectric) {
+  testImplementation(libs.junit)
+  testImplementation(libs.assertj.core)
+  testImplementation(libs.mockito.core)
+  testImplementation(libs.mockito.kotlin)
+  testImplementation(libs.androidx.test.core)
+  testImplementation(libs.robolectric) {
     exclude(group = "com.google.protobuf", module = "protobuf-java")
   }
-  testImplementation(testLibs.bouncycastle.bcprov.jdk15on) {
+  testImplementation(libs.bouncycastle.bcprov.jdk15on) {
     version {
       strictly("1.70")
     }
   }
-  testImplementation(testLibs.bouncycastle.bcpkix.jdk15on) {
+  testImplementation(libs.bouncycastle.bcpkix.jdk15on) {
     version {
       strictly("1.70")
     }
   }
-  testImplementation(testLibs.conscrypt.openjdk.uber)
-  testImplementation(testLibs.hamcrest.hamcrest)
-  testImplementation(testLibs.mockk)
+  testImplementation(libs.conscrypt.openjdk.uber)
+  testImplementation(libs.hamcrest.hamcrest)
+  testImplementation(libs.mockk)
   testImplementation(testFixtures(project(":libsignal-service")))
-  testImplementation(testLibs.espresso.core)
+  testImplementation(libs.androidx.espresso)
 
-  androidTestImplementation(testLibs.androidx.test.ext.junit)
-  androidTestImplementation(testLibs.espresso.core)
-  androidTestImplementation(testLibs.androidx.test.core)
-  androidTestImplementation(testLibs.androidx.test.core.ktx)
-  androidTestImplementation(testLibs.androidx.test.ext.junit.ktx)
-  androidTestImplementation(testLibs.mockito.android)
-  androidTestImplementation(testLibs.mockito.kotlin)
-  androidTestImplementation(testLibs.mockk.android)
-  androidTestImplementation(testLibs.square.okhttp.mockserver)
-  androidTestImplementation(testLibs.diff.utils)
+  androidTestImplementation(libs.androidx.junit)
+  androidTestImplementation(libs.androidx.espresso)
+  androidTestImplementation(libs.androidx.test.core)
+  androidTestImplementation(libs.androidx.test.core.ktx)
+  androidTestImplementation(libs.androidx.junit.ktx)
+  androidTestImplementation(libs.mockito.android)
+  androidTestImplementation(libs.mockito.kotlin)
+  androidTestImplementation(libs.mockk.android)
+  androidTestImplementation(libs.square.okhttp.mockserver)
+  androidTestImplementation(libs.diff.utils)
 
-  androidTestUtil(testLibs.androidx.test.orchestrator)
-}
-
-fun assertIsGitRepo() {
-  if (!file("${project.rootDir}/.git").exists()) {
-    throw IllegalStateException("Must be a git repository to guarantee reproducible builds! (git hash is part of APK)")
-  }
-}
-
-fun getLastCommitTimestamp(): String {
-  assertIsGitRepo()
-
-  ByteArrayOutputStream().use { os ->
-    exec {
-      executable = "git"
-      args = listOf("log", "-1", "--pretty=format:%ct")
-      standardOutput = os
-    }
-
-    return os.toString() + "000"
-  }
-}
-
-fun getGitHash(): String {
-  assertIsGitRepo()
-
-  val stdout = ByteArrayOutputStream()
-  exec {
-    commandLine = listOf("git", "rev-parse", "HEAD")
-    standardOutput = stdout
-  }
-
-  return stdout.toString().trim().substring(0, 12)
-}
-
-fun getCurrentGitTag(): String? {
-  assertIsGitRepo()
-
-  val stdout = ByteArrayOutputStream()
-  exec {
-    commandLine = listOf("git", "tag", "--points-at", "HEAD")
-    standardOutput = stdout
-  }
-
-  val output: String = stdout.toString().trim()
-
-  return if (output.isNotEmpty()) {
-    val tags = output.split("\n").toList()
-    tags.firstOrNull { it.contains("nightly") } ?: tags[0]
-  } else {
-    null
-  }
+  androidTestUtil(libs.androidx.test.orchestrator)
 }
 
 tasks.withType<Test>().configureEach {
@@ -693,14 +634,25 @@ project.tasks.configureEach {
 
 tasks.register("checkNightlyParams") {
   doFirst {
-    if (project.gradle.startParameter.taskNames.any { it.lowercase().contains("nightly") }) {
-
-      if (!file("${project.rootDir}/nightly-url.txt").exists()) {
-        throw GradleException("Cannot find 'nightly-url.txt' for nightly build! It must exist in the root of this project and contain the location of the nightly manifest.")
-      }
-    }
+//    val isNightlyBuild = project.gradle.startParameter.taskNames.any { it.lowercase().contains("nightly") }
+//    val nightlyUrlFile = file("${project.rootDir}/nightly-url.txt")
+//
+//    if (isNightlyBuild && !nightlyUrlFile.exists()) {
+//      throw GradleException("Cannot find 'nightly-url.txt' for nightly build! It must exist in the root of this project and contain the location of the nightly manifest.")
+//    }
   }
 }
+
+// tasks.register("checkNightlyParams") {
+//  doFirst {
+//    if (project.gradle.startParameter.taskNames.any { it.lowercase().contains("nightly") }) {
+//
+//      if (!file("${project.rootDir}/nightly-url.txt").exists()) {
+//        throw GradleException("Cannot find 'nightly-url.txt' for nightly build! It must exist in the root of this project and contain the location of the nightly manifest.")
+//      }
+//    }
+//  }
+// }
 
 fun loadKeystoreProperties(filename: String): Properties? {
   val keystorePropertiesFile = file("${project.rootDir}/$filename")
@@ -714,9 +666,7 @@ fun loadKeystoreProperties(filename: String): Properties? {
   }
 }
 
-fun getDateSuffix(): String {
-  return SimpleDateFormat("yyyy-MM-dd-HH:mm").format(Date())
-}
+fun getDateSuffix(): String = SimpleDateFormat("yyyy-MM-dd-HH:mm").format(Date())
 
 fun getMapsKey(): String {
   val mapKey = file("${project.rootDir}/maps.key")
@@ -728,16 +678,12 @@ fun getMapsKey(): String {
   }
 }
 
-fun Project.languageList(): List<String> {
-  return fileTree("src/main/res") { include("**/strings.xml") }
-    .map { stringFile -> stringFile.parentFile.name }
-    .map { valuesFolderName -> valuesFolderName.replace("values-", "") }
-    .filter { valuesFolderName -> valuesFolderName != "values" }
-    .map { languageCode -> languageCode.replace("-r", "_") }
-    .distinct()
-    .sorted() + "en"
-}
+fun Project.languageList(): List<String> = fileTree("src/main/res") { include("**/strings.xml") }
+  .map { stringFile -> stringFile.parentFile.name }
+  .map { valuesFolderName -> valuesFolderName.replace("values-", "") }
+  .filter { valuesFolderName -> valuesFolderName != "values" }
+  .map { languageCode -> languageCode.replace("-r", "_") }
+  .distinct()
+  .sorted() + "en"
 
-fun String.capitalize(): String {
-  return this.replaceFirstChar { it.uppercase() }
-}
+fun String.capitalize(): String = this.replaceFirstChar { it.uppercase() }

@@ -118,18 +118,14 @@ class RegistrationActivity : BaseActivity() {
     const val RE_REGISTRATION_EXTRA: String = "re_registration"
 
     @JvmStatic
-    fun newIntentForNewRegistration(context: Context, originalIntent: Intent): Intent {
-      return Intent(context, RegistrationActivity::class.java).apply {
-        putExtra(RE_REGISTRATION_EXTRA, false)
-        setData(originalIntent.data)
-      }
+    fun newIntentForNewRegistration(context: Context, originalIntent: Intent): Intent = Intent(context, RegistrationActivity::class.java).apply {
+      putExtra(RE_REGISTRATION_EXTRA, false)
+      setData(originalIntent.data)
     }
 
     @JvmStatic
-    fun newIntentForReRegistration(context: Context): Intent {
-      return Intent(context, RegistrationActivity::class.java).apply {
-        putExtra(RE_REGISTRATION_EXTRA, true)
-      }
+    fun newIntentForReRegistration(context: Context): Intent = Intent(context, RegistrationActivity::class.java).apply {
+      putExtra(RE_REGISTRATION_EXTRA, true)
     }
   }
 }

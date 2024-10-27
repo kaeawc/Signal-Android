@@ -25,16 +25,12 @@ data class ActiveCallData(
     private const val KEY = "ACTIVE_CALL_DATA"
 
     @JvmStatic
-    fun fromCallState(webRtcServiceState: WebRtcServiceState): ActiveCallData {
-      return ActiveCallData(
-        webRtcServiceState.callInfoState.callRecipient.id
-      )
-    }
+    fun fromCallState(webRtcServiceState: WebRtcServiceState): ActiveCallData = ActiveCallData(
+      webRtcServiceState.callInfoState.callRecipient.id
+    )
 
     @JvmStatic
-    fun fromBundle(bundle: Bundle): ActiveCallData {
-      return bundle.getParcelableCompat(KEY, ActiveCallData::class.java)!!
-    }
+    fun fromBundle(bundle: Bundle): ActiveCallData = bundle.getParcelableCompat(KEY, ActiveCallData::class.java)!!
   }
 
   fun toBundle(): Bundle = bundleOf(KEY to this)

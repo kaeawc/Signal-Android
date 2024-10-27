@@ -51,9 +51,7 @@ data class Boost(
   ) : PreferenceModel<HeadingModel>() {
     override fun areItemsTheSame(newItem: HeadingModel): Boolean = true
 
-    override fun areContentsTheSame(newItem: HeadingModel): Boolean {
-      return super.areContentsTheSame(newItem) && newItem.boostBadge == boostBadge
-    }
+    override fun areContentsTheSame(newItem: HeadingModel): Boolean = super.areContentsTheSame(newItem) && newItem.boostBadge == boostBadge
   }
 
   class LoadingModel : PreferenceModel<LoadingModel>() {
@@ -112,16 +110,14 @@ data class Boost(
   ) : PreferenceModel<SelectionModel>(isEnabled = isEnabled) {
     override fun areItemsTheSame(newItem: SelectionModel): Boolean = true
 
-    override fun areContentsTheSame(newItem: SelectionModel): Boolean {
-      return super.areContentsTheSame(newItem) &&
-        newItem.boosts == boosts &&
-        newItem.selectedBoost == selectedBoost &&
-        newItem.currency == currency &&
-        newItem.isCustomAmountFocused == isCustomAmountFocused &&
-        newItem.isCustomAmountTooSmall == isCustomAmountTooSmall &&
-        newItem.minimumAmount.amount == minimumAmount.amount &&
-        newItem.minimumAmount.currency == minimumAmount.currency
-    }
+    override fun areContentsTheSame(newItem: SelectionModel): Boolean = super.areContentsTheSame(newItem) &&
+      newItem.boosts == boosts &&
+      newItem.selectedBoost == selectedBoost &&
+      newItem.currency == currency &&
+      newItem.isCustomAmountFocused == isCustomAmountFocused &&
+      newItem.isCustomAmountTooSmall == isCustomAmountTooSmall &&
+      newItem.minimumAmount.amount == minimumAmount.amount &&
+      newItem.minimumAmount.currency == minimumAmount.currency
   }
 
   private class SelectionViewHolder(itemView: View) : MappingViewHolder<SelectionModel>(itemView) {
@@ -224,7 +220,9 @@ data class Boost(
   }
 
   @VisibleForTesting
-  class MoneyFilter(val currency: Currency, private val text: AppCompatEditText? = null, private val onCustomAmountChanged: (String) -> Unit = {}) : DigitsKeyListener(false, true), TextWatcher {
+  class MoneyFilter(val currency: Currency, private val text: AppCompatEditText? = null, private val onCustomAmountChanged: (String) -> Unit = {}) :
+    DigitsKeyListener(false, true),
+    TextWatcher {
 
     val separator = DecimalFormatSymbols.getInstance().decimalSeparator
     val separatorCount = min(1, currency.defaultFractionDigits)

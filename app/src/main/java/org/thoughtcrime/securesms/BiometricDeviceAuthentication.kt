@@ -89,10 +89,9 @@ class BiometricDeviceLockContract : ActivityResultContract<String, Int>() {
     return keyguardManager.createConfirmDeviceCredentialIntent(input, "")
   }
 
-  override fun parseResult(resultCode: Int, intent: Intent?) =
-    if (resultCode != Activity.RESULT_OK) {
-      BiometricDeviceAuthentication.NOT_AUTHENTICATED
-    } else {
-      BiometricDeviceAuthentication.AUTHENTICATED
-    }
+  override fun parseResult(resultCode: Int, intent: Intent?) = if (resultCode != Activity.RESULT_OK) {
+    BiometricDeviceAuthentication.NOT_AUTHENTICATED
+  } else {
+    BiometricDeviceAuthentication.AUTHENTICATED
+  }
 }

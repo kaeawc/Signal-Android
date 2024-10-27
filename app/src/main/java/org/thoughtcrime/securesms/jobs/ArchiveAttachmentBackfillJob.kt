@@ -59,8 +59,6 @@ class ArchiveAttachmentBackfillJob private constructor(parameters: Parameters) :
   override fun onFailure() = Unit
 
   class Factory : Job.Factory<ArchiveAttachmentBackfillJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): ArchiveAttachmentBackfillJob {
-      return ArchiveAttachmentBackfillJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): ArchiveAttachmentBackfillJob = ArchiveAttachmentBackfillJob(parameters)
   }
 }

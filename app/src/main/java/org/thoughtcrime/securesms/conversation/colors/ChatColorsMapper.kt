@@ -58,19 +58,13 @@ object ChatColorsMapper {
     get() = materialColorToChatColorsBiMap.entries
 
   @JvmStatic
-  fun getChatColors(materialColor: MaterialColor): ChatColors {
-    return materialColorToChatColorsBiMap[materialColor] ?: ChatColorsPalette.Bubbles.default
-  }
+  fun getChatColors(materialColor: MaterialColor): ChatColors = materialColorToChatColorsBiMap[materialColor] ?: ChatColorsPalette.Bubbles.default
 
   @JvmStatic
-  fun getChatColors(wallpaper: ChatWallpaper): ChatColors {
-    return wallpaperToChatColorsMap.entries.find { (key, _) ->
-      key.isSameSource(wallpaper)
-    }?.value ?: ChatColorsPalette.Bubbles.default
-  }
+  fun getChatColors(wallpaper: ChatWallpaper): ChatColors = wallpaperToChatColorsMap.entries.find { (key, _) ->
+    key.isSameSource(wallpaper)
+  }?.value ?: ChatColorsPalette.Bubbles.default
 
   @JvmStatic
-  fun getMaterialColor(chatColors: ChatColors): MaterialColor {
-    return materialColorToChatColorsBiMap.inverse()[chatColors] ?: MaterialColor.ULTRAMARINE
-  }
+  fun getMaterialColor(chatColors: ChatColors): MaterialColor = materialColorToChatColorsBiMap.inverse()[chatColors] ?: MaterialColor.ULTRAMARINE
 }

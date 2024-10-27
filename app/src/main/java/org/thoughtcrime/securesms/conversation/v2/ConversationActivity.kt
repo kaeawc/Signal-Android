@@ -23,7 +23,10 @@ import java.util.concurrent.TimeUnit
 /**
  * Wrapper activity for ConversationFragment.
  */
-open class ConversationActivity : PassphraseRequiredActivity(), VoiceNoteMediaControllerOwner, InAppPaymentComponent {
+open class ConversationActivity :
+  PassphraseRequiredActivity(),
+  VoiceNoteMediaControllerOwner,
+  InAppPaymentComponent {
 
   companion object {
     private val TAG = tag(ConversationActivity::class.java)
@@ -117,7 +120,5 @@ open class ConversationActivity : PassphraseRequiredActivity(), VoiceNoteMediaCo
       .commitNowAllowingStateLoss()
   }
 
-  override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-    return motionEventRelay.offer(ev) || super.dispatchTouchEvent(ev)
-  }
+  override fun dispatchTouchEvent(ev: MotionEvent?): Boolean = motionEventRelay.offer(ev) || super.dispatchTouchEvent(ev)
 }

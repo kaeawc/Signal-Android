@@ -41,9 +41,10 @@ import kotlin.time.DurationUnit
 /**
  * Shows internal details about a recipient that you can view from the conversation settings.
  */
-class InternalConversationSettingsFragment : DSLSettingsFragment(
-  titleId = R.string.ConversationSettingsFragment__internal_details
-) {
+class InternalConversationSettingsFragment :
+  DSLSettingsFragment(
+    titleId = R.string.ConversationSettingsFragment__internal_details
+  ) {
 
   private val viewModel: InternalViewModel by viewModels(
     factoryProducer = {
@@ -350,17 +351,16 @@ class InternalConversationSettingsFragment : DSLSettingsFragment(
     }
   }
 
-  private fun colorize(name: String, support: Recipient.Capability): CharSequence {
-    return when (support) {
-      Recipient.Capability.SUPPORTED -> SpanUtil.color(Color.rgb(0, 150, 0), name)
-      Recipient.Capability.NOT_SUPPORTED -> SpanUtil.color(Color.RED, name)
-      Recipient.Capability.UNKNOWN -> SpanUtil.italic(name)
-    }
+  private fun colorize(name: String, support: Recipient.Capability): CharSequence = when (support) {
+    Recipient.Capability.SUPPORTED -> SpanUtil.color(Color.rgb(0, 150, 0), name)
+    Recipient.Capability.NOT_SUPPORTED -> SpanUtil.color(Color.RED, name)
+    Recipient.Capability.UNKNOWN -> SpanUtil.italic(name)
   }
 
   class InternalViewModel(
     val recipientId: RecipientId
-  ) : ViewModel(), RecipientForeverObserver {
+  ) : ViewModel(),
+    RecipientForeverObserver {
 
     private val store = Store(
       InternalState(
@@ -393,9 +393,7 @@ class InternalConversationSettingsFragment : DSLSettingsFragment(
   }
 
   class MyViewModelFactory(val recipientId: RecipientId) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return Objects.requireNonNull(modelClass.cast(InternalViewModel(recipientId)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = Objects.requireNonNull(modelClass.cast(InternalViewModel(recipientId)))
   }
 
   data class InternalState(

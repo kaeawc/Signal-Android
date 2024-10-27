@@ -37,16 +37,14 @@ class StoryOnboardingDownloadJob private constructor(parameters: Parameters) : B
 
     private val TAG = Log.tag(StoryOnboardingDownloadJob::class.java)
 
-    private fun create(): Job {
-      return StoryOnboardingDownloadJob(
-        Parameters.Builder()
-          .addConstraint(NetworkConstraint.KEY)
-          .setQueue("StoryOnboardingDownloadJob")
-          .setMaxInstancesForFactory(1)
-          .setMaxAttempts(3)
-          .build()
-      )
-    }
+    private fun create(): Job = StoryOnboardingDownloadJob(
+      Parameters.Builder()
+        .addConstraint(NetworkConstraint.KEY)
+        .setQueue("StoryOnboardingDownloadJob")
+        .setMaxInstancesForFactory(1)
+        .setMaxAttempts(3)
+        .build()
+    )
 
     fun enqueueIfNeeded() {
       if (SignalStore.story.hasDownloadedOnboardingStory) {
@@ -187,8 +185,6 @@ class StoryOnboardingDownloadJob private constructor(parameters: Parameters) : B
   }
 
   class Factory : Job.Factory<StoryOnboardingDownloadJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): StoryOnboardingDownloadJob {
-      return StoryOnboardingDownloadJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): StoryOnboardingDownloadJob = StoryOnboardingDownloadJob(parameters)
   }
 }

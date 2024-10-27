@@ -23,7 +23,10 @@ import kotlin.math.max
 /**
  * Search dialog for finding stickers.
  */
-class StickerSearchDialogFragment : DialogFragment(), KeyboardStickerListAdapter.EventListener, View.OnLayoutChangeListener {
+class StickerSearchDialogFragment :
+  DialogFragment(),
+  KeyboardStickerListAdapter.EventListener,
+  View.OnLayoutChangeListener {
 
   private lateinit var search: KeyboardPageSearchView
   private lateinit var list: RecyclerView
@@ -37,9 +40,7 @@ class StickerSearchDialogFragment : DialogFragment(), KeyboardStickerListAdapter
     setStyle(STYLE_NO_FRAME, R.style.Signal_DayNight_Dialog_Animated_Bottom)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.sticker_search_dialog_fragment, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.sticker_search_dialog_fragment, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

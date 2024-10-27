@@ -141,15 +141,13 @@ class ManageDonationsViewModel : ViewModel() {
     )
   }
 
-  private fun mapStatusToRedemptionState(status: DonationRedemptionJobStatus): ManageDonationsState.RedemptionState {
-    return when (status) {
-      DonationRedemptionJobStatus.FailedSubscription -> ManageDonationsState.RedemptionState.FAILED
-      DonationRedemptionJobStatus.None -> ManageDonationsState.RedemptionState.NONE
+  private fun mapStatusToRedemptionState(status: DonationRedemptionJobStatus): ManageDonationsState.RedemptionState = when (status) {
+    DonationRedemptionJobStatus.FailedSubscription -> ManageDonationsState.RedemptionState.FAILED
+    DonationRedemptionJobStatus.None -> ManageDonationsState.RedemptionState.NONE
 
-      is DonationRedemptionJobStatus.PendingExternalVerification,
-      DonationRedemptionJobStatus.PendingReceiptRedemption,
-      DonationRedemptionJobStatus.PendingReceiptRequest -> ManageDonationsState.RedemptionState.IN_PROGRESS
-    }
+    is DonationRedemptionJobStatus.PendingExternalVerification,
+    DonationRedemptionJobStatus.PendingReceiptRedemption,
+    DonationRedemptionJobStatus.PendingReceiptRequest -> ManageDonationsState.RedemptionState.IN_PROGRESS
   }
 
   companion object {

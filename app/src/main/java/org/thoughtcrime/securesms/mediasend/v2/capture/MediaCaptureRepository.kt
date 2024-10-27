@@ -172,17 +172,11 @@ class MediaCaptureRepository(context: Context) {
       return media
     }
 
-    private fun getWidthColumn(orientation: Int): String {
-      return if (orientation == 0 || orientation == 180) MediaStore.Images.Media.WIDTH else MediaStore.Images.Media.HEIGHT
-    }
+    private fun getWidthColumn(orientation: Int): String = if (orientation == 0 || orientation == 180) MediaStore.Images.Media.WIDTH else MediaStore.Images.Media.HEIGHT
 
-    private fun getHeightColumn(orientation: Int): String {
-      return if (orientation == 0 || orientation == 180) MediaStore.Images.Media.HEIGHT else MediaStore.Images.Media.WIDTH
-    }
+    private fun getHeightColumn(orientation: Int): String = if (orientation == 0 || orientation == 180) MediaStore.Images.Media.HEIGHT else MediaStore.Images.Media.WIDTH
 
     @Suppress("DEPRECATION")
-    private fun isNotPending(): String {
-      return if (Build.VERSION.SDK_INT <= 28) MediaStore.Images.Media.DATA + " NOT NULL" else MediaStore.MediaColumns.IS_PENDING + " != 1"
-    }
+    private fun isNotPending(): String = if (Build.VERSION.SDK_INT <= 28) MediaStore.Images.Media.DATA + " NOT NULL" else MediaStore.MediaColumns.IS_PENDING + " != 1"
   }
 }

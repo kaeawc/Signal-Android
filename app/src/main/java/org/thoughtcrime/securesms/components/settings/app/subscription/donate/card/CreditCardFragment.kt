@@ -204,12 +204,10 @@ class CreditCardFragment : Fragment(R.layout.credit_card_fragment) {
     private val isEnabled: Boolean = true,
     @StringRes private val messageResId: Int
   ) {
-    fun resolveErrorText(context: Context): String? {
-      return if (isEnabled) {
-        context.getString(messageResId)
-      } else {
-        null
-      }
+    fun resolveErrorText(context: Context): String? = if (isEnabled) {
+      context.getString(messageResId)
+    } else {
+      null
     }
   }
 

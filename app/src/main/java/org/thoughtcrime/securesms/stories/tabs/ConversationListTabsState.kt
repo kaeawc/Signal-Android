@@ -14,8 +14,6 @@ data class ConversationListTabsState(
     val isMultiSelectOpen: Boolean = false,
     val isShowingArchived: Boolean = false
   ) {
-    fun isVisible(): Boolean {
-      return !isSearchOpen && !isMultiSelectOpen && !isShowingArchived
-    }
+    fun isVisible(): Boolean = !isSearchOpen && !isMultiSelectOpen && !isShowingArchived
   }
 }

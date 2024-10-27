@@ -5,6 +5,7 @@
 
 package org.thoughtcrime.securesms.messages
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
@@ -56,6 +57,7 @@ object GroupSendEndorsementInternalNotifier : SealedSenderAccess.FallbackListene
   }
 
   @JvmStatic
+  @SuppressLint("MissingPermission")
   fun postGroupSendFallbackError(context: Context) {
     val now = System.currentTimeMillis().milliseconds
     if (lastGroupSendNotify + 5.minutes > now && skippedGroupSendNotifies < 5) {
@@ -77,6 +79,7 @@ object GroupSendEndorsementInternalNotifier : SealedSenderAccess.FallbackListene
   }
 
   @JvmStatic
+  @SuppressLint("MissingPermission")
   fun postMissingGroupSendEndorsement(context: Context) {
     val now = System.currentTimeMillis().milliseconds
     if (lastMissingNotify + 5.minutes > now) {
@@ -96,6 +99,7 @@ object GroupSendEndorsementInternalNotifier : SealedSenderAccess.FallbackListene
   }
 
   @JvmStatic
+  @SuppressLint("MissingPermission")
   fun postFallbackError(context: Context) {
     val now = System.currentTimeMillis().milliseconds
     if (lastFallbackNotify + 5.minutes > now) {

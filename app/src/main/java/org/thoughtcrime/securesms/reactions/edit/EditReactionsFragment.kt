@@ -27,7 +27,9 @@ private val UNSELECTED_SIZE = ViewUtil.dpToPx(26)
 /**
  * Edit default reactions that show when long pressing.
  */
-class EditReactionsFragment : LoggingFragment(R.layout.edit_reactions_fragment), ReactWithAnyEmojiBottomSheetDialogFragment.Callback {
+class EditReactionsFragment :
+  LoggingFragment(R.layout.edit_reactions_fragment),
+  ReactWithAnyEmojiBottomSheetDialogFragment.Callback {
 
   private lateinit var toolbar: Toolbar
   private lateinit var reactionViews: List<EmojiImageView>
@@ -146,27 +148,23 @@ class EditReactionsFragment : LoggingFragment(R.layout.edit_reactions_fragment),
 
     private const val REACT_SHEET_TAG = "REACT_SHEET_TAG"
 
-    private fun createTransitionSet(): Transition {
-      return TransitionSet().apply {
-        ordering = TransitionSet.ORDERING_TOGETHER
-        duration = 250
-        addTransition(AlphaTransition())
-        addTransition(ChangeBounds())
+    private fun createTransitionSet(): Transition = TransitionSet().apply {
+      ordering = TransitionSet.ORDERING_TOGETHER
+      duration = 250
+      addTransition(AlphaTransition())
+      addTransition(ChangeBounds())
+    }
+
+    private fun createSelectTransitionSet(target: View): Transition = createTransitionSet().addListener(object : Transition.TransitionListener {
+      override fun onTransitionEnd(transition: Transition) {
+        startRockingAnimation(target)
       }
-    }
 
-    private fun createSelectTransitionSet(target: View): Transition {
-      return createTransitionSet().addListener(object : Transition.TransitionListener {
-        override fun onTransitionEnd(transition: Transition) {
-          startRockingAnimation(target)
-        }
-
-        override fun onTransitionStart(transition: Transition) = Unit
-        override fun onTransitionCancel(transition: Transition) = Unit
-        override fun onTransitionPause(transition: Transition) = Unit
-        override fun onTransitionResume(transition: Transition) = Unit
-      })
-    }
+      override fun onTransitionStart(transition: Transition) = Unit
+      override fun onTransitionCancel(transition: Transition) = Unit
+      override fun onTransitionPause(transition: Transition) = Unit
+      override fun onTransitionResume(transition: Transition) = Unit
+    })
 
     private fun startRockingAnimation(target: View) {
       val startRocking: Animation = AnimationUtils.loadAnimation(target.context, R.anim.rock_start)

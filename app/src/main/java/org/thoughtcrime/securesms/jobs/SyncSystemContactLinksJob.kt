@@ -100,19 +100,17 @@ class SyncSystemContactLinksJob private constructor(parameters: Parameters) : Ba
     private const val VIDEO_CALL_MIMETYPE = "vnd.android.cursor.item/vnd.org.thoughtcrime.securesms.videocall"
     private const val CONTACT_TAG = "__TS"
 
-    fun buildContactLinkConfiguration(context: Context, account: Account): ContactLinkConfiguration {
-      return ContactLinkConfiguration(
-        account = account,
-        appName = context.getString(R.string.app_name),
-        messagePrompt = { e164 -> context.getString(R.string.ContactsDatabase_message_s, e164) },
-        callPrompt = { e164 -> context.getString(R.string.ContactsDatabase_signal_call_s, e164) },
-        videoCallPrompt = { e164 -> context.getString(R.string.ContactsDatabase_signal_video_call_s, e164) },
-        e164Formatter = { number -> PhoneNumberFormatter.get(context).format(number) },
-        messageMimetype = MESSAGE_MIMETYPE,
-        callMimetype = CALL_MIMETYPE,
-        videoCallMimetype = VIDEO_CALL_MIMETYPE,
-        syncTag = CONTACT_TAG
-      )
-    }
+    fun buildContactLinkConfiguration(context: Context, account: Account): ContactLinkConfiguration = ContactLinkConfiguration(
+      account = account,
+      appName = context.getString(R.string.app_name),
+      messagePrompt = { e164 -> context.getString(R.string.ContactsDatabase_message_s, e164) },
+      callPrompt = { e164 -> context.getString(R.string.ContactsDatabase_signal_call_s, e164) },
+      videoCallPrompt = { e164 -> context.getString(R.string.ContactsDatabase_signal_video_call_s, e164) },
+      e164Formatter = { number -> PhoneNumberFormatter.get(context).format(number) },
+      messageMimetype = MESSAGE_MIMETYPE,
+      callMimetype = CALL_MIMETYPE,
+      videoCallMimetype = VIDEO_CALL_MIMETYPE,
+      syncTag = CONTACT_TAG
+    )
   }
 }

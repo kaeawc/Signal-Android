@@ -386,120 +386,94 @@ class Recipient(
     get() = if (isResolving) live().resolve() else this
 
   /** Convenience method to get a non-null [serviceId] hen you know it is there. */
-  fun requireServiceId(): ServiceId {
-    return resolved.aciValue ?: resolved.pniValue ?: throw MissingAddressError(id)
-  }
+  fun requireServiceId(): ServiceId = resolved.aciValue ?: resolved.pniValue ?: throw MissingAddressError(id)
 
   /** Convenience method to get a non-null [aci] hen you know it is there. */
-  fun requireAci(): ACI {
-    return resolved.aciValue ?: throw MissingAddressError(id)
-  }
+  fun requireAci(): ACI = resolved.aciValue ?: throw MissingAddressError(id)
 
   /** Convenience method to get a non-null [pni] when you know it is there. */
-  fun requirePni(): PNI {
-    return resolved.pniValue ?: throw MissingAddressError(id)
-  }
+  fun requirePni(): PNI = resolved.pniValue ?: throw MissingAddressError(id)
 
   /** Convenience method to get a non-null [e164] when you know it is there. */
-  fun requireE164(): String {
-    return resolved.e164Value ?: throw MissingAddressError(id)
-  }
+  fun requireE164(): String = resolved.e164Value ?: throw MissingAddressError(id)
 
   /** Convenience method to get a non-null [email] when you know it is there. */
-  fun requireEmail(): String {
-    return resolved.emailValue ?: throw MissingAddressError(id)
-  }
+  fun requireEmail(): String = resolved.emailValue ?: throw MissingAddressError(id)
 
   /** Convenience method to get a non-null sms address (either e164 or email) when you know it is there. */
-  fun requireSmsAddress(): String {
-    return resolved.e164Value ?: resolved.emailValue ?: throw MissingAddressError(id)
-  }
+  fun requireSmsAddress(): String = resolved.e164Value ?: resolved.emailValue ?: throw MissingAddressError(id)
 
   /** Convenience method to get a non-null [groupId] when you know it is there. */
-  fun requireGroupId(): GroupId {
-    return resolved.groupIdValue ?: throw MissingAddressError(id)
-  }
+  fun requireGroupId(): GroupId = resolved.groupIdValue ?: throw MissingAddressError(id)
 
   /** Convenience method to get a non-null distributionListId when you know it is there. */
-  fun requireDistributionListId(): DistributionListId {
-    return resolved.distributionListIdValue ?: throw MissingAddressError(id)
-  }
+  fun requireDistributionListId(): DistributionListId = resolved.distributionListIdValue ?: throw MissingAddressError(id)
 
   /** Convenience method to get a non-null callLinkRoomId when you know it is there. */
-  fun requireCallLinkRoomId(): CallLinkRoomId {
-    return resolved.callLinkRoomId ?: throw MissingAddressError(id)
-  }
+  fun requireCallLinkRoomId(): CallLinkRoomId = resolved.callLinkRoomId ?: throw MissingAddressError(id)
 
   /** Convenience method to get a non-null call conversation ID when you know it is there. */
-  fun requireCallConversationId(): ByteArray {
-    return if (isPushGroup) {
-      requireGroupId().decodedId
-    } else if (isCallLink) {
-      requireCallLinkRoomId().encodeForProto().toByteArray()
-    } else if (isIndividual) {
-      requireServiceId().toByteArray()
-    } else {
-      throw IllegalStateException("Recipient does not support conversation id")
-    }
+  fun requireCallConversationId(): ByteArray = if (isPushGroup) {
+    requireGroupId().decodedId
+  } else if (isCallLink) {
+    requireCallLinkRoomId().encodeForProto().toByteArray()
+  } else if (isIndividual) {
+    requireServiceId().toByteArray()
+  } else {
+    throw IllegalStateException("Recipient does not support conversation id")
   }
 
   /** A single string to represent the recipient, in order of precedence: Group ID > ServiceId > Phone > Email */
-  fun requireStringId(): String {
-    return when {
-      resolved.isGroup -> resolved.requireGroupId().toString()
-      resolved.serviceId.isPresent -> resolved.requireServiceId().toString()
-      else -> resolved.requireSmsAddress()
-    }
+  fun requireStringId(): String = when {
+    resolved.isGroup -> resolved.requireGroupId().toString()
+    resolved.serviceId.isPresent -> resolved.requireServiceId().toString()
+    else -> resolved.requireSmsAddress()
   }
 
   /** The name to show for a group. It will be the group name if present, otherwise we default to a list of shortened member names. */
-  fun getGroupName(context: Context): String? {
-    return if (groupIdValue != null && Util.isEmpty(groupName)) {
-      val selfId = AppDependencies.recipientCache.getSelfId()
-      val others = participantIdsValue
-        .filter { id: RecipientId -> id != selfId }
-        .take(MAX_MEMBER_NAMES)
-        .map { resolved(it) }
+  fun getGroupName(context: Context): String? = if (groupIdValue != null && Util.isEmpty(groupName)) {
+    val selfId = AppDependencies.recipientCache.getSelfId()
+    val others = participantIdsValue
+      .filter { id: RecipientId -> id != selfId }
+      .take(MAX_MEMBER_NAMES)
+      .map { resolved(it) }
 
-      val shortNameCounts: MutableMap<String, Int> = HashMap()
-      for (participant in others) {
-        val shortName = participant.getShortDisplayName(context)
-        val count = Objects.requireNonNull(shortNameCounts.getOrDefault(shortName, 0))
-        shortNameCounts[shortName] = count + 1
-      }
-
-      val names: MutableList<String> = LinkedList()
-      for (participant in others) {
-        val shortName = participant.getShortDisplayName(context)
-        val count = Objects.requireNonNull(shortNameCounts.getOrDefault(shortName, 0))
-        if (count <= 1) {
-          names.add(shortName)
-        } else {
-          names.add(participant.getDisplayName(context))
-        }
-      }
-
-      if (participantIdsValue.stream().anyMatch { id: RecipientId -> id == selfId }) {
-        names.add(context.getString(R.string.Recipient_you))
-      }
-
-      Util.join(names, ", ")
-    } else if (!isResolving && isMyStory) {
-      context.getString(R.string.Recipient_my_story)
-    } else if (!isResolving && Util.isEmpty(groupName) && isCallLink) {
-      context.getString(R.string.Recipient_signal_call)
-    } else {
-      groupName
+    val shortNameCounts: MutableMap<String, Int> = HashMap()
+    for (participant in others) {
+      val shortName = participant.getShortDisplayName(context)
+      val count = Objects.requireNonNull(shortNameCounts.getOrDefault(shortName, 0))
+      shortNameCounts[shortName] = count + 1
     }
+
+    val names: MutableList<String> = LinkedList()
+    for (participant in others) {
+      val shortName = participant.getShortDisplayName(context)
+      val count = Objects.requireNonNull(shortNameCounts.getOrDefault(shortName, 0))
+      if (count <= 1) {
+        names.add(shortName)
+      } else {
+        names.add(participant.getDisplayName(context))
+      }
+    }
+
+    if (participantIdsValue.stream().anyMatch { id: RecipientId -> id == selfId }) {
+      names.add(context.getString(R.string.Recipient_you))
+    }
+
+    Util.join(names, ", ")
+  } else if (!isResolving && isMyStory) {
+    context.getString(R.string.Recipient_my_story)
+  } else if (!isResolving && Util.isEmpty(groupName) && isCallLink) {
+    context.getString(R.string.Recipient_signal_call)
+  } else {
+    groupName
   }
 
   /** False iff it [getDisplayName] would fall back to e164, email, or unknown. */
-  fun hasAUserSetDisplayName(context: Context): Boolean {
-    return getGroupName(context).isNotNullOrBlank() ||
-      nickname.toString().isNotNullOrBlank() ||
-      systemContactName.isNotNullOrBlank() ||
-      profileName.toString().isNotNullOrBlank()
-  }
+  fun hasAUserSetDisplayName(context: Context): Boolean = getGroupName(context).isNotNullOrBlank() ||
+    nickname.toString().isNotNullOrBlank() ||
+    systemContactName.isNotNullOrBlank() ||
+    profileName.toString().isNotNullOrBlank()
 
   /** A full-length display name to render for this recipient. */
   fun getDisplayName(context: Context): String {
@@ -513,9 +487,7 @@ class Recipient(
     return StringUtil.isolateBidi(name)
   }
 
-  fun hasNonUsernameDisplayName(context: Context): Boolean {
-    return getNameFromLocalData(context).isNotNullOrBlank()
-  }
+  fun hasNonUsernameDisplayName(context: Context): Boolean = getNameFromLocalData(context).isNotNullOrBlank()
 
   /** A full-length display name for this user, ignoring the username. */
   private fun getNameFromLocalData(context: Context): String? {
@@ -596,75 +568,61 @@ class Recipient(
     return StringUtil.isolateBidi(name)
   }
 
-  private fun getUnknownDisplayName(context: Context): String {
-    return if (registered == RegisteredState.NOT_REGISTERED) {
-      context.getString(R.string.Recipient_deleted_account)
-    } else {
-      context.getString(R.string.Recipient_unknown)
-    }
+  private fun getUnknownDisplayName(context: Context): String = if (registered == RegisteredState.NOT_REGISTERED) {
+    context.getString(R.string.Recipient_deleted_account)
+  } else {
+    context.getString(R.string.Recipient_unknown)
   }
 
-  fun getFallbackAvatar(): FallbackAvatar {
-    return if (isSelf) {
-      FallbackAvatar.Resource.Local(avatarColor)
-    } else if (isResolving) {
-      FallbackAvatar.Transparent
-    } else if (isDistributionList) {
-      FallbackAvatar.Resource.DistributionList(avatarColor)
-    } else if (isCallLink) {
-      FallbackAvatar.Resource.CallLink(avatarColor)
-    } else if (groupIdValue != null) {
-      FallbackAvatar.Resource.Group(avatarColor)
-    } else if (isGroup) {
-      FallbackAvatar.Resource.Group(avatarColor)
-    } else if (groupName.isNotNullOrBlank()) {
-      FallbackAvatar.forTextOrDefault(groupName, avatarColor, FallbackAvatar.Resource.Group(avatarColor))
-    } else if (!nickname.isEmpty) {
-      FallbackAvatar.forTextOrDefault(nickname.toString(), avatarColor)
-    } else if (systemContactName.isNotNullOrBlank()) {
-      FallbackAvatar.forTextOrDefault(systemContactName, avatarColor)
-    } else if (!profileName.isEmpty) {
-      FallbackAvatar.forTextOrDefault(profileName.toString(), avatarColor)
-    } else {
-      FallbackAvatar.Resource.Person(avatarColor)
-    }
+  fun getFallbackAvatar(): FallbackAvatar = if (isSelf) {
+    FallbackAvatar.Resource.Local(avatarColor)
+  } else if (isResolving) {
+    FallbackAvatar.Transparent
+  } else if (isDistributionList) {
+    FallbackAvatar.Resource.DistributionList(avatarColor)
+  } else if (isCallLink) {
+    FallbackAvatar.Resource.CallLink(avatarColor)
+  } else if (groupIdValue != null) {
+    FallbackAvatar.Resource.Group(avatarColor)
+  } else if (isGroup) {
+    FallbackAvatar.Resource.Group(avatarColor)
+  } else if (groupName.isNotNullOrBlank()) {
+    FallbackAvatar.forTextOrDefault(groupName, avatarColor, FallbackAvatar.Resource.Group(avatarColor))
+  } else if (!nickname.isEmpty) {
+    FallbackAvatar.forTextOrDefault(nickname.toString(), avatarColor)
+  } else if (systemContactName.isNotNullOrBlank()) {
+    FallbackAvatar.forTextOrDefault(systemContactName, avatarColor)
+  } else if (!profileName.isEmpty) {
+    FallbackAvatar.forTextOrDefault(profileName.toString(), avatarColor)
+  } else {
+    FallbackAvatar.Resource.Person(avatarColor)
   }
 
   /**
    * If this recipient is missing crucial data, this will return a populated copy. Otherwise it
    * returns itself.
    */
-  fun resolve(): Recipient {
-    return resolved
-  }
+  fun resolve(): Recipient = resolved
 
   /** Forces retrieving a fresh copy of the recipient, regardless of its state. */
-  fun fresh(): Recipient {
-    return live().refresh().resolve()
-  }
+  fun fresh(): Recipient = live().refresh().resolve()
 
   /** Returns a live, observable copy of this recipient. */
-  fun live(): LiveRecipient {
-    return AppDependencies.recipientCache.getLive(id)
-  }
+  fun live(): LiveRecipient = AppDependencies.recipientCache.getLive(id)
 
   enum class HiddenState(private val value: Int) {
     NOT_HIDDEN(0),
     HIDDEN(1),
     HIDDEN_MESSAGE_REQUEST(2);
 
-    fun serialize(): Int {
-      return value
-    }
+    fun serialize(): Int = value
 
     companion object {
-      fun deserialize(value: Int): HiddenState {
-        return when (value) {
-          0 -> NOT_HIDDEN
-          1 -> HIDDEN
-          2 -> HIDDEN_MESSAGE_REQUEST
-          else -> throw IllegalArgumentException()
-        }
+      fun deserialize(value: Int): HiddenState = when (value) {
+        0 -> NOT_HIDDEN
+        1 -> HIDDEN
+        2 -> HIDDEN_MESSAGE_REQUEST
+        else -> throw IllegalArgumentException()
       }
     }
   }
@@ -674,41 +632,29 @@ class Recipient(
     SUPPORTED(1),
     NOT_SUPPORTED(2);
 
-    fun serialize(): Int {
-      return value
-    }
+    fun serialize(): Int = value
 
     val isSupported: Boolean
       get() = this == SUPPORTED
 
     companion object {
-      fun deserialize(value: Int): Capability {
-        return when (value) {
-          0 -> UNKNOWN
-          1 -> SUPPORTED
-          2 -> NOT_SUPPORTED
-          else -> throw IllegalArgumentException()
-        }
+      fun deserialize(value: Int): Capability = when (value) {
+        0 -> UNKNOWN
+        1 -> SUPPORTED
+        2 -> NOT_SUPPORTED
+        else -> throw IllegalArgumentException()
       }
 
-      fun fromBoolean(supported: Boolean): Capability {
-        return if (supported) SUPPORTED else NOT_SUPPORTED
-      }
+      fun fromBoolean(supported: Boolean): Capability = if (supported) SUPPORTED else NOT_SUPPORTED
     }
   }
 
   class Extras private constructor(private val recipientExtras: RecipientExtras) {
-    fun manuallyShownAvatar(): Boolean {
-      return recipientExtras.manuallyShownAvatar
-    }
+    fun manuallyShownAvatar(): Boolean = recipientExtras.manuallyShownAvatar
 
-    fun hideStory(): Boolean {
-      return recipientExtras.hideStory
-    }
+    fun hideStory(): Boolean = recipientExtras.hideStory
 
-    fun hasViewedStory(): Boolean {
-      return recipientExtras.lastStoryView > 0L
-    }
+    fun hasViewedStory(): Boolean = recipientExtras.lastStoryView > 0L
 
     override fun equals(o: Any?): Boolean {
       if (this === o) return true
@@ -717,70 +663,64 @@ class Recipient(
       return manuallyShownAvatar() == that.manuallyShownAvatar() && hideStory() == that.hideStory() && hasViewedStory() == that.hasViewedStory()
     }
 
-    override fun hashCode(): Int {
-      return Objects.hash(manuallyShownAvatar(), hideStory(), hasViewedStory())
-    }
+    override fun hashCode(): Int = Objects.hash(manuallyShownAvatar(), hideStory(), hasViewedStory())
 
     companion object {
-      fun from(recipientExtras: RecipientExtras?): Extras? {
-        return if (recipientExtras != null) {
-          Extras(recipientExtras)
-        } else {
-          null
-        }
+      fun from(recipientExtras: RecipientExtras?): Extras? = if (recipientExtras != null) {
+        Extras(recipientExtras)
+      } else {
+        null
       }
     }
   }
 
-  fun hasSameContent(other: Recipient): Boolean {
-    return id == other.id &&
-      isResolving == other.isResolving &&
-      isSelf == other.isSelf &&
-      isBlocked == other.isBlocked &&
-      muteUntil == other.muteUntil &&
-      expiresInSeconds == other.expiresInSeconds &&
-      profileAvatarFileDetails == other.profileAvatarFileDetails &&
-      isProfileSharing == other.isProfileSharing &&
-      hiddenState == other.hiddenState &&
-      aciValue == other.aciValue &&
-      usernameValue == other.usernameValue &&
-      e164Value == other.e164Value &&
-      emailValue == other.emailValue &&
-      groupIdValue == other.groupIdValue &&
-      participantIdsValue == other.participantIdsValue &&
-      groupAvatarId == other.groupAvatarId &&
-      messageVibrate == other.messageVibrate &&
-      callVibrate == other.callVibrate &&
-      messageRingtoneUri == other.messageRingtoneUri &&
-      callRingtoneUri == other.callRingtoneUri &&
-      registeredValue == other.registeredValue &&
-      profileKey.contentEquals(other.profileKey) &&
-      expiringProfileKeyCredential == other.expiringProfileKeyCredential &&
-      groupName == other.groupName &&
-      systemContactPhoto == other.systemContactPhoto &&
-      customLabel == other.customLabel &&
-      contactUri == other.contactUri &&
-      profileName == other.profileName &&
-      systemProfileName == other.systemProfileName &&
-      profileAvatar == other.profileAvatar &&
-      notificationChannelValue == other.notificationChannelValue &&
-      sealedSenderAccessModeValue == other.sealedSenderAccessModeValue &&
-      storageId.contentEquals(other.storageId) &&
-      mentionSetting == other.mentionSetting &&
-      wallpaperValue == other.wallpaperValue &&
-      chatColorsValue == other.chatColorsValue &&
-      avatarColor == other.avatarColor &&
-      about == other.about &&
-      aboutEmoji == other.aboutEmoji &&
-      extras == other.extras &&
-      hasGroupsInCommon == other.hasGroupsInCommon &&
-      badges == other.badges &&
-      isActiveGroup == other.isActiveGroup &&
-      callLinkRoomId == other.callLinkRoomId &&
-      phoneNumberSharing == other.phoneNumberSharing &&
-      nickname == other.nickname &&
-      note == other.note
-  }
+  fun hasSameContent(other: Recipient): Boolean = id == other.id &&
+    isResolving == other.isResolving &&
+    isSelf == other.isSelf &&
+    isBlocked == other.isBlocked &&
+    muteUntil == other.muteUntil &&
+    expiresInSeconds == other.expiresInSeconds &&
+    profileAvatarFileDetails == other.profileAvatarFileDetails &&
+    isProfileSharing == other.isProfileSharing &&
+    hiddenState == other.hiddenState &&
+    aciValue == other.aciValue &&
+    usernameValue == other.usernameValue &&
+    e164Value == other.e164Value &&
+    emailValue == other.emailValue &&
+    groupIdValue == other.groupIdValue &&
+    participantIdsValue == other.participantIdsValue &&
+    groupAvatarId == other.groupAvatarId &&
+    messageVibrate == other.messageVibrate &&
+    callVibrate == other.callVibrate &&
+    messageRingtoneUri == other.messageRingtoneUri &&
+    callRingtoneUri == other.callRingtoneUri &&
+    registeredValue == other.registeredValue &&
+    profileKey.contentEquals(other.profileKey) &&
+    expiringProfileKeyCredential == other.expiringProfileKeyCredential &&
+    groupName == other.groupName &&
+    systemContactPhoto == other.systemContactPhoto &&
+    customLabel == other.customLabel &&
+    contactUri == other.contactUri &&
+    profileName == other.profileName &&
+    systemProfileName == other.systemProfileName &&
+    profileAvatar == other.profileAvatar &&
+    notificationChannelValue == other.notificationChannelValue &&
+    sealedSenderAccessModeValue == other.sealedSenderAccessModeValue &&
+    storageId.contentEquals(other.storageId) &&
+    mentionSetting == other.mentionSetting &&
+    wallpaperValue == other.wallpaperValue &&
+    chatColorsValue == other.chatColorsValue &&
+    avatarColor == other.avatarColor &&
+    about == other.about &&
+    aboutEmoji == other.aboutEmoji &&
+    extras == other.extras &&
+    hasGroupsInCommon == other.hasGroupsInCommon &&
+    badges == other.badges &&
+    isActiveGroup == other.isActiveGroup &&
+    callLinkRoomId == other.callLinkRoomId &&
+    phoneNumberSharing == other.phoneNumberSharing &&
+    nickname == other.nickname &&
+    note == other.note
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -793,9 +733,7 @@ class Recipient(
     return true
   }
 
-  override fun hashCode(): Int {
-    return id.hashCode()
-  }
+  override fun hashCode(): Int = id.hashCode()
 
   private class MissingAddressError(recipientId: RecipientId) : AssertionError("Missing address for " + recipientId.serialize())
 
@@ -814,18 +752,14 @@ class Recipient(
      */
     @JvmStatic
     @AnyThread
-    fun live(id: RecipientId): LiveRecipient {
-      return AppDependencies.recipientCache.getLive(id)
-    }
+    fun live(id: RecipientId): LiveRecipient = AppDependencies.recipientCache.getLive(id)
 
     /**
      * Returns a live recipient wrapped in an Observable. All work is done on the IO threadpool.
      */
     @JvmStatic
     @AnyThread
-    fun observable(id: RecipientId): Observable<Recipient> {
-      return live(id).observable().subscribeOn(Schedulers.io())
-    }
+    fun observable(id: RecipientId): Observable<Recipient> = live(id).observable().subscribeOn(Schedulers.io())
 
     /**
      * Returns a fully-populated [Recipient]. May hit the disk, and therefore should be
@@ -833,15 +767,11 @@ class Recipient(
      */
     @JvmStatic
     @WorkerThread
-    fun resolved(id: RecipientId): Recipient {
-      return live(id).resolve()
-    }
+    fun resolved(id: RecipientId): Recipient = live(id).resolve()
 
     @JvmStatic
     @WorkerThread
-    fun resolvedList(ids: Collection<RecipientId>): List<Recipient> {
-      return ids.map { resolved(it) }
-    }
+    fun resolvedList(ids: Collection<RecipientId>): List<Recipient> = ids.map { resolved(it) }
 
     @JvmStatic
     @WorkerThread
@@ -866,18 +796,14 @@ class Recipient(
      */
     @JvmStatic
     @WorkerThread
-    fun externalPush(signalServiceAddress: SignalServiceAddress): Recipient {
-      return externalPush(signalServiceAddress.serviceId, signalServiceAddress.number.orElse(null))
-    }
+    fun externalPush(signalServiceAddress: SignalServiceAddress): Recipient = externalPush(signalServiceAddress.serviceId, signalServiceAddress.number.orElse(null))
 
     /**
      * Returns a fully-populated [Recipient] based off of a ServiceId, creating one in the database if necessary.
      */
     @JvmStatic
     @WorkerThread
-    fun externalPush(serviceId: ServiceId): Recipient {
-      return externalPush(serviceId, null)
-    }
+    fun externalPush(serviceId: ServiceId): Recipient = externalPush(serviceId, null)
 
     /**
      * Create a recipient with a full (ACI, PNI, E164) tuple. It is assumed that the association between the PNI and serviceId is trusted.
@@ -970,9 +896,7 @@ class Recipient(
      */
     @JvmStatic
     @WorkerThread
-    fun externalGroupExact(groupId: GroupId): Recipient {
-      return resolved(SignalDatabase.recipients.getOrInsertFromGroupId(groupId))
-    }
+    fun externalGroupExact(groupId: GroupId): Recipient = resolved(SignalDatabase.recipients.getOrInsertFromGroupId(groupId))
 
     /**
      * Will give you one of:
@@ -1028,9 +952,7 @@ class Recipient(
     }
 
     @JvmStatic
-    fun self(): Recipient {
-      return AppDependencies.recipientCache.getSelf()
-    }
+    fun self(): Recipient = AppDependencies.recipientCache.getSelf()
 
     /** Whether we've set a recipient for 'self' yet. We do this during registration. */
     val isSelfSet: Boolean

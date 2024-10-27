@@ -30,15 +30,11 @@ object RecipientPreference {
     val isAdmin: Boolean = false,
     val onClick: (() -> Unit)? = null
   ) : PreferenceModel<Model>() {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return recipient.id == newItem.recipient.id
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = recipient.id == newItem.recipient.id
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) &&
-        recipient.hasSameContent(newItem.recipient) &&
-        isAdmin == newItem.isAdmin
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) &&
+      recipient.hasSameContent(newItem.recipient) &&
+      isAdmin == newItem.isAdmin
   }
 
   class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

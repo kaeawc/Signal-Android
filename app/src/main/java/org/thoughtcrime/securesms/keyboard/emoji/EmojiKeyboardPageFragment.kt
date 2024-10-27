@@ -26,7 +26,11 @@ import java.util.Optional
 
 private val DELETE_KEY_EVENT: KeyEvent = KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL)
 
-class EmojiKeyboardPageFragment : Fragment(), EmojiEventListener, EmojiPageViewGridAdapter.VariationSelectorListener, KeyboardPageSelected {
+class EmojiKeyboardPageFragment :
+  Fragment(),
+  EmojiEventListener,
+  EmojiPageViewGridAdapter.VariationSelectorListener,
+  KeyboardPageSelected {
 
   private lateinit var viewModel: EmojiKeyboardPageViewModel
   private lateinit var emojiPageView: EmojiPageView
@@ -41,9 +45,7 @@ class EmojiKeyboardPageFragment : Fragment(), EmojiEventListener, EmojiPageViewG
 
   private val categoryUpdateOnScroll = UpdateCategorySelectionOnScroll()
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return themedInflate(R.layout.keyboard_pager_emoji_page_fragment, inflater, container)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = themedInflate(R.layout.keyboard_pager_emoji_page_fragment, inflater, container)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     callback = requireNotNull(requireListener())

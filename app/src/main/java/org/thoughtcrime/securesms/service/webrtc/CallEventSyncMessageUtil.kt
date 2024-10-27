@@ -12,52 +12,44 @@ import org.whispersystems.signalservice.internal.push.SyncMessage.CallEvent
  */
 object CallEventSyncMessageUtil {
   @JvmStatic
-  fun createAcceptedSyncMessage(remotePeer: RemotePeer, timestamp: Long, isOutgoing: Boolean, isVideoCall: Boolean): CallEvent {
-    return createCallEvent(
-      remotePeer.id,
-      remotePeer.callId.longValue(),
-      timestamp,
-      isOutgoing,
-      isVideoCall,
-      CallEvent.Event.ACCEPTED
-    )
-  }
+  fun createAcceptedSyncMessage(remotePeer: RemotePeer, timestamp: Long, isOutgoing: Boolean, isVideoCall: Boolean): CallEvent = createCallEvent(
+    remotePeer.id,
+    remotePeer.callId.longValue(),
+    timestamp,
+    isOutgoing,
+    isVideoCall,
+    CallEvent.Event.ACCEPTED
+  )
 
   @JvmStatic
-  fun createNotAcceptedSyncMessage(remotePeer: RemotePeer, timestamp: Long, isOutgoing: Boolean, isVideoCall: Boolean): CallEvent {
-    return createCallEvent(
-      remotePeer.id,
-      remotePeer.callId.longValue(),
-      timestamp,
-      isOutgoing,
-      isVideoCall,
-      CallEvent.Event.NOT_ACCEPTED
-    )
-  }
+  fun createNotAcceptedSyncMessage(remotePeer: RemotePeer, timestamp: Long, isOutgoing: Boolean, isVideoCall: Boolean): CallEvent = createCallEvent(
+    remotePeer.id,
+    remotePeer.callId.longValue(),
+    timestamp,
+    isOutgoing,
+    isVideoCall,
+    CallEvent.Event.NOT_ACCEPTED
+  )
 
   @JvmStatic
-  fun createDeleteCallEvent(remotePeer: RemotePeer, timestamp: Long, isOutgoing: Boolean, isVideoCall: Boolean): CallEvent {
-    return createCallEvent(
-      remotePeer.id,
-      remotePeer.callId.longValue(),
-      timestamp,
-      isOutgoing,
-      isVideoCall,
-      CallEvent.Event.DELETE
-    )
-  }
+  fun createDeleteCallEvent(remotePeer: RemotePeer, timestamp: Long, isOutgoing: Boolean, isVideoCall: Boolean): CallEvent = createCallEvent(
+    remotePeer.id,
+    remotePeer.callId.longValue(),
+    timestamp,
+    isOutgoing,
+    isVideoCall,
+    CallEvent.Event.DELETE
+  )
 
   @JvmStatic
-  fun createObservedCallEvent(remotePeer: RemotePeer, timestamp: Long, isOutgoing: Boolean, isVideoCall: Boolean): CallEvent {
-    return createCallEvent(
-      remotePeer.id,
-      remotePeer.callId.longValue(),
-      timestamp,
-      isOutgoing,
-      isVideoCall,
-      CallEvent.Event.OBSERVED
-    )
-  }
+  fun createObservedCallEvent(remotePeer: RemotePeer, timestamp: Long, isOutgoing: Boolean, isVideoCall: Boolean): CallEvent = createCallEvent(
+    remotePeer.id,
+    remotePeer.callId.longValue(),
+    timestamp,
+    isOutgoing,
+    isVideoCall,
+    CallEvent.Event.OBSERVED
+  )
 
   private fun createCallEvent(
     recipientId: RecipientId,

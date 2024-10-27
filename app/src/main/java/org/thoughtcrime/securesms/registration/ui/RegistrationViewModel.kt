@@ -6,6 +6,7 @@
 package org.thoughtcrime.securesms.registration.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -112,6 +113,8 @@ class RegistrationViewModel : ViewModel() {
   val phoneNumber: Phonenumber.PhoneNumber?
     get() = store.value.phoneNumber
 
+  // TODO: See if we can add a contract to Permissions utils class so this suppression isn't necessary.
+  @SuppressLint("MissingPermission")
   fun maybePrefillE164(context: Context) {
     Log.v(TAG, "maybePrefillE164()")
     if (Permissions.hasAll(context, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS)) {
@@ -859,9 +862,7 @@ class RegistrationViewModel : ViewModel() {
     }
   }
 
-  fun hasPin(): Boolean {
-    return RegistrationRepository.hasPin() || store.value.isReRegister
-  }
+  fun hasPin(): Boolean = RegistrationRepository.hasPin() || store.value.isReRegister
 
   fun completeRegistration() {
     AppDependencies.jobManager.startChain(ProfileUploadJob()).then(listOf(MultiDeviceProfileKeyUpdateJob(), MultiDeviceProfileContentUpdateJob())).enqueue()
@@ -874,21 +875,15 @@ class RegistrationViewModel : ViewModel() {
     }
   }
 
-  private fun matchesSavedE164(e164: String?): Boolean {
-    return if (e164 == null) {
-      false
-    } else {
-      e164 == SignalStore.account.e164
-    }
+  private fun matchesSavedE164(e164: String?): Boolean = if (e164 == null) {
+    false
+  } else {
+    e164 == SignalStore.account.e164
   }
 
-  private fun hasRecoveryPassword(): Boolean {
-    return store.value.recoveryPassword != null
-  }
+  private fun hasRecoveryPassword(): Boolean = store.value.recoveryPassword != null
 
-  private fun getCurrentE164(): String? {
-    return store.value.phoneNumber?.toE164()
-  }
+  private fun getCurrentE164(): String? = store.value.phoneNumber?.toE164()
 
   private suspend fun getRegistrationData(): RegistrationData {
     val currentState = store.value

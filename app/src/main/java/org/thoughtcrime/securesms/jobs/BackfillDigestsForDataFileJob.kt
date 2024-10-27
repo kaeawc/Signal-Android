@@ -43,9 +43,7 @@ class BackfillDigestsForDataFileJob private constructor(
       .build()
   )
 
-  override fun serialize(): ByteArray {
-    return BackfillDigestsForDataFileJobData(dataFile = dataFile).encode()
-  }
+  override fun serialize(): ByteArray = BackfillDigestsForDataFileJobData(dataFile = dataFile).encode()
 
   override fun getFactoryKey(): String = KEY
 

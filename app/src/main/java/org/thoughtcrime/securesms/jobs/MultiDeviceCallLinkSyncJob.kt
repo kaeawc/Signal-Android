@@ -44,9 +44,7 @@ class MultiDeviceCallLinkSyncJob private constructor(
     private val TAG = Log.tag(MultiDeviceCallLinkSyncJob::class.java)
   }
 
-  override fun serialize(): ByteArray {
-    return callLinkUpdate.encode()
-  }
+  override fun serialize(): ByteArray = callLinkUpdate.encode()
 
   override fun getFactoryKey(): String = KEY
 
@@ -63,11 +61,9 @@ class MultiDeviceCallLinkSyncJob private constructor(
     }
   }
 
-  override fun onShouldRetry(exception: Exception): Boolean {
-    return when (exception) {
-      is PushNetworkException -> true
-      else -> false
-    }
+  override fun onShouldRetry(exception: Exception): Boolean = when (exception) {
+    is PushNetworkException -> true
+    else -> false
   }
 
   class Factory : Job.Factory<MultiDeviceCallLinkSyncJob> {

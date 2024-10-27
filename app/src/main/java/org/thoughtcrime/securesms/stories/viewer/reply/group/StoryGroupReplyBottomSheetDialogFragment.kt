@@ -26,7 +26,9 @@ import kotlin.math.roundToInt
 /**
  * Wraps a StoryGroupReplyFragment in a BottomSheetDialog
  */
-class StoryGroupReplyBottomSheetDialogFragment : FixedRoundedCornerBottomSheetDialogFragment(), StoryGroupReplyFragment.Callback {
+class StoryGroupReplyBottomSheetDialogFragment :
+  FixedRoundedCornerBottomSheetDialogFragment(),
+  StoryGroupReplyFragment.Callback {
 
   override val themeResId: Int
     get() = R.style.Widget_Signal_FixedRoundedCorners_Stories
@@ -55,9 +57,7 @@ class StoryGroupReplyBottomSheetDialogFragment : FixedRoundedCornerBottomSheetDi
     ownerProducer = { requireParentFragment() }
   )
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.bottom_sheet_container, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.bottom_sheet_container, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     lifecycleDisposable.bindTo(viewLifecycleOwner)
@@ -131,14 +131,12 @@ class StoryGroupReplyBottomSheetDialogFragment : FixedRoundedCornerBottomSheetDi
     private const val ARG_IS_FROM_NOTIFICATION = "is_from_notification"
     private const val ARG_GROUP_REPLY_START_POSITION = "group_reply_start_position"
 
-    fun create(storyId: Long, groupRecipientId: RecipientId, isFromNotification: Boolean, groupReplyStartPosition: Int): DialogFragment {
-      return StoryGroupReplyBottomSheetDialogFragment().apply {
-        arguments = Bundle().apply {
-          putLong(ARG_STORY_ID, storyId)
-          putParcelable(ARG_GROUP_RECIPIENT_ID, groupRecipientId)
-          putBoolean(ARG_IS_FROM_NOTIFICATION, isFromNotification)
-          putInt(ARG_GROUP_REPLY_START_POSITION, groupReplyStartPosition)
-        }
+    fun create(storyId: Long, groupRecipientId: RecipientId, isFromNotification: Boolean, groupReplyStartPosition: Int): DialogFragment = StoryGroupReplyBottomSheetDialogFragment().apply {
+      arguments = Bundle().apply {
+        putLong(ARG_STORY_ID, storyId)
+        putParcelable(ARG_GROUP_RECIPIENT_ID, groupRecipientId)
+        putBoolean(ARG_IS_FROM_NOTIFICATION, isFromNotification)
+        putInt(ARG_GROUP_REPLY_START_POSITION, groupReplyStartPosition)
       }
     }
   }

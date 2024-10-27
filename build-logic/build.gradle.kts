@@ -1,21 +1,37 @@
-import org.gradle.kotlin.dsl.extra
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
-    val kotlinVersion by extra("2.0.21")
-
     repositories {
         google()
-        mavenCentral()
         maven {
           url = uri("https://plugins.gradle.org/m2/")
         }
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("org.jetbrains.kotlin:compose-compiler-gradle-plugin:$kotlinVersion")
+        classpath(libs.kgp)
+        classpath(libs.compose.compiler)
+        classpath(libs.ktlint.gradle)
     }
 }
 
-apply(from = "${rootDir}/../constants.gradle.kts")
-
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        languageVersion.set(
+            KotlinVersion.valueOf(
+                "KOTLIN_${libs.versions.build.kotlin.language.get().replace(".", "_")}"))
+        jvmTarget.set(JvmTarget.valueOf("JVM_${libs.versions.build.java.target.get()}"))
+        freeCompilerArgs.addAll(
+            listOf(
+                "-opt-in=kotlin.time.ExperimentalTime,kotlin.RequiresOptIn",
+                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-opt-in=kotlin.ExperimentalUnsignedTypes",
+                "-opt-in=kotlin.time.ExperimentalTime",
+                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-opt-in=kotlinx.coroutines.FlowPreview",
+                "-Xcontext-receivers",
+            ))
+    }
+}

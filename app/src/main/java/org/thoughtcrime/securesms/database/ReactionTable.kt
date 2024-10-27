@@ -15,7 +15,9 @@ import org.thoughtcrime.securesms.recipients.RecipientId
 /**
  * Store reactions on messages.
  */
-class ReactionTable(context: Context, databaseHelper: SignalDatabase) : DatabaseTable(context, databaseHelper), RecipientIdDatabaseReference {
+class ReactionTable(context: Context, databaseHelper: SignalDatabase) :
+  DatabaseTable(context, databaseHelper),
+  RecipientIdDatabaseReference {
 
   companion object {
     const val TABLE_NAME = "reaction"
@@ -45,14 +47,12 @@ class ReactionTable(context: Context, databaseHelper: SignalDatabase) : Database
       "CREATE INDEX IF NOT EXISTS reaction_author_id_index ON $TABLE_NAME ($AUTHOR_ID)"
     )
 
-    private fun readReaction(cursor: Cursor): ReactionRecord {
-      return ReactionRecord(
-        emoji = CursorUtil.requireString(cursor, EMOJI),
-        author = RecipientId.from(CursorUtil.requireLong(cursor, AUTHOR_ID)),
-        dateSent = CursorUtil.requireLong(cursor, DATE_SENT),
-        dateReceived = CursorUtil.requireLong(cursor, DATE_RECEIVED)
-      )
-    }
+    private fun readReaction(cursor: Cursor): ReactionRecord = ReactionRecord(
+      emoji = CursorUtil.requireString(cursor, EMOJI),
+      author = RecipientId.from(CursorUtil.requireLong(cursor, AUTHOR_ID)),
+      dateSent = CursorUtil.requireLong(cursor, DATE_SENT),
+      dateReceived = CursorUtil.requireLong(cursor, DATE_RECEIVED)
+    )
   }
 
   fun getReactions(messageId: MessageId): List<ReactionRecord> {

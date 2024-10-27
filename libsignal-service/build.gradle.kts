@@ -16,23 +16,16 @@ plugins {
   id("com.squareup.wire")
 }
 
-val signalBuildToolsVersion: String by rootProject.extra
-val signalCompileSdkVersion: String by rootProject.extra
-val signalTargetSdkVersion: Int by rootProject.extra
-val signalMinSdkVersion: Int by rootProject.extra
-val signalJavaVersion: JavaVersion by rootProject.extra
-val signalKotlinJvmTarget: String by rootProject.extra
-
 java {
   withJavadocJar()
   withSourcesJar()
-  sourceCompatibility = signalJavaVersion
-  targetCompatibility = signalJavaVersion
+  sourceCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
+  targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
 }
 
 tasks.withType<KotlinCompile>().configureEach {
   kotlinOptions {
-    jvmTarget = signalKotlinJvmTarget
+//    jvmTarget = signalKotlinJvmTarget
   }
 }
 
@@ -97,12 +90,12 @@ dependencies {
 
   implementation(project(":core-util-jvm"))
 
-  testImplementation(testLibs.junit.junit)
-  testImplementation(testLibs.assertj.core)
-  testImplementation(testLibs.conscrypt.openjdk.uber)
-  testImplementation(testLibs.mockito.core)
-  testImplementation(testLibs.mockk)
+  testImplementation(libs.junit)
+  testImplementation(libs.assertj.core)
+  testImplementation(libs.conscrypt.openjdk.uber)
+  testImplementation(libs.mockito.core)
+  testImplementation(libs.mockk)
 
   testFixturesImplementation(libs.libsignal.client)
-  testFixturesImplementation(testLibs.junit.junit)
+  testFixturesImplementation(libs.junit)
 }

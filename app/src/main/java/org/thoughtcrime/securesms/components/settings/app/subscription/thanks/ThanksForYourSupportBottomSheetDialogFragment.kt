@@ -43,9 +43,7 @@ class ThanksForYourSupportBottomSheetDialogFragment : FixedRoundedCornerBottomSh
     DISPLAY
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.thanks_for_your_support_bottom_sheet_dialog_fragment, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.thanks_for_your_support_bottom_sheet_dialog_fragment, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     badgeRepository = BadgeRepository(requireContext())

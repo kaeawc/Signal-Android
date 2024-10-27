@@ -44,7 +44,8 @@ data class StoryTextPostModel(
   private val storySentAtMillis: Long,
   private val storyAuthor: RecipientId,
   private val bodyRanges: BodyRangeList?
-) : Key, Parcelable {
+) : Key,
+  Parcelable {
 
   override fun updateDiskCacheKey(messageDigest: MessageDigest) {
     messageDigest.update(storyTextPost.encode())
@@ -55,12 +56,10 @@ data class StoryTextPostModel(
 
   val text: String = storyTextPost.body
 
-  fun getPlaceholder(): Drawable {
-    return if (storyTextPost.background != null) {
-      ChatColors.forChatColor(ChatColors.Id.NotSet, storyTextPost.background).chatBubbleMask
-    } else {
-      ColorDrawable(Color.TRANSPARENT)
-    }
+  fun getPlaceholder(): Drawable = if (storyTextPost.background != null) {
+    ChatColors.forChatColor(ChatColors.Id.NotSet, storyTextPost.background).chatBubbleMask
+  } else {
+    ColorDrawable(Color.TRANSPARENT)
   }
 
   override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -70,43 +69,33 @@ data class StoryTextPostModel(
     ParcelUtil.writeByteArray(parcel, bodyRanges?.encode())
   }
 
-  override fun describeContents(): Int {
-    return 0
-  }
+  override fun describeContents(): Int = 0
 
   companion object CREATOR : Parcelable.Creator<StoryTextPostModel> {
-    override fun createFromParcel(parcel: Parcel): StoryTextPostModel {
-      return StoryTextPostModel(
-        storyTextPost = StoryTextPost.ADAPTER.decode(ParcelUtil.readByteArray(parcel)!!),
-        storySentAtMillis = parcel.readLong(),
-        storyAuthor = parcel.readParcelableCompat(RecipientId::class.java)!!,
-        bodyRanges = ParcelUtil.readByteArray(parcel)?.let { BodyRangeList.ADAPTER.decode(it) }
-      )
-    }
+    override fun createFromParcel(parcel: Parcel): StoryTextPostModel = StoryTextPostModel(
+      storyTextPost = StoryTextPost.ADAPTER.decode(ParcelUtil.readByteArray(parcel)!!),
+      storySentAtMillis = parcel.readLong(),
+      storyAuthor = parcel.readParcelableCompat(RecipientId::class.java)!!,
+      bodyRanges = ParcelUtil.readByteArray(parcel)?.let { BodyRangeList.ADAPTER.decode(it) }
+    )
 
-    override fun newArray(size: Int): Array<StoryTextPostModel?> {
-      return arrayOfNulls(size)
-    }
+    override fun newArray(size: Int): Array<StoryTextPostModel?> = arrayOfNulls(size)
 
-    fun parseFrom(messageRecord: MessageRecord): StoryTextPostModel {
-      return parseFrom(
-        body = messageRecord.body,
-        storySentAtMillis = messageRecord.timestamp,
-        storyAuthor = messageRecord.fromRecipient.id,
-        bodyRanges = messageRecord.messageRanges
-      )
-    }
+    fun parseFrom(messageRecord: MessageRecord): StoryTextPostModel = parseFrom(
+      body = messageRecord.body,
+      storySentAtMillis = messageRecord.timestamp,
+      storyAuthor = messageRecord.fromRecipient.id,
+      bodyRanges = messageRecord.messageRanges
+    )
 
     @JvmStatic
     @Throws(IOException::class)
-    fun parseFrom(body: String, storySentAtMillis: Long, storyAuthor: RecipientId, bodyRanges: BodyRangeList?): StoryTextPostModel {
-      return StoryTextPostModel(
-        storyTextPost = StoryTextPost.ADAPTER.decode(Base64.decode(body)),
-        storySentAtMillis = storySentAtMillis,
-        storyAuthor = storyAuthor,
-        bodyRanges = bodyRanges
-      )
-    }
+    fun parseFrom(body: String, storySentAtMillis: Long, storyAuthor: RecipientId, bodyRanges: BodyRangeList?): StoryTextPostModel = StoryTextPostModel(
+      storyTextPost = StoryTextPost.ADAPTER.decode(Base64.decode(body)),
+      storySentAtMillis = storySentAtMillis,
+      storyAuthor = storyAuthor,
+      bodyRanges = bodyRanges
+    )
   }
 
   class Decoder : ResourceDecoder<StoryTextPostModel, Bitmap> {

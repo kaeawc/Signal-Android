@@ -8,14 +8,10 @@ import org.thoughtcrime.securesms.notifications.profiles.NotificationProfile
 
 class NotificationProfilesViewModel(private val repository: NotificationProfilesRepository) : ViewModel() {
 
-  fun getProfiles(): Flowable<List<NotificationProfile>> {
-    return repository.getProfiles()
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getProfiles(): Flowable<List<NotificationProfile>> = repository.getProfiles()
+    .observeOn(AndroidSchedulers.mainThread())
 
-  class Factory() : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(NotificationProfilesViewModel(NotificationProfilesRepository()))!!
-    }
+  class Factory : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(NotificationProfilesViewModel(NotificationProfilesRepository()))!!
   }
 }

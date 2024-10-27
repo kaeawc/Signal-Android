@@ -84,8 +84,6 @@ class ShareViewModel(
     private val unresolvedShareData: UnresolvedShareData,
     private val shareRepository: ShareRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(ShareViewModel(unresolvedShareData, shareRepository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(ShareViewModel(unresolvedShareData, shareRepository)) as T
   }
 }

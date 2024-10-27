@@ -18,14 +18,12 @@ class AttachmentKeyboardViewModel(
 
   private val refreshRecentMedia = BehaviorSubject.createDefault(Unit)
 
-  fun getRecentMedia(): Observable<MutableList<Media>> {
-    return refreshRecentMedia
-      .flatMapSingle {
-        mediaRepository
-          .recentMedia
-      }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getRecentMedia(): Observable<MutableList<Media>> = refreshRecentMedia
+    .flatMapSingle {
+      mediaRepository
+        .recentMedia
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 
   fun refreshRecentMedia() {
     refreshRecentMedia.onNext(Unit)

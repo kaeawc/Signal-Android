@@ -19,22 +19,16 @@ class WifiConstraint(private val application: Application) : Constraint {
   companion object {
     const val KEY = "WifiConstraint"
 
-    fun isMet(context: Context): Boolean {
-      return NetworkUtil.isConnectedWifi(context)
-    }
+    fun isMet(context: Context): Boolean = NetworkUtil.isConnectedWifi(context)
   }
 
-  override fun isMet(): Boolean {
-    return isMet(application)
-  }
+  override fun isMet(): Boolean = isMet(application)
 
   override fun getFactoryKey(): String = KEY
 
   override fun applyToJobInfo(jobInfoBuilder: JobInfo.Builder) = Unit
 
   class Factory(val application: Application) : Constraint.Factory<WifiConstraint> {
-    override fun create(): WifiConstraint {
-      return WifiConstraint(application)
-    }
+    override fun create(): WifiConstraint = WifiConstraint(application)
   }
 }

@@ -58,9 +58,7 @@ class ManageStorageSettingsViewModel : ViewModel() {
     store.update { it.copy(keepMessagesDuration = newDuration) }
   }
 
-  fun showConfirmKeepDurationChange(newDuration: KeepMessagesDuration): Boolean {
-    return newDuration.ordinal > state.value.keepMessagesDuration.ordinal
-  }
+  fun showConfirmKeepDurationChange(newDuration: KeepMessagesDuration): Boolean = newDuration.ordinal > state.value.keepMessagesDuration.ordinal
 
   fun setChatLengthLimit(newLimit: Int) {
     val restrictingChange = isRestrictingLengthLimitChange(newLimit)
@@ -84,9 +82,7 @@ class ManageStorageSettingsViewModel : ViewModel() {
     }
   }
 
-  fun showConfirmSetChatLengthLimit(newLimit: Int): Boolean {
-    return isRestrictingLengthLimitChange(newLimit)
-  }
+  fun showConfirmSetChatLengthLimit(newLimit: Int): Boolean = isRestrictingLengthLimitChange(newLimit)
 
   fun setSyncTrimDeletes(syncTrimDeletes: Boolean) {
     SignalStore.settings.setSyncThreadTrimDeletes(syncTrimDeletes)
@@ -106,17 +102,13 @@ class ManageStorageSettingsViewModel : ViewModel() {
     }
   }
 
-  private fun isRestrictingLengthLimitChange(newLimit: Int): Boolean {
-    return state.value.lengthLimit == ManageStorageState.NO_LIMIT || (newLimit != ManageStorageState.NO_LIMIT && newLimit < state.value.lengthLimit)
-  }
+  private fun isRestrictingLengthLimitChange(newLimit: Int): Boolean = state.value.lengthLimit == ManageStorageState.NO_LIMIT || (newLimit != ManageStorageState.NO_LIMIT && newLimit < state.value.lengthLimit)
 
-  private fun getOnDeviceStorageOptimizationState(): OnDeviceStorageOptimizationState {
-    return when {
-      !RemoteConfig.messageBackups || !SignalStore.backup.areBackupsEnabled -> OnDeviceStorageOptimizationState.FEATURE_NOT_AVAILABLE
-      SignalStore.backup.backupTier != MessageBackupTier.PAID -> OnDeviceStorageOptimizationState.REQUIRES_PAID_TIER
-      SignalStore.backup.optimizeStorage -> OnDeviceStorageOptimizationState.ENABLED
-      else -> OnDeviceStorageOptimizationState.DISABLED
-    }
+  private fun getOnDeviceStorageOptimizationState(): OnDeviceStorageOptimizationState = when {
+    !RemoteConfig.messageBackups || !SignalStore.backup.areBackupsEnabled -> OnDeviceStorageOptimizationState.FEATURE_NOT_AVAILABLE
+    SignalStore.backup.backupTier != MessageBackupTier.PAID -> OnDeviceStorageOptimizationState.REQUIRES_PAID_TIER
+    SignalStore.backup.optimizeStorage -> OnDeviceStorageOptimizationState.ENABLED
+    else -> OnDeviceStorageOptimizationState.DISABLED
   }
 
   override fun onCleared() {

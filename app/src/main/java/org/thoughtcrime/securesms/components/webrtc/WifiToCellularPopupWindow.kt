@@ -14,11 +14,12 @@ import java.util.concurrent.TimeUnit
  * Popup shown when the device is connected to a WiFi and cellular network, and WiFi is unusable for
  * RingRTC.
  */
-class WifiToCellularPopupWindow(private val parent: ViewGroup) : PopupWindow(
-  LayoutInflater.from(parent.context).inflate(R.layout.wifi_to_cellular_popup, parent, false),
-  WindowManager.LayoutParams.MATCH_PARENT,
-  WindowManager.LayoutParams.WRAP_CONTENT
-) {
+class WifiToCellularPopupWindow(private val parent: ViewGroup) :
+  PopupWindow(
+    LayoutInflater.from(parent.context).inflate(R.layout.wifi_to_cellular_popup, parent, false),
+    WindowManager.LayoutParams.MATCH_PARENT,
+    WindowManager.LayoutParams.WRAP_CONTENT
+  ) {
 
   init {
     animationStyle = R.style.PopupAnimation

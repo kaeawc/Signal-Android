@@ -120,8 +120,6 @@ class LinkedDeviceInactiveCheckJob private constructor(
   }
 
   class Factory : Job.Factory<LinkedDeviceInactiveCheckJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): LinkedDeviceInactiveCheckJob {
-      return LinkedDeviceInactiveCheckJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): LinkedDeviceInactiveCheckJob = LinkedDeviceInactiveCheckJob(parameters)
   }
 }

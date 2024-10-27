@@ -56,9 +56,7 @@ open class SignalServiceNetworkAccess(context: Context) {
       )
     )
 
-    private fun String.stripProtocol(): String {
-      return this.removePrefix("https://")
-    }
+    private fun String.stripProtocol(): String = this.removePrefix("https://")
 
     private const val COUNTRY_CODE_EGYPT = 20
     private const val COUNTRY_CODE_UAE = 971
@@ -250,9 +248,7 @@ open class SignalServiceNetworkAccess(context: Context) {
     backupServerPublicParams = backupServerPublicParams
   )
 
-  open fun getConfiguration(): SignalServiceConfiguration {
-    return getConfiguration(SignalStore.account.e164)
-  }
+  open fun getConfiguration(): SignalServiceConfiguration = getConfiguration(SignalStore.account.e164)
 
   open fun getConfiguration(e164: String?): SignalServiceConfiguration {
     if (e164 == null || SignalStore.proxy.isProxyEnabled) {
@@ -278,17 +274,11 @@ open class SignalServiceNetworkAccess(context: Context) {
     }
   }
 
-  fun isCensored(): Boolean {
-    return isCensored(SignalStore.account.e164)
-  }
+  fun isCensored(): Boolean = isCensored(SignalStore.account.e164)
 
-  fun isCensored(number: String?): Boolean {
-    return getConfiguration(number) != uncensoredConfiguration
-  }
+  fun isCensored(number: String?): Boolean = getConfiguration(number) != uncensoredConfiguration
 
-  fun isCountryCodeCensoredByDefault(countryCode: Int): Boolean {
-    return defaultCensoredCountryCodes.contains(countryCode)
-  }
+  fun isCountryCodeCensoredByDefault(countryCode: Int): Boolean = defaultCensoredCountryCodes.contains(countryCode)
 
   private fun buildGConfiguration(
     hostConfigs: List<HostConfig>

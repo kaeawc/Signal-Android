@@ -13,11 +13,7 @@ import org.thoughtcrime.securesms.recipients.RecipientId
  * source from our local db.
  */
 data class GroupSendEndorsementRecords(val endorsements: Map<RecipientId, GroupSendEndorsement?>) {
-  fun getEndorsement(recipientId: RecipientId): GroupSendEndorsement? {
-    return endorsements[recipientId]
-  }
+  fun getEndorsement(recipientId: RecipientId): GroupSendEndorsement? = endorsements[recipientId]
 
-  fun isMissingAnyEndorsements(): Boolean {
-    return endorsements.values.any { it == null }
-  }
+  fun isMissingAnyEndorsements(): Boolean = endorsements.values.any { it == null }
 }

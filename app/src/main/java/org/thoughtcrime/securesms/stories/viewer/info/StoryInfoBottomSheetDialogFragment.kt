@@ -23,10 +23,8 @@ class StoryInfoBottomSheetDialogFragment : DSLSettingsBottomSheetFragment() {
   companion object {
     private const val STORY_ID = "args.story.id"
 
-    fun create(storyId: Long): StoryInfoBottomSheetDialogFragment {
-      return StoryInfoBottomSheetDialogFragment().apply {
-        arguments = bundleOf(STORY_ID to storyId)
-      }
+    fun create(storyId: Long): StoryInfoBottomSheetDialogFragment = StoryInfoBottomSheetDialogFragment().apply {
+      arguments = bundleOf(STORY_ID to storyId)
     }
   }
 
@@ -50,59 +48,57 @@ class StoryInfoBottomSheetDialogFragment : DSLSettingsBottomSheetFragment() {
     }
   }
 
-  private fun getConfiguration(state: StoryInfoState): DSLConfiguration {
-    return configure {
-      customPref(
-        StoryInfoHeader.Model(
-          sentMillis = state.sentMillis,
-          receivedMillis = state.receivedMillis,
-          size = state.size
-        )
+  private fun getConfiguration(state: StoryInfoState): DSLConfiguration = configure {
+    customPref(
+      StoryInfoHeader.Model(
+        sentMillis = state.sentMillis,
+        receivedMillis = state.receivedMillis,
+        size = state.size
+      )
+    )
+
+    val details = state.messageDetails!!
+
+    if (state.isOutgoing) {
+      renderSection(
+        title = R.string.message_details_recipient_header__not_sent,
+        recipients = details.notSent.map { StoryInfoRecipientRow.Model(it) }
       )
 
-      val details = state.messageDetails!!
+      renderSection(
+        title = R.string.message_details_recipient_header__viewed,
+        recipients = details.viewed.map { StoryInfoRecipientRow.Model(it) }
+      )
 
-      if (state.isOutgoing) {
-        renderSection(
-          title = R.string.message_details_recipient_header__not_sent,
-          recipients = details.notSent.map { StoryInfoRecipientRow.Model(it) }
-        )
+      renderSection(
+        title = R.string.message_details_recipient_header__read_by,
+        recipients = details.read.map { StoryInfoRecipientRow.Model(it) }
+      )
 
-        renderSection(
-          title = R.string.message_details_recipient_header__viewed,
-          recipients = details.viewed.map { StoryInfoRecipientRow.Model(it) }
-        )
+      renderSection(
+        title = R.string.message_details_recipient_header__delivered_to,
+        recipients = details.delivered.map { StoryInfoRecipientRow.Model(it) }
+      )
 
-        renderSection(
-          title = R.string.message_details_recipient_header__read_by,
-          recipients = details.read.map { StoryInfoRecipientRow.Model(it) }
-        )
+      renderSection(
+        title = R.string.message_details_recipient_header__sent_to,
+        recipients = details.sent.map { StoryInfoRecipientRow.Model(it) }
+      )
 
-        renderSection(
-          title = R.string.message_details_recipient_header__delivered_to,
-          recipients = details.delivered.map { StoryInfoRecipientRow.Model(it) }
-        )
+      renderSection(
+        title = R.string.message_details_recipient_header__pending_send,
+        recipients = details.pending.map { StoryInfoRecipientRow.Model(it) }
+      )
 
-        renderSection(
-          title = R.string.message_details_recipient_header__sent_to,
-          recipients = details.sent.map { StoryInfoRecipientRow.Model(it) }
-        )
-
-        renderSection(
-          title = R.string.message_details_recipient_header__pending_send,
-          recipients = details.pending.map { StoryInfoRecipientRow.Model(it) }
-        )
-
-        renderSection(
-          title = R.string.message_details_recipient_header__skipped,
-          recipients = details.skipped.map { StoryInfoRecipientRow.Model(it) }
-        )
-      } else {
-        renderSection(
-          title = R.string.message_details_recipient_header__sent_from,
-          recipients = details.sent.map { StoryInfoRecipientRow.Model(it) }
-        )
-      }
+      renderSection(
+        title = R.string.message_details_recipient_header__skipped,
+        recipients = details.skipped.map { StoryInfoRecipientRow.Model(it) }
+      )
+    } else {
+      renderSection(
+        title = R.string.message_details_recipient_header__sent_from,
+        recipients = details.sent.map { StoryInfoRecipientRow.Model(it) }
+      )
     }
   }
 

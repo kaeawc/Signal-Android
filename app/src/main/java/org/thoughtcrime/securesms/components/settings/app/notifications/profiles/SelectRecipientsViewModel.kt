@@ -23,14 +23,10 @@ class SelectRecipientsViewModel(
     recipients.remove(recipientId)
   }
 
-  fun updateAllowedMembers(): Single<NotificationProfile> {
-    return repository.updateAllowedMembers(profileId, recipients)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun updateAllowedMembers(): Single<NotificationProfile> = repository.updateAllowedMembers(profileId, recipients)
+    .observeOn(AndroidSchedulers.mainThread())
 
   class Factory(private val profileId: Long, val currentSelection: Set<RecipientId>) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(SelectRecipientsViewModel(profileId, currentSelection, NotificationProfilesRepository()))!!
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(SelectRecipientsViewModel(profileId, currentSelection, NotificationProfilesRepository()))!!
   }
 }

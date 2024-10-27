@@ -14,7 +14,9 @@ import java.io.InputStream
 /**
  * Reads [FilesFrame] protos encoded with their length.
  */
-class ArchivedFilesReader(private val inputStream: InputStream) : Iterator<FilesFrame>, AutoCloseable {
+class ArchivedFilesReader(private val inputStream: InputStream) :
+  Iterator<FilesFrame>,
+  AutoCloseable {
 
   private var next: FilesFrame? = null
 
@@ -22,9 +24,7 @@ class ArchivedFilesReader(private val inputStream: InputStream) : Iterator<Files
     next = read()
   }
 
-  override fun hasNext(): Boolean {
-    return next != null
-  }
+  override fun hasNext(): Boolean = next != null
 
   override fun next(): FilesFrame {
     next?.let { out ->

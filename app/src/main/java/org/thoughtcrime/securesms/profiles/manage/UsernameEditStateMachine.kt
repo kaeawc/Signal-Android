@@ -35,45 +35,37 @@ object UsernameEditStateMachine {
     override val discriminator: String,
     override val stateModifier: StateModifier
   ) : State() {
-    override fun onUserChangedNickname(nickname: String): State {
-      return if (nickname.isBlank()) {
-        NoUserEntry(
-          nickname = "",
-          discriminator = discriminator,
-          stateModifier = StateModifier.USER
-        )
-      } else {
-        UserEnteredNickname(
-          nickname = nickname,
-          discriminator = discriminator,
-          stateModifier = StateModifier.USER
-        )
-      }
+    override fun onUserChangedNickname(nickname: String): State = if (nickname.isBlank()) {
+      NoUserEntry(
+        nickname = "",
+        discriminator = discriminator,
+        stateModifier = StateModifier.USER
+      )
+    } else {
+      UserEnteredNickname(
+        nickname = nickname,
+        discriminator = discriminator,
+        stateModifier = StateModifier.USER
+      )
     }
 
-    override fun onUserChangedDiscriminator(discriminator: String): State {
-      return if (discriminator.isBlank()) {
-        NoUserEntry(
-          nickname = nickname,
-          discriminator = "",
-          stateModifier = StateModifier.USER
-        )
-      } else {
-        UserEnteredDiscriminator(
-          nickname = nickname,
-          discriminator = discriminator,
-          stateModifier = StateModifier.USER
-        )
-      }
+    override fun onUserChangedDiscriminator(discriminator: String): State = if (discriminator.isBlank()) {
+      NoUserEntry(
+        nickname = nickname,
+        discriminator = "",
+        stateModifier = StateModifier.USER
+      )
+    } else {
+      UserEnteredDiscriminator(
+        nickname = nickname,
+        discriminator = discriminator,
+        stateModifier = StateModifier.USER
+      )
     }
 
-    override fun onSystemChangedNickname(nickname: String): State {
-      return copy(nickname = nickname, stateModifier = StateModifier.SYSTEM)
-    }
+    override fun onSystemChangedNickname(nickname: String): State = copy(nickname = nickname, stateModifier = StateModifier.SYSTEM)
 
-    override fun onSystemChangedDiscriminator(discriminator: String): State {
-      return copy(discriminator = discriminator, stateModifier = StateModifier.SYSTEM)
-    }
+    override fun onSystemChangedDiscriminator(discriminator: String): State = copy(discriminator = discriminator, stateModifier = StateModifier.SYSTEM)
   }
 
   /**
@@ -85,41 +77,33 @@ object UsernameEditStateMachine {
     override val discriminator: String,
     override val stateModifier: StateModifier
   ) : State() {
-    override fun onUserChangedNickname(nickname: String): State {
-      return if (nickname.isBlank()) {
-        NoUserEntry(
-          nickname = "",
-          discriminator = discriminator,
-          stateModifier = StateModifier.USER
-        )
-      } else {
-        copy(nickname = nickname, stateModifier = StateModifier.USER)
-      }
+    override fun onUserChangedNickname(nickname: String): State = if (nickname.isBlank()) {
+      NoUserEntry(
+        nickname = "",
+        discriminator = discriminator,
+        stateModifier = StateModifier.USER
+      )
+    } else {
+      copy(nickname = nickname, stateModifier = StateModifier.USER)
     }
 
-    override fun onUserChangedDiscriminator(discriminator: String): State {
-      return if (discriminator.isBlank()) {
-        copy(discriminator = "", stateModifier = StateModifier.USER)
-      } else {
-        UserEnteredNicknameAndDiscriminator(
-          nickname = nickname,
-          discriminator = discriminator,
-          stateModifier = StateModifier.USER
-        )
-      }
-    }
-
-    override fun onSystemChangedNickname(nickname: String): State {
-      return NoUserEntry(
+    override fun onUserChangedDiscriminator(discriminator: String): State = if (discriminator.isBlank()) {
+      copy(discriminator = "", stateModifier = StateModifier.USER)
+    } else {
+      UserEnteredNicknameAndDiscriminator(
         nickname = nickname,
         discriminator = discriminator,
-        stateModifier = StateModifier.SYSTEM
+        stateModifier = StateModifier.USER
       )
     }
 
-    override fun onSystemChangedDiscriminator(discriminator: String): State {
-      return copy(discriminator = discriminator, stateModifier = StateModifier.SYSTEM)
-    }
+    override fun onSystemChangedNickname(nickname: String): State = NoUserEntry(
+      nickname = nickname,
+      discriminator = discriminator,
+      stateModifier = StateModifier.SYSTEM
+    )
+
+    override fun onSystemChangedDiscriminator(discriminator: String): State = copy(discriminator = discriminator, stateModifier = StateModifier.SYSTEM)
   }
 
   /**
@@ -131,39 +115,31 @@ object UsernameEditStateMachine {
     override val discriminator: String,
     override val stateModifier: StateModifier
   ) : State() {
-    override fun onUserChangedNickname(nickname: String): State {
-      return if (nickname.isBlank()) {
-        copy(nickname = nickname, stateModifier = StateModifier.USER)
-      } else if (discriminator.isBlank()) {
-        UserEnteredNickname(
-          nickname = nickname,
-          discriminator = "",
-          stateModifier = StateModifier.USER
-        )
-      } else {
-        UserEnteredNicknameAndDiscriminator(
-          nickname = nickname,
-          discriminator = discriminator,
-          stateModifier = StateModifier.USER
-        )
-      }
-    }
-
-    override fun onUserChangedDiscriminator(discriminator: String): State {
-      return copy(discriminator = discriminator, stateModifier = StateModifier.USER)
-    }
-
-    override fun onSystemChangedNickname(nickname: String): State {
-      return copy(nickname = nickname, stateModifier = StateModifier.SYSTEM)
-    }
-
-    override fun onSystemChangedDiscriminator(discriminator: String): State {
-      return NoUserEntry(
+    override fun onUserChangedNickname(nickname: String): State = if (nickname.isBlank()) {
+      copy(nickname = nickname, stateModifier = StateModifier.USER)
+    } else if (discriminator.isBlank()) {
+      UserEnteredNickname(
+        nickname = nickname,
+        discriminator = "",
+        stateModifier = StateModifier.USER
+      )
+    } else {
+      UserEnteredNicknameAndDiscriminator(
         nickname = nickname,
         discriminator = discriminator,
-        stateModifier = StateModifier.SYSTEM
+        stateModifier = StateModifier.USER
       )
     }
+
+    override fun onUserChangedDiscriminator(discriminator: String): State = copy(discriminator = discriminator, stateModifier = StateModifier.USER)
+
+    override fun onSystemChangedNickname(nickname: String): State = copy(nickname = nickname, stateModifier = StateModifier.SYSTEM)
+
+    override fun onSystemChangedDiscriminator(discriminator: String): State = NoUserEntry(
+      nickname = nickname,
+      discriminator = discriminator,
+      stateModifier = StateModifier.SYSTEM
+    )
   }
 
   /**
@@ -175,42 +151,34 @@ object UsernameEditStateMachine {
     override val discriminator: String,
     override val stateModifier: StateModifier
   ) : State() {
-    override fun onUserChangedNickname(nickname: String): State {
-      return if (nickname.isBlank()) {
-        UserEnteredDiscriminator(
-          nickname = "",
-          discriminator = discriminator,
-          stateModifier = StateModifier.USER
-        )
-      } else if (discriminator.isBlank()) {
-        UserEnteredNickname(
-          nickname = nickname,
-          discriminator = "",
-          stateModifier = StateModifier.USER
-        )
-      } else {
-        copy(nickname = nickname, stateModifier = StateModifier.USER)
-      }
-    }
-
-    override fun onUserChangedDiscriminator(discriminator: String): State {
-      return copy(discriminator = discriminator, stateModifier = StateModifier.USER)
-    }
-
-    override fun onSystemChangedNickname(nickname: String): State {
-      return UserEnteredDiscriminator(
-        nickname = nickname,
+    override fun onUserChangedNickname(nickname: String): State = if (nickname.isBlank()) {
+      UserEnteredDiscriminator(
+        nickname = "",
         discriminator = discriminator,
-        stateModifier = StateModifier.SYSTEM
+        stateModifier = StateModifier.USER
       )
+    } else if (discriminator.isBlank()) {
+      UserEnteredNickname(
+        nickname = nickname,
+        discriminator = "",
+        stateModifier = StateModifier.USER
+      )
+    } else {
+      copy(nickname = nickname, stateModifier = StateModifier.USER)
     }
 
-    override fun onSystemChangedDiscriminator(discriminator: String): State {
-      return UserEnteredNickname(
-        nickname = nickname,
-        discriminator = discriminator,
-        stateModifier = StateModifier.SYSTEM
-      )
-    }
+    override fun onUserChangedDiscriminator(discriminator: String): State = copy(discriminator = discriminator, stateModifier = StateModifier.USER)
+
+    override fun onSystemChangedNickname(nickname: String): State = UserEnteredDiscriminator(
+      nickname = nickname,
+      discriminator = discriminator,
+      stateModifier = StateModifier.SYSTEM
+    )
+
+    override fun onSystemChangedDiscriminator(discriminator: String): State = UserEnteredNickname(
+      nickname = nickname,
+      discriminator = discriminator,
+      stateModifier = StateModifier.SYSTEM
+    )
   }
 }

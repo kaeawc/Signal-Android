@@ -35,36 +35,28 @@ enum class StoryType(val code: Int) {
 
   val isTextStory get() = this == TEXT_STORY_WITHOUT_REPLIES || this == TEXT_STORY_WITH_REPLIES
 
-  fun toTextStoryType(): StoryType {
-    return when (this) {
-      NONE -> NONE
-      STORY_WITH_REPLIES -> TEXT_STORY_WITH_REPLIES
-      STORY_WITHOUT_REPLIES -> TEXT_STORY_WITHOUT_REPLIES
-      TEXT_STORY_WITH_REPLIES -> TEXT_STORY_WITH_REPLIES
-      TEXT_STORY_WITHOUT_REPLIES -> TEXT_STORY_WITHOUT_REPLIES
-    }
+  fun toTextStoryType(): StoryType = when (this) {
+    NONE -> NONE
+    STORY_WITH_REPLIES -> TEXT_STORY_WITH_REPLIES
+    STORY_WITHOUT_REPLIES -> TEXT_STORY_WITHOUT_REPLIES
+    TEXT_STORY_WITH_REPLIES -> TEXT_STORY_WITH_REPLIES
+    TEXT_STORY_WITHOUT_REPLIES -> TEXT_STORY_WITHOUT_REPLIES
   }
 
   companion object {
     @JvmStatic
-    fun fromCode(code: Int): StoryType {
-      return when (code) {
-        1 -> STORY_WITH_REPLIES
-        2 -> STORY_WITHOUT_REPLIES
-        3 -> TEXT_STORY_WITH_REPLIES
-        4 -> TEXT_STORY_WITHOUT_REPLIES
-        else -> NONE
-      }
+    fun fromCode(code: Int): StoryType = when (code) {
+      1 -> STORY_WITH_REPLIES
+      2 -> STORY_WITHOUT_REPLIES
+      3 -> TEXT_STORY_WITH_REPLIES
+      4 -> TEXT_STORY_WITHOUT_REPLIES
+      else -> NONE
     }
 
     @JvmStatic
-    fun withReplies(isTextStory: Boolean): StoryType {
-      return if (isTextStory) TEXT_STORY_WITH_REPLIES else STORY_WITH_REPLIES
-    }
+    fun withReplies(isTextStory: Boolean): StoryType = if (isTextStory) TEXT_STORY_WITH_REPLIES else STORY_WITH_REPLIES
 
     @JvmStatic
-    fun withoutReplies(isTextStory: Boolean): StoryType {
-      return if (isTextStory) TEXT_STORY_WITHOUT_REPLIES else STORY_WITHOUT_REPLIES
-    }
+    fun withoutReplies(isTextStory: Boolean): StoryType = if (isTextStory) TEXT_STORY_WITHOUT_REPLIES else STORY_WITHOUT_REPLIES
   }
 }

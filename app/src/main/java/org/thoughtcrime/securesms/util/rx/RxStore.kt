@@ -38,10 +38,8 @@ class RxStore<T : Any>(
   }
 
   @CheckResult
-  fun <U : Any> update(flowable: Flowable<U>, transformer: (U, T) -> T): Disposable {
-    return flowable.subscribe {
-      actionSubject.onNext { t -> transformer(it, t) }
-    }
+  fun <U : Any> update(flowable: Flowable<U>, transformer: (U, T) -> T): Disposable = flowable.subscribe {
+    actionSubject.onNext { t -> transformer(it, t) }
   }
 
   fun addTo(disposable: CompositeDisposable): RxStore<T> {
@@ -49,12 +47,10 @@ class RxStore<T : Any>(
     return this
   }
 
-  fun <R : Any> mapDistinctForUi(map: (T) -> R): Flowable<R> {
-    return stateFlowable
-      .map(map)
-      .distinctUntilChanged()
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun <R : Any> mapDistinctForUi(map: (T) -> R): Flowable<R> = stateFlowable
+    .map(map)
+    .distinctUntilChanged()
+    .observeOn(AndroidSchedulers.mainThread())
 
   /**
    * Dispose of the underlying scan chain. This is terminal.
@@ -63,7 +59,5 @@ class RxStore<T : Any>(
     actionDisposable.dispose()
   }
 
-  override fun isDisposed(): Boolean {
-    return actionDisposable.isDisposed
-  }
+  override fun isDisposed(): Boolean = actionDisposable.isDisposed
 }

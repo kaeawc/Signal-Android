@@ -39,7 +39,9 @@ import java.time.temporal.ChronoUnit
 /**
  * Table containing ad-hoc call link details
  */
-class CallLinkTable(context: Context, databaseHelper: SignalDatabase) : DatabaseTable(context, databaseHelper), RecipientIdDatabaseReference {
+class CallLinkTable(context: Context, databaseHelper: SignalDatabase) :
+  DatabaseTable(context, databaseHelper),
+  RecipientIdDatabaseReference {
 
   companion object {
     private val TAG = Log.tag(CallLinkTable::class.java)
@@ -72,21 +74,17 @@ class CallLinkTable(context: Context, databaseHelper: SignalDatabase) : Database
       )
     """
 
-    private fun SignalCallLinkState.serialize(): ContentValues {
-      return contentValuesOf(
-        NAME to name,
-        RESTRICTIONS to restrictions.mapToInt(),
-        EXPIRATION to if (expiration == Instant.MAX) -1L else expiration.toEpochMilli(),
-        REVOKED to revoked
-      )
-    }
+    private fun SignalCallLinkState.serialize(): ContentValues = contentValuesOf(
+      NAME to name,
+      RESTRICTIONS to restrictions.mapToInt(),
+      EXPIRATION to if (expiration == Instant.MAX) -1L else expiration.toEpochMilli(),
+      REVOKED to revoked
+    )
 
-    private fun Restrictions.mapToInt(): Int {
-      return when (this) {
-        Restrictions.NONE -> 0
-        Restrictions.ADMIN_APPROVAL -> 1
-        Restrictions.UNKNOWN -> 2
-      }
+    private fun Restrictions.mapToInt(): Int = when (this) {
+      Restrictions.NONE -> 0
+      Restrictions.ADMIN_APPROVAL -> 1
+      Restrictions.UNKNOWN -> 2
     }
   }
 
@@ -167,25 +165,21 @@ class CallLinkTable(context: Context, databaseHelper: SignalDatabase) : Database
 
   fun callLinkExists(
     callLinkRoomId: CallLinkRoomId
-  ): Boolean {
-    return writableDatabase
-      .select("COUNT(*)")
-      .from(TABLE_NAME)
-      .where("$ROOM_ID = ?", callLinkRoomId.serialize())
-      .run()
-      .readToSingleInt() > 0
-  }
+  ): Boolean = writableDatabase
+    .select("COUNT(*)")
+    .from(TABLE_NAME)
+    .where("$ROOM_ID = ?", callLinkRoomId.serialize())
+    .run()
+    .readToSingleInt() > 0
 
   fun getCallLinkByRoomId(
     callLinkRoomId: CallLinkRoomId
-  ): CallLink? {
-    return writableDatabase
-      .select()
-      .from(TABLE_NAME)
-      .where("$ROOM_ID = ?", callLinkRoomId.serialize())
-      .run()
-      .readToSingleObject { CallLinkDeserializer.deserialize(it) }
-  }
+  ): CallLink? = writableDatabase
+    .select()
+    .from(TABLE_NAME)
+    .where("$ROOM_ID = ?", callLinkRoomId.serialize())
+    .run()
+    .readToSingleObject { CallLinkDeserializer.deserialize(it) }
 
   fun getOrCreateCallLinkByRootKey(
     callLinkRootKey: CallLinkRootKey
@@ -267,14 +261,12 @@ class CallLinkTable(context: Context, databaseHelper: SignalDatabase) : Database
    */
   fun getDeletedTimestampByRoomId(
     roomId: CallLinkRoomId
-  ): Long {
-    return readableDatabase
-      .select(DELETION_TIMESTAMP)
-      .from(TABLE_NAME)
-      .where("$ROOM_ID = ?", roomId.serialize())
-      .run()
-      .readToSingleLong(defaultValue = 0)
-  }
+  ): Long = readableDatabase
+    .select(DELETION_TIMESTAMP)
+    .from(TABLE_NAME)
+    .where("$ROOM_ID = ?", roomId.serialize())
+    .run()
+    .readToSingleLong(defaultValue = 0)
 
   fun getOrCreateCallLinkByRoomId(
     callLinkRoomId: CallLinkRoomId
@@ -295,31 +287,25 @@ class CallLinkTable(context: Context, databaseHelper: SignalDatabase) : Database
     }
   }
 
-  fun getCallLinksCount(query: String?): Int {
-    return queryCallLinks(query, -1, -1, true).readToSingleInt(0)
+  fun getCallLinksCount(query: String?): Int = queryCallLinks(query, -1, -1, true).readToSingleInt(0)
+
+  fun getCallLinks(query: String?, offset: Int, limit: Int): List<CallLogRow.CallLink> = queryCallLinks(query, offset, limit, false).readToList {
+    val callLink = CallLinkDeserializer.deserialize(it)
+    val peer = Recipient.resolved(callLink.recipientId)
+    CallLogRow.CallLink(
+      record = callLink,
+      recipient = peer,
+      searchQuery = query,
+      callLinkPeekInfo = AppDependencies.signalCallManager.peekInfoSnapshot[peer.id]
+    )
   }
 
-  fun getCallLinks(query: String?, offset: Int, limit: Int): List<CallLogRow.CallLink> {
-    return queryCallLinks(query, offset, limit, false).readToList {
-      val callLink = CallLinkDeserializer.deserialize(it)
-      val peer = Recipient.resolved(callLink.recipientId)
-      CallLogRow.CallLink(
-        record = callLink,
-        recipient = peer,
-        searchQuery = query,
-        callLinkPeekInfo = AppDependencies.signalCallManager.peekInfoSnapshot[peer.id]
-      )
+  fun getAll(): List<CallLink> = readableDatabase.select()
+    .from(TABLE_NAME)
+    .run()
+    .readToList {
+      CallLinkDeserializer.deserialize(it)
     }
-  }
-
-  fun getAll(): List<CallLink> {
-    return readableDatabase.select()
-      .from(TABLE_NAME)
-      .run()
-      .readToList {
-        CallLinkDeserializer.deserialize(it)
-      }
-  }
 
   /**
    * Puts the call link into the "revoked" state which will hide it from the UI and
@@ -394,25 +380,23 @@ class CallLinkTable(context: Context, databaseHelper: SignalDatabase) : Database
     }
   }
 
-  fun getAllAdminCallLinksExcept(roomIds: Set<CallLinkRoomId>): Set<CallLink> {
-    return if (roomIds.isEmpty()) {
+  fun getAllAdminCallLinksExcept(roomIds: Set<CallLinkRoomId>): Set<CallLink> = if (roomIds.isEmpty()) {
+    writableDatabase
+      .select()
+      .from(TABLE_NAME)
+      .where("$ADMIN_KEY IS NOT NULL")
+      .run()
+      .readToList { CallLinkDeserializer.deserialize(it) }
+      .toSet()
+  } else {
+    SqlUtil.buildCollectionQuery(ROOM_ID, roomIds, collectionOperator = SqlUtil.CollectionOperator.NOT_IN).map {
       writableDatabase
         .select()
         .from(TABLE_NAME)
-        .where("$ADMIN_KEY IS NOT NULL")
+        .where("${it.where} AND $ADMIN_KEY IS NOT NULL", it.whereArgs)
         .run()
         .readToList { CallLinkDeserializer.deserialize(it) }
-        .toSet()
-    } else {
-      SqlUtil.buildCollectionQuery(ROOM_ID, roomIds, collectionOperator = SqlUtil.CollectionOperator.NOT_IN).map {
-        writableDatabase
-          .select()
-          .from(TABLE_NAME)
-          .where("${it.where} AND $ADMIN_KEY IS NOT NULL", it.whereArgs)
-          .run()
-          .readToList { CallLinkDeserializer.deserialize(it) }
-      }.flatten().toSet()
-    }
+    }.flatten().toSet()
   }
 
   private fun queryCallLinks(query: String?, offset: Int, limit: Int, asCount: Boolean): Cursor {
@@ -459,59 +443,49 @@ class CallLinkTable(context: Context, databaseHelper: SignalDatabase) : Database
   }
 
   private object CallLinkSerializer : Serializer<CallLink, ContentValues> {
-    override fun serialize(data: CallLink): ContentValues {
-      return contentValuesOf(
-        RECIPIENT_ID to data.recipientId.takeIf { it != RecipientId.UNKNOWN }?.toLong(),
-        ROOM_ID to data.roomId.serialize(),
-        ROOT_KEY to data.credentials?.linkKeyBytes,
-        ADMIN_KEY to data.credentials?.adminPassBytes
-      ).apply {
-        putAll(data.state.serialize())
-      }
+    override fun serialize(data: CallLink): ContentValues = contentValuesOf(
+      RECIPIENT_ID to data.recipientId.takeIf { it != RecipientId.UNKNOWN }?.toLong(),
+      ROOM_ID to data.roomId.serialize(),
+      ROOT_KEY to data.credentials?.linkKeyBytes,
+      ADMIN_KEY to data.credentials?.adminPassBytes
+    ).apply {
+      putAll(data.state.serialize())
     }
 
-    override fun deserialize(data: ContentValues): CallLink {
-      throw UnsupportedOperationException()
-    }
+    override fun deserialize(data: ContentValues): CallLink = throw UnsupportedOperationException()
   }
 
   object CallLinkDeserializer : Serializer<CallLink, Cursor> {
-    override fun serialize(data: CallLink): Cursor {
-      throw UnsupportedOperationException()
-    }
+    override fun serialize(data: CallLink): Cursor = throw UnsupportedOperationException()
 
-    override fun deserialize(data: Cursor): CallLink {
-      return CallLink(
-        recipientId = data.requireLong(RECIPIENT_ID).let { if (it > 0) RecipientId.from(it) else RecipientId.UNKNOWN },
-        roomId = CallLinkRoomId.DatabaseSerializer.deserialize(data.requireNonNullString(ROOM_ID)),
-        credentials = data.requireBlob(ROOT_KEY)?.let { linkKey ->
-          CallLinkCredentials(
-            linkKeyBytes = linkKey,
-            adminPassBytes = data.requireBlob(ADMIN_KEY)
-          )
-        },
-        state = SignalCallLinkState(
-          name = data.requireNonNullString(NAME),
-          restrictions = data.requireInt(RESTRICTIONS).mapToRestrictions(),
-          revoked = data.requireBoolean(REVOKED),
-          expiration = data.requireLong(EXPIRATION).let {
-            if (it == -1L) {
-              Instant.MAX
-            } else {
-              Instant.ofEpochMilli(it).truncatedTo(ChronoUnit.DAYS)
-            }
+    override fun deserialize(data: Cursor): CallLink = CallLink(
+      recipientId = data.requireLong(RECIPIENT_ID).let { if (it > 0) RecipientId.from(it) else RecipientId.UNKNOWN },
+      roomId = CallLinkRoomId.DatabaseSerializer.deserialize(data.requireNonNullString(ROOM_ID)),
+      credentials = data.requireBlob(ROOT_KEY)?.let { linkKey ->
+        CallLinkCredentials(
+          linkKeyBytes = linkKey,
+          adminPassBytes = data.requireBlob(ADMIN_KEY)
+        )
+      },
+      state = SignalCallLinkState(
+        name = data.requireNonNullString(NAME),
+        restrictions = data.requireInt(RESTRICTIONS).mapToRestrictions(),
+        revoked = data.requireBoolean(REVOKED),
+        expiration = data.requireLong(EXPIRATION).let {
+          if (it == -1L) {
+            Instant.MAX
+          } else {
+            Instant.ofEpochMilli(it).truncatedTo(ChronoUnit.DAYS)
           }
-        ),
-        deletionTimestamp = data.requireLong(DELETION_TIMESTAMP)
-      )
-    }
+        }
+      ),
+      deletionTimestamp = data.requireLong(DELETION_TIMESTAMP)
+    )
 
-    private fun Int.mapToRestrictions(): Restrictions {
-      return when (this) {
-        0 -> Restrictions.NONE
-        1 -> Restrictions.ADMIN_APPROVAL
-        else -> Restrictions.UNKNOWN
-      }
+    private fun Int.mapToRestrictions(): Restrictions = when (this) {
+      0 -> Restrictions.NONE
+      1 -> Restrictions.ADMIN_APPROVAL
+      else -> Restrictions.UNKNOWN
     }
   }
 

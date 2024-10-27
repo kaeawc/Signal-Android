@@ -85,8 +85,6 @@ internal class WallpaperStorageMigrationJob(parameters: Parameters = Parameters.
   override fun shouldRetry(e: Exception): Boolean = e is IOException
 
   class Factory : Job.Factory<WallpaperStorageMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): WallpaperStorageMigrationJob {
-      return WallpaperStorageMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): WallpaperStorageMigrationJob = WallpaperStorageMigrationJob(parameters)
   }
 }

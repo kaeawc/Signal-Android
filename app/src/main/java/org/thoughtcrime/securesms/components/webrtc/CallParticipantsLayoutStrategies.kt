@@ -63,11 +63,9 @@ object CallParticipantsLayoutStrategies {
   }
 
   @JvmStatic
-  fun getStrategy(isPortrait: Boolean, isLandscapeEnabled: Boolean): CallParticipantsLayout.LayoutStrategy {
-    return if (isPortrait || !isLandscapeEnabled) {
-      Portrait
-    } else {
-      Landscape
-    }
+  fun getStrategy(isPortrait: Boolean, isLandscapeEnabled: Boolean): CallParticipantsLayout.LayoutStrategy = if (isPortrait || !isLandscapeEnabled) {
+    Portrait
+  } else {
+    Landscape
   }
 }

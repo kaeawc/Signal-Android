@@ -21,9 +21,7 @@ object DonationPillToggle {
   ) : MappingModel<Model> {
     override fun areItemsTheSame(newItem: Model): Boolean = true
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return selected == newItem.selected
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = selected == newItem.selected
   }
 
   private class ViewHolder(binding: DonationPillToggleBinding) : BindingViewHolder<Model, DonationPillToggleBinding>(binding) {

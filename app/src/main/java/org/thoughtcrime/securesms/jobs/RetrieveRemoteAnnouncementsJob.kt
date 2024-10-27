@@ -361,9 +361,7 @@ class RetrieveRemoteAnnouncementsJob private constructor(private val force: Bool
     return null
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return e is RetryLaterException || e is IOException
-  }
+  override fun onShouldRetry(e: Exception): Boolean = e is RetryLaterException || e is IOException
 
   private fun String.getLocaleUrls(): List<String> {
     val localeList: LocaleListCompat = LocaleListCompat.getDefault()

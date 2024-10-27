@@ -32,16 +32,14 @@ object MediaReviewAnimatorController {
     return animator
   }
 
-  fun getHeightAnimator(view: View, start: Int, end: Int, interpolator: Interpolator = MediaAnimations.interpolator): Animator {
-    return ValueAnimator.ofInt(start, end).apply {
-      setInterpolator(interpolator)
-      addUpdateListener {
-        val animatedValue = it.animatedValue as Int
-        val layoutParams = view.layoutParams
-        layoutParams.height = animatedValue
-        view.layoutParams = layoutParams
-      }
-      duration = 120
+  fun getHeightAnimator(view: View, start: Int, end: Int, interpolator: Interpolator = MediaAnimations.interpolator): Animator = ValueAnimator.ofInt(start, end).apply {
+    setInterpolator(interpolator)
+    addUpdateListener {
+      val animatedValue = it.animatedValue as Int
+      val layoutParams = view.layoutParams
+      layoutParams.height = animatedValue
+      view.layoutParams = layoutParams
     }
+    duration = 120
   }
 }

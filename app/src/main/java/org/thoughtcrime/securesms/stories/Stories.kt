@@ -63,29 +63,21 @@ object Stories {
    * Whether or not the user has the Stories feature enabled.
    */
   @JvmStatic
-  fun isFeatureEnabled(): Boolean {
-    return !SignalStore.story.isFeatureDisabled
+  fun isFeatureEnabled(): Boolean = !SignalStore.story.isFeatureDisabled
+
+  fun getHeaderAction(onClick: () -> Unit): HeaderAction = HeaderAction(
+    R.string.ContactsCursorLoader_new,
+    R.drawable.ic_plus_12,
+    onClick
+  )
+
+  fun getHeaderAction(fragmentManager: FragmentManager): HeaderAction = getHeaderAction {
+    ChooseStoryTypeBottomSheet().show(fragmentManager, BottomSheetUtil.STANDARD_BOTTOM_SHEET_FRAGMENT_TAG)
   }
 
-  fun getHeaderAction(onClick: () -> Unit): HeaderAction {
-    return HeaderAction(
-      R.string.ContactsCursorLoader_new,
-      R.drawable.ic_plus_12,
-      onClick
-    )
-  }
-
-  fun getHeaderAction(fragmentManager: FragmentManager): HeaderAction {
-    return getHeaderAction {
-      ChooseStoryTypeBottomSheet().show(fragmentManager, BottomSheetUtil.STANDARD_BOTTOM_SHEET_FRAGMENT_TAG)
-    }
-  }
-
-  fun sendTextStories(messages: List<OutgoingMessage>): Completable {
-    return Completable.create { emitter ->
-      MessageSender.sendStories(AppDependencies.application, messages, null, null)
-      emitter.onComplete()
-    }
+  fun sendTextStories(messages: List<OutgoingMessage>): Completable = Completable.create { emitter ->
+    MessageSender.sendStories(AppDependencies.application, messages, null, null)
+    emitter.onComplete()
   }
 
   @JvmStatic
@@ -125,11 +117,9 @@ object Stories {
     }
   }
 
-  fun enqueueAttachmentsFromStoryForDownload(record: MmsMessageRecord, ignoreAutoDownloadConstraints: Boolean): Completable {
-    return Completable.fromAction {
-      enqueueAttachmentsFromStoryForDownloadSync(record, ignoreAutoDownloadConstraints)
-    }.subscribeOn(Schedulers.io())
-  }
+  fun enqueueAttachmentsFromStoryForDownload(record: MmsMessageRecord, ignoreAutoDownloadConstraints: Boolean): Completable = Completable.fromAction {
+    enqueueAttachmentsFromStoryForDownloadSync(record, ignoreAutoDownloadConstraints)
+  }.subscribeOn(Schedulers.io())
 
   @JvmStatic
   @WorkerThread
@@ -198,49 +188,41 @@ object Stories {
 
     @JvmStatic
     @WorkerThread
-    fun canPreUploadMedia(media: Media): Boolean {
-      return when {
-        MediaUtil.isVideo(media.contentType) -> getSendRequirements(media) != SendRequirements.REQUIRES_CLIP
-        else -> true
-      }
+    fun canPreUploadMedia(media: Media): Boolean = when {
+      MediaUtil.isVideo(media.contentType) -> getSendRequirements(media) != SendRequirements.REQUIRES_CLIP
+      else -> true
     }
 
     @JvmStatic
     @WorkerThread
-    fun getSendRequirements(media: Media): SendRequirements {
-      return when (getContentDuration(media)) {
-        is DurationResult.ValidDuration -> SendRequirements.VALID_DURATION
-        is DurationResult.InvalidDuration -> {
-          if (canClipMedia(media)) {
-            SendRequirements.REQUIRES_CLIP
-          } else {
-            SendRequirements.CAN_NOT_SEND
-          }
+    fun getSendRequirements(media: Media): SendRequirements = when (getContentDuration(media)) {
+      is DurationResult.ValidDuration -> SendRequirements.VALID_DURATION
+      is DurationResult.InvalidDuration -> {
+        if (canClipMedia(media)) {
+          SendRequirements.REQUIRES_CLIP
+        } else {
+          SendRequirements.CAN_NOT_SEND
         }
-        is DurationResult.CanNotGetDuration -> SendRequirements.CAN_NOT_SEND
-        is DurationResult.None -> SendRequirements.VALID_DURATION
       }
+      is DurationResult.CanNotGetDuration -> SendRequirements.CAN_NOT_SEND
+      is DurationResult.None -> SendRequirements.VALID_DURATION
     }
 
     @JvmStatic
     @WorkerThread
-    fun getSendRequirements(media: List<Media>): SendRequirements {
-      return media
-        .map { getSendRequirements(it) }
-        .fold(SendRequirements.VALID_DURATION) { left, right ->
-          if (left == SendRequirements.CAN_NOT_SEND || right == SendRequirements.CAN_NOT_SEND) {
-            SendRequirements.CAN_NOT_SEND
-          } else if (left == SendRequirements.REQUIRES_CLIP || right == SendRequirements.REQUIRES_CLIP) {
-            SendRequirements.REQUIRES_CLIP
-          } else {
-            SendRequirements.VALID_DURATION
-          }
+    fun getSendRequirements(media: List<Media>): SendRequirements = media
+      .map { getSendRequirements(it) }
+      .fold(SendRequirements.VALID_DURATION) { left, right ->
+        if (left == SendRequirements.CAN_NOT_SEND || right == SendRequirements.CAN_NOT_SEND) {
+          SendRequirements.CAN_NOT_SEND
+        } else if (left == SendRequirements.REQUIRES_CLIP || right == SendRequirements.REQUIRES_CLIP) {
+          SendRequirements.REQUIRES_CLIP
+        } else {
+          SendRequirements.VALID_DURATION
         }
-    }
+      }
 
-    private fun canClipMedia(media: Media): Boolean {
-      return MediaUtil.isVideo(media.contentType) && MediaConstraints.isVideoTranscodeAvailable()
-    }
+    private fun canClipMedia(media: Media): Boolean = MediaUtil.isVideo(media.contentType) && MediaConstraints.isVideoTranscodeAvailable()
 
     private fun getContentDuration(media: Media): DurationResult {
       return if (MediaUtil.isVideo(media.contentType)) {
@@ -368,41 +350,37 @@ object Stories {
      * Convenience method for transforming a Media into a VideoSlide
      */
     @JvmStatic
-    fun mediaToVideoSlide(context: Context, media: Media): VideoSlide {
-      return VideoSlide(
-        context,
-        media.uri,
-        media.size,
-        media.isVideoGif,
-        media.width,
-        media.height,
-        media.caption.orElse(null),
-        media.transformProperties.orElse(null)
-      )
-    }
+    fun mediaToVideoSlide(context: Context, media: Media): VideoSlide = VideoSlide(
+      context,
+      media.uri,
+      media.size,
+      media.isVideoGif,
+      media.width,
+      media.height,
+      media.caption.orElse(null),
+      media.transformProperties.orElse(null)
+    )
 
     /**
      * Convenience method for transforming a VideoSlide into a Media with the
      * specified duration.
      */
     @JvmStatic
-    fun videoSlideToMedia(videoSlide: VideoSlide, duration: Long): Media {
-      return Media(
-        videoSlide.uri!!,
-        videoSlide.contentType,
-        System.currentTimeMillis(),
-        0,
-        0,
-        videoSlide.fileSize,
-        duration,
-        videoSlide.isBorderless,
-        videoSlide.isVideoGif,
-        Optional.empty(),
-        videoSlide.caption,
-        Optional.empty(),
-        Optional.empty()
-      )
-    }
+    fun videoSlideToMedia(videoSlide: VideoSlide, duration: Long): Media = Media(
+      videoSlide.uri!!,
+      videoSlide.contentType,
+      System.currentTimeMillis(),
+      0,
+      0,
+      videoSlide.fileSize,
+      duration,
+      videoSlide.isBorderless,
+      videoSlide.isVideoGif,
+      Optional.empty(),
+      videoSlide.caption,
+      Optional.empty(),
+      Optional.empty()
+    )
   }
 
   data class SendData(

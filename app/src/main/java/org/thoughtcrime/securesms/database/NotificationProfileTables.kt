@@ -22,7 +22,9 @@ import java.time.DayOfWeek
 /**
  * Database for maintaining Notification Profiles, Notification Profile Schedules, and Notification Profile allowed memebers.
  */
-class NotificationProfileDatabase(context: Context, databaseHelper: SignalDatabase) : DatabaseTable(context, databaseHelper), RecipientIdDatabaseReference {
+class NotificationProfileDatabase(context: Context, databaseHelper: SignalDatabase) :
+  DatabaseTable(context, databaseHelper),
+  RecipientIdDatabaseReference {
 
   companion object {
     @JvmField
@@ -281,13 +283,11 @@ class NotificationProfileDatabase(context: Context, databaseHelper: SignalDataba
     return profiles
   }
 
-  fun getProfile(profileId: Long): NotificationProfile? {
-    return readableDatabase.query(NotificationProfileTable.TABLE_NAME, null, ID_WHERE, SqlUtil.buildArgs(profileId), null, null, null).use { cursor ->
-      if (cursor.moveToFirst()) {
-        getProfile(cursor)
-      } else {
-        null
-      }
+  fun getProfile(profileId: Long): NotificationProfile? = readableDatabase.query(NotificationProfileTable.TABLE_NAME, null, ID_WHERE, SqlUtil.buildArgs(profileId), null, null, null).use { cursor ->
+    if (cursor.moveToFirst()) {
+      getProfile(cursor)
+    } else {
+      null
     }
   }
 
@@ -367,31 +367,25 @@ class NotificationProfileDatabase(context: Context, databaseHelper: SignalDataba
   }
 }
 
-private fun Iterable<DayOfWeek>.serialize(): String {
-  return joinToString(separator = ",", transform = { it.serialize() })
+private fun Iterable<DayOfWeek>.serialize(): String = joinToString(separator = ",", transform = { it.serialize() })
+
+private fun String.toDayOfWeek(): DayOfWeek = when (this) {
+  "1" -> DayOfWeek.MONDAY
+  "2" -> DayOfWeek.TUESDAY
+  "3" -> DayOfWeek.WEDNESDAY
+  "4" -> DayOfWeek.THURSDAY
+  "5" -> DayOfWeek.FRIDAY
+  "6" -> DayOfWeek.SATURDAY
+  "7" -> DayOfWeek.SUNDAY
+  else -> throw AssertionError("Value ($this) does not map to a day")
 }
 
-private fun String.toDayOfWeek(): DayOfWeek {
-  return when (this) {
-    "1" -> DayOfWeek.MONDAY
-    "2" -> DayOfWeek.TUESDAY
-    "3" -> DayOfWeek.WEDNESDAY
-    "4" -> DayOfWeek.THURSDAY
-    "5" -> DayOfWeek.FRIDAY
-    "6" -> DayOfWeek.SATURDAY
-    "7" -> DayOfWeek.SUNDAY
-    else -> throw AssertionError("Value ($this) does not map to a day")
-  }
-}
-
-private fun DayOfWeek.serialize(): String {
-  return when (this) {
-    DayOfWeek.MONDAY -> "1"
-    DayOfWeek.TUESDAY -> "2"
-    DayOfWeek.WEDNESDAY -> "3"
-    DayOfWeek.THURSDAY -> "4"
-    DayOfWeek.FRIDAY -> "5"
-    DayOfWeek.SATURDAY -> "6"
-    DayOfWeek.SUNDAY -> "7"
-  }
+private fun DayOfWeek.serialize(): String = when (this) {
+  DayOfWeek.MONDAY -> "1"
+  DayOfWeek.TUESDAY -> "2"
+  DayOfWeek.WEDNESDAY -> "3"
+  DayOfWeek.THURSDAY -> "4"
+  DayOfWeek.FRIDAY -> "5"
+  DayOfWeek.SATURDAY -> "6"
+  DayOfWeek.SUNDAY -> "7"
 }

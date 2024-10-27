@@ -16,13 +16,9 @@ class AppIconUtility(context: Context) {
 
   val currentAppIcon by lazy { readCurrentAppIconFromPackageManager() }
 
-  fun isCurrentlySelected(preset: AppIconPreset): Boolean {
-    return preset == currentAppIcon
-  }
+  fun isCurrentlySelected(preset: AppIconPreset): Boolean = preset == currentAppIcon
 
-  fun currentAppIconComponentName(): ComponentName {
-    return currentAppIcon.getComponentName(applicationContext)
-  }
+  fun currentAppIconComponentName(): ComponentName = currentAppIcon.getComponentName(applicationContext)
 
   fun setNewAppIcon(desiredAppIcon: AppIconPreset) {
     Log.d(TAG, "Setting new app icon.")

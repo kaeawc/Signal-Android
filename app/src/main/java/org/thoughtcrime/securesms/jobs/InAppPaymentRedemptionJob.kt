@@ -59,44 +59,38 @@ class InAppPaymentRedemptionJob private constructor(
     fun create(
       inAppPayment: InAppPaymentTable.InAppPayment? = null,
       makePrimary: Boolean = false
-    ): Job {
-      return create(
-        inAppPayment = inAppPayment,
-        giftMessageId = null,
-        makePrimary = makePrimary
-      )
-    }
+    ): Job = create(
+      inAppPayment = inAppPayment,
+      giftMessageId = null,
+      makePrimary = makePrimary
+    )
 
     fun create(
       giftMessageId: MessageId,
       makePrimary: Boolean
-    ): Job {
-      return create(
-        inAppPayment = null,
-        giftMessageId = giftMessageId,
-        makePrimary = makePrimary
-      )
-    }
+    ): Job = create(
+      inAppPayment = null,
+      giftMessageId = giftMessageId,
+      makePrimary = makePrimary
+    )
 
     private fun create(
       inAppPayment: InAppPaymentTable.InAppPayment? = null,
       makePrimary: Boolean = false,
       giftMessageId: MessageId? = null
-    ): Job {
-      return InAppPaymentRedemptionJob(
-        jobData = InAppPaymentRedemptionJobData(
-          inAppPaymentId = inAppPayment?.id?.rowId,
-          giftMessageId = giftMessageId?.id,
-          makePrimary = makePrimary
-        ),
-        parameters = Parameters.Builder()
-          .addConstraint(NetworkConstraint.KEY)
-          .setQueue(inAppPayment?.let { InAppPaymentsRepository.resolveJobQueueKey(it) } ?: "InAppGiftReceiptRedemption-$giftMessageId")
-          .setMaxAttempts(MAX_RETRIES)
-          .setLifespan(Parameters.IMMORTAL)
-          .build()
-      )
-    }
+    ): Job = InAppPaymentRedemptionJob(
+      jobData = InAppPaymentRedemptionJobData(
+        inAppPaymentId = inAppPayment?.id?.rowId,
+        giftMessageId = giftMessageId?.id,
+        makePrimary = makePrimary
+      ),
+      parameters = Parameters.Builder()
+        .addConstraint(NetworkConstraint.KEY)
+        .setQueue(inAppPayment?.let { InAppPaymentsRepository.resolveJobQueueKey(it) } ?: "InAppGiftReceiptRedemption-$giftMessageId")
+        .setMaxAttempts(MAX_RETRIES)
+        .setLifespan(Parameters.IMMORTAL)
+        .build()
+    )
   }
 
   override fun serialize(): ByteArray = jobData.encode()
@@ -284,11 +278,9 @@ class InAppPaymentRedemptionJob private constructor(
   override fun onShouldRetry(e: Exception): Boolean = e is InAppPaymentRetryException
 
   class Factory : Job.Factory<InAppPaymentRedemptionJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): InAppPaymentRedemptionJob {
-      return InAppPaymentRedemptionJob(
-        InAppPaymentRedemptionJobData.ADAPTER.decode(serializedData!!),
-        parameters
-      )
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): InAppPaymentRedemptionJob = InAppPaymentRedemptionJob(
+      InAppPaymentRedemptionJobData.ADAPTER.decode(serializedData!!),
+      parameters
+    )
   }
 }

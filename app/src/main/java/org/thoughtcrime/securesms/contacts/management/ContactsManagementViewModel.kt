@@ -10,18 +10,12 @@ import org.thoughtcrime.securesms.recipients.Recipient
 class ContactsManagementViewModel(private val repository: ContactsManagementRepository) : ViewModel() {
 
   @CheckResult
-  fun hideContact(recipient: Recipient): Completable {
-    return repository.hideContact(recipient).observeOn(AndroidSchedulers.mainThread())
-  }
+  fun hideContact(recipient: Recipient): Completable = repository.hideContact(recipient).observeOn(AndroidSchedulers.mainThread())
 
   @CheckResult
-  fun blockContact(recipient: Recipient): Completable {
-    return repository.blockContact(recipient).observeOn(AndroidSchedulers.mainThread())
-  }
+  fun blockContact(recipient: Recipient): Completable = repository.blockContact(recipient).observeOn(AndroidSchedulers.mainThread())
 
   class Factory(private val repository: ContactsManagementRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(ContactsManagementViewModel(repository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(ContactsManagementViewModel(repository)) as T
   }
 }

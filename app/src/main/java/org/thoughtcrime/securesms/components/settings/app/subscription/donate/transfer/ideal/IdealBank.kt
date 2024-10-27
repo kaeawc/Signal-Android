@@ -96,9 +96,7 @@ enum class IdealBank(
       }
     }
 
-    fun fromCode(code: String): IdealBank {
-      return values().first { it.code == code }
-    }
+    fun fromCode(code: String): IdealBank = values().first { it.code == code }
   }
 
   data class UIValues(

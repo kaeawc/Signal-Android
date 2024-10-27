@@ -16,9 +16,7 @@ sealed class DSLSettingsText {
     @StringRes private val stringId: Int,
     override val modifiers: List<Modifier>
   ) : DSLSettingsText() {
-    override fun getCharSequence(context: Context): CharSequence {
-      return context.getString(stringId)
-    }
+    override fun getCharSequence(context: Context): CharSequence = context.getString(stringId)
   }
 
   private data class FromCharSequence(
@@ -36,14 +34,11 @@ sealed class DSLSettingsText {
   }
 
   companion object {
-    fun from(@StringRes stringId: Int, @ColorInt textColor: Int): DSLSettingsText =
-      FromResource(stringId, listOf(ColorModifier(textColor)))
+    fun from(@StringRes stringId: Int, @ColorInt textColor: Int): DSLSettingsText = FromResource(stringId, listOf(ColorModifier(textColor)))
 
-    fun from(@StringRes stringId: Int, vararg modifiers: Modifier): DSLSettingsText =
-      FromResource(stringId, modifiers.toList())
+    fun from(@StringRes stringId: Int, vararg modifiers: Modifier): DSLSettingsText = FromResource(stringId, modifiers.toList())
 
-    fun from(charSequence: CharSequence, vararg modifiers: Modifier): DSLSettingsText =
-      FromCharSequence(charSequence, modifiers.toList())
+    fun from(charSequence: CharSequence, vararg modifiers: Modifier): DSLSettingsText = FromCharSequence(charSequence, modifiers.toList())
   }
 
   interface Modifier {
@@ -51,18 +46,14 @@ sealed class DSLSettingsText {
   }
 
   class ColorModifier(@ColorInt private val textColor: Int) : Modifier {
-    override fun modify(context: Context, charSequence: CharSequence): CharSequence {
-      return SpanUtil.color(textColor, charSequence)
-    }
+    override fun modify(context: Context, charSequence: CharSequence): CharSequence = SpanUtil.color(textColor, charSequence)
 
     override fun equals(other: Any?): Boolean = textColor == (other as? ColorModifier)?.textColor
     override fun hashCode(): Int = textColor
   }
 
   object CenterModifier : Modifier {
-    override fun modify(context: Context, charSequence: CharSequence): CharSequence {
-      return SpanUtil.center(charSequence)
-    }
+    override fun modify(context: Context, charSequence: CharSequence): CharSequence = SpanUtil.center(charSequence)
   }
 
   object TitleLargeModifier : TextAppearanceModifier(R.style.Signal_Text_TitleLarge)
@@ -70,30 +61,24 @@ sealed class DSLSettingsText {
   object BodyLargeModifier : TextAppearanceModifier(R.style.Signal_Text_BodyLarge)
 
   open class TextAppearanceModifier(@StyleRes private val textAppearance: Int) : Modifier {
-    override fun modify(context: Context, charSequence: CharSequence): CharSequence {
-      return SpanUtil.textAppearance(context, textAppearance, charSequence)
-    }
+    override fun modify(context: Context, charSequence: CharSequence): CharSequence = SpanUtil.textAppearance(context, textAppearance, charSequence)
 
     override fun equals(other: Any?): Boolean = textAppearance == (other as? TextAppearanceModifier)?.textAppearance
     override fun hashCode(): Int = textAppearance
   }
 
   object BoldModifier : Modifier {
-    override fun modify(context: Context, charSequence: CharSequence): CharSequence {
-      return SpanUtil.bold(charSequence)
-    }
+    override fun modify(context: Context, charSequence: CharSequence): CharSequence = SpanUtil.bold(charSequence)
   }
 
   class LearnMoreModifier(
     @ColorInt private val learnMoreColor: Int,
     val onClick: () -> Unit
   ) : Modifier {
-    override fun modify(context: Context, charSequence: CharSequence): CharSequence {
-      return SpannableStringBuilder(charSequence).append(" ").append(
-        SpanUtil.learnMore(context, learnMoreColor) {
-          onClick()
-        }
-      )
-    }
+    override fun modify(context: Context, charSequence: CharSequence): CharSequence = SpannableStringBuilder(charSequence).append(" ").append(
+      SpanUtil.learnMore(context, learnMoreColor) {
+        onClick()
+      }
+    )
   }
 }

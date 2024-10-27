@@ -166,9 +166,7 @@ private object IntOffsetConverter : TwoWayConverter<IntOffset, AnimationVector2D
   }
 }
 
-private fun project(velocity: Float): Float {
-  return (velocity / 1000f) * DECELERATION_RATE / (1f - DECELERATION_RATE)
-}
+private fun project(velocity: Float): Float = (velocity / 1000f) * DECELERATION_RATE / (1f - DECELERATION_RATE)
 
 private fun getClosestCorner(coordinate: IntOffset, topLeft: IntOffset, topRight: IntOffset, bottomLeft: IntOffset, bottomRight: IntOffset): IntOffset {
   val distances = mapOf(
@@ -181,9 +179,7 @@ private fun getClosestCorner(coordinate: IntOffset, topLeft: IntOffset, topRight
   return distances.minBy { it.value }.key
 }
 
-private fun distance(a: IntOffset, b: IntOffset): Float {
-  return sqrt((b.x - a.x).toDouble().pow(2) + (b.y - a.y).toDouble().pow(2)).toFloat()
-}
+private fun distance(a: IntOffset, b: IntOffset): Float = sqrt((b.x - a.x).toDouble().pow(2) + (b.y - a.y).toDouble().pow(2)).toFloat()
 
 @DarkPreview
 @Composable

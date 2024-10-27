@@ -27,7 +27,9 @@ import org.thoughtcrime.securesms.util.views.SimpleProgressDialog
 import java.util.Optional
 import java.util.function.Consumer
 
-class NewCallActivity : ContactSelectionActivity(), ContactSelectionListFragment.NewCallCallback {
+class NewCallActivity :
+  ContactSelectionActivity(),
+  ContactSelectionListFragment.NewCallCallback {
 
   override fun onCreate(icicle: Bundle?, ready: Boolean) {
     super.onCreate(icicle, ready)
@@ -97,17 +99,15 @@ class NewCallActivity : ContactSelectionActivity(), ContactSelectionListFragment
 
     private val TAG = Log.tag(NewCallActivity::class.java)
 
-    fun createIntent(context: Context): Intent {
-      return Intent(context, NewCallActivity::class.java)
-        .putExtra(
-          ContactSelectionListFragment.DISPLAY_MODE,
-          ContactSelectionDisplayMode.none()
-            .withPush()
-            .withActiveGroups()
-            .withGroupMembers()
-            .build()
-        )
-    }
+    fun createIntent(context: Context): Intent = Intent(context, NewCallActivity::class.java)
+      .putExtra(
+        ContactSelectionListFragment.DISPLAY_MODE,
+        ContactSelectionDisplayMode.none()
+          .withPush()
+          .withActiveGroups()
+          .withGroupMembers()
+          .build()
+      )
   }
 
   override fun onInvite() {

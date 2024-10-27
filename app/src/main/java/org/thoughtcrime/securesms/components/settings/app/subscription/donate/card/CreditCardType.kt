@@ -9,12 +9,10 @@ enum class CreditCardType {
     private val AMERICAN_EXPRESS_PREFIXES = listOf("34", "37")
     private val UNIONPAY_PREFIXES = listOf("62", "81")
 
-    fun fromCardNumber(cardNumber: String): CreditCardType {
-      return when {
-        AMERICAN_EXPRESS_PREFIXES.any { cardNumber.startsWith(it) } -> AMERICAN_EXPRESS
-        UNIONPAY_PREFIXES.any { cardNumber.startsWith(it) } -> UNIONPAY
-        else -> OTHER
-      }
+    fun fromCardNumber(cardNumber: String): CreditCardType = when {
+      AMERICAN_EXPRESS_PREFIXES.any { cardNumber.startsWith(it) } -> AMERICAN_EXPRESS
+      UNIONPAY_PREFIXES.any { cardNumber.startsWith(it) } -> UNIONPAY
+      else -> OTHER
     }
   }
 }

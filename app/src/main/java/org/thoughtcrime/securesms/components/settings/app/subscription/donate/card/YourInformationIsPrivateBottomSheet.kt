@@ -17,55 +17,53 @@ class YourInformationIsPrivateBottomSheet : DSLSettingsBottomSheetFragment() {
     adapter.submitList(getConfiguration().toMappingModelList())
   }
 
-  private fun getConfiguration(): DSLConfiguration {
-    return configure {
-      space(10.dp)
+  private fun getConfiguration(): DSLConfiguration = configure {
+    space(10.dp)
 
-      noPadTextPref(
-        title = DSLSettingsText.from(
-          R.string.YourInformationIsPrivateBottomSheet__your_information_is_private,
-          DSLSettingsText.CenterModifier,
-          DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_HeadlineMedium)
-        )
+    noPadTextPref(
+      title = DSLSettingsText.from(
+        R.string.YourInformationIsPrivateBottomSheet__your_information_is_private,
+        DSLSettingsText.CenterModifier,
+        DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_HeadlineMedium)
       )
+    )
 
-      space(24.dp)
+    space(24.dp)
 
-      noPadTextPref(
-        title = DSLSettingsText.from(
-          R.string.YourInformationIsPrivateBottomSheet__signal_does_not_collect,
-          DSLSettingsText.BodyLargeModifier
-        )
+    noPadTextPref(
+      title = DSLSettingsText.from(
+        R.string.YourInformationIsPrivateBottomSheet__signal_does_not_collect,
+        DSLSettingsText.BodyLargeModifier
       )
+    )
 
-      space(24.dp)
+    space(24.dp)
 
-      noPadTextPref(
-        title = DSLSettingsText.from(
-          R.string.YourInformationIsPrivateBottomSheet__we_use_stripe,
-          DSLSettingsText.BodyLargeModifier
-        )
+    noPadTextPref(
+      title = DSLSettingsText.from(
+        R.string.YourInformationIsPrivateBottomSheet__we_use_stripe,
+        DSLSettingsText.BodyLargeModifier
       )
+    )
 
-      space(24.dp)
+    space(24.dp)
 
-      noPadTextPref(
-        title = DSLSettingsText.from(
-          R.string.YourInformationIsPrivateBottomSheet__signal_does_not_and_cannot,
-          DSLSettingsText.BodyLargeModifier
-        )
+    noPadTextPref(
+      title = DSLSettingsText.from(
+        R.string.YourInformationIsPrivateBottomSheet__signal_does_not_and_cannot,
+        DSLSettingsText.BodyLargeModifier
       )
+    )
 
-      space(24.dp)
+    space(24.dp)
 
-      noPadTextPref(
-        title = DSLSettingsText.from(
-          R.string.YourInformationIsPrivateBottomSheet__thank_you,
-          DSLSettingsText.BodyLargeModifier
-        )
+    noPadTextPref(
+      title = DSLSettingsText.from(
+        R.string.YourInformationIsPrivateBottomSheet__thank_you,
+        DSLSettingsText.BodyLargeModifier
       )
+    )
 
-      space(56.dp)
-    }
+    space(56.dp)
   }
 }

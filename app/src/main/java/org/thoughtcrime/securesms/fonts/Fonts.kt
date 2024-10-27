@@ -42,9 +42,7 @@ object Fonts {
   /**
    * Returns a File which font data should be written to.
    */
-  fun getDirectory(context: Context): File {
-    return context.getDir("story-fonts", Context.MODE_PRIVATE)
-  }
+  fun getDirectory(context: Context): File = context.getDir("story-fonts", Context.MODE_PRIVATE)
 
   /**
    * Attempts to retrieve a Typeface for the given font / guessed script and default locales combination
@@ -125,98 +123,90 @@ object Fonts {
     }
   }
 
-  private fun getDefaultFontForScriptAndStyle(supportedScript: SupportedScript, font: TextFont): Typeface {
-    return when (supportedScript) {
-      SupportedScript.CYRILLIC -> {
-        when (font) {
-          TextFont.REGULAR -> Typeface.SANS_SERIF
-          TextFont.BOLD -> Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
-          TextFont.SERIF -> Typeface.SERIF
-          TextFont.SCRIPT -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SERIF, "semibold", TypefaceHelper.Weight.SEMI_BOLD)
-          TextFont.CONDENSED -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "light", TypefaceHelper.Weight.LIGHT)
-        }
+  private fun getDefaultFontForScriptAndStyle(supportedScript: SupportedScript, font: TextFont): Typeface = when (supportedScript) {
+    SupportedScript.CYRILLIC -> {
+      when (font) {
+        TextFont.REGULAR -> Typeface.SANS_SERIF
+        TextFont.BOLD -> Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+        TextFont.SERIF -> Typeface.SERIF
+        TextFont.SCRIPT -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SERIF, "semibold", TypefaceHelper.Weight.SEMI_BOLD)
+        TextFont.CONDENSED -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "light", TypefaceHelper.Weight.LIGHT)
       }
-      SupportedScript.DEVANAGARI -> {
-        when (font) {
-          TextFont.REGULAR -> Typeface.SANS_SERIF
-          TextFont.BOLD -> Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
-          TextFont.SERIF -> Typeface.SANS_SERIF
-          TextFont.SCRIPT -> Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
-          TextFont.CONDENSED -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "light", TypefaceHelper.Weight.LIGHT)
-        }
+    }
+    SupportedScript.DEVANAGARI -> {
+      when (font) {
+        TextFont.REGULAR -> Typeface.SANS_SERIF
+        TextFont.BOLD -> Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+        TextFont.SERIF -> Typeface.SANS_SERIF
+        TextFont.SCRIPT -> Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+        TextFont.CONDENSED -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "light", TypefaceHelper.Weight.LIGHT)
       }
-      SupportedScript.CHINESE_TRADITIONAL_HK,
-      SupportedScript.CHINESE_TRADITIONAL,
-      SupportedScript.CHINESE_SIMPLIFIED,
-      SupportedScript.UNKNOWN_CJK -> {
-        when (font) {
-          TextFont.REGULAR -> Typeface.SANS_SERIF
-          TextFont.BOLD -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "semibold", TypefaceHelper.Weight.SEMI_BOLD)
-          TextFont.SERIF -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "thin", TypefaceHelper.Weight.THIN)
-          TextFont.SCRIPT -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "light", TypefaceHelper.Weight.LIGHT)
-          TextFont.CONDENSED -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "demilight", TypefaceHelper.Weight.DEMI_LIGHT)
-        }
+    }
+    SupportedScript.CHINESE_TRADITIONAL_HK,
+    SupportedScript.CHINESE_TRADITIONAL,
+    SupportedScript.CHINESE_SIMPLIFIED,
+    SupportedScript.UNKNOWN_CJK -> {
+      when (font) {
+        TextFont.REGULAR -> Typeface.SANS_SERIF
+        TextFont.BOLD -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "semibold", TypefaceHelper.Weight.SEMI_BOLD)
+        TextFont.SERIF -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "thin", TypefaceHelper.Weight.THIN)
+        TextFont.SCRIPT -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "light", TypefaceHelper.Weight.LIGHT)
+        TextFont.CONDENSED -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "demilight", TypefaceHelper.Weight.DEMI_LIGHT)
       }
-      SupportedScript.ARABIC -> {
-        when (font) {
-          TextFont.REGULAR -> Typeface.SANS_SERIF
-          TextFont.BOLD -> Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
-          TextFont.SERIF -> Typeface.SERIF
-          TextFont.SCRIPT -> Typeface.create(Typeface.SERIF, Typeface.BOLD)
-          TextFont.CONDENSED -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "black", TypefaceHelper.Weight.BLACK)
-        }
+    }
+    SupportedScript.ARABIC -> {
+      when (font) {
+        TextFont.REGULAR -> Typeface.SANS_SERIF
+        TextFont.BOLD -> Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+        TextFont.SERIF -> Typeface.SERIF
+        TextFont.SCRIPT -> Typeface.create(Typeface.SERIF, Typeface.BOLD)
+        TextFont.CONDENSED -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "black", TypefaceHelper.Weight.BLACK)
       }
-      SupportedScript.JAPANESE -> {
-        when (font) {
-          TextFont.REGULAR -> Typeface.SANS_SERIF
-          TextFont.BOLD -> Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
-          TextFont.SERIF -> Typeface.SERIF
-          TextFont.SCRIPT -> Typeface.create(Typeface.SERIF, Typeface.BOLD)
-          TextFont.CONDENSED -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "medium", TypefaceHelper.Weight.MEDIUM)
-        }
+    }
+    SupportedScript.JAPANESE -> {
+      when (font) {
+        TextFont.REGULAR -> Typeface.SANS_SERIF
+        TextFont.BOLD -> Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+        TextFont.SERIF -> Typeface.SERIF
+        TextFont.SCRIPT -> Typeface.create(Typeface.SERIF, Typeface.BOLD)
+        TextFont.CONDENSED -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "medium", TypefaceHelper.Weight.MEDIUM)
       }
-      SupportedScript.LATIN,
-      SupportedScript.UNKNOWN -> {
-        when (font) {
-          TextFont.REGULAR -> Typeface.SANS_SERIF
-          TextFont.BOLD -> Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
-          TextFont.SERIF -> Typeface.SERIF
-          TextFont.SCRIPT -> Typeface.create(Typeface.SERIF, Typeface.BOLD)
-          TextFont.CONDENSED -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "black", TypefaceHelper.Weight.BLACK)
-        }
+    }
+    SupportedScript.LATIN,
+    SupportedScript.UNKNOWN -> {
+      when (font) {
+        TextFont.REGULAR -> Typeface.SANS_SERIF
+        TextFont.BOLD -> Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+        TextFont.SERIF -> Typeface.SERIF
+        TextFont.SCRIPT -> Typeface.create(Typeface.SERIF, Typeface.BOLD)
+        TextFont.CONDENSED -> TypefaceHelper.typefaceFor(TypefaceHelper.Family.SANS_SERIF, "black", TypefaceHelper.Weight.BLACK)
       }
     }
   }
 
   @WorkerThread
-  private fun loadFontIntoTypeface(context: Context, fontVersion: FontVersion, fontLocalPath: String): Typeface? {
-    return try {
-      Typeface.createFromFile(File(getDirectory(context), "${fontVersion.path}/$fontLocalPath"))
-    } catch (e: Exception) {
-      Log.w(TAG, "Could not load typeface from disk.")
-      null
-    }
+  private fun loadFontIntoTypeface(context: Context, fontVersion: FontVersion, fontLocalPath: String): Typeface? = try {
+    Typeface.createFromFile(File(getDirectory(context), "${fontVersion.path}/$fontLocalPath"))
+  } catch (e: Exception) {
+    Log.w(TAG, "Could not load typeface from disk.")
+    null
   }
 
   /**
    * Downloads the latest version code.
    */
   @WorkerThread
-  fun downloadLatestVersionLong(): Long {
-    return S3.getLong(VERSION_URI)
-  }
+  fun downloadLatestVersionLong(): Long = S3.getLong(VERSION_URI)
 
   /**
    * Downloads and verifies the latest manifest.
    */
   @WorkerThread
-  fun downloadAndVerifyLatestManifest(context: Context, version: FontVersion, manifestPath: String): Boolean {
-    return S3.verifyAndWriteToDisk(
-      context,
-      "$BASE_STATIC_BUCKET_URI/${version.id}/$MANIFEST",
-      File(getDirectory(context), manifestPath)
-    )
-  }
+  fun downloadAndVerifyLatestManifest(context: Context, version: FontVersion, manifestPath: String): Boolean = S3.verifyAndWriteToDisk(
+    context,
+    "$BASE_STATIC_BUCKET_URI/${version.id}/$MANIFEST",
+    File(getDirectory(context), manifestPath)
+  )
 
   /**
    * Downloads the given font file from S3
@@ -242,14 +232,12 @@ object Fonts {
     }
   }
 
-  private fun getScriptPath(font: TextFont, script: FontManifest.FontScript): String? {
-    return when (font) {
-      TextFont.REGULAR -> script.regular
-      TextFont.BOLD -> script.bold
-      TextFont.SERIF -> script.serif
-      TextFont.SCRIPT -> script.script
-      TextFont.CONDENSED -> script.condensed
-    }
+  private fun getScriptPath(font: TextFont, script: FontManifest.FontScript): String? = when (font) {
+    TextFont.REGULAR -> script.regular
+    TextFont.BOLD -> script.bold
+    TextFont.SERIF -> script.serif
+    TextFont.SCRIPT -> script.script
+    TextFont.CONDENSED -> script.condensed
   }
 
   fun getSupportedScript(locales: List<Locale>, guessedScript: SupportedScript): SupportedScript {
@@ -295,20 +283,18 @@ object Fonts {
     }
   }
 
-  private fun resolveFontScriptFromScriptName(supportedScript: SupportedScript?, fontManifest: FontManifest): FontManifest.FontScript? {
-    return when (supportedScript.also { Log.d(TAG, "Getting Script for $it") }) {
-      SupportedScript.LATIN -> fontManifest.scripts.latinExtended
-      SupportedScript.ARABIC -> fontManifest.scripts.arabic
-      SupportedScript.CHINESE_SIMPLIFIED -> fontManifest.scripts.chineseSimplified
-      SupportedScript.CHINESE_TRADITIONAL -> fontManifest.scripts.chineseTraditional
-      SupportedScript.CYRILLIC -> fontManifest.scripts.cyrillicExtended
-      SupportedScript.DEVANAGARI -> fontManifest.scripts.devanagari
-      SupportedScript.JAPANESE -> fontManifest.scripts.japanese
-      SupportedScript.CHINESE_TRADITIONAL_HK -> fontManifest.scripts.chineseTraditionalHk
-      SupportedScript.UNKNOWN_CJK -> null
-      SupportedScript.UNKNOWN -> null
-      null -> null
-    }
+  private fun resolveFontScriptFromScriptName(supportedScript: SupportedScript?, fontManifest: FontManifest): FontManifest.FontScript? = when (supportedScript.also { Log.d(TAG, "Getting Script for $it") }) {
+    SupportedScript.LATIN -> fontManifest.scripts.latinExtended
+    SupportedScript.ARABIC -> fontManifest.scripts.arabic
+    SupportedScript.CHINESE_SIMPLIFIED -> fontManifest.scripts.chineseSimplified
+    SupportedScript.CHINESE_TRADITIONAL -> fontManifest.scripts.chineseTraditional
+    SupportedScript.CYRILLIC -> fontManifest.scripts.cyrillicExtended
+    SupportedScript.DEVANAGARI -> fontManifest.scripts.devanagari
+    SupportedScript.JAPANESE -> fontManifest.scripts.japanese
+    SupportedScript.CHINESE_TRADITIONAL_HK -> fontManifest.scripts.chineseTraditionalHk
+    SupportedScript.UNKNOWN_CJK -> null
+    SupportedScript.UNKNOWN -> null
+    null -> null
   }
 
   /**

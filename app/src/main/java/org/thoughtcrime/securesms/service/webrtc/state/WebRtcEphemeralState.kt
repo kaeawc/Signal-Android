@@ -13,7 +13,5 @@ data class WebRtcEphemeralState(
   private val reactions: List<GroupCallReactionEvent> = emptyList()
 ) {
 
-  fun getUnexpiredReactions(): List<GroupCallReactionEvent> {
-    return reactions.filter { System.currentTimeMillis() < it.getExpirationTimestamp() }
-  }
+  fun getUnexpiredReactions(): List<GroupCallReactionEvent> = reactions.filter { System.currentTimeMillis() < it.getExpirationTimestamp() }
 }

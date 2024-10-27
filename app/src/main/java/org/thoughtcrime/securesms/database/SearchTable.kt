@@ -335,17 +335,15 @@ class SearchTable(context: Context, databaseHelper: SignalDatabase) : DatabaseTa
    * into tokens, escape each token (to allow the user to search for punctuation), and
    * then append a * to the end of each token to turn it into a prefix query.
    */
-  private fun createFullTextSearchQuery(query: String): String {
-    return query
-      .split(" ")
-      .map { it.trim() }
-      .filter { it.isNotEmpty() }
-      .map { fullTextSearchEscape(it) }
-      .joinToString(
-        separator = " ",
-        transform = { "$it*" }
-      )
-  }
+  private fun createFullTextSearchQuery(query: String): String = query
+    .split(" ")
+    .map { it.trim() }
+    .filter { it.isNotEmpty() }
+    .map { fullTextSearchEscape(it) }
+    .joinToString(
+      separator = " ",
+      transform = { "$it*" }
+    )
 
   /**
    * If you wrap a string in quotes, sqlite considers it a string literal when making a MATCH query.

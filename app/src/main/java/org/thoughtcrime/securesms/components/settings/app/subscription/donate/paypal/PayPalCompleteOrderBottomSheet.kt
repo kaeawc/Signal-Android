@@ -40,41 +40,39 @@ class PayPalCompleteOrderBottomSheet : DSLSettingsBottomSheetFragment() {
     setFragmentResult(REQUEST_KEY, bundleOf(REQUEST_KEY to didConfirmOrder))
   }
 
-  private fun getConfiguration(): DSLConfiguration {
-    return configure {
-      customPref(
-        BadgeDisplay112.Model(
-          badge = Badges.fromDatabaseBadge(args.inAppPayment.data.badge!!),
-          withDisplayText = false
-        )
+  private fun getConfiguration(): DSLConfiguration = configure {
+    customPref(
+      BadgeDisplay112.Model(
+        badge = Badges.fromDatabaseBadge(args.inAppPayment.data.badge!!),
+        withDisplayText = false
       )
+    )
 
-      space(12.dp)
+    space(12.dp)
 
-      presentTitleAndSubtitle(requireContext(), args.inAppPayment)
+    presentTitleAndSubtitle(requireContext(), args.inAppPayment)
 
-      space(24.dp)
+    space(24.dp)
 
-      customPref(PayPalCompleteOrderPaymentItem.Model())
+    customPref(PayPalCompleteOrderPaymentItem.Model())
 
-      space(82.dp)
+    space(82.dp)
 
-      primaryButton(
-        text = DSLSettingsText.from(R.string.PaypalCompleteOrderBottomSheet__donate),
-        onClick = {
-          didConfirmOrder = true
-          findNavController().popBackStack()
-        }
-      )
+    primaryButton(
+      text = DSLSettingsText.from(R.string.PaypalCompleteOrderBottomSheet__donate),
+      onClick = {
+        didConfirmOrder = true
+        findNavController().popBackStack()
+      }
+    )
 
-      secondaryButtonNoOutline(
-        text = DSLSettingsText.from(android.R.string.cancel),
-        onClick = {
-          findNavController().popBackStack()
-        }
-      )
+    secondaryButtonNoOutline(
+      text = DSLSettingsText.from(android.R.string.cancel),
+      onClick = {
+        findNavController().popBackStack()
+      }
+    )
 
-      space(16.dp)
-    }
+    space(16.dp)
   }
 }

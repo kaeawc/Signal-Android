@@ -19,6 +19,4 @@ private class CustomDrawWrapper(
   }
 }
 
-fun Drawable.customizeOnDraw(customDrawFn: (wrapped: Drawable, canvas: Canvas) -> Unit): Drawable {
-  return CustomDrawWrapper(this, customDrawFn)
-}
+fun Drawable.customizeOnDraw(customDrawFn: (wrapped: Drawable, canvas: Canvas) -> Unit): Drawable = CustomDrawWrapper(this, customDrawFn)

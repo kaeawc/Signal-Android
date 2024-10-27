@@ -35,11 +35,7 @@ class SpoilerDrawable(@ColorInt color: Int) : Drawable() {
   }
 
   @Deprecated("Deprecated in Java", ReplaceWith("PixelFormat.TRANSPARENT", "android.graphics.PixelFormat"))
-  override fun getOpacity(): Int {
-    return PixelFormat.TRANSPARENT
-  }
+  override fun getOpacity(): Int = PixelFormat.TRANSPARENT
 
-  override fun setColorFilter(colorFilter: ColorFilter?) {
-    throw UnsupportedOperationException("Call setTintColor")
-  }
+  override fun setColorFilter(colorFilter: ColorFilter?): Unit = throw UnsupportedOperationException("Call setTintColor")
 }

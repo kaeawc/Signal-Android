@@ -121,75 +121,65 @@ class PayPalPaymentInProgressFragment : DialogFragment(R.layout.donation_in_prog
     }
   }
 
-  private fun getProcessingStatus(): String {
-    return if (args.inAppPaymentType == InAppPaymentType.RECURRING_BACKUP) {
-      getString(R.string.InAppPaymentInProgressFragment__processing_payment)
-    } else {
-      getString(R.string.InAppPaymentInProgressFragment__processing_donation)
+  private fun getProcessingStatus(): String = if (args.inAppPaymentType == InAppPaymentType.RECURRING_BACKUP) {
+    getString(R.string.InAppPaymentInProgressFragment__processing_payment)
+  } else {
+    getString(R.string.InAppPaymentInProgressFragment__processing_donation)
+  }
+
+  private fun oneTimeConfirmationPipeline(createPaymentIntentResponse: PayPalCreatePaymentIntentResponse): Single<PayPalConfirmationResult> = routeToOneTimeConfirmation(createPaymentIntentResponse)
+
+  private fun monthlyConfirmationPipeline(createPaymentIntentResponse: PayPalCreatePaymentMethodResponse): Single<PayPalPaymentMethodId> = routeToMonthlyConfirmation(createPaymentIntentResponse)
+
+  private fun routeToOneTimeConfirmation(createPaymentIntentResponse: PayPalCreatePaymentIntentResponse): Single<PayPalConfirmationResult> = Single.create { emitter ->
+    val listener = FragmentResultListener { _, bundle ->
+      val result: PayPalConfirmationResult? = bundle.getParcelableCompat(PayPalConfirmationDialogFragment.REQUEST_KEY, PayPalConfirmationResult::class.java)
+      if (result != null) {
+        emitter.onSuccess(result.copy(paymentId = createPaymentIntentResponse.paymentId))
+      } else {
+        emitter.onError(DonationError.UserCancelledPaymentError(args.inAppPaymentType.toErrorSource()))
+      }
     }
-  }
 
-  private fun oneTimeConfirmationPipeline(createPaymentIntentResponse: PayPalCreatePaymentIntentResponse): Single<PayPalConfirmationResult> {
-    return routeToOneTimeConfirmation(createPaymentIntentResponse)
-  }
+    parentFragmentManager.clearFragmentResult(PayPalConfirmationDialogFragment.REQUEST_KEY)
+    parentFragmentManager.setFragmentResultListener(PayPalConfirmationDialogFragment.REQUEST_KEY, this, listener)
 
-  private fun monthlyConfirmationPipeline(createPaymentIntentResponse: PayPalCreatePaymentMethodResponse): Single<PayPalPaymentMethodId> {
-    return routeToMonthlyConfirmation(createPaymentIntentResponse)
-  }
-
-  private fun routeToOneTimeConfirmation(createPaymentIntentResponse: PayPalCreatePaymentIntentResponse): Single<PayPalConfirmationResult> {
-    return Single.create { emitter ->
-      val listener = FragmentResultListener { _, bundle ->
-        val result: PayPalConfirmationResult? = bundle.getParcelableCompat(PayPalConfirmationDialogFragment.REQUEST_KEY, PayPalConfirmationResult::class.java)
-        if (result != null) {
-          emitter.onSuccess(result.copy(paymentId = createPaymentIntentResponse.paymentId))
-        } else {
-          emitter.onError(DonationError.UserCancelledPaymentError(args.inAppPaymentType.toErrorSource()))
-        }
-      }
-
-      parentFragmentManager.clearFragmentResult(PayPalConfirmationDialogFragment.REQUEST_KEY)
-      parentFragmentManager.setFragmentResultListener(PayPalConfirmationDialogFragment.REQUEST_KEY, this, listener)
-
-      findNavController().safeNavigate(
-        PayPalPaymentInProgressFragmentDirections.actionPaypalPaymentInProgressFragmentToPaypalConfirmationFragment(
-          Uri.parse(createPaymentIntentResponse.approvalUrl)
-        )
+    findNavController().safeNavigate(
+      PayPalPaymentInProgressFragmentDirections.actionPaypalPaymentInProgressFragmentToPaypalConfirmationFragment(
+        Uri.parse(createPaymentIntentResponse.approvalUrl)
       )
+    )
 
-      emitter.setCancellable {
-        Log.d(TAG, "Clearing one-time confirmation result listener.")
-        parentFragmentManager.clearFragmentResult(PayPalConfirmationDialogFragment.REQUEST_KEY)
-        parentFragmentManager.clearFragmentResultListener(PayPalConfirmationDialogFragment.REQUEST_KEY)
-      }
-    }.subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io())
-  }
-
-  private fun routeToMonthlyConfirmation(createPaymentIntentResponse: PayPalCreatePaymentMethodResponse): Single<PayPalPaymentMethodId> {
-    return Single.create { emitter ->
-      val listener = FragmentResultListener { _, bundle ->
-        val result: Boolean = bundle.getBoolean(PayPalConfirmationDialogFragment.REQUEST_KEY)
-        if (result) {
-          emitter.onSuccess(PayPalPaymentMethodId(createPaymentIntentResponse.token))
-        } else {
-          emitter.onError(DonationError.UserCancelledPaymentError(args.inAppPaymentType.toErrorSource()))
-        }
-      }
-
+    emitter.setCancellable {
+      Log.d(TAG, "Clearing one-time confirmation result listener.")
       parentFragmentManager.clearFragmentResult(PayPalConfirmationDialogFragment.REQUEST_KEY)
-      parentFragmentManager.setFragmentResultListener(PayPalConfirmationDialogFragment.REQUEST_KEY, this, listener)
+      parentFragmentManager.clearFragmentResultListener(PayPalConfirmationDialogFragment.REQUEST_KEY)
+    }
+  }.subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io())
 
-      findNavController().safeNavigate(
-        PayPalPaymentInProgressFragmentDirections.actionPaypalPaymentInProgressFragmentToPaypalConfirmationFragment(
-          Uri.parse(createPaymentIntentResponse.approvalUrl)
-        )
-      )
-
-      emitter.setCancellable {
-        Log.d(TAG, "Clearing monthly confirmation result listener.")
-        parentFragmentManager.clearFragmentResult(PayPalConfirmationDialogFragment.REQUEST_KEY)
-        parentFragmentManager.clearFragmentResultListener(PayPalConfirmationDialogFragment.REQUEST_KEY)
+  private fun routeToMonthlyConfirmation(createPaymentIntentResponse: PayPalCreatePaymentMethodResponse): Single<PayPalPaymentMethodId> = Single.create { emitter ->
+    val listener = FragmentResultListener { _, bundle ->
+      val result: Boolean = bundle.getBoolean(PayPalConfirmationDialogFragment.REQUEST_KEY)
+      if (result) {
+        emitter.onSuccess(PayPalPaymentMethodId(createPaymentIntentResponse.token))
+      } else {
+        emitter.onError(DonationError.UserCancelledPaymentError(args.inAppPaymentType.toErrorSource()))
       }
-    }.subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io())
-  }
+    }
+
+    parentFragmentManager.clearFragmentResult(PayPalConfirmationDialogFragment.REQUEST_KEY)
+    parentFragmentManager.setFragmentResultListener(PayPalConfirmationDialogFragment.REQUEST_KEY, this, listener)
+
+    findNavController().safeNavigate(
+      PayPalPaymentInProgressFragmentDirections.actionPaypalPaymentInProgressFragmentToPaypalConfirmationFragment(
+        Uri.parse(createPaymentIntentResponse.approvalUrl)
+      )
+    )
+
+    emitter.setCancellable {
+      Log.d(TAG, "Clearing monthly confirmation result listener.")
+      parentFragmentManager.clearFragmentResult(PayPalConfirmationDialogFragment.REQUEST_KEY)
+      parentFragmentManager.clearFragmentResultListener(PayPalConfirmationDialogFragment.REQUEST_KEY)
+    }
+  }.subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io())
 }

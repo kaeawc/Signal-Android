@@ -26,17 +26,15 @@ class KeyboardStickerListAdapter(
     registerFactory(StickerHeader::class.java, LayoutFactory(::StickerHeaderViewHolder, R.layout.sticker_grid_header))
   }
 
-  data class Sticker(override val packId: String, val stickerRecord: StickerRecord) : MappingModel<Sticker>, HasPackId {
+  data class Sticker(override val packId: String, val stickerRecord: StickerRecord) :
+    MappingModel<Sticker>,
+    HasPackId {
     val uri: DecryptableUri
       get() = DecryptableUri(stickerRecord.uri)
 
-    override fun areItemsTheSame(newItem: Sticker): Boolean {
-      return packId == newItem.packId && stickerRecord.rowId == newItem.stickerRecord.rowId
-    }
+    override fun areItemsTheSame(newItem: Sticker): Boolean = packId == newItem.packId && stickerRecord.rowId == newItem.stickerRecord.rowId
 
-    override fun areContentsTheSame(newItem: Sticker): Boolean {
-      return areItemsTheSame(newItem)
-    }
+    override fun areContentsTheSame(newItem: Sticker): Boolean = areItemsTheSame(newItem)
   }
 
   private inner class StickerViewHolder(itemView: View) : MappingViewHolder<Sticker>(itemView) {
@@ -62,18 +60,15 @@ class KeyboardStickerListAdapter(
     }
   }
 
-  data class StickerHeader(override val packId: String, private val title: String?, private val titleResource: Int?) : MappingModel<StickerHeader>, HasPackId, Header {
-    fun getTitle(context: Context): String {
-      return title ?: context.resources.getString(titleResource ?: R.string.StickerManagementAdapter_untitled)
-    }
+  data class StickerHeader(override val packId: String, private val title: String?, private val titleResource: Int?) :
+    MappingModel<StickerHeader>,
+    HasPackId,
+    Header {
+    fun getTitle(context: Context): String = title ?: context.resources.getString(titleResource ?: R.string.StickerManagementAdapter_untitled)
 
-    override fun areItemsTheSame(newItem: StickerHeader): Boolean {
-      return title == newItem.title
-    }
+    override fun areItemsTheSame(newItem: StickerHeader): Boolean = title == newItem.title
 
-    override fun areContentsTheSame(newItem: StickerHeader): Boolean {
-      return areItemsTheSame(newItem)
-    }
+    override fun areContentsTheSame(newItem: StickerHeader): Boolean = areItemsTheSame(newItem)
   }
 
   private class StickerHeaderViewHolder(itemView: View) : MappingViewHolder<StickerHeader>(itemView) {

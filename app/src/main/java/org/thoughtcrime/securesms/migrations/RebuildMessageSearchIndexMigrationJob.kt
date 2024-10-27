@@ -37,8 +37,6 @@ internal class RebuildMessageSearchIndexMigrationJob(
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<RebuildMessageSearchIndexMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): RebuildMessageSearchIndexMigrationJob {
-      return RebuildMessageSearchIndexMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): RebuildMessageSearchIndexMigrationJob = RebuildMessageSearchIndexMigrationJob(parameters)
   }
 }

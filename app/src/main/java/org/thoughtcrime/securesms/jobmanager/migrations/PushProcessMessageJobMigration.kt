@@ -18,12 +18,10 @@ import org.whispersystems.signalservice.internal.serialize.protos.SignalServiceC
  * Migrate PushProcessMessageJob V1 to V2 versions.
  */
 class PushProcessMessageJobMigration : JobMigration(10) {
-  override fun migrate(jobData: JobData): JobData {
-    return if ("PushProcessJob" == jobData.factoryKey) {
-      migrateJob(jobData)
-    } else {
-      jobData
-    }
+  override fun migrate(jobData: JobData): JobData = if ("PushProcessJob" == jobData.factoryKey) {
+    migrateJob(jobData)
+  } else {
+    jobData
   }
 
   companion object {

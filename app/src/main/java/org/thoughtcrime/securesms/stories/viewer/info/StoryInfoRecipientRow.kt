@@ -23,14 +23,10 @@ object StoryInfoRecipientRow {
   class Model(
     val recipientDeliveryStatus: RecipientDeliveryStatus
   ) : MappingModel<Model> {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return recipientDeliveryStatus.recipient.id == newItem.recipientDeliveryStatus.recipient.id
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = recipientDeliveryStatus.recipient.id == newItem.recipientDeliveryStatus.recipient.id
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return recipientDeliveryStatus.recipient.hasSameContent(newItem.recipientDeliveryStatus.recipient) &&
-        recipientDeliveryStatus.timestamp == newItem.recipientDeliveryStatus.timestamp
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = recipientDeliveryStatus.recipient.hasSameContent(newItem.recipientDeliveryStatus.recipient) &&
+      recipientDeliveryStatus.timestamp == newItem.recipientDeliveryStatus.timestamp
   }
 
   private class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

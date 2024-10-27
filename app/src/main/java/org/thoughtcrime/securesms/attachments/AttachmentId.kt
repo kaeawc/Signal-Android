@@ -10,16 +10,13 @@ data class AttachmentId(
   @JsonProperty("rowId")
   @JvmField
   val id: Long
-) : Parcelable, DatabaseId {
+) : Parcelable,
+  DatabaseId {
 
   val isValid: Boolean
     get() = id >= 0
 
-  override fun toString(): String {
-    return "AttachmentId::$id"
-  }
+  override fun toString(): String = "AttachmentId::$id"
 
-  override fun serialize(): String {
-    return id.toString()
-  }
+  override fun serialize(): String = id.toString()
 }

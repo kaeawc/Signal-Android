@@ -212,9 +212,7 @@ class DisabledInputView @JvmOverloads constructor(
     return view
   }
 
-  private fun defaultLayoutParams(): LayoutParams {
-    return LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-  }
+  private fun defaultLayoutParams(): LayoutParams = LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
   private fun removeIfNotNull(view: View?) {
     if (view != null) {

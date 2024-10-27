@@ -294,76 +294,70 @@ fun MessageBackupsTypeBlock(
 }
 
 @Composable
-private fun getFormattedPricePerMonth(messageBackupsType: MessageBackupsType): String {
-  return when (messageBackupsType) {
-    is MessageBackupsType.Free -> stringResource(id = R.string.MessageBackupsTypeSelectionScreen__free)
-    is MessageBackupsType.Paid -> {
-      val formattedAmount = FiatMoneyUtil.format(LocalContext.current.resources, messageBackupsType.pricePerMonth, FiatMoneyUtil.formatOptions().trimZerosAfterDecimal())
-      stringResource(id = R.string.MessageBackupsTypeSelectionScreen__s_month, formattedAmount)
-    }
+private fun getFormattedPricePerMonth(messageBackupsType: MessageBackupsType): String = when (messageBackupsType) {
+  is MessageBackupsType.Free -> stringResource(id = R.string.MessageBackupsTypeSelectionScreen__free)
+  is MessageBackupsType.Paid -> {
+    val formattedAmount = FiatMoneyUtil.format(LocalContext.current.resources, messageBackupsType.pricePerMonth, FiatMoneyUtil.formatOptions().trimZerosAfterDecimal())
+    stringResource(id = R.string.MessageBackupsTypeSelectionScreen__s_month, formattedAmount)
   }
 }
 
 @Composable
-private fun getFeatures(messageBackupsType: MessageBackupsType): List<MessageBackupsTypeFeature> {
-  return when (messageBackupsType) {
-    is MessageBackupsType.Free -> persistentListOf(
+private fun getFeatures(messageBackupsType: MessageBackupsType): List<MessageBackupsTypeFeature> = when (messageBackupsType) {
+  is MessageBackupsType.Free -> persistentListOf(
+    MessageBackupsTypeFeature(
+      iconResourceId = R.drawable.symbol_thread_compact_bold_16,
+      label = stringResource(id = R.string.MessageBackupsTypeSelectionScreen__full_text_message_backup)
+    ),
+    MessageBackupsTypeFeature(
+      iconResourceId = R.drawable.symbol_album_compact_bold_16,
+      label = pluralStringResource(
+        id = R.plurals.MessageBackupsTypeSelectionScreen__last_d_days_of_media,
+        count = messageBackupsType.mediaRetentionDays,
+        messageBackupsType.mediaRetentionDays
+      )
+    )
+  )
+
+  is MessageBackupsType.Paid -> {
+    val photoCount = messageBackupsType.storageAllowanceBytes / ByteUnit.MEGABYTES.toBytes(2)
+    val photoCountThousands = photoCount / 1000
+    val sizeUnitString = messageBackupsType.storageAllowanceBytes.bytes.toUnitString(spaced = false)
+
+    persistentListOf(
       MessageBackupsTypeFeature(
         iconResourceId = R.drawable.symbol_thread_compact_bold_16,
         label = stringResource(id = R.string.MessageBackupsTypeSelectionScreen__full_text_message_backup)
       ),
       MessageBackupsTypeFeature(
         iconResourceId = R.drawable.symbol_album_compact_bold_16,
-        label = pluralStringResource(
-          id = R.plurals.MessageBackupsTypeSelectionScreen__last_d_days_of_media,
-          count = messageBackupsType.mediaRetentionDays,
-          messageBackupsType.mediaRetentionDays
+        label = stringResource(id = R.string.MessageBackupsTypeSelectionScreen__full_media_backup)
+      ),
+      MessageBackupsTypeFeature(
+        iconResourceId = R.drawable.symbol_thread_compact_bold_16,
+        label = stringResource(
+          id = R.string.MessageBackupsTypeSelectionScreen__s_of_storage_s_photos,
+          sizeUnitString,
+          "~${photoCountThousands}K"
         )
+      ),
+      MessageBackupsTypeFeature(
+        iconResourceId = R.drawable.symbol_heart_compact_bold_16,
+        label = stringResource(id = R.string.MessageBackupsTypeSelectionScreen__thanks_for_supporting_signal)
       )
     )
-
-    is MessageBackupsType.Paid -> {
-      val photoCount = messageBackupsType.storageAllowanceBytes / ByteUnit.MEGABYTES.toBytes(2)
-      val photoCountThousands = photoCount / 1000
-      val sizeUnitString = messageBackupsType.storageAllowanceBytes.bytes.toUnitString(spaced = false)
-
-      persistentListOf(
-        MessageBackupsTypeFeature(
-          iconResourceId = R.drawable.symbol_thread_compact_bold_16,
-          label = stringResource(id = R.string.MessageBackupsTypeSelectionScreen__full_text_message_backup)
-        ),
-        MessageBackupsTypeFeature(
-          iconResourceId = R.drawable.symbol_album_compact_bold_16,
-          label = stringResource(id = R.string.MessageBackupsTypeSelectionScreen__full_media_backup)
-        ),
-        MessageBackupsTypeFeature(
-          iconResourceId = R.drawable.symbol_thread_compact_bold_16,
-          label = stringResource(
-            id = R.string.MessageBackupsTypeSelectionScreen__s_of_storage_s_photos,
-            sizeUnitString,
-            "~${photoCountThousands}K"
-          )
-        ),
-        MessageBackupsTypeFeature(
-          iconResourceId = R.drawable.symbol_heart_compact_bold_16,
-          label = stringResource(id = R.string.MessageBackupsTypeSelectionScreen__thanks_for_supporting_signal)
-        )
-      )
-    }
   }
 }
 
-fun testBackupTypes(): List<MessageBackupsType> {
-  return listOf(
-    MessageBackupsType.Free(
-      mediaRetentionDays = 30
-    ),
-    MessageBackupsType.Paid(
-      pricePerMonth = FiatMoney(BigDecimal.ONE, Currency.getInstance("USD")),
-      storageAllowanceBytes = 107374182400
-    )
+fun testBackupTypes(): List<MessageBackupsType> = listOf(
+  MessageBackupsType.Free(
+    mediaRetentionDays = 30
+  ),
+  MessageBackupsType.Paid(
+    pricePerMonth = FiatMoney(BigDecimal.ONE, Currency.getInstance("USD")),
+    storageAllowanceBytes = 107374182400
   )
-}
+)
 
 /**
  * Feature row iconography coloring
@@ -375,11 +369,9 @@ data class MessageBackupsTypeIconColors(
 ) {
   companion object {
     @Composable
-    fun default(): MessageBackupsTypeIconColors {
-      return MessageBackupsTypeIconColors(
-        iconColorNormal = MaterialTheme.colorScheme.onSurfaceVariant,
-        iconColorSelected = MaterialTheme.colorScheme.primary
-      )
-    }
+    fun default(): MessageBackupsTypeIconColors = MessageBackupsTypeIconColors(
+      iconColorNormal = MaterialTheme.colorScheme.onSurfaceVariant,
+      iconColorSelected = MaterialTheme.colorScheme.primary
+    )
   }
 }

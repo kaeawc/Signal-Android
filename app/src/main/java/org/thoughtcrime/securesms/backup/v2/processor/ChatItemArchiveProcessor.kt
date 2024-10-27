@@ -41,7 +41,5 @@ object ChatItemArchiveProcessor {
     }
   }
 
-  fun beginImport(importState: ImportState): ChatItemArchiveImporter {
-    return SignalDatabase.messages.createChatItemInserter(importState)
-  }
+  fun beginImport(importState: ImportState): ChatItemArchiveImporter = SignalDatabase.messages.createChatItemInserter(importState)
 }

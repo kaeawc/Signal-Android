@@ -169,23 +169,19 @@ class RotationDialView @JvmOverloads constructor(
     }
   }
 
-  private fun calculateSnapDegrees(): Float {
-    return if (isInGesture) {
-      val dialDegrees = getDialDegrees(degrees)
-      if (dialDegrees.roundToInt() == 0) {
-        degrees - dialDegrees
-      } else {
-        degrees
-      }
+  private fun calculateSnapDegrees(): Float = if (isInGesture) {
+    val dialDegrees = getDialDegrees(degrees)
+    if (dialDegrees.roundToInt() == 0) {
+      degrees - dialDegrees
     } else {
       degrees
     }
+  } else {
+    degrees
   }
 
   private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
-    override fun onDown(e: MotionEvent): Boolean {
-      return true
-    }
+    override fun onDown(e: MotionEvent): Boolean = true
 
     override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
       val degreeIncrement: Float = distanceX / dimensions.spaceBetweenAngleIndicators
@@ -234,12 +230,10 @@ class RotationDialView @JvmOverloads constructor(
     @Px
     val textPaddingBottom: Int = ViewUtil.dpToPx(Dimensions.textPaddingBottom)
 
-    fun getHeightForDegree(degree: Int): Int {
-      return if (degree == 0) {
-        majorAngleIndicatorHeight
-      } else {
-        minorAngleIndicatorHeight
-      }
+    fun getHeightForDegree(degree: Int): Int = if (degree == 0) {
+      majorAngleIndicatorHeight
+    } else {
+      minorAngleIndicatorHeight
     }
 
     companion object {
@@ -276,11 +270,9 @@ class RotationDialView @JvmOverloads constructor(
 
     fun colorForCenterDegree(degree: Int) = if (degree == 0) modFiveIndicatorColor else majorAngleIndicatorColor
 
-    fun colorForOtherDegree(degree: Int): Int {
-      return when {
-        degree % 5 == 0 -> modFiveIndicatorColor
-        else -> minorAngleIndicatorColor
-      }
+    fun colorForOtherDegree(degree: Int): Int = when {
+      degree % 5 == 0 -> modFiveIndicatorColor
+      else -> minorAngleIndicatorColor
     }
   }
 

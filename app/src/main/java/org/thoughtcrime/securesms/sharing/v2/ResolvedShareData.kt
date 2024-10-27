@@ -9,9 +9,7 @@ sealed class ResolvedShareData {
   abstract fun toMultiShareArgs(): MultiShareArgs
 
   data class Primitive(val text: CharSequence) : ResolvedShareData() {
-    override fun toMultiShareArgs(): MultiShareArgs {
-      return MultiShareArgs.Builder(setOf()).withDraftText(text.toString()).build()
-    }
+    override fun toMultiShareArgs(): MultiShareArgs = MultiShareArgs.Builder(setOf()).withDraftText(text.toString()).build()
   }
 
   data class ExternalUri(
@@ -19,17 +17,13 @@ sealed class ResolvedShareData {
     val mimeType: String,
     val text: CharSequence?
   ) : ResolvedShareData() {
-    override fun toMultiShareArgs(): MultiShareArgs {
-      return MultiShareArgs.Builder(setOf()).withDataUri(uri).withDataType(mimeType).withDraftText(text?.toString()).build()
-    }
+    override fun toMultiShareArgs(): MultiShareArgs = MultiShareArgs.Builder(setOf()).withDataUri(uri).withDataType(mimeType).withDraftText(text?.toString()).build()
   }
 
   data class Media(
     val media: List<org.thoughtcrime.securesms.mediasend.Media>
   ) : ResolvedShareData() {
-    override fun toMultiShareArgs(): MultiShareArgs {
-      return MultiShareArgs.Builder(setOf()).withMedia(media).build()
-    }
+    override fun toMultiShareArgs(): MultiShareArgs = MultiShareArgs.Builder(setOf()).withMedia(media).build()
   }
 
   object Failure : ResolvedShareData() {

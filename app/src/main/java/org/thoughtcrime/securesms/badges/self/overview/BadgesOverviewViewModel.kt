@@ -90,9 +90,7 @@ class BadgesOverviewViewModel(
   class Factory(
     private val badgeRepository: BadgeRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(BadgesOverviewViewModel(badgeRepository)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(BadgesOverviewViewModel(badgeRepository)))
   }
 
   companion object {

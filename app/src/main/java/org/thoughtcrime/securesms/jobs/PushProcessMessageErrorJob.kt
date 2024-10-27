@@ -39,15 +39,13 @@ class PushProcessMessageErrorJob private constructor(
 
   override fun shouldTrace(): Boolean = true
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putInt(KEY_MESSAGE_STATE, messageState.ordinal)
-      .putLong(KEY_TIMESTAMP, timestamp)
-      .putString(KEY_EXCEPTION_SENDER, exceptionMetadata.sender)
-      .putInt(KEY_EXCEPTION_DEVICE, exceptionMetadata.senderDevice)
-      .putString(KEY_EXCEPTION_GROUP_ID, exceptionMetadata.groupId?.toString())
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putInt(KEY_MESSAGE_STATE, messageState.ordinal)
+    .putLong(KEY_TIMESTAMP, timestamp)
+    .putString(KEY_EXCEPTION_SENDER, exceptionMetadata.sender)
+    .putInt(KEY_EXCEPTION_DEVICE, exceptionMetadata.senderDevice)
+    .putString(KEY_EXCEPTION_GROUP_ID, exceptionMetadata.groupId?.toString())
+    .serialize()
 
   override fun onRun() {
     if (messageState == MessageState.DECRYPTED_OK || messageState == MessageState.NOOP) {

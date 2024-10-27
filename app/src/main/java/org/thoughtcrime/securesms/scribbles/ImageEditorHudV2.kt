@@ -231,17 +231,13 @@ class ImageEditorHudV2 @JvmOverloads constructor(
     isAvatarEdit = true
   }
 
-  fun getActiveColor(): Int {
-    return if (currentMode == Mode.HIGHLIGHT) {
-      withHighlighterAlpha(drawSeekBar.getColor())
-    } else {
-      drawSeekBar.getColor()
-    }
+  fun getActiveColor(): Int = if (currentMode == Mode.HIGHLIGHT) {
+    withHighlighterAlpha(drawSeekBar.getColor())
+  } else {
+    drawSeekBar.getColor()
   }
 
-  fun getColorIndex(): Int {
-    return drawSeekBar.progress
-  }
+  fun getColorIndex(): Int = drawSeekBar.progress
 
   fun setColorIndex(index: Int) {
     drawSeekBar.progress = index
@@ -495,12 +491,10 @@ class ImageEditorHudV2 @JvmOverloads constructor(
     )
   }
 
-  private fun undoToolsIfAvailable(): Set<View> {
-    return if (undoAvailability) {
-      undoTools
-    } else {
-      setOf()
-    }
+  private fun undoToolsIfAvailable(): Set<View> = if (undoAvailability) {
+    undoTools
+  } else {
+    setOf()
   }
 
   enum class Mode {
@@ -526,9 +520,7 @@ class ImageEditorHudV2 @JvmOverloads constructor(
       Mode.BLUR to SignalStore.imageEditor.getBlurWidthRange()
     )
 
-    private fun withHighlighterAlpha(color: Int): Int {
-      return color and 0xFF000000.toInt().inv() or 0x60000000
-    }
+    private fun withHighlighterAlpha(color: Int): Int = color and 0xFF000000.toInt().inv() or 0x60000000
   }
 
   interface EventListener {

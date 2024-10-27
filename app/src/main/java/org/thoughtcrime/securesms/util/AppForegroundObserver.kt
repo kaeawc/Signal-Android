@@ -67,9 +67,7 @@ object AppForegroundObserver {
   }
 
   @JvmStatic
-  fun isForegrounded(): Boolean {
-    return isInitialized && isForegrounded
-  }
+  fun isForegrounded(): Boolean = isInitialized && isForegrounded
 
   @MainThread
   private fun onForeground() {

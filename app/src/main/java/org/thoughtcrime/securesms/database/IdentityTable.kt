@@ -70,12 +70,10 @@ class IdentityTable internal constructor(context: Context?, databaseHelper: Sign
     """
   }
 
-  fun getIdentityStoreRecord(serviceId: ServiceId?): IdentityStoreRecord? {
-    return if (serviceId != null) {
-      getIdentityStoreRecord(serviceId.toString())
-    } else {
-      null
-    }
+  fun getIdentityStoreRecord(serviceId: ServiceId?): IdentityStoreRecord? = if (serviceId != null) {
+    getIdentityStoreRecord(serviceId.toString())
+  } else {
+    null
   }
 
   fun getIdentityStoreRecord(addressName: String): IdentityStoreRecord? {
@@ -189,38 +187,32 @@ class IdentityTable internal constructor(context: Context?, databaseHelper: Sign
       .run()
   }
 
-  private fun getIdentityRecord(addressName: String): Optional<IdentityRecord> {
-    return readableDatabase
-      .select()
-      .from(TABLE_NAME)
-      .where("$ADDRESS = ?", addressName)
-      .run()
-      .firstOrNull { cursor ->
-        IdentityRecord(
-          recipientId = RecipientId.fromSidOrE164(cursor.requireNonNullString(ADDRESS)),
-          identityKey = IdentityKey(Base64.decode(cursor.requireNonNullString(IDENTITY_KEY)), 0),
-          verifiedStatus = VerifiedStatus.forState(cursor.requireInt(VERIFIED)),
-          firstUse = cursor.requireBoolean(FIRST_USE),
-          timestamp = cursor.requireLong(TIMESTAMP),
-          nonblockingApproval = cursor.requireBoolean(NONBLOCKING_APPROVAL)
-        )
-      }
-      .toOptional()
-  }
+  private fun getIdentityRecord(addressName: String): Optional<IdentityRecord> = readableDatabase
+    .select()
+    .from(TABLE_NAME)
+    .where("$ADDRESS = ?", addressName)
+    .run()
+    .firstOrNull { cursor ->
+      IdentityRecord(
+        recipientId = RecipientId.fromSidOrE164(cursor.requireNonNullString(ADDRESS)),
+        identityKey = IdentityKey(Base64.decode(cursor.requireNonNullString(IDENTITY_KEY)), 0),
+        verifiedStatus = VerifiedStatus.forState(cursor.requireInt(VERIFIED)),
+        firstUse = cursor.requireBoolean(FIRST_USE),
+        timestamp = cursor.requireLong(TIMESTAMP),
+        nonblockingApproval = cursor.requireBoolean(NONBLOCKING_APPROVAL)
+      )
+    }
+    .toOptional()
 
-  private fun hasMatchingKey(addressName: String, identityKey: IdentityKey): Boolean {
-    return readableDatabase
-      .exists(TABLE_NAME)
-      .where("$ADDRESS = ? AND $IDENTITY_KEY = ?", addressName, Base64.encodeWithPadding(identityKey.serialize()))
-      .run()
-  }
+  private fun hasMatchingKey(addressName: String, identityKey: IdentityKey): Boolean = readableDatabase
+    .exists(TABLE_NAME)
+    .where("$ADDRESS = ? AND $IDENTITY_KEY = ?", addressName, Base64.encodeWithPadding(identityKey.serialize()))
+    .run()
 
-  private fun hasMatchingStatus(addressName: String, identityKey: IdentityKey, verifiedStatus: VerifiedStatus): Boolean {
-    return readableDatabase
-      .exists(TABLE_NAME)
-      .where("$ADDRESS = ? AND $IDENTITY_KEY = ? AND $VERIFIED = ?", addressName, Base64.encodeWithPadding(identityKey.serialize()), verifiedStatus.toInt())
-      .run()
-  }
+  private fun hasMatchingStatus(addressName: String, identityKey: IdentityKey, verifiedStatus: VerifiedStatus): Boolean = readableDatabase
+    .exists(TABLE_NAME)
+    .where("$ADDRESS = ? AND $IDENTITY_KEY = ? AND $VERIFIED = ?", addressName, Base64.encodeWithPadding(identityKey.serialize()), verifiedStatus.toInt())
+    .run()
 
   private fun saveIdentityInternal(
     addressName: String,
@@ -248,23 +240,19 @@ class IdentityTable internal constructor(context: Context?, databaseHelper: Sign
     VERIFIED,
     UNVERIFIED;
 
-    fun toInt(): Int {
-      return when (this) {
-        DEFAULT -> 0
-        VERIFIED -> 1
-        UNVERIFIED -> 2
-      }
+    fun toInt(): Int = when (this) {
+      DEFAULT -> 0
+      VERIFIED -> 1
+      UNVERIFIED -> 2
     }
 
     companion object {
       @JvmStatic
-      fun forState(state: Int): VerifiedStatus {
-        return when (state) {
-          0 -> DEFAULT
-          1 -> VERIFIED
-          2 -> UNVERIFIED
-          else -> throw AssertionError("No such state: $state")
-        }
+      fun forState(state: Int): VerifiedStatus = when (state) {
+        0 -> DEFAULT
+        1 -> VERIFIED
+        2 -> UNVERIFIED
+        else -> throw AssertionError("No such state: $state")
       }
     }
   }

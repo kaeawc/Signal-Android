@@ -27,9 +27,10 @@ import org.thoughtcrime.securesms.util.navigation.safeNavigate
 import org.thoughtcrime.securesms.util.viewholders.RecipientMappingModel
 import org.thoughtcrime.securesms.util.viewholders.RecipientViewHolder
 
-class PrivateStorySettingsFragment : DSLSettingsFragment(
-  menuId = R.menu.story_private_menu
-) {
+class PrivateStorySettingsFragment :
+  DSLSettingsFragment(
+    menuId = R.menu.story_private_menu
+  ) {
 
   private val progressDisplayManager = DialogFragmentDisplayManager { ProgressCardDialogFragment.create() }
 
@@ -106,14 +107,12 @@ class PrivateStorySettingsFragment : DSLSettingsFragment(
     }
   }
 
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return if (item.itemId == R.id.action_edit) {
-      val action = PrivateStorySettingsFragmentDirections.actionPrivateStorySettingsToEditStoryNameFragment(distributionListId, viewModel.getName())
-      findNavController().navigate(action)
-      true
-    } else {
-      false
-    }
+  override fun onOptionsItemSelected(item: MenuItem): Boolean = if (item.itemId == R.id.action_edit) {
+    val action = PrivateStorySettingsFragmentDirections.actionPrivateStorySettingsToEditStoryNameFragment(distributionListId, viewModel.getName())
+    findNavController().navigate(action)
+    true
+  } else {
+    false
   }
 
   private fun handleRemoveRecipient(recipient: Recipient) {
@@ -144,16 +143,12 @@ class PrivateStorySettingsFragment : DSLSettingsFragment(
   }
 
   class Dialog : WrapperDialogFragment() {
-    override fun getWrappedFragment(): Fragment {
-      return NavHostFragment.create(R.navigation.private_story_settings, requireArguments())
-    }
+    override fun getWrappedFragment(): Fragment = NavHostFragment.create(R.navigation.private_story_settings, requireArguments())
   }
 
   companion object {
-    fun createAsDialog(distributionListId: DistributionListId): DialogFragment {
-      return Dialog().apply {
-        arguments = PrivateStorySettingsFragmentArgs.Builder(distributionListId).build().toBundle()
-      }
+    fun createAsDialog(distributionListId: DistributionListId): DialogFragment = Dialog().apply {
+      arguments = PrivateStorySettingsFragmentArgs.Builder(distributionListId).build().toBundle()
     }
   }
 }

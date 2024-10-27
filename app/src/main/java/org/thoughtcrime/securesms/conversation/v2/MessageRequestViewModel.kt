@@ -26,51 +26,39 @@ class MessageRequestViewModel(
         .firstOrError()
     }
 
-  fun onAccept(): Single<Result<Unit, GroupChangeFailureReason>> {
-    return recipientId
-      .flatMap { recipientId ->
-        messageRequestRepository.acceptMessageRequest(recipientId, threadId)
-      }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun onAccept(): Single<Result<Unit, GroupChangeFailureReason>> = recipientId
+    .flatMap { recipientId ->
+      messageRequestRepository.acceptMessageRequest(recipientId, threadId)
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun onDelete(): Single<Result<Unit, GroupChangeFailureReason>> {
-    return recipientId
-      .flatMap { recipientId ->
-        messageRequestRepository.deleteMessageRequest(recipientId, threadId)
-      }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun onDelete(): Single<Result<Unit, GroupChangeFailureReason>> = recipientId
+    .flatMap { recipientId ->
+      messageRequestRepository.deleteMessageRequest(recipientId, threadId)
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun onBlock(): Single<Result<Unit, GroupChangeFailureReason>> {
-    return recipientId
-      .flatMap { recipientId ->
-        messageRequestRepository.blockMessageRequest(recipientId)
-      }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun onBlock(): Single<Result<Unit, GroupChangeFailureReason>> = recipientId
+    .flatMap { recipientId ->
+      messageRequestRepository.blockMessageRequest(recipientId)
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun onUnblock(): Single<Result<Unit, GroupChangeFailureReason>> {
-    return recipientId
-      .flatMap { recipientId ->
-        messageRequestRepository.unblockAndAccept(recipientId)
-      }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun onUnblock(): Single<Result<Unit, GroupChangeFailureReason>> = recipientId
+    .flatMap { recipientId ->
+      messageRequestRepository.unblockAndAccept(recipientId)
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun onReportSpam(): Completable {
-    return recipientId
-      .flatMapCompletable { recipientId ->
-        messageRequestRepository.reportSpamMessageRequest(recipientId, threadId)
-      }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun onReportSpam(): Completable = recipientId
+    .flatMapCompletable { recipientId ->
+      messageRequestRepository.reportSpamMessageRequest(recipientId, threadId)
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun onBlockAndReportSpam(): Single<Result<Unit, GroupChangeFailureReason>> {
-    return recipientId
-      .flatMap { recipientId ->
-        messageRequestRepository.blockAndReportSpamMessageRequest(recipientId, threadId)
-      }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun onBlockAndReportSpam(): Single<Result<Unit, GroupChangeFailureReason>> = recipientId
+    .flatMap { recipientId ->
+      messageRequestRepository.blockAndReportSpamMessageRequest(recipientId, threadId)
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 }

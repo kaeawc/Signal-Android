@@ -1,53 +1,44 @@
 @file:Suppress("UnstableApiUsage")
 
+import gradle.kotlin.dsl.accessors._f752ed5b16f2f63cd0a1de3c80846837.implementation
 import org.gradle.accessors.dm.LibrariesForLibs
-import org.gradle.accessors.dm.LibrariesForTestLibs
 import org.gradle.api.JavaVersion
-import org.gradle.kotlin.dsl.extra
-import org.gradle.kotlin.dsl.provideDelegate
-import org.gradle.kotlin.dsl.the
 
 val libs = the<LibrariesForLibs>()
-val testLibs = the<LibrariesForTestLibs>()
-
-val signalBuildToolsVersion: String by rootProject.extra
-val signalCompileSdkVersion: String by rootProject.extra
-val signalTargetSdkVersion: Int by rootProject.extra
-val signalMinSdkVersion: Int by rootProject.extra
-val signalJavaVersion: JavaVersion by rootProject.extra
-val signalKotlinJvmTarget: String by rootProject.extra
 
 plugins {
+  `version-catalog`
   id("com.android.application")
   id("kotlin-android")
-  id("ktlint")
+  id("org.jlleitschuh.gradle.ktlint")
+  id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
-  buildToolsVersion = signalBuildToolsVersion
-  compileSdkVersion = signalCompileSdkVersion
+  buildToolsVersion = libs.versions.build.android.buildTools.get()
+  compileSdk = libs.versions.build.android.compileSdk.get().toInt()
 
   defaultConfig {
     versionCode = 1
     versionName = "1.0"
 
-    minSdk = signalMinSdkVersion
-    targetSdk = signalTargetSdkVersion
+    minSdk = libs.versions.build.android.minSdk.get().toInt()
+    targetSdk = libs.versions.build.android.targetSdk.get().toInt()
   }
 
   compileOptions {
     isCoreLibraryDesugaringEnabled = true
-    sourceCompatibility = signalJavaVersion
-    targetCompatibility = signalJavaVersion
+    sourceCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
+    targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
   }
 
   kotlinOptions {
-    jvmTarget = signalKotlinJvmTarget
+//    jvmTarget.set(JvmTarget.valueOf("JVM_${libs.versions.build.java.target.get()}"))
   }
 
-//  buildFeatures {
-//    compose = true
-//  }
+  buildFeatures {
+    compose = true
+  }
 }
 
 dependencies {
@@ -68,16 +59,17 @@ dependencies {
   implementation(libs.androidx.constraintlayout)
   implementation(libs.kotlin.stdlib.jdk8)
   implementation(libs.androidx.activity.compose)
-  implementation(platform(libs.androidx.compose.bom))
-  implementation(libs.androidx.compose.material3)
+  implementation(platform(libs.compose.bom))
+  implementation(libs.compose.material)
+  implementation(libs.androidx.compose.runtime)
 
   ktlintRuleset(libs.ktlint.twitter.compose)
 
-  testImplementation(testLibs.junit.junit)
-  testImplementation(testLibs.mockito.core)
-  testImplementation(testLibs.mockito.android)
-  testImplementation(testLibs.mockito.kotlin)
-  testImplementation(testLibs.robolectric.robolectric)
-  testImplementation(testLibs.androidx.test.core)
-  testImplementation(testLibs.androidx.test.core.ktx)
+  testImplementation(libs.junit)
+  testImplementation(libs.mockito.core)
+  testImplementation(libs.mockito.android)
+  testImplementation(libs.mockito.kotlin)
+  testImplementation(libs.robolectric)
+  testImplementation(libs.androidx.test.core)
+  testImplementation(libs.androidx.test.core.ktx)
 }

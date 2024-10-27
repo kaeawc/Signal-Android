@@ -389,12 +389,10 @@ private fun ResetDialogPreview() {
   }
 }
 
-private fun previewPermissionState(): PermissionState {
-  return object : PermissionState {
-    override val permission: String = ""
-    override val status: PermissionStatus = PermissionStatus.Granted
-    override fun launchPermissionRequest() = Unit
-  }
+private fun previewPermissionState(): PermissionState = object : PermissionState {
+  override val permission: String = ""
+  override val status: PermissionStatus = PermissionStatus.Granted
+  override fun launchPermissionRequest() = Unit
 }
 
 private val previewLifecycleOwner: LifecycleOwner = object : LifecycleOwner {

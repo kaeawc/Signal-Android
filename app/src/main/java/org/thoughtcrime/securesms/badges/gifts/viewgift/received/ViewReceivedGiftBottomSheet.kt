@@ -134,47 +134,45 @@ class ViewReceivedGiftBottomSheet : DSLSettingsBottomSheetFragment() {
     )
   }
 
-  private fun getConfiguration(state: ViewReceivedGiftState): DSLConfiguration {
-    return configure {
-      if (state.giftBadge == null) {
-        customPref(IndeterminateLoadingCircle)
-      } else if (isGiftBadgeExpired(state.giftBadge)) {
-        forExpiredGiftBadge(
-          giftBadge = state.giftBadge,
-          onMakeAMonthlyDonation = {
-            requireActivity().startActivity(AppSettingsActivity.subscriptions(requireContext()))
-            requireActivity().finish()
-          },
-          onNotNow = {
-            dismissAllowingStateLoss()
-          }
-        )
+  private fun getConfiguration(state: ViewReceivedGiftState): DSLConfiguration = configure {
+    if (state.giftBadge == null) {
+      customPref(IndeterminateLoadingCircle)
+    } else if (isGiftBadgeExpired(state.giftBadge)) {
+      forExpiredGiftBadge(
+        giftBadge = state.giftBadge,
+        onMakeAMonthlyDonation = {
+          requireActivity().startActivity(AppSettingsActivity.subscriptions(requireContext()))
+          requireActivity().finish()
+        },
+        onNotNow = {
+          dismissAllowingStateLoss()
+        }
+      )
+    } else {
+      if (state.giftBadge.redemptionState == GiftBadge.RedemptionState.STARTED) {
+        progressDialog.show()
       } else {
-        if (state.giftBadge.redemptionState == GiftBadge.RedemptionState.STARTED) {
-          progressDialog.show()
-        } else {
-          progressDialog.hide()
-        }
+        progressDialog.hide()
+      }
 
-        if (state.recipient != null && !isGiftBadgeRedeemed(state.giftBadge)) {
-          noPadTextPref(
-            title = DSLSettingsText.from(
-              charSequence = requireContext().getString(R.string.ViewReceivedGiftBottomSheet__s_made_a_donation_for_you, state.recipient.getShortDisplayName(requireContext())),
-              DSLSettingsText.CenterModifier,
-              DSLSettingsText.TitleLargeModifier
-            )
+      if (state.recipient != null && !isGiftBadgeRedeemed(state.giftBadge)) {
+        noPadTextPref(
+          title = DSLSettingsText.from(
+            charSequence = requireContext().getString(R.string.ViewReceivedGiftBottomSheet__s_made_a_donation_for_you, state.recipient.getShortDisplayName(requireContext())),
+            DSLSettingsText.CenterModifier,
+            DSLSettingsText.TitleLargeModifier
           )
+        )
 
-          space(DimensionUnit.DP.toPixels(12f).toInt())
-          presentSubheading(state.recipient)
+        space(DimensionUnit.DP.toPixels(12f).toInt())
+        presentSubheading(state.recipient)
 
-          space(DimensionUnit.DP.toPixels(37f).toInt())
-        }
+        space(DimensionUnit.DP.toPixels(37f).toInt())
+      }
 
-        if (state.badge != null && state.controlState != null) {
-          presentForUnexpiredGiftBadge(state, state.giftBadge, state.controlState, state.badge)
-          space(DimensionUnit.DP.toPixels(16f).toInt())
-        }
+      if (state.badge != null && state.controlState != null) {
+        presentForUnexpiredGiftBadge(state, state.giftBadge, state.controlState, state.badge)
+        space(DimensionUnit.DP.toPixels(16f).toInt())
       }
     }
   }
@@ -268,18 +266,14 @@ class ViewReceivedGiftBottomSheet : DSLSettingsBottomSheetFragment() {
     }
   }
 
-  private fun isGiftBadgeRedeemed(giftBadge: GiftBadge): Boolean {
-    return giftBadge.redemptionState == GiftBadge.RedemptionState.REDEEMED
-  }
+  private fun isGiftBadgeRedeemed(giftBadge: GiftBadge): Boolean = giftBadge.redemptionState == GiftBadge.RedemptionState.REDEEMED
 
-  private fun isGiftBadgeExpired(giftBadge: GiftBadge): Boolean {
-    return try {
-      val receiptCredentialPresentation = ReceiptCredentialPresentation(giftBadge.redemptionToken.toByteArray())
+  private fun isGiftBadgeExpired(giftBadge: GiftBadge): Boolean = try {
+    val receiptCredentialPresentation = ReceiptCredentialPresentation(giftBadge.redemptionToken.toByteArray())
 
-      receiptCredentialPresentation.receiptExpirationTime <= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
-    } catch (e: InvalidInputException) {
-      Log.w(TAG, "Failed to check expiration of given badge.", e)
-      true
-    }
+    receiptCredentialPresentation.receiptExpirationTime <= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
+  } catch (e: InvalidInputException) {
+    Log.w(TAG, "Failed to check expiration of given badge.", e)
+    true
   }
 }

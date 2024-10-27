@@ -17,13 +17,9 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
 
 class MessageBackupListener : PersistentAlarmManagerListener() {
-  override fun shouldScheduleExact(): Boolean {
-    return true
-  }
+  override fun shouldScheduleExact(): Boolean = true
 
-  override fun getNextScheduledExecutionTime(context: Context): Long {
-    return SignalStore.backup.nextBackupTime
-  }
+  override fun getNextScheduledExecutionTime(context: Context): Long = SignalStore.backup.nextBackupTime
 
   override fun onAlarm(context: Context, scheduledTime: Long): Long {
     if (SignalStore.backup.areBackupsEnabled) {

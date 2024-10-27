@@ -13,7 +13,9 @@ import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
-class NotificationController internal constructor(private val context: Context, val id: Int) : AutoCloseable, ServiceConnection {
+class NotificationController internal constructor(private val context: Context, val id: Int) :
+  AutoCloseable,
+  ServiceConnection {
   private val service = AtomicReference<GenericForegroundService?>()
   private val lock = ReentrantLock()
 
@@ -93,9 +95,7 @@ class NotificationController internal constructor(private val context: Context, 
     }
   }
 
-  private fun bindToService(): Boolean {
-    return context.bindService(Intent(context, GenericForegroundService::class.java), this, Context.BIND_AUTO_CREATE)
-  }
+  private fun bindToService(): Boolean = context.bindService(Intent(context, GenericForegroundService::class.java), this, Context.BIND_AUTO_CREATE)
 
   private fun setProgress(newProgressMax: Int, newProgress: Int, indeterminant: Boolean) {
     val newPercent = if (newProgressMax != 0) {

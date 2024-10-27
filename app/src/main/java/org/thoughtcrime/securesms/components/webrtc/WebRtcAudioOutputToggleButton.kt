@@ -18,7 +18,9 @@ import org.thoughtcrime.securesms.R
 /**
  * A UI button that triggers a picker dialog/bottom sheet allowing the user to select the audio output for the ongoing call.
  */
-class WebRtcAudioOutputToggleButton @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : AppCompatImageView(context, attrs, defStyleAttr), AudioStateUpdater {
+class WebRtcAudioOutputToggleButton @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+  AppCompatImageView(context, attrs, defStyleAttr),
+  AudioStateUpdater {
   private val TAG = Log.tag(WebRtcAudioOutputToggleButton::class.java)
 
   private var outputState: ToggleButtonOutputState = ToggleButtonOutputState()
@@ -101,9 +103,7 @@ class WebRtcAudioOutputToggleButton @JvmOverloads constructor(context: Context, 
     return drawableState
   }
 
-  override fun setOnClickListener(l: OnClickListener?) {
-    throw UnsupportedOperationException("This View does not support custom click listeners.")
-  }
+  override fun setOnClickListener(l: OnClickListener?): Unit = throw UnsupportedOperationException("This View does not support custom click listeners.")
 
   fun setControlAvailability(isEarpieceAvailable: Boolean, isBluetoothHeadsetAvailable: Boolean, isHeadsetAvailable: Boolean) {
     outputState.isEarpieceAvailable = isEarpieceAvailable

@@ -140,9 +140,7 @@ class V2FooterPositionDelegate private constructor(
     displayState = DisplayState.TUCKED
   }
 
-  private fun getFooterWidth(): Int {
-    return footerViews.sumOf { it.measuredWidth + ViewUtil.getLeftMargin(it) + ViewUtil.getRightMargin(it) }
-  }
+  private fun getFooterWidth(): Int = footerViews.sumOf { it.measuredWidth + ViewUtil.getLeftMargin(it) + ViewUtil.getRightMargin(it) }
 
   private enum class DisplayState {
     NONE,

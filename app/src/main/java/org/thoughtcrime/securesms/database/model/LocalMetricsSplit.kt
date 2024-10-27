@@ -10,9 +10,7 @@ data class LocalMetricsSplit(
   val duration: Long,
   val timeunit: TimeUnit = TimeUnit.MILLISECONDS
 ) {
-  override fun toString(): String {
-    return "$name: ${duration.fractionalMillis(timeunit)}"
-  }
+  override fun toString(): String = "$name: ${duration.fractionalMillis(timeunit)}"
 
   private fun Long.fractionalMillis(timeunit: TimeUnit): String {
     val places = when (timeunit) {

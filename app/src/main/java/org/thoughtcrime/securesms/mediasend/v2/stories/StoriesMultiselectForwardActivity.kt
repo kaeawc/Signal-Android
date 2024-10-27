@@ -51,38 +51,30 @@ class StoriesMultiselectForwardActivity : MultiselectForwardActivity() {
     }
   }
 
-  override fun getSearchConfiguration(fragmentManager: FragmentManager, contactSearchState: ContactSearchState): ContactSearchConfiguration? {
-    return ContactSearchConfiguration.build {
-      query = contactSearchState.query
+  override fun getSearchConfiguration(fragmentManager: FragmentManager, contactSearchState: ContactSearchState): ContactSearchConfiguration? = ContactSearchConfiguration.build {
+    query = contactSearchState.query
 
-      addSection(
-        ContactSearchConfiguration.Section.Stories(
-          groupStories = contactSearchState.groupStories,
-          includeHeader = true,
-          headerAction = Stories.getHeaderAction(fragmentManager)
-        )
+    addSection(
+      ContactSearchConfiguration.Section.Stories(
+        groupStories = contactSearchState.groupStories,
+        includeHeader = true,
+        headerAction = Stories.getHeaderAction(fragmentManager)
       )
-    }
+    )
   }
 
   @Suppress("WrongViewCast")
-  override fun getContainer(): ViewGroup {
-    return findViewById(R.id.content)
-  }
+  override fun getContainer(): ViewGroup = findViewById(R.id.content)
 
   class SelectionContract : ActivityResultContract<Args, List<ContactSearchKey.RecipientSearchKey>>() {
 
     private val multiselectContract = MultiselectForwardActivity.SelectionContract()
 
-    override fun createIntent(context: Context, input: Args): Intent {
-      return multiselectContract.createIntent(context, input.multiselectForwardFragmentArgs)
-        .setClass(context, StoriesMultiselectForwardActivity::class.java)
-        .putExtra(PREVIEW_MEDIA, ArrayList(input.previews))
-    }
+    override fun createIntent(context: Context, input: Args): Intent = multiselectContract.createIntent(context, input.multiselectForwardFragmentArgs)
+      .setClass(context, StoriesMultiselectForwardActivity::class.java)
+      .putExtra(PREVIEW_MEDIA, ArrayList(input.previews))
 
-    override fun parseResult(resultCode: Int, intent: Intent?): List<ContactSearchKey.RecipientSearchKey> {
-      return multiselectContract.parseResult(resultCode, intent)
-    }
+    override fun parseResult(resultCode: Int, intent: Intent?): List<ContactSearchKey.RecipientSearchKey> = multiselectContract.parseResult(resultCode, intent)
   }
 
   @Parcelize

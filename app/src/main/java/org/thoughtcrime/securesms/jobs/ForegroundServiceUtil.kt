@@ -110,12 +110,10 @@ object ForegroundServiceUtil {
   @JvmOverloads
   @JvmStatic
   @WorkerThread
-  fun tryToStartWhenCapable(context: Context, intent: Intent, timeout: Long = DEFAULT_TIMEOUT) {
-    return try {
-      startWhenCapable(context, intent, timeout)
-    } catch (e: UnableToStartException) {
-      Log.w(TAG, "Failed to start foreground service", e)
-    }
+  fun tryToStartWhenCapable(context: Context, intent: Intent, timeout: Long = DEFAULT_TIMEOUT) = try {
+    startWhenCapable(context, intent, timeout)
+  } catch (e: UnableToStartException) {
+    Log.w(TAG, "Failed to start foreground service", e)
   }
 
   /**

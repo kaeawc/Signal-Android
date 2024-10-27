@@ -202,31 +202,29 @@ class GiftFlowConfirmationFragment :
     verifyingRecipientDonationPaymentDialog.dismiss()
   }
 
-  private fun getConfiguration(giftFlowState: GiftFlowState): DSLConfiguration {
-    return configure {
-      if (giftFlowState.giftBadge != null) {
-        giftFlowState.giftPrices[giftFlowState.currency]?.let {
-          customPref(
-            GiftRowItem.Model(
-              giftBadge = giftFlowState.giftBadge,
-              price = it
-            )
+  private fun getConfiguration(giftFlowState: GiftFlowState): DSLConfiguration = configure {
+    if (giftFlowState.giftBadge != null) {
+      giftFlowState.giftPrices[giftFlowState.currency]?.let {
+        customPref(
+          GiftRowItem.Model(
+            giftBadge = giftFlowState.giftBadge,
+            price = it
           )
-        }
-      }
-
-      sectionHeaderPref(R.string.GiftFlowConfirmationFragment__send_to)
-
-      customPref(
-        RecipientPreference.Model(
-          recipient = giftFlowState.recipient!!
         )
-      )
-
-      textPref(
-        summary = DSLSettingsText.from(R.string.GiftFlowConfirmationFragment__the_recipient_will_be_notified)
-      )
+      }
     }
+
+    sectionHeaderPref(R.string.GiftFlowConfirmationFragment__send_to)
+
+    customPref(
+      RecipientPreference.Model(
+        recipient = giftFlowState.recipient!!
+      )
+    )
+
+    textPref(
+      summary = DSLSettingsText.from(R.string.GiftFlowConfirmationFragment__the_recipient_will_be_notified)
+    )
   }
 
   override fun onToolbarNavigationClicked() {

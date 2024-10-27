@@ -38,15 +38,13 @@ object StoryContextMenu {
 
   private val TAG = Log.tag(StoryContextMenu::class.java)
 
-  fun delete(context: Context, records: Set<MessageRecord>): Single<Boolean> {
-    return DeleteDialog.show(
-      context = context,
-      messageRecords = records,
-      title = context.getString(R.string.MyStories__delete_story),
-      message = context.getString(R.string.MyStories__this_story_will_be_deleted),
-      forceRemoteDelete = true
-    ).map { (_, deletedThread) -> deletedThread }
-  }
+  fun delete(context: Context, records: Set<MessageRecord>): Single<Boolean> = DeleteDialog.show(
+    context = context,
+    messageRecords = records,
+    title = context.getString(R.string.MyStories__delete_story),
+    message = context.getString(R.string.MyStories__this_story_will_be_deleted),
+    forceRemoteDelete = true
+  ).map { (_, deletedThread) -> deletedThread }
 
   fun save(context: Context, messageRecord: MessageRecord) {
     val mediaMessageRecord = messageRecord as? MmsMessageRecord

@@ -29,26 +29,22 @@ class MultiDeviceStorySendSyncJob private constructor(parameters: Parameters, pr
     private const val DATA_DELETED_MESSAGE_ID = "deleted.message.id"
 
     @JvmStatic
-    fun create(sentTimestamp: Long, deletedMessageId: Long): MultiDeviceStorySendSyncJob {
-      return MultiDeviceStorySendSyncJob(
-        parameters = Parameters.Builder()
-          .addConstraint(NetworkConstraint.KEY)
-          .setMaxAttempts(Parameters.UNLIMITED)
-          .setLifespan(TimeUnit.DAYS.toMillis(1))
-          .setQueue(KEY)
-          .build(),
-        sentTimestamp = sentTimestamp,
-        deletedMessageId = deletedMessageId
-      )
-    }
+    fun create(sentTimestamp: Long, deletedMessageId: Long): MultiDeviceStorySendSyncJob = MultiDeviceStorySendSyncJob(
+      parameters = Parameters.Builder()
+        .addConstraint(NetworkConstraint.KEY)
+        .setMaxAttempts(Parameters.UNLIMITED)
+        .setLifespan(TimeUnit.DAYS.toMillis(1))
+        .setQueue(KEY)
+        .build(),
+      sentTimestamp = sentTimestamp,
+      deletedMessageId = deletedMessageId
+    )
   }
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putLong(DATA_SENT_TIMESTAMP, sentTimestamp)
-      .putLong(DATA_DELETED_MESSAGE_ID, deletedMessageId)
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putLong(DATA_SENT_TIMESTAMP, sentTimestamp)
+    .putLong(DATA_DELETED_MESSAGE_ID, deletedMessageId)
+    .serialize()
 
   override fun getFactoryKey(): String = KEY
 
@@ -67,23 +63,19 @@ class MultiDeviceStorySendSyncJob private constructor(parameters: Parameters, pr
     SignalDatabase.messages.deleteRemotelyDeletedStory(deletedMessageId)
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return e is RetryableException
-  }
+  override fun onShouldRetry(e: Exception): Boolean = e is RetryableException
 
-  private fun buildSentTranscript(recipientsSet: Set<SignalServiceStoryMessageRecipient>): SentTranscriptMessage {
-    return SentTranscriptMessage(
-      Optional.of(SignalServiceAddress(Recipient.self().requireAci())),
-      sentTimestamp,
-      Optional.empty(),
-      0,
-      emptyMap(),
-      true,
-      Optional.empty(),
-      recipientsSet,
-      Optional.empty()
-    )
-  }
+  private fun buildSentTranscript(recipientsSet: Set<SignalServiceStoryMessageRecipient>): SentTranscriptMessage = SentTranscriptMessage(
+    Optional.of(SignalServiceAddress(Recipient.self().requireAci())),
+    sentTimestamp,
+    Optional.empty(),
+    0,
+    emptyMap(),
+    true,
+    Optional.empty(),
+    recipientsSet,
+    Optional.empty()
+  )
 
   override fun onFailure() = Unit
 

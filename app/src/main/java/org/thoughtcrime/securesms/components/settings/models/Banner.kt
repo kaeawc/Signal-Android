@@ -25,13 +25,9 @@ object Banner {
     @StringRes val actionId: Int,
     val onClick: () -> Unit
   ) : MappingModel<Model> {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return true
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = true
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return textId == newItem.textId && actionId == newItem.actionId
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = textId == newItem.textId && actionId == newItem.actionId
   }
 
   private class ViewHolder(binding: DslBannerBinding) : BindingViewHolder<Model, DslBannerBinding>(binding) {

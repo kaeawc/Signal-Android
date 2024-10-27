@@ -9,7 +9,9 @@ import org.thoughtcrime.securesms.giph.mp4.GiphyMp4Playable
 /**
  * Describes a ConversationElement that can be included in multiselect mode.
  */
-interface Multiselectable : Colorizable, GiphyMp4Playable {
+interface Multiselectable :
+  Colorizable,
+  GiphyMp4Playable {
   val conversationMessage: ConversationMessage
   val root: ViewGroup
 

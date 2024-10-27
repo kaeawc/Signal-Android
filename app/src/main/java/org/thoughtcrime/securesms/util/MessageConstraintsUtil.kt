@@ -32,9 +32,7 @@ object MessageConstraintsUtil {
   }
 
   @JvmStatic
-  fun isValidEditMessageReceive(targetMessage: MessageRecord, editSender: Recipient, editServerTimestamp: Long): Boolean {
-    return isValidRemoteDeleteReceive(targetMessage, editSender.id, editServerTimestamp)
-  }
+  fun isValidEditMessageReceive(targetMessage: MessageRecord, editSender: Recipient, editServerTimestamp: Long): Boolean = isValidRemoteDeleteReceive(targetMessage, editSender.id, editServerTimestamp)
 
   @JvmStatic
   fun isValidRemoteDeleteSend(targetMessages: Collection<MessageRecord>, currentTime: Long): Boolean {
@@ -43,14 +41,10 @@ object MessageConstraintsUtil {
   }
 
   @JvmStatic
-  fun isWithinMaxEdits(targetMessage: MessageRecord): Boolean {
-    return targetMessage.revisionNumber < MAX_EDIT_COUNT
-  }
+  fun isWithinMaxEdits(targetMessage: MessageRecord): Boolean = targetMessage.revisionNumber < MAX_EDIT_COUNT
 
   @JvmStatic
-  fun getEditMessageThresholdHours(): Int {
-    return SEND_THRESHOLD.milliseconds.inWholeHours.toInt()
-  }
+  fun getEditMessageThresholdHours(): Int = SEND_THRESHOLD.milliseconds.inWholeHours.toInt()
 
   /**
    * Check if at the current time a target message can be edited
@@ -77,23 +71,17 @@ object MessageConstraintsUtil {
    * Check regardless of timing, whether a target message can be edited
    */
   @JvmStatic
-  fun isValidEditMessageSend(targetMessage: MessageRecord): Boolean {
-    return isValidEditMessageSend(targetMessage, targetMessage.dateSent)
-  }
+  fun isValidEditMessageSend(targetMessage: MessageRecord): Boolean = isValidEditMessageSend(targetMessage, targetMessage.dateSent)
 
-  private fun isValidRemoteDeleteSend(message: MessageRecord, currentTime: Long): Boolean {
-    return !message.isUpdate &&
-      message.isOutgoing &&
-      message.isPush &&
-      (!message.toRecipient.isGroup || message.toRecipient.isActiveGroup) &&
-      !message.isRemoteDelete &&
-      !message.hasGiftBadge() &&
-      !message.isPaymentNotification &&
-      !message.isPaymentTombstone &&
-      (currentTime - message.dateSent < SEND_THRESHOLD || message.toRecipient.isSelf)
-  }
+  private fun isValidRemoteDeleteSend(message: MessageRecord, currentTime: Long): Boolean = !message.isUpdate &&
+    message.isOutgoing &&
+    message.isPush &&
+    (!message.toRecipient.isGroup || message.toRecipient.isActiveGroup) &&
+    !message.isRemoteDelete &&
+    !message.hasGiftBadge() &&
+    !message.isPaymentNotification &&
+    !message.isPaymentTombstone &&
+    (currentTime - message.dateSent < SEND_THRESHOLD || message.toRecipient.isSelf)
 
-  private fun isSelf(recipientId: RecipientId): Boolean {
-    return Recipient.isSelfSet && Recipient.self().id == recipientId
-  }
+  private fun isSelf(recipientId: RecipientId): Boolean = Recipient.isSelfSet && Recipient.self().id == recipientId
 }

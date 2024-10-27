@@ -48,12 +48,10 @@ sealed class SignalAudioManager(protected val context: Context, protected val ev
 
   companion object {
     @JvmStatic
-    fun create(context: Context, eventListener: EventListener?): SignalAudioManager {
-      return if (Build.VERSION.SDK_INT >= 31) {
-        FullSignalAudioManagerApi31(context, eventListener)
-      } else {
-        FullSignalAudioManager(context, eventListener)
-      }
+    fun create(context: Context, eventListener: EventListener?): SignalAudioManager = if (Build.VERSION.SDK_INT >= 31) {
+      FullSignalAudioManagerApi31(context, eventListener)
+    } else {
+      FullSignalAudioManager(context, eventListener)
     }
   }
 
@@ -125,9 +123,7 @@ sealed class SignalAudioManager(protected val context: Context, protected val ev
     var desiredAudioDeviceLegacy: AudioDevice? = null
     var desiredAudioDevice31: Int? = null
 
-    fun isLegacy(): Boolean {
-      return desiredAudioDeviceLegacy != null
-    }
+    fun isLegacy(): Boolean = desiredAudioDeviceLegacy != null
 
     constructor(device: AudioDevice) {
       desiredAudioDeviceLegacy = device
@@ -159,7 +155,9 @@ sealed class SignalAudioManager(protected val context: Context, protected val ev
  * bluetooth headset is then disconnected, and reconnected, the audio will again automatically switch to
  * the bluetooth headset.
  */
-class FullSignalAudioManager(context: Context, eventListener: EventListener?) : SignalAudioManager(context, eventListener), AudioDeviceUpdatedListener {
+class FullSignalAudioManager(context: Context, eventListener: EventListener?) :
+  SignalAudioManager(context, eventListener),
+  AudioDeviceUpdatedListener {
   private val signalBluetoothManager = SignalBluetoothManager(context, this, handler)
 
   private var audioDevices: MutableSet<AudioDevice> = mutableSetOf()
@@ -309,7 +307,8 @@ class FullSignalAudioManager(context: Context, eventListener: EventListener?) : 
     }
 
     val needBluetoothAudioStart = signalBluetoothManager.state == SignalBluetoothManager.State.AVAILABLE &&
-      (userSelectedAudioDevice == AudioDevice.NONE || userSelectedAudioDevice == AudioDevice.BLUETOOTH || autoSwitchToBluetooth) && !androidAudioManager.isBluetoothScoOn
+      (userSelectedAudioDevice == AudioDevice.NONE || userSelectedAudioDevice == AudioDevice.BLUETOOTH || autoSwitchToBluetooth) &&
+      !androidAudioManager.isBluetoothScoOn
 
     val needBluetoothAudioStop = (signalBluetoothManager.state == SignalBluetoothManager.State.CONNECTED || signalBluetoothManager.state == SignalBluetoothManager.State.CONNECTING) &&
       (userSelectedAudioDevice != AudioDevice.NONE && userSelectedAudioDevice != AudioDevice.BLUETOOTH)

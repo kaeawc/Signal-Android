@@ -28,16 +28,12 @@ class FetchRemoteMegaphoneImageJob(parameters: Parameters, private val uuid: Str
     imageUrl = imageUrl
   )
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putString(KEY_UUID, uuid)
-      .putString(KEY_IMAGE_URL, imageUrl)
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putString(KEY_UUID, uuid)
+    .putString(KEY_IMAGE_URL, imageUrl)
+    .serialize()
 
-  override fun getFactoryKey(): String {
-    return KEY
-  }
+  override fun getFactoryKey(): String = KEY
 
   override fun onRun() {
     try {

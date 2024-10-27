@@ -64,39 +64,37 @@ class NotificationProfilesFragment : DSLSettingsFragment() {
       }
   }
 
-  private fun getConfiguration(profiles: List<NotificationProfile>): DSLConfiguration {
-    return configure {
-      if (profiles.isEmpty()) {
+  private fun getConfiguration(profiles: List<NotificationProfile>): DSLConfiguration = configure {
+    if (profiles.isEmpty()) {
+      customPref(
+        NoNotificationProfiles.Model(
+          onClick = { findNavController().safeNavigate(R.id.action_notificationProfilesFragment_to_editNotificationProfileFragment) }
+        )
+      )
+    } else {
+      sectionHeaderPref(R.string.NotificationProfilesFragment__profiles)
+
+      customPref(
+        LargeIconClickPreference.Model(
+          title = DSLSettingsText.from(R.string.NotificationProfilesFragment__new_profile),
+          icon = DSLSettingsIcon.from(R.drawable.add_to_a_group, NO_TINT),
+          onClick = { findNavController().safeNavigate(R.id.action_notificationProfilesFragment_to_editNotificationProfileFragment) }
+        )
+      )
+
+      val activeProfile: NotificationProfile? = NotificationProfiles.getActiveProfile(profiles)
+      profiles.sortedDescending().forEach { profile ->
         customPref(
-          NoNotificationProfiles.Model(
-            onClick = { findNavController().safeNavigate(R.id.action_notificationProfilesFragment_to_editNotificationProfileFragment) }
+          NotificationProfilePreference.Model(
+            title = DSLSettingsText.from(profile.name),
+            summary = if (profile == activeProfile) DSLSettingsText.from(NotificationProfiles.getActiveProfileDescription(requireContext(), profile)) else null,
+            icon = if (profile.emoji.isNotEmpty()) EmojiUtil.convertToDrawable(requireContext(), profile.emoji)?.let { DSLSettingsIcon.from(it) } else DSLSettingsIcon.from(R.drawable.ic_moon_24, NO_TINT),
+            color = profile.color,
+            onClick = {
+              findNavController().safeNavigate(NotificationProfilesFragmentDirections.actionNotificationProfilesFragmentToNotificationProfileDetailsFragment(profile.id))
+            }
           )
         )
-      } else {
-        sectionHeaderPref(R.string.NotificationProfilesFragment__profiles)
-
-        customPref(
-          LargeIconClickPreference.Model(
-            title = DSLSettingsText.from(R.string.NotificationProfilesFragment__new_profile),
-            icon = DSLSettingsIcon.from(R.drawable.add_to_a_group, NO_TINT),
-            onClick = { findNavController().safeNavigate(R.id.action_notificationProfilesFragment_to_editNotificationProfileFragment) }
-          )
-        )
-
-        val activeProfile: NotificationProfile? = NotificationProfiles.getActiveProfile(profiles)
-        profiles.sortedDescending().forEach { profile ->
-          customPref(
-            NotificationProfilePreference.Model(
-              title = DSLSettingsText.from(profile.name),
-              summary = if (profile == activeProfile) DSLSettingsText.from(NotificationProfiles.getActiveProfileDescription(requireContext(), profile)) else null,
-              icon = if (profile.emoji.isNotEmpty()) EmojiUtil.convertToDrawable(requireContext(), profile.emoji)?.let { DSLSettingsIcon.from(it) } else DSLSettingsIcon.from(R.drawable.ic_moon_24, NO_TINT),
-              color = profile.color,
-              onClick = {
-                findNavController().safeNavigate(NotificationProfilesFragmentDirections.actionNotificationProfilesFragmentToNotificationProfileDetailsFragment(profile.id))
-              }
-            )
-          )
-        }
       }
     }
   }

@@ -60,7 +60,5 @@ object SystemWindowInsetsSetter {
     lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
   }
 
-  private fun Insets.isEmpty(): Boolean {
-    return (top + bottom + right + left) == 0
-  }
+  private fun Insets.isEmpty(): Boolean = (top + bottom + right + left) == 0
 }

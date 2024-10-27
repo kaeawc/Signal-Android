@@ -67,8 +67,6 @@ internal class IdentityTableCleanupMigrationJob(
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<IdentityTableCleanupMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): IdentityTableCleanupMigrationJob {
-      return IdentityTableCleanupMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): IdentityTableCleanupMigrationJob = IdentityTableCleanupMigrationJob(parameters)
   }
 }

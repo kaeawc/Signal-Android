@@ -18,7 +18,9 @@ import org.signal.core.util.withinTransaction
 import org.signal.libsignal.protocol.util.Pair
 import org.thoughtcrime.securesms.recipients.RecipientId
 
-class GroupReceiptTable(context: Context?, databaseHelper: SignalDatabase?) : DatabaseTable(context, databaseHelper), RecipientIdDatabaseReference {
+class GroupReceiptTable(context: Context?, databaseHelper: SignalDatabase?) :
+  DatabaseTable(context, databaseHelper),
+  RecipientIdDatabaseReference {
   companion object {
     const val TABLE_NAME = "group_receipts"
     private const val ID = "_id"
@@ -124,14 +126,12 @@ class GroupReceiptTable(context: Context?, databaseHelper: SignalDatabase?) : Da
     }
   }
 
-  fun getGroupReceiptInfo(mmsId: Long): List<GroupReceiptInfo> {
-    return readableDatabase
-      .select()
-      .from(TABLE_NAME)
-      .where("$MMS_ID = ?", mmsId)
-      .run()
-      .readToList { it.toGroupReceiptInfo() }
-  }
+  fun getGroupReceiptInfo(mmsId: Long): List<GroupReceiptInfo> = readableDatabase
+    .select()
+    .from(TABLE_NAME)
+    .where("$MMS_ID = ?", mmsId)
+    .run()
+    .readToList { it.toGroupReceiptInfo() }
 
   fun getGroupReceiptInfoForMessages(ids: Collection<Long>): Map<Long, List<GroupReceiptInfo>> {
     if (ids.isEmpty()) {
@@ -184,14 +184,12 @@ class GroupReceiptTable(context: Context?, databaseHelper: SignalDatabase?) : Da
       .run()
   }
 
-  private fun Cursor.toGroupReceiptInfo(): GroupReceiptInfo {
-    return GroupReceiptInfo(
-      recipientId = RecipientId.from(this.requireLong(RECIPIENT_ID)),
-      status = this.requireInt(STATUS),
-      timestamp = this.requireLong(TIMESTAMP),
-      isUnidentified = this.requireBoolean(UNIDENTIFIED)
-    )
-  }
+  private fun Cursor.toGroupReceiptInfo(): GroupReceiptInfo = GroupReceiptInfo(
+    recipientId = RecipientId.from(this.requireLong(RECIPIENT_ID)),
+    status = this.requireInt(STATUS),
+    timestamp = this.requireLong(TIMESTAMP),
+    isUnidentified = this.requireBoolean(UNIDENTIFIED)
+  )
 
   data class GroupReceiptInfo(
     val recipientId: RecipientId,

@@ -24,17 +24,13 @@ sealed interface CallString {
     val recipient: Recipient
   ) : CallString {
     @Composable
-    override fun renderToString(): String {
-      return recipient.getDisplayName(LocalContext.current)
-    }
+    override fun renderToString(): String = recipient.getDisplayName(LocalContext.current)
   }
 
   data class ResourceString(
     @StringRes val resource: Int
   ) : CallString {
     @Composable
-    override fun renderToString(): String {
-      return stringResource(id = resource)
-    }
+    override fun renderToString(): String = stringResource(id = resource)
   }
 }

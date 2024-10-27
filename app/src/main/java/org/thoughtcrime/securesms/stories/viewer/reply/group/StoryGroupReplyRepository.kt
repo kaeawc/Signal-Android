@@ -18,54 +18,48 @@ import org.thoughtcrime.securesms.recipients.RecipientId
 
 class StoryGroupReplyRepository {
 
-  fun getThreadId(storyId: Long): Single<Long> {
-    return Single.fromCallable {
-      SignalDatabase.messages.getThreadIdForMessage(storyId)
-    }.subscribeOn(Schedulers.io())
-  }
+  fun getThreadId(storyId: Long): Single<Long> = Single.fromCallable {
+    SignalDatabase.messages.getThreadIdForMessage(storyId)
+  }.subscribeOn(Schedulers.io())
 
-  fun getPagedReplies(parentStoryId: Long): Observable<ObservablePagedData<MessageId, ReplyBody>> {
-    return getThreadId(parentStoryId)
-      .toObservable()
-      .flatMap { threadId ->
-        Observable.create<ObservablePagedData<MessageId, ReplyBody>> { emitter ->
-          val pagedData: ObservablePagedData<MessageId, ReplyBody> = PagedData.createForObservable(StoryGroupReplyDataSource(parentStoryId), PagingConfig.Builder().build())
-          val controller: PagingController<MessageId> = pagedData.controller
+  fun getPagedReplies(parentStoryId: Long): Observable<ObservablePagedData<MessageId, ReplyBody>> = getThreadId(parentStoryId)
+    .toObservable()
+    .flatMap { threadId ->
+      Observable.create<ObservablePagedData<MessageId, ReplyBody>> { emitter ->
+        val pagedData: ObservablePagedData<MessageId, ReplyBody> = PagedData.createForObservable(StoryGroupReplyDataSource(parentStoryId), PagingConfig.Builder().build())
+        val controller: PagingController<MessageId> = pagedData.controller
 
-          val updateObserver = DatabaseObserver.MessageObserver { controller.onDataItemChanged(it) }
-          val insertObserver = DatabaseObserver.MessageObserver { controller.onDataItemInserted(it, PagingController.POSITION_END) }
-          val conversationObserver = DatabaseObserver.Observer { controller.onDataInvalidated() }
+        val updateObserver = DatabaseObserver.MessageObserver { controller.onDataItemChanged(it) }
+        val insertObserver = DatabaseObserver.MessageObserver { controller.onDataItemInserted(it, PagingController.POSITION_END) }
+        val conversationObserver = DatabaseObserver.Observer { controller.onDataInvalidated() }
 
-          AppDependencies.databaseObserver.registerMessageUpdateObserver(updateObserver)
-          AppDependencies.databaseObserver.registerMessageInsertObserver(threadId, insertObserver)
-          AppDependencies.databaseObserver.registerConversationObserver(threadId, conversationObserver)
+        AppDependencies.databaseObserver.registerMessageUpdateObserver(updateObserver)
+        AppDependencies.databaseObserver.registerMessageInsertObserver(threadId, insertObserver)
+        AppDependencies.databaseObserver.registerConversationObserver(threadId, conversationObserver)
 
-          emitter.setCancellable {
-            AppDependencies.databaseObserver.unregisterObserver(updateObserver)
-            AppDependencies.databaseObserver.unregisterObserver(insertObserver)
-            AppDependencies.databaseObserver.unregisterObserver(conversationObserver)
-          }
+        emitter.setCancellable {
+          AppDependencies.databaseObserver.unregisterObserver(updateObserver)
+          AppDependencies.databaseObserver.unregisterObserver(insertObserver)
+          AppDependencies.databaseObserver.unregisterObserver(conversationObserver)
+        }
 
-          emitter.onNext(pagedData)
-        }.subscribeOn(Schedulers.io())
-      }
-  }
+        emitter.onNext(pagedData)
+      }.subscribeOn(Schedulers.io())
+    }
 
-  fun getNameColorsMap(storyId: Long): Observable<Map<RecipientId, NameColor>> {
-    return Single
-      .fromCallable {
-        try {
-          val messageRecord = SignalDatabase.messages.getMessageRecord(storyId)
-          val groupId = messageRecord.toRecipient.groupId.or { messageRecord.fromRecipient.groupId }
-          if (groupId.isPresent) {
-            GroupAuthorNameColorHelper().getColorMap(groupId.get())
-          } else {
-            emptyMap()
-          }
-        } catch (e: NoSuchMessageException) {
+  fun getNameColorsMap(storyId: Long): Observable<Map<RecipientId, NameColor>> = Single
+    .fromCallable {
+      try {
+        val messageRecord = SignalDatabase.messages.getMessageRecord(storyId)
+        val groupId = messageRecord.toRecipient.groupId.or { messageRecord.fromRecipient.groupId }
+        if (groupId.isPresent) {
+          GroupAuthorNameColorHelper().getColorMap(groupId.get())
+        } else {
           emptyMap()
         }
+      } catch (e: NoSuchMessageException) {
+        emptyMap()
       }
-      .toObservable()
-  }
+    }
+    .toObservable()
 }

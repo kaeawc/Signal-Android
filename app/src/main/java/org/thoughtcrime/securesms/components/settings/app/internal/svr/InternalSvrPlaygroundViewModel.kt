@@ -101,10 +101,8 @@ class InternalSvrPlaygroundViewModel : ViewModel() {
     disposables.clear()
   }
 
-  private fun SvrImplementation.toImplementation(): SecureValueRecovery {
-    return when (this) {
-      SvrImplementation.SVR2 -> AppDependencies.signalServiceAccountManager.getSecureValueRecoveryV2(BuildConfig.SVR2_MRENCLAVE)
-      SvrImplementation.SVR3 -> AppDependencies.signalServiceAccountManager.getSecureValueRecoveryV3(AppDependencies.libsignalNetwork)
-    }
+  private fun SvrImplementation.toImplementation(): SecureValueRecovery = when (this) {
+    SvrImplementation.SVR2 -> AppDependencies.signalServiceAccountManager.getSecureValueRecoveryV2(BuildConfig.SVR2_MRENCLAVE)
+    SvrImplementation.SVR3 -> AppDependencies.signalServiceAccountManager.getSecureValueRecoveryV3(AppDependencies.libsignalNetwork)
   }
 }

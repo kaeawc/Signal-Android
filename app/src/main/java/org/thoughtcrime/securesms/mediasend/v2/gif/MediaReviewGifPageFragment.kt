@@ -55,11 +55,9 @@ class MediaReviewGifPageFragment : Fragment(R.layout.fragment_container) {
   companion object {
     private const val ARG_URI = "arg.uri"
 
-    fun newInstance(uri: Uri): Fragment {
-      return MediaReviewGifPageFragment().apply {
-        arguments = Bundle().apply {
-          putParcelable(ARG_URI, uri)
-        }
+    fun newInstance(uri: Uri): Fragment = MediaReviewGifPageFragment().apply {
+      arguments = Bundle().apply {
+        putParcelable(ARG_URI, uri)
       }
     }
   }

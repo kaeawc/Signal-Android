@@ -20,7 +20,9 @@ import java.util.Optional
 /**
  * Fragment to show full screen document attachments
  */
-class MediaSendDocumentFragment : Fragment(R.layout.mediasend_document_fragment), MediaSendPageFragment {
+class MediaSendDocumentFragment :
+  Fragment(R.layout.mediasend_document_fragment),
+  MediaSendPageFragment {
 
   companion object {
     private val TAG = Log.tag(MediaSendDocumentFragment::class.java)
@@ -70,9 +72,7 @@ class MediaSendDocumentFragment : Fragment(R.layout.mediasend_document_fragment)
     }
   }
 
-  override fun getUri(): Uri {
-    return uri
-  }
+  override fun getUri(): Uri = uri
 
   override fun setUri(uri: Uri) {
     this.uri = uri

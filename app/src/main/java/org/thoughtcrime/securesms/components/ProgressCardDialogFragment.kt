@@ -20,10 +20,8 @@ constructor() : DialogFragment(R.layout.progress_card_dialog) {
 
   companion object {
     @SuppressLint("DiscouragedApi")
-    fun create(title: String? = null): ProgressCardDialogFragment {
-      return ProgressCardDialogFragment().apply {
-        arguments = ProgressCardDialogFragmentArgs.Builder(title).build().toBundle()
-      }
+    fun create(title: String? = null): ProgressCardDialogFragment = ProgressCardDialogFragment().apply {
+      arguments = ProgressCardDialogFragmentArgs.Builder(title).build().toBundle()
     }
   }
 

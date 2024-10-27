@@ -117,35 +117,29 @@ class InAppPaymentSubscriberTable(
   /**
    * Retrieves a subscriber for the given type by the currency code.
    */
-  fun getByCurrencyCode(currencyCode: String, type: InAppPaymentSubscriberRecord.Type): InAppPaymentSubscriberRecord? {
-    return readableDatabase.select()
-      .from(TABLE_NAME)
-      .where("$TYPE = ? AND $CURRENCY_CODE = ?", TypeSerializer.serialize(type), currencyCode.uppercase())
-      .run()
-      .readToSingleObject(InAppPaymentSubscriberSerializer)
-  }
+  fun getByCurrencyCode(currencyCode: String, type: InAppPaymentSubscriberRecord.Type): InAppPaymentSubscriberRecord? = readableDatabase.select()
+    .from(TABLE_NAME)
+    .where("$TYPE = ? AND $CURRENCY_CODE = ?", TypeSerializer.serialize(type), currencyCode.uppercase())
+    .run()
+    .readToSingleObject(InAppPaymentSubscriberSerializer)
 
   /**
    * Retrieves a subscriber by SubscriberId
    */
-  fun getBySubscriberId(subscriberId: SubscriberId): InAppPaymentSubscriberRecord? {
-    return readableDatabase.select()
-      .from(TABLE_NAME)
-      .where("$SUBSCRIBER_ID = ?", subscriberId.serialize())
-      .run()
-      .readToSingleObject(InAppPaymentSubscriberSerializer)
-  }
+  fun getBySubscriberId(subscriberId: SubscriberId): InAppPaymentSubscriberRecord? = readableDatabase.select()
+    .from(TABLE_NAME)
+    .where("$SUBSCRIBER_ID = ?", subscriberId.serialize())
+    .run()
+    .readToSingleObject(InAppPaymentSubscriberSerializer)
 
   object InAppPaymentSubscriberSerializer : DatabaseSerializer<InAppPaymentSubscriberRecord> {
-    override fun serialize(data: InAppPaymentSubscriberRecord): ContentValues {
-      return contentValuesOf(
-        SUBSCRIBER_ID to data.subscriberId.serialize(),
-        CURRENCY_CODE to data.currency.currencyCode.uppercase(),
-        TYPE to TypeSerializer.serialize(data.type),
-        REQUIRES_CANCEL to data.requiresCancel,
-        PAYMENT_METHOD_TYPE to data.paymentMethodType.value
-      )
-    }
+    override fun serialize(data: InAppPaymentSubscriberRecord): ContentValues = contentValuesOf(
+      SUBSCRIBER_ID to data.subscriberId.serialize(),
+      CURRENCY_CODE to data.currency.currencyCode.uppercase(),
+      TYPE to TypeSerializer.serialize(data.type),
+      REQUIRES_CANCEL to data.requiresCancel,
+      PAYMENT_METHOD_TYPE to data.paymentMethodType.value
+    )
 
     override fun deserialize(input: Cursor): InAppPaymentSubscriberRecord {
       val type = TypeSerializer.deserialize(input.requireInt(TYPE))

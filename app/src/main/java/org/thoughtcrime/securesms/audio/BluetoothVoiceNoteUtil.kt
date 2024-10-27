@@ -25,9 +25,7 @@ sealed interface BluetoothVoiceNoteUtil {
   fun destroy()
 
   companion object {
-    fun create(context: Context, listener: (Boolean) -> Unit, bluetoothPermissionDeniedHandler: () -> Unit): BluetoothVoiceNoteUtil {
-      return if (Build.VERSION.SDK_INT >= 31) BluetoothVoiceNoteUtil31(listener) else BluetoothVoiceNoteUtilLegacy(context, listener, bluetoothPermissionDeniedHandler)
-    }
+    fun create(context: Context, listener: (Boolean) -> Unit, bluetoothPermissionDeniedHandler: () -> Unit): BluetoothVoiceNoteUtil = if (Build.VERSION.SDK_INT >= 31) BluetoothVoiceNoteUtil31(listener) else BluetoothVoiceNoteUtilLegacy(context, listener, bluetoothPermissionDeniedHandler)
   }
 }
 

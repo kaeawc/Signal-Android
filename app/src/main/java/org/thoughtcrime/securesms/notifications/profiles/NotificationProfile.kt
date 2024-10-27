@@ -15,11 +15,7 @@ data class NotificationProfile(
   val allowedMembers: Set<RecipientId> = emptySet()
 ) : Comparable<NotificationProfile> {
 
-  fun isRecipientAllowed(id: RecipientId): Boolean {
-    return allowedMembers.contains(id)
-  }
+  fun isRecipientAllowed(id: RecipientId): Boolean = allowedMembers.contains(id)
 
-  override fun compareTo(other: NotificationProfile): Int {
-    return createdAt.compareTo(other.createdAt)
-  }
+  override fun compareTo(other: NotificationProfile): Int = createdAt.compareTo(other.createdAt)
 }

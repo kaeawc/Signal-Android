@@ -5,6 +5,7 @@
 
 package org.thoughtcrime.securesms.net
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.app.Notification
 import android.app.PendingIntent
@@ -32,10 +33,9 @@ class DefaultWebSocketShadowingBridge(private val context: Application) : WebSoc
     store.setWebSocketShadowingStats(bytes)
   }
 
-  override fun readStatsSnapshot(): ByteArray? {
-    return store.getWebSocketShadowingStats(null)
-  }
+  override fun readStatsSnapshot(): ByteArray? = store.getWebSocketShadowingStats(null)
 
+  @SuppressLint("MissingPermission")
   override fun triggerFailureNotification(message: String) {
     if (!RemoteConfig.internalUser) {
       return

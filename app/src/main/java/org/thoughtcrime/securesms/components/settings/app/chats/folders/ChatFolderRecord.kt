@@ -38,9 +38,7 @@ data class ChatFolderRecord(
     CUSTOM(4);
 
     companion object {
-      fun deserialize(value: Int): FolderType {
-        return entries.firstOrNull { it.value == value } ?: CUSTOM
-      }
+      fun deserialize(value: Int): FolderType = entries.firstOrNull { it.value == value } ?: CUSTOM
     }
   }
 }

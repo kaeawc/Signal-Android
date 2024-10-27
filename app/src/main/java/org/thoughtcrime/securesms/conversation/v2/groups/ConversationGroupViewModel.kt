@@ -66,23 +66,19 @@ class ConversationGroupViewModel(
     return memberLevel.groupTableMemberLevel != GroupTable.MemberLevel.ADMINISTRATOR && memberLevel.isAnnouncementGroup
   }
 
-  fun blockJoinRequests(recipient: Recipient): Single<GroupBlockJoinRequestResult> {
-    return _groupRecord
-      .firstOrError()
-      .flatMap {
-        groupManagementRepository.blockJoinRequests(it.id.requireV2(), recipient)
-      }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun blockJoinRequests(recipient: Recipient): Single<GroupBlockJoinRequestResult> = _groupRecord
+    .firstOrError()
+    .flatMap {
+      groupManagementRepository.blockJoinRequests(it.id.requireV2(), recipient)
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun cancelJoinRequest(): Single<Result<Unit, GroupChangeFailureReason>> {
-    return _groupRecord
-      .firstOrError()
-      .flatMap { group ->
-        groupManagementRepository.cancelJoinRequest(group.id.requireV2())
-      }
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun cancelJoinRequest(): Single<Result<Unit, GroupChangeFailureReason>> = _groupRecord
+    .firstOrError()
+    .flatMap { group ->
+      groupManagementRepository.cancelJoinRequest(group.id.requireV2())
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 
   fun onSuggestedMembersBannerDismissed() {
     _groupRecord
@@ -134,8 +130,6 @@ class ConversationGroupViewModel(
   }
 
   class Factory(private val recipientRepository: ConversationRecipientRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(ConversationGroupViewModel(recipientRepository = recipientRepository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(ConversationGroupViewModel(recipientRepository = recipientRepository)) as T
   }
 }

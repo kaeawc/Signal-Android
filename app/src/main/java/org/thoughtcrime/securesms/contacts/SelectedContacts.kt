@@ -23,13 +23,9 @@ object SelectedContacts {
   sealed class Model<T : Any>(val selectedContact: SelectedContact) : MappingModel<T>
 
   class RecipientModel(selectedContact: SelectedContact, val recipient: Recipient) : Model<RecipientModel>(selectedContact = selectedContact) {
-    override fun areItemsTheSame(newItem: RecipientModel): Boolean {
-      return newItem.selectedContact.matches(selectedContact) && recipient == newItem.recipient
-    }
+    override fun areItemsTheSame(newItem: RecipientModel): Boolean = newItem.selectedContact.matches(selectedContact) && recipient == newItem.recipient
 
-    override fun areContentsTheSame(newItem: RecipientModel): Boolean {
-      return areItemsTheSame(newItem) && recipient.hasSameContent(newItem.recipient)
-    }
+    override fun areContentsTheSame(newItem: RecipientModel): Boolean = areItemsTheSame(newItem) && recipient.hasSameContent(newItem.recipient)
   }
 
   private class RecipientViewHolder(itemView: View, private val onCloseIconClicked: (RecipientModel) -> Unit) : MappingViewHolder<RecipientModel>(itemView) {
@@ -48,13 +44,9 @@ object SelectedContacts {
   }
 
   class ChatTypeModel(selectedContact: SelectedContact) : Model<ChatTypeModel>(selectedContact = selectedContact) {
-    override fun areItemsTheSame(newItem: ChatTypeModel): Boolean {
-      return newItem.selectedContact.matches(selectedContact) && newItem.selectedContact.chatType == selectedContact.chatType
-    }
+    override fun areItemsTheSame(newItem: ChatTypeModel): Boolean = newItem.selectedContact.matches(selectedContact) && newItem.selectedContact.chatType == selectedContact.chatType
 
-    override fun areContentsTheSame(newItem: ChatTypeModel): Boolean {
-      return areItemsTheSame(newItem)
-    }
+    override fun areContentsTheSame(newItem: ChatTypeModel): Boolean = areItemsTheSame(newItem)
   }
 
   private class ChatTypeViewHolder(itemView: View, private val onCloseIconClicked: (ChatTypeModel) -> Unit) : MappingViewHolder<ChatTypeModel>(itemView) {

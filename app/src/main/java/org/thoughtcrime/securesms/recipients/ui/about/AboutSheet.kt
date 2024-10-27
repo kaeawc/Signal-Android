@@ -65,12 +65,10 @@ class AboutSheet : ComposeBottomSheetDialogFragment() {
     private const val RECIPIENT_ID = "recipient_id"
 
     @JvmStatic
-    fun create(recipient: Recipient): AboutSheet {
-      return AboutSheet().apply {
-        arguments = bundleOf(
-          RECIPIENT_ID to recipient.id
-        )
-      }
+    fun create(recipient: Recipient): AboutSheet = AboutSheet().apply {
+      arguments = bundleOf(
+        RECIPIENT_ID to recipient.id
+      )
     }
   }
 

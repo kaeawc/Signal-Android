@@ -133,13 +133,9 @@ class UsernameQrScannerActivity : AppCompatActivity() {
   }
 
   class Contract : ActivityResultContract<Unit, RecipientId?>() {
-    override fun createIntent(context: Context, input: Unit): Intent {
-      return Intent(context, UsernameQrScannerActivity::class.java)
-    }
+    override fun createIntent(context: Context, input: Unit): Intent = Intent(context, UsernameQrScannerActivity::class.java)
 
-    override fun parseResult(resultCode: Int, intent: Intent?): RecipientId? {
-      return intent?.getParcelableExtraCompat(KEY_RECIPIENT_ID, RecipientId::class.java)
-    }
+    override fun parseResult(resultCode: Int, intent: Intent?): RecipientId? = intent?.getParcelableExtraCompat(KEY_RECIPIENT_ID, RecipientId::class.java)
   }
 }
 

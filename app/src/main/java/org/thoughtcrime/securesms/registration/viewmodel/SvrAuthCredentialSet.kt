@@ -30,35 +30,27 @@ data class SvrAuthCredentialSet(
   data class ParcelableAuthCredentials(private val username: String, private val password: String) : Parcelable {
 
     companion object {
-      fun createOrNull(creds: AuthCredentials?): ParcelableAuthCredentials? {
-        return if (creds != null) {
-          ParcelableAuthCredentials(creds.username(), creds.password())
-        } else {
-          null
-        }
+      fun createOrNull(creds: AuthCredentials?): ParcelableAuthCredentials? = if (creds != null) {
+        ParcelableAuthCredentials(creds.username(), creds.password())
+      } else {
+        null
       }
     }
 
-    fun credentials(): AuthCredentials {
-      return AuthCredentials.create(username, password)
-    }
+    fun credentials(): AuthCredentials = AuthCredentials.create(username, password)
   }
 
   @Parcelize
   data class ParcelableSvr3AuthCredentials(private val username: String, private val password: String, private val shareSet: ByteArray?) : Parcelable {
 
     companion object {
-      fun createOrNull(creds: Svr3Credentials?): ParcelableSvr3AuthCredentials? {
-        return if (creds != null) {
-          ParcelableSvr3AuthCredentials(creds.username, creds.password, creds.shareSet)
-        } else {
-          null
-        }
+      fun createOrNull(creds: Svr3Credentials?): ParcelableSvr3AuthCredentials? = if (creds != null) {
+        ParcelableSvr3AuthCredentials(creds.username, creds.password, creds.shareSet)
+      } else {
+        null
       }
     }
 
-    fun credentials(): Svr3Credentials {
-      return Svr3Credentials(username, password, shareSet)
-    }
+    fun credentials(): Svr3Credentials = Svr3Credentials(username, password, shareSet)
   }
 }

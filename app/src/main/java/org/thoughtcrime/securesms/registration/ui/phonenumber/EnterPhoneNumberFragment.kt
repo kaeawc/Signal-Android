@@ -620,13 +620,11 @@ class EnterPhoneNumberFragment : LoggingFragment(R.layout.fragment_registration_
       menuInflater.inflate(R.menu.enter_phone_number, menu)
     }
 
-    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-      return if (menuItem.itemId == R.id.phone_menu_use_proxy) {
-        NavHostFragment.findNavController(this@EnterPhoneNumberFragment).safeNavigate(EnterPhoneNumberFragmentDirections.actionEditProxy())
-        true
-      } else {
-        false
-      }
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean = if (menuItem.itemId == R.id.phone_menu_use_proxy) {
+      NavHostFragment.findNavController(this@EnterPhoneNumberFragment).safeNavigate(EnterPhoneNumberFragmentDirections.actionEditProxy())
+      true
+    } else {
+      false
     }
   }
 }

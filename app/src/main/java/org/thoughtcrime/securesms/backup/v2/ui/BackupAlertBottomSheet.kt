@@ -62,10 +62,8 @@ class BackupAlertBottomSheet : ComposeBottomSheetDialogFragment() {
   companion object {
     private const val ARG_ALERT = "alert"
 
-    fun create(backupAlert: BackupAlert): BackupAlertBottomSheet {
-      return BackupAlertBottomSheet().apply {
-        arguments = bundleOf(ARG_ALERT to backupAlert)
-      }
+    fun create(backupAlert: BackupAlert): BackupAlertBottomSheet = BackupAlertBottomSheet().apply {
+      arguments = bundleOf(ARG_ALERT to backupAlert)
     }
   }
 
@@ -318,27 +316,23 @@ private fun DiskFullBody(
 }
 
 @Composable
-private fun rememberBackupsIconColors(backupAlert: BackupAlert): BackupsIconColors {
-  return remember(backupAlert) {
-    when (backupAlert) {
-      BackupAlert.PAYMENT_PROCESSING, BackupAlert.MEDIA_BACKUPS_ARE_OFF -> error("Not icon-based options.")
-      BackupAlert.COULD_NOT_COMPLETE_BACKUP, BackupAlert.DISK_FULL -> BackupsIconColors.Warning
-      BackupAlert.MEDIA_WILL_BE_DELETED_TODAY -> BackupsIconColors.Error
-    }
+private fun rememberBackupsIconColors(backupAlert: BackupAlert): BackupsIconColors = remember(backupAlert) {
+  when (backupAlert) {
+    BackupAlert.PAYMENT_PROCESSING, BackupAlert.MEDIA_BACKUPS_ARE_OFF -> error("Not icon-based options.")
+    BackupAlert.COULD_NOT_COMPLETE_BACKUP, BackupAlert.DISK_FULL -> BackupsIconColors.Warning
+    BackupAlert.MEDIA_WILL_BE_DELETED_TODAY -> BackupsIconColors.Error
   }
 }
 
 @Composable
 @StringRes
-private fun rememberTitleResource(backupAlert: BackupAlert): Int {
-  return remember(backupAlert) {
-    when (backupAlert) {
-      BackupAlert.COULD_NOT_COMPLETE_BACKUP -> R.string.BackupAlertBottomSheet__couldnt_complete_backup
-      BackupAlert.PAYMENT_PROCESSING -> R.string.BackupAlertBottomSheet__your_backups_subscription_failed_to_renew
-      BackupAlert.MEDIA_BACKUPS_ARE_OFF -> R.string.BackupAlertBottomSheet__your_backups_subscription_expired
-      BackupAlert.MEDIA_WILL_BE_DELETED_TODAY -> R.string.BackupAlertBottomSheet__your_media_will_be_deleted_today
-      BackupAlert.DISK_FULL -> R.string.BackupAlertBottomSheet__cant_complete_download
-    }
+private fun rememberTitleResource(backupAlert: BackupAlert): Int = remember(backupAlert) {
+  when (backupAlert) {
+    BackupAlert.COULD_NOT_COMPLETE_BACKUP -> R.string.BackupAlertBottomSheet__couldnt_complete_backup
+    BackupAlert.PAYMENT_PROCESSING -> R.string.BackupAlertBottomSheet__your_backups_subscription_failed_to_renew
+    BackupAlert.MEDIA_BACKUPS_ARE_OFF -> R.string.BackupAlertBottomSheet__your_backups_subscription_expired
+    BackupAlert.MEDIA_WILL_BE_DELETED_TODAY -> R.string.BackupAlertBottomSheet__your_media_will_be_deleted_today
+    BackupAlert.DISK_FULL -> R.string.BackupAlertBottomSheet__cant_complete_download
   }
 }
 
@@ -346,26 +340,22 @@ private fun rememberTitleResource(backupAlert: BackupAlert): Int {
 private fun primaryActionString(
   backupAlert: BackupAlert,
   pricePerMonth: String
-): String {
-  return when (backupAlert) {
-    BackupAlert.COULD_NOT_COMPLETE_BACKUP -> stringResource(android.R.string.ok) // TODO [message-backups] -- Finalized copy
-    BackupAlert.PAYMENT_PROCESSING -> stringResource(R.string.BackupAlertBottomSheet__manage_subscription)
-    BackupAlert.MEDIA_BACKUPS_ARE_OFF -> stringResource(R.string.BackupAlertBottomSheet__subscribe_for_s_month, pricePerMonth)
-    BackupAlert.MEDIA_WILL_BE_DELETED_TODAY -> stringResource(R.string.BackupAlertBottomSheet__download_media_now)
-    BackupAlert.DISK_FULL -> stringResource(android.R.string.ok)
-  }
+): String = when (backupAlert) {
+  BackupAlert.COULD_NOT_COMPLETE_BACKUP -> stringResource(android.R.string.ok) // TODO [message-backups] -- Finalized copy
+  BackupAlert.PAYMENT_PROCESSING -> stringResource(R.string.BackupAlertBottomSheet__manage_subscription)
+  BackupAlert.MEDIA_BACKUPS_ARE_OFF -> stringResource(R.string.BackupAlertBottomSheet__subscribe_for_s_month, pricePerMonth)
+  BackupAlert.MEDIA_WILL_BE_DELETED_TODAY -> stringResource(R.string.BackupAlertBottomSheet__download_media_now)
+  BackupAlert.DISK_FULL -> stringResource(android.R.string.ok)
 }
 
 @Composable
-private fun rememberSecondaryActionResource(backupAlert: BackupAlert): Int {
-  return remember(backupAlert) {
-    when (backupAlert) {
-      BackupAlert.COULD_NOT_COMPLETE_BACKUP -> android.R.string.cancel // TODO [message-backups] -- Finalized copy
-      BackupAlert.PAYMENT_PROCESSING -> R.string.BackupAlertBottomSheet__not_now
-      BackupAlert.MEDIA_BACKUPS_ARE_OFF -> R.string.BackupAlertBottomSheet__not_now
-      BackupAlert.MEDIA_WILL_BE_DELETED_TODAY -> R.string.BackupAlertBottomSheet__dont_download_media
-      BackupAlert.DISK_FULL -> R.string.BackupAlertBottomSheet__skip
-    }
+private fun rememberSecondaryActionResource(backupAlert: BackupAlert): Int = remember(backupAlert) {
+  when (backupAlert) {
+    BackupAlert.COULD_NOT_COMPLETE_BACKUP -> android.R.string.cancel // TODO [message-backups] -- Finalized copy
+    BackupAlert.PAYMENT_PROCESSING -> R.string.BackupAlertBottomSheet__not_now
+    BackupAlert.MEDIA_BACKUPS_ARE_OFF -> R.string.BackupAlertBottomSheet__not_now
+    BackupAlert.MEDIA_WILL_BE_DELETED_TODAY -> R.string.BackupAlertBottomSheet__dont_download_media
+    BackupAlert.DISK_FULL -> R.string.BackupAlertBottomSheet__skip
   }
 }
 

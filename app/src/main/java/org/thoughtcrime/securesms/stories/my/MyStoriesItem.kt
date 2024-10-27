@@ -44,28 +44,20 @@ object MyStoriesItem {
     val onShareClick: (Model) -> Unit,
     val onInfoClick: (Model, View) -> Unit
   ) : PreferenceModel<Model>() {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return distributionStory.messageRecord.id == newItem.distributionStory.messageRecord.id
+    override fun areItemsTheSame(newItem: Model): Boolean = distributionStory.messageRecord.id == newItem.distributionStory.messageRecord.id
+
+    override fun areContentsTheSame(newItem: Model): Boolean = distributionStory == newItem.distributionStory &&
+      !hasStatusChange(newItem) &&
+      distributionStory.messageRecord.isViewed == newItem.distributionStory.messageRecord.isViewed &&
+      super.areContentsTheSame(newItem)
+
+    override fun getChangePayload(newItem: Model): Any? = if (isSameRecord(newItem) && hasStatusChange(newItem)) {
+      STATUS_CHANGE
+    } else {
+      null
     }
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return distributionStory == newItem.distributionStory &&
-        !hasStatusChange(newItem) &&
-        distributionStory.messageRecord.isViewed == newItem.distributionStory.messageRecord.isViewed &&
-        super.areContentsTheSame(newItem)
-    }
-
-    override fun getChangePayload(newItem: Model): Any? {
-      return if (isSameRecord(newItem) && hasStatusChange(newItem)) {
-        STATUS_CHANGE
-      } else {
-        null
-      }
-    }
-
-    private fun isSameRecord(newItem: Model): Boolean {
-      return distributionStory.messageRecord.id == newItem.distributionStory.messageRecord.id
-    }
+    private fun isSameRecord(newItem: Model): Boolean = distributionStory.messageRecord.id == newItem.distributionStory.messageRecord.id
 
     private fun hasStatusChange(newItem: Model): Boolean {
       val oldRecord = distributionStory.messageRecord
@@ -198,9 +190,9 @@ object MyStoriesItem {
     }
 
     private inner class HideBlurAfterLoadListener : RequestListener<Drawable> {
-      override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean = false
+      override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean = false
 
-      override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+      override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>?, dataSource: DataSource, isFirstResource: Boolean): Boolean {
         storyBlur.visible = false
         return false
       }

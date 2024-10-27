@@ -51,27 +51,23 @@ class InlineQueryViewModelV2(
     querySubject.onNext(inlineQuery)
   }
 
-  private fun queryEmoji(query: InlineQuery.Emoji): Observable<Results> {
-    return emojiSearchRepository
-      .submitQuery(query.query)
-      .map { r -> if (r.isEmpty()) None else EmojiResults(toMappingModels(r)) }
-      .toObservable()
-  }
+  private fun queryEmoji(query: InlineQuery.Emoji): Observable<Results> = emojiSearchRepository
+    .submitQuery(query.query)
+    .map { r -> if (r.isEmpty()) None else EmojiResults(toMappingModels(r)) }
+    .toObservable()
 
-  private fun queryMentions(query: InlineQuery.Mention): Observable<Results> {
-    return recipientRepository
-      .groupRecord
-      .take(1)
-      .switchMap { group ->
-        if (group.isPresent) {
-          mentionsPickerRepository.search(query.query, group.get().members)
-            .map { results -> if (results.isEmpty()) None else MentionResults(results.map { MentionViewState(it) }) }
-            .toObservable()
-        } else {
-          Observable.just(None)
-        }
+  private fun queryMentions(query: InlineQuery.Mention): Observable<Results> = recipientRepository
+    .groupRecord
+    .take(1)
+    .switchMap { group ->
+      if (group.isPresent) {
+        mentionsPickerRepository.search(query.query, group.get().members)
+          .map { results -> if (results.isEmpty()) None else MentionResults(results.map { MentionViewState(it) }) }
+          .toObservable()
+      } else {
+        Observable.just(None)
       }
-  }
+    }
 
   fun onSelection(model: AnyMappingModel) {
     when (model) {

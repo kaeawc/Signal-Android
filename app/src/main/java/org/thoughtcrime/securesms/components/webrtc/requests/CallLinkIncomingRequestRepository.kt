@@ -14,18 +14,16 @@ import org.thoughtcrime.securesms.recipients.RecipientId
 
 class CallLinkIncomingRequestRepository {
 
-  fun getGroupsInCommon(recipientId: RecipientId): Observable<GroupsInCommon> {
-    return Recipient.observable(recipientId).flatMapSingle { recipient ->
-      if (recipient.hasGroupsInCommon) {
-        Single.fromCallable {
-          val groupsInCommon = SignalDatabase.groups.getGroupsContainingMember(recipient.id, true)
-          val total = groupsInCommon.size
-          val names = groupsInCommon.take(2).map { it.title!! }
-          GroupsInCommon(total, names)
-        }.observeOn(Schedulers.io())
-      } else {
-        Single.just(GroupsInCommon(0, listOf()))
-      }
+  fun getGroupsInCommon(recipientId: RecipientId): Observable<GroupsInCommon> = Recipient.observable(recipientId).flatMapSingle { recipient ->
+    if (recipient.hasGroupsInCommon) {
+      Single.fromCallable {
+        val groupsInCommon = SignalDatabase.groups.getGroupsContainingMember(recipient.id, true)
+        val total = groupsInCommon.size
+        val names = groupsInCommon.take(2).map { it.title!! }
+        GroupsInCommon(total, names)
+      }.observeOn(Schedulers.io())
+    } else {
+      Single.just(GroupsInCommon(0, listOf()))
     }
   }
 }

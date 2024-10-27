@@ -21,13 +21,9 @@ object MediaReviewSelectedItem {
   }
 
   class Model(val media: Media, val isSelected: Boolean) : MappingModel<Model> {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return media == newItem.media
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = media == newItem.media
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return media == newItem.media && isSelected == newItem.isSelected
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = media == newItem.media && isSelected == newItem.isSelected
   }
 
   class ViewHolder(itemView: View, private val onSelectedMediaClicked: OnSelectedMediaClicked) : MappingViewHolder<Model>(itemView) {

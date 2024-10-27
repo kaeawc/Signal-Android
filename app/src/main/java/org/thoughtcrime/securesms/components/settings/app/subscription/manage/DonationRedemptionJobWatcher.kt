@@ -29,28 +29,22 @@ object DonationRedemptionJobWatcher {
   }
 
   @WorkerThread
-  fun hasPendingRedemptionJob(): Boolean {
-    return getDonationRedemptionJobStatus(RedemptionType.SUBSCRIPTION).isInProgress() || getDonationRedemptionJobStatus(RedemptionType.ONE_TIME).isInProgress()
-  }
+  fun hasPendingRedemptionJob(): Boolean = getDonationRedemptionJobStatus(RedemptionType.SUBSCRIPTION).isInProgress() || getDonationRedemptionJobStatus(RedemptionType.ONE_TIME).isInProgress()
 
   fun watchSubscriptionRedemption(): Observable<DonationRedemptionJobStatus> = watch(RedemptionType.SUBSCRIPTION)
 
   @JvmStatic
   @WorkerThread
-  fun getSubscriptionRedemptionJobStatus(): DonationRedemptionJobStatus {
-    return getDonationRedemptionJobStatus(RedemptionType.SUBSCRIPTION)
-  }
+  fun getSubscriptionRedemptionJobStatus(): DonationRedemptionJobStatus = getDonationRedemptionJobStatus(RedemptionType.SUBSCRIPTION)
 
   fun watchOneTimeRedemption(): Observable<DonationRedemptionJobStatus> = watch(RedemptionType.ONE_TIME)
 
-  private fun watch(redemptionType: RedemptionType): Observable<DonationRedemptionJobStatus> {
-    return Observable
-      .interval(0, 5, TimeUnit.SECONDS)
-      .map {
-        getDonationRedemptionJobStatus(redemptionType)
-      }
-      .distinctUntilChanged()
-  }
+  private fun watch(redemptionType: RedemptionType): Observable<DonationRedemptionJobStatus> = Observable
+    .interval(0, 5, TimeUnit.SECONDS)
+    .map {
+      getDonationRedemptionJobStatus(redemptionType)
+    }
+    .distinctUntilChanged()
 
   private fun getDonationRedemptionJobStatus(redemptionType: RedemptionType): DonationRedemptionJobStatus {
     val queue = when (redemptionType) {
@@ -89,24 +83,22 @@ object DonationRedemptionJobWatcher {
     }
   }
 
-  private fun JobSpec.toDonationRedemptionStatus(redemptionType: RedemptionType): DonationRedemptionJobStatus {
-    return when (factoryKey) {
-      ExternalLaunchDonationJob.KEY -> {
-        val stripe3DSData = ExternalLaunchDonationJob.Factory.parseSerializedData(serializedData!!)
-        DonationRedemptionJobStatus.PendingExternalVerification(
-          pendingOneTimeDonation = pendingOneTimeDonation(redemptionType, stripe3DSData),
-          nonVerifiedMonthlyDonation = nonVerifiedMonthlyDonation(redemptionType, stripe3DSData)
-        )
-      }
+  private fun JobSpec.toDonationRedemptionStatus(redemptionType: RedemptionType): DonationRedemptionJobStatus = when (factoryKey) {
+    ExternalLaunchDonationJob.KEY -> {
+      val stripe3DSData = ExternalLaunchDonationJob.Factory.parseSerializedData(serializedData!!)
+      DonationRedemptionJobStatus.PendingExternalVerification(
+        pendingOneTimeDonation = pendingOneTimeDonation(redemptionType, stripe3DSData),
+        nonVerifiedMonthlyDonation = nonVerifiedMonthlyDonation(redemptionType, stripe3DSData)
+      )
+    }
 
-      SubscriptionReceiptRequestResponseJob.KEY,
-      BoostReceiptRequestResponseJob.KEY -> DonationRedemptionJobStatus.PendingReceiptRequest
+    SubscriptionReceiptRequestResponseJob.KEY,
+    BoostReceiptRequestResponseJob.KEY -> DonationRedemptionJobStatus.PendingReceiptRequest
 
-      DonationReceiptRedemptionJob.KEY -> DonationRedemptionJobStatus.PendingReceiptRedemption
+    DonationReceiptRedemptionJob.KEY -> DonationRedemptionJobStatus.PendingReceiptRedemption
 
-      else -> {
-        DonationRedemptionJobStatus.None
-      }
+    else -> {
+      DonationRedemptionJobStatus.None
     }
   }
 

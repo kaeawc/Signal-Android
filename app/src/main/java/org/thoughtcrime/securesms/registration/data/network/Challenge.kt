@@ -14,21 +14,17 @@ enum class Challenge(val key: String) {
   companion object {
     private val TAG = Log.tag(Challenge::class)
 
-    fun parse(strings: List<String>): List<Challenge> {
-      return strings.mapNotNull {
-        when (it) {
-          CAPTCHA.key -> CAPTCHA
-          PUSH.key -> PUSH
-          else -> {
-            Log.i(TAG, "Encountered unknown challenge type: $it")
-            null
-          }
+    fun parse(strings: List<String>): List<Challenge> = strings.mapNotNull {
+      when (it) {
+        CAPTCHA.key -> CAPTCHA
+        PUSH.key -> PUSH
+        else -> {
+          Log.i(TAG, "Encountered unknown challenge type: $it")
+          null
         }
       }
     }
   }
 
-  fun stringify(challenges: List<Challenge>): String {
-    return challenges.joinToString { it.key }
-  }
+  fun stringify(challenges: List<Challenge>): String = challenges.joinToString { it.key }
 }

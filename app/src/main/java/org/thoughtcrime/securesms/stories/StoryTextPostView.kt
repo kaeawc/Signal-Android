@@ -52,13 +52,9 @@ class StoryTextPostView @JvmOverloads constructor(
     disableCreationMode()
   }
 
-  fun getLinkPreviewThumbnailWidth(useLargeThumbnail: Boolean): Int {
-    return linkPreviewView.getThumbnailViewWidth(useLargeThumbnail)
-  }
+  fun getLinkPreviewThumbnailWidth(useLargeThumbnail: Boolean): Int = linkPreviewView.getThumbnailViewWidth(useLargeThumbnail)
 
-  fun getLinkPreviewThumbnailHeight(useLargeThumbnail: Boolean): Int {
-    return linkPreviewView.getThumbnailViewHeight(useLargeThumbnail)
-  }
+  fun getLinkPreviewThumbnailHeight(useLargeThumbnail: Boolean): Int = linkPreviewView.getThumbnailViewHeight(useLargeThumbnail)
 
   fun enableCreationMode() {
     linkPreviewView.setCanClose(true)
@@ -152,9 +148,7 @@ class StoryTextPostView @JvmOverloads constructor(
     postAdjustLinkPreviewTranslationY()
   }
 
-  fun bindLinkPreview(linkPreview: LinkPreview?, useLargeThumbnail: Boolean, loadThumbnail: Boolean = true): ListenableFuture<Boolean> {
-    return linkPreviewView.bind(linkPreview, View.GONE, useLargeThumbnail, loadThumbnail)
-  }
+  fun bindLinkPreview(linkPreview: LinkPreview?, useLargeThumbnail: Boolean, loadThumbnail: Boolean = true): ListenableFuture<Boolean> = linkPreviewView.bind(linkPreview, View.GONE, useLargeThumbnail, loadThumbnail)
 
   fun setLinkPreviewDrawable(drawable: Drawable?, useLargeThumbnail: Boolean) {
     linkPreviewView.setThumbnailDrawable(drawable, useLargeThumbnail)
@@ -193,9 +187,7 @@ class StoryTextPostView @JvmOverloads constructor(
     linkPreviewView.alpha = 0f
   }
 
-  private fun canDisplayText(): Boolean {
-    return !(linkPreviewView.isVisible && (isPlaceholder || textView.text.isEmpty()))
-  }
+  private fun canDisplayText(): Boolean = !(linkPreviewView.isVisible && (isPlaceholder || textView.text.isEmpty()))
 
   private fun adjustLinkPreviewTranslationY() {
     val backgroundHeight = backgroundView.measuredHeight

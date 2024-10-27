@@ -8,12 +8,10 @@ package org.thoughtcrime.securesms.backup.v2.database
 import org.signal.core.util.select
 import org.thoughtcrime.securesms.database.CallTable
 
-fun CallTable.getAdhocCallsForBackup(): AdHocCallArchiveExporter {
-  return AdHocCallArchiveExporter(
-    readableDatabase
-      .select()
-      .from(CallTable.TABLE_NAME)
-      .where("${CallTable.TYPE} = ?", CallTable.Type.serialize(CallTable.Type.AD_HOC_CALL))
-      .run()
-  )
-}
+fun CallTable.getAdhocCallsForBackup(): AdHocCallArchiveExporter = AdHocCallArchiveExporter(
+  readableDatabase
+    .select()
+    .from(CallTable.TABLE_NAME)
+    .where("${CallTable.TYPE} = ?", CallTable.Type.serialize(CallTable.Type.AD_HOC_CALL))
+    .run()
+)

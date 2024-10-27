@@ -74,7 +74,9 @@ class ConversationAdapterV2(
   private val startExpirationTimeout: (MessageRecord) -> Unit,
   private val chatColorsDataProvider: () -> ChatColorsDrawable.ChatColorsData,
   private val displayDialogFragment: (DialogFragment) -> Unit
-) : PagingMappingAdapter<ConversationElementKey>(), ConversationAdapterBridge, V2ConversationContext {
+) : PagingMappingAdapter<ConversationElementKey>(),
+  ConversationAdapterBridge,
+  V2ConversationContext {
 
   companion object {
     private val TAG = Log.tag(ConversationAdapterV2::class.java)
@@ -190,17 +192,11 @@ class ConversationAdapterV2(
 
   override fun getColorizer(): Colorizer = colorizer
 
-  override fun getChatColorsData(): ChatColorsDrawable.ChatColorsData {
-    return chatColorsDataProvider()
-  }
+  override fun getChatColorsData(): ChatColorsDrawable.ChatColorsData = chatColorsDataProvider()
 
-  override fun getNextMessage(adapterPosition: Int): MessageRecord? {
-    return getConversationMessage(adapterPosition - 1)?.messageRecord
-  }
+  override fun getNextMessage(adapterPosition: Int): MessageRecord? = getConversationMessage(adapterPosition - 1)?.messageRecord
 
-  override fun getPreviousMessage(adapterPosition: Int): MessageRecord? {
-    return getConversationMessage(adapterPosition + 1)?.messageRecord
-  }
+  override fun getPreviousMessage(adapterPosition: Int): MessageRecord? = getConversationMessage(adapterPosition + 1)?.messageRecord
 
   fun updateSearchQuery(searchQuery: String) {
     val oldQuery = this.searchQuery
@@ -211,13 +207,11 @@ class ConversationAdapterV2(
     }
   }
 
-  fun getLastVisibleConversationMessage(position: Int): ConversationMessage? {
-    return try {
-      getConversationMessage(position) ?: getConversationMessage(position - 1)
-    } catch (e: IndexOutOfBoundsException) {
-      Log.w(TAG, "Race condition changed size of conversation", e)
-      null
-    }
+  fun getLastVisibleConversationMessage(position: Int): ConversationMessage? = try {
+    getConversationMessage(position) ?: getConversationMessage(position - 1)
+  } catch (e: IndexOutOfBoundsException) {
+    Log.w(TAG, "Race condition changed size of conversation", e)
+    null
   }
 
   fun canJumpToPosition(absolutePosition: Int): Boolean {
@@ -245,18 +239,14 @@ class ConversationAdapterV2(
     }
   }
 
-  override fun getConversationMessage(position: Int): ConversationMessage? {
-    return when (val item = getItem(position)) {
-      is ConversationMessageElement -> item.conversationMessage
-      is ThreadHeader -> null
-      null -> null
-      else -> throw AssertionError("Invalid item: ${item.javaClass}")
-    }
+  override fun getConversationMessage(position: Int): ConversationMessage? = when (val item = getItem(position)) {
+    is ConversationMessageElement -> item.conversationMessage
+    is ThreadHeader -> null
+    null -> null
+    else -> throw AssertionError("Invalid item: ${item.javaClass}")
   }
 
-  override fun hasNoConversationMessages(): Boolean {
-    return itemCount == 0
-  }
+  override fun hasNoConversationMessages(): Boolean = itemCount == 0
 
   /**
    * Momentarily highlights a mention at the requested position.
@@ -277,15 +267,13 @@ class ConversationAdapterV2(
     return request
   }
 
-  fun onHasWallpaperChanged(hasWallpaper: Boolean): Boolean {
-    return if (this.hasWallpaper != hasWallpaper) {
-      Log.d(TAG, "Resetting adapter due to wallpaper change.")
-      this.hasWallpaper = hasWallpaper
-      notifyItemRangeChanged(0, itemCount, V2Payload.WALLPAPER)
-      true
-    } else {
-      false
-    }
+  fun onHasWallpaperChanged(hasWallpaper: Boolean): Boolean = if (this.hasWallpaper != hasWallpaper) {
+    Log.d(TAG, "Resetting adapter due to wallpaper change.")
+    this.hasWallpaper = hasWallpaper
+    notifyItemRangeChanged(0, itemCount, V2Payload.WALLPAPER)
+    true
+  } else {
+    false
   }
 
   fun setMessageRequestIsAccepted(isMessageRequestAccepted: Boolean) {
@@ -413,7 +401,10 @@ class ConversationAdapterV2(
     }
   }
 
-  private abstract inner class ConversationViewHolder<T>(itemView: View) : MappingViewHolder<T>(itemView), Multiselectable, Colorizable {
+  private abstract inner class ConversationViewHolder<T>(itemView: View) :
+    MappingViewHolder<T>(itemView),
+    Multiselectable,
+    Colorizable {
     val bindable: BindableConversationItem
       get() = itemView as BindableConversationItem
 
@@ -494,25 +485,15 @@ class ConversationAdapterV2(
       bindable.hideProjectionArea()
     }
 
-    override fun getMediaItem(): MediaItem? {
-      return bindable.mediaItem
-    }
+    override fun getMediaItem(): MediaItem? = bindable.mediaItem
 
-    override fun getPlaybackPolicyEnforcer(): GiphyMp4PlaybackPolicyEnforcer? {
-      return bindable.playbackPolicyEnforcer
-    }
+    override fun getPlaybackPolicyEnforcer(): GiphyMp4PlaybackPolicyEnforcer? = bindable.playbackPolicyEnforcer
 
-    override fun getGiphyMp4PlayableProjection(recyclerView: ViewGroup): Projection {
-      return bindable.getGiphyMp4PlayableProjection(recyclerView)
-    }
+    override fun getGiphyMp4PlayableProjection(recyclerView: ViewGroup): Projection = bindable.getGiphyMp4PlayableProjection(recyclerView)
 
-    override fun canPlayContent(): Boolean {
-      return bindable.canPlayContent()
-    }
+    override fun canPlayContent(): Boolean = bindable.canPlayContent()
 
-    override fun shouldProjectContent(): Boolean {
-      return bindable.shouldProjectContent()
-    }
+    override fun shouldProjectContent(): Boolean = bindable.shouldProjectContent()
 
     override fun hasNonSelectableMedia(): Boolean = bindable.hasNonSelectableMedia()
 

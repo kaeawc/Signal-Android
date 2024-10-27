@@ -13,9 +13,7 @@ open class MultiShareTimestampProvider(
   private val sleepTimeout: Duration = 5.milliseconds
 ) {
 
-  open fun getMillis(index: Int): Long {
-    return waitForTime().inWholeMilliseconds
-  }
+  open fun getMillis(index: Int): Long = waitForTime().inWholeMilliseconds
 
   protected fun waitForTime(): Duration {
     ThreadUtil.sleep(sleepTimeout.inWholeMilliseconds)

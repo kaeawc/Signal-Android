@@ -9,6 +9,4 @@ import org.thoughtcrime.securesms.attachments.Attachment
 import org.thoughtcrime.securesms.attachments.AttachmentId
 import org.thoughtcrime.securesms.database.AttachmentTable
 
-fun AttachmentTable.restoreWallpaperAttachment(attachment: Attachment): AttachmentId? {
-  return insertAttachmentsForMessage(AttachmentTable.WALLPAPER_MESSAGE_ID, listOf(attachment), emptyList()).values.firstOrNull()
-}
+fun AttachmentTable.restoreWallpaperAttachment(attachment: Attachment): AttachmentId? = insertAttachmentsForMessage(AttachmentTable.WALLPAPER_MESSAGE_ID, listOf(attachment), emptyList()).values.firstOrNull()

@@ -38,7 +38,5 @@ class LogSectionStories : LogSection {
     return output
   }
 
-  private fun presentRecipientId(recipientId: RecipientId?): String {
-    return recipientId?.serialize() ?: "Not set"
-  }
+  private fun presentRecipientId(recipientId: RecipientId?): String = recipientId?.serialize() ?: "Not set"
 }

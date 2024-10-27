@@ -47,14 +47,12 @@ class PermissionDeniedBottomSheet private constructor() : ComposeBottomSheetDial
     private const val ARG_USE_EXTENDED = "argument.use.extended"
 
     @JvmStatic
-    fun showPermissionFragment(titleRes: Int, subtitleRes: Int, useExtended: Boolean = false): ComposeBottomSheetDialogFragment {
-      return PermissionDeniedBottomSheet().apply {
-        arguments = bundleOf(
-          ARG_TITLE to titleRes,
-          ARG_SUBTITLE to subtitleRes,
-          ARG_USE_EXTENDED to useExtended
-        )
-      }
+    fun showPermissionFragment(titleRes: Int, subtitleRes: Int, useExtended: Boolean = false): ComposeBottomSheetDialogFragment = PermissionDeniedBottomSheet().apply {
+      arguments = bundleOf(
+        ARG_TITLE to titleRes,
+        ARG_SUBTITLE to subtitleRes,
+        ARG_USE_EXTENDED to useExtended
+      )
     }
   }
 

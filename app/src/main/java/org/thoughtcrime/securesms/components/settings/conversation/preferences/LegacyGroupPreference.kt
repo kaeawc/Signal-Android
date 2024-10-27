@@ -20,9 +20,7 @@ object LegacyGroupPreference {
     val onLearnMoreClick: () -> Unit,
     val onMmsWarningClick: () -> Unit
   ) : PreferenceModel<Model>() {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return state == newItem.state
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = state == newItem.state
   }
 
   private class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

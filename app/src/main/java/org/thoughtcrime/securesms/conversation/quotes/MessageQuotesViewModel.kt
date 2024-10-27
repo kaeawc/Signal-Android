@@ -23,31 +23,25 @@ class MessageQuotesViewModel(
   private val groupAuthorNameColorHelper = GroupAuthorNameColorHelper()
   private val repository = MessageQuotesRepository()
 
-  fun getMessages(): Observable<List<ConversationMessage>> {
-    return repository
-      .getMessagesInQuoteChain(getApplication(), messageId)
-      .subscribeOn(Schedulers.io())
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getMessages(): Observable<List<ConversationMessage>> = repository
+    .getMessagesInQuoteChain(getApplication(), messageId)
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
 
-  fun getNameColorsMap(): Observable<Map<RecipientId, NameColor>> {
-    return Observable.just(conversationRecipientId)
-      .map { conversationRecipientId ->
-        val conversationRecipient = Recipient.resolved(conversationRecipientId)
+  fun getNameColorsMap(): Observable<Map<RecipientId, NameColor>> = Observable.just(conversationRecipientId)
+    .map { conversationRecipientId ->
+      val conversationRecipient = Recipient.resolved(conversationRecipientId)
 
-        if (conversationRecipient.groupId.isPresent) {
-          groupAuthorNameColorHelper.getColorMap(conversationRecipient.groupId.get())
-        } else {
-          emptyMap()
-        }
+      if (conversationRecipient.groupId.isPresent) {
+        groupAuthorNameColorHelper.getColorMap(conversationRecipient.groupId.get())
+      } else {
+        emptyMap()
       }
-      .subscribeOn(Schedulers.io())
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+    }
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
 
   class Factory(private val application: Application, private val messageId: MessageId, private val conversationRecipientId: RecipientId) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(MessageQuotesViewModel(application, messageId, conversationRecipientId)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(MessageQuotesViewModel(application, messageId, conversationRecipientId)) as T
   }
 }

@@ -28,27 +28,25 @@ object CallLinks {
 
   fun url(linkKeyBytes: ByteArray) = "$HTTPS_LINK_PREFIX${CallLinkRootKey(linkKeyBytes)}"
 
-  fun watchCallLink(roomId: CallLinkRoomId): Observable<CallLinkTable.CallLink> {
-    return Observable.create { emitter ->
+  fun watchCallLink(roomId: CallLinkRoomId): Observable<CallLinkTable.CallLink> = Observable.create { emitter ->
 
-      fun refresh() {
-        val callLink = SignalDatabase.callLinks.getCallLinkByRoomId(roomId)
-        if (callLink != null) {
-          emitter.onNext(callLink)
-        }
+    fun refresh() {
+      val callLink = SignalDatabase.callLinks.getCallLinkByRoomId(roomId)
+      if (callLink != null) {
+        emitter.onNext(callLink)
       }
+    }
 
-      val observer = DatabaseObserver.Observer {
-        refresh()
-      }
-
-      AppDependencies.databaseObserver.registerCallLinkObserver(roomId, observer)
-      emitter.setCancellable {
-        AppDependencies.databaseObserver.unregisterObserver(observer)
-      }
-
+    val observer = DatabaseObserver.Observer {
       refresh()
     }
+
+    AppDependencies.databaseObserver.registerCallLinkObserver(roomId, observer)
+    emitter.setCancellable {
+      AppDependencies.databaseObserver.unregisterObserver(observer)
+    }
+
+    refresh()
   }
 
   @JvmStatic

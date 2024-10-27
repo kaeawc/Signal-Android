@@ -26,16 +26,14 @@ object LinkDeviceRepository {
 
   private val TAG = Log.tag(LinkDeviceRepository::class)
 
-  fun removeDevice(deviceId: Long): Boolean {
-    return try {
-      val accountManager = AppDependencies.signalServiceAccountManager
-      accountManager.removeDevice(deviceId)
-      LinkedDeviceInactiveCheckJob.enqueue()
-      true
-    } catch (e: IOException) {
-      Log.w(TAG, e)
-      false
-    }
+  fun removeDevice(deviceId: Long): Boolean = try {
+    val accountManager = AppDependencies.signalServiceAccountManager
+    accountManager.removeDevice(deviceId)
+    LinkedDeviceInactiveCheckJob.enqueue()
+    true
+  } catch (e: IOException) {
+    Log.w(TAG, e)
+    false
   }
 
   fun loadDevices(): List<Device>? {
@@ -90,33 +88,31 @@ object LinkDeviceRepository {
     return ephemeralId.isNotNullOrBlank() && publicKeyEncoded.isNotNullOrBlank()
   }
 
-  fun addDevice(uri: Uri): LinkDeviceResult {
-    return try {
-      val accountManager = AppDependencies.signalServiceAccountManager
-      val verificationCode = accountManager.getNewDeviceVerificationCode()
-      if (!isValidQr(uri)) {
-        LinkDeviceResult.BAD_CODE
-      } else {
-        val ephemeralId: String? = uri.getQueryParameter("uuid")
-        val publicKeyEncoded: String? = uri.getQueryParameter("pub_key")
-        val publicKey = Curve.decodePoint(publicKeyEncoded?.let { decode(it) }, 0)
-        val aciIdentityKeyPair = SignalStore.account.aciIdentityKey
-        val pniIdentityKeyPair = SignalStore.account.pniIdentityKey
-        val profileKey = ProfileKeyUtil.getSelfProfileKey()
+  fun addDevice(uri: Uri): LinkDeviceResult = try {
+    val accountManager = AppDependencies.signalServiceAccountManager
+    val verificationCode = accountManager.getNewDeviceVerificationCode()
+    if (!isValidQr(uri)) {
+      LinkDeviceResult.BAD_CODE
+    } else {
+      val ephemeralId: String? = uri.getQueryParameter("uuid")
+      val publicKeyEncoded: String? = uri.getQueryParameter("pub_key")
+      val publicKey = Curve.decodePoint(publicKeyEncoded?.let { decode(it) }, 0)
+      val aciIdentityKeyPair = SignalStore.account.aciIdentityKey
+      val pniIdentityKeyPair = SignalStore.account.pniIdentityKey
+      val profileKey = ProfileKeyUtil.getSelfProfileKey()
 
-        accountManager.addDevice(ephemeralId, publicKey, aciIdentityKeyPair, pniIdentityKeyPair, profileKey, SignalStore.svr.getOrCreateMasterKey(), verificationCode)
-        TextSecurePreferences.setMultiDevice(AppDependencies.application, true)
-        LinkDeviceResult.SUCCESS
-      }
-    } catch (e: NotFoundException) {
-      LinkDeviceResult.NO_DEVICE
-    } catch (e: DeviceLimitExceededException) {
-      LinkDeviceResult.LIMIT_EXCEEDED
-    } catch (e: IOException) {
-      LinkDeviceResult.NETWORK_ERROR
-    } catch (e: InvalidKeyException) {
-      LinkDeviceResult.KEY_ERROR
+      accountManager.addDevice(ephemeralId, publicKey, aciIdentityKeyPair, pniIdentityKeyPair, profileKey, SignalStore.svr.getOrCreateMasterKey(), verificationCode)
+      TextSecurePreferences.setMultiDevice(AppDependencies.application, true)
+      LinkDeviceResult.SUCCESS
     }
+  } catch (e: NotFoundException) {
+    LinkDeviceResult.NO_DEVICE
+  } catch (e: DeviceLimitExceededException) {
+    LinkDeviceResult.LIMIT_EXCEEDED
+  } catch (e: IOException) {
+    LinkDeviceResult.NETWORK_ERROR
+  } catch (e: InvalidKeyException) {
+    LinkDeviceResult.KEY_ERROR
   }
 
   enum class LinkDeviceResult {

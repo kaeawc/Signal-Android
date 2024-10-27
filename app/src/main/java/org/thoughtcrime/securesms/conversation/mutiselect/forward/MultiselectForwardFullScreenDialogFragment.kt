@@ -11,7 +11,9 @@ import org.thoughtcrime.securesms.conversation.mutiselect.forward.MultiselectFor
 import org.thoughtcrime.securesms.stories.Stories
 import org.thoughtcrime.securesms.util.fragments.findListener
 
-class MultiselectForwardFullScreenDialogFragment : FullScreenDialogFragment(), MultiselectForwardFragment.Callback {
+class MultiselectForwardFullScreenDialogFragment :
+  FullScreenDialogFragment(),
+  MultiselectForwardFragment.Callback {
   override fun getTitle(): Int = requireArguments().getInt(DIALOG_TITLE)
 
   override fun getDialogLayoutResource(): Int = R.layout.fragment_container
@@ -31,17 +33,11 @@ class MultiselectForwardFullScreenDialogFragment : FullScreenDialogFragment(), M
     }
   }
 
-  override fun getDialogBackgroundColor(): Int {
-    return ContextCompat.getColor(requireContext(), R.color.signal_background_primary)
-  }
+  override fun getDialogBackgroundColor(): Int = ContextCompat.getColor(requireContext(), R.color.signal_background_primary)
 
-  override fun getStorySendRequirements(): Stories.MediaTransform.SendRequirements? {
-    return findListener<Callback>()?.getStorySendRequirements()
-  }
+  override fun getStorySendRequirements(): Stories.MediaTransform.SendRequirements? = findListener<Callback>()?.getStorySendRequirements()
 
-  override fun getContainer(): ViewGroup {
-    return requireView().findViewById(R.id.full_screen_dialog_content) as ViewGroup
-  }
+  override fun getContainer(): ViewGroup = requireView().findViewById(R.id.full_screen_dialog_content) as ViewGroup
 
   override fun setResult(bundle: Bundle) {
     setFragmentResult(MultiselectForwardFragment.RESULT_KEY, bundle)

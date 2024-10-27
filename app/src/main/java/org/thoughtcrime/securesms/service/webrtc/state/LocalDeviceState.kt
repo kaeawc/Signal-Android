@@ -22,7 +22,5 @@ data class LocalDeviceState(
   var handRaisedTimestamp: Long = CallParticipant.HAND_LOWERED
 ) {
 
-  fun duplicate(): LocalDeviceState {
-    return copy()
-  }
+  fun duplicate(): LocalDeviceState = copy()
 }

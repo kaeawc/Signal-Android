@@ -110,8 +110,6 @@ class CallLinkDetailsViewModel(
   }
 
   class Factory(private val callLinkRoomId: CallLinkRoomId) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(CallLinkDetailsViewModel(callLinkRoomId)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(CallLinkDetailsViewModel(callLinkRoomId)) as T
   }
 }

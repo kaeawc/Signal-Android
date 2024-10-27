@@ -285,26 +285,20 @@ object RemoteConfig {
   // endregion
 
   // region Conversion utilities
-  private fun Any?.asBoolean(defaultValue: Boolean): Boolean {
-    return when (this) {
-      is Boolean -> this
-      is String -> this.toBoolean()
-      else -> defaultValue
-    }
+  private fun Any?.asBoolean(defaultValue: Boolean): Boolean = when (this) {
+    is Boolean -> this
+    is String -> this.toBoolean()
+    else -> defaultValue
   }
 
-  private fun Any?.asInteger(defaultValue: Int): Int {
-    return when (this) {
-      is String -> this.toIntOrNull() ?: defaultValue
-      else -> defaultValue
-    }
+  private fun Any?.asInteger(defaultValue: Int): Int = when (this) {
+    is String -> this.toIntOrNull() ?: defaultValue
+    else -> defaultValue
   }
 
-  private fun Any?.asLong(defaultValue: Long): Long {
-    return when (this) {
-      is String -> this.toLongOrNull() ?: defaultValue
-      else -> defaultValue
-    }
+  private fun Any?.asLong(defaultValue: Long): Long = when (this) {
+    is String -> this.toLongOrNull() ?: defaultValue
+    else -> defaultValue
   }
 
   private fun <T : String?> Any?.asString(defaultValue: T): T {
@@ -379,16 +373,14 @@ object RemoteConfig {
     sticky: Boolean = false,
     active: Boolean = true,
     onChangeListener: OnFlagChange? = null
-  ): Config<Boolean> {
-    return remoteValue(
-      key = key,
-      hotSwappable = hotSwappable,
-      sticky = sticky,
-      active = active,
-      onChangeListener = onChangeListener,
-      transformer = { it.asBoolean(defaultValue) }
-    )
-  }
+  ): Config<Boolean> = remoteValue(
+    key = key,
+    hotSwappable = hotSwappable,
+    sticky = sticky,
+    active = active,
+    onChangeListener = onChangeListener,
+    transformer = { it.asBoolean(defaultValue) }
+  )
 
   private fun remoteInt(
     key: String,
@@ -396,16 +388,14 @@ object RemoteConfig {
     hotSwappable: Boolean,
     active: Boolean = true,
     onChangeListener: OnFlagChange? = null
-  ): Config<Int> {
-    return remoteValue(
-      key = key,
-      hotSwappable = hotSwappable,
-      sticky = false,
-      active = active,
-      onChangeListener = onChangeListener,
-      transformer = { it.asInteger(defaultValue) }
-    )
-  }
+  ): Config<Int> = remoteValue(
+    key = key,
+    hotSwappable = hotSwappable,
+    sticky = false,
+    active = active,
+    onChangeListener = onChangeListener,
+    transformer = { it.asInteger(defaultValue) }
+  )
 
   private fun remoteLong(
     key: String,
@@ -413,16 +403,14 @@ object RemoteConfig {
     hotSwappable: Boolean,
     active: Boolean = true,
     onChangeListener: OnFlagChange? = null
-  ): Config<Long> {
-    return remoteValue(
-      key = key,
-      hotSwappable = hotSwappable,
-      sticky = false,
-      active = active,
-      onChangeListener = onChangeListener,
-      transformer = { it.asLong(defaultValue) }
-    )
-  }
+  ): Config<Long> = remoteValue(
+    key = key,
+    hotSwappable = hotSwappable,
+    sticky = false,
+    active = active,
+    onChangeListener = onChangeListener,
+    transformer = { it.asLong(defaultValue) }
+  )
 
   private fun <T : String?> remoteString(
     key: String,
@@ -430,16 +418,14 @@ object RemoteConfig {
     hotSwappable: Boolean,
     active: Boolean = true,
     onChangeListener: OnFlagChange? = null
-  ): Config<T> {
-    return remoteValue(
-      key = key,
-      hotSwappable = hotSwappable,
-      sticky = false,
-      active = active,
-      onChangeListener = onChangeListener,
-      transformer = { it.asString(defaultValue) }
-    )
-  }
+  ): Config<T> = remoteValue(
+    key = key,
+    hotSwappable = hotSwappable,
+    sticky = false,
+    active = active,
+    onChangeListener = onChangeListener,
+    transformer = { it.asString(defaultValue) }
+  )
 
   private fun <T> remoteValue(
     key: String,

@@ -49,32 +49,22 @@ object MediaValidator {
   }
 
   @WorkerThread
-  private fun filterForValidMedia(context: Context, media: List<Media>, mediaConstraints: MediaConstraints, isStory: Boolean): List<Media> {
-    return media
-      .filter { m -> isSupportedMediaType(m.contentType) }
-      .filter { m ->
-        MediaUtil.isImageAndNotGif(m.contentType) || isValidGif(context, m, mediaConstraints) || isValidVideo(context, m, mediaConstraints) || isValidDocument(context, m, mediaConstraints)
-      }
-      .filter { m ->
-        !isStory || Stories.MediaTransform.getSendRequirements(m) != Stories.MediaTransform.SendRequirements.CAN_NOT_SEND
-      }
-  }
+  private fun filterForValidMedia(context: Context, media: List<Media>, mediaConstraints: MediaConstraints, isStory: Boolean): List<Media> = media
+    .filter { m -> isSupportedMediaType(m.contentType) }
+    .filter { m ->
+      MediaUtil.isImageAndNotGif(m.contentType) || isValidGif(context, m, mediaConstraints) || isValidVideo(context, m, mediaConstraints) || isValidDocument(context, m, mediaConstraints)
+    }
+    .filter { m ->
+      !isStory || Stories.MediaTransform.getSendRequirements(m) != Stories.MediaTransform.SendRequirements.CAN_NOT_SEND
+    }
 
-  private fun isValidGif(context: Context, media: Media, mediaConstraints: MediaConstraints): Boolean {
-    return MediaUtil.isGif(media.contentType) && media.size < mediaConstraints.getGifMaxSize(context)
-  }
+  private fun isValidGif(context: Context, media: Media, mediaConstraints: MediaConstraints): Boolean = MediaUtil.isGif(media.contentType) && media.size < mediaConstraints.getGifMaxSize(context)
 
-  private fun isValidVideo(context: Context, media: Media, mediaConstraints: MediaConstraints): Boolean {
-    return MediaUtil.isVideoType(media.contentType) && media.size < mediaConstraints.getUncompressedVideoMaxSize(context)
-  }
+  private fun isValidVideo(context: Context, media: Media, mediaConstraints: MediaConstraints): Boolean = MediaUtil.isVideoType(media.contentType) && media.size < mediaConstraints.getUncompressedVideoMaxSize(context)
 
-  private fun isValidDocument(context: Context, media: Media, mediaConstraints: MediaConstraints): Boolean {
-    return MediaUtil.isDocumentType(media.contentType) && media.size < mediaConstraints.getDocumentMaxSize(context)
-  }
+  private fun isValidDocument(context: Context, media: Media, mediaConstraints: MediaConstraints): Boolean = MediaUtil.isDocumentType(media.contentType) && media.size < mediaConstraints.getDocumentMaxSize(context)
 
-  private fun isSupportedMediaType(mimeType: String): Boolean {
-    return MediaUtil.isGif(mimeType) || MediaUtil.isImageType(mimeType) || MediaUtil.isVideoType(mimeType) || MediaUtil.isDocumentType(mimeType)
-  }
+  private fun isSupportedMediaType(mimeType: String): Boolean = MediaUtil.isGif(mimeType) || MediaUtil.isImageType(mimeType) || MediaUtil.isVideoType(mimeType) || MediaUtil.isDocumentType(mimeType)
 
   data class FilterResult(val filteredMedia: List<Media>, val filterError: FilterError?, val bucketId: String?)
 

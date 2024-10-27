@@ -23,12 +23,10 @@ object ThemedFragment {
     get() = arguments?.getInt(THEME_RES_ID) ?: UNSET
 
   @JvmStatic
-  fun Fragment.themedInflate(@LayoutRes layoutId: Int, inflater: LayoutInflater, container: ViewGroup?): View? {
-    return if (themeResId != UNSET) {
-      inflater.cloneInContext(ContextThemeWrapper(inflater.context, themeResId)).inflate(layoutId, container, false)
-    } else {
-      inflater.inflate(layoutId, container, false)
-    }
+  fun Fragment.themedInflate(@LayoutRes layoutId: Int, inflater: LayoutInflater, container: ViewGroup?): View? = if (themeResId != UNSET) {
+    inflater.cloneInContext(ContextThemeWrapper(inflater.context, themeResId)).inflate(layoutId, container, false)
+  } else {
+    inflater.inflate(layoutId, container, false)
   }
 
   @JvmStatic

@@ -35,13 +35,9 @@ class LocalArchiveJob internal constructor(parameters: Parameters) : Job(paramet
     private val TAG = Log.tag(LocalArchiveJob::class.java)
   }
 
-  override fun serialize(): ByteArray? {
-    return null
-  }
+  override fun serialize(): ByteArray? = null
 
-  override fun getFactoryKey(): String {
-    return KEY
-  }
+  override fun getFactoryKey(): String = KEY
 
   override fun run(): Result {
     Log.i(TAG, "Executing backup job...")
@@ -183,8 +179,6 @@ class LocalArchiveJob internal constructor(parameters: Parameters) : Job(paramet
   }
 
   class Factory : Job.Factory<LocalArchiveJob?> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): LocalArchiveJob {
-      return LocalArchiveJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): LocalArchiveJob = LocalArchiveJob(parameters)
   }
 }

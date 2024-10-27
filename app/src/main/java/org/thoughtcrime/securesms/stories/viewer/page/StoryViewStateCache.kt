@@ -45,18 +45,12 @@ class StoryViewStateCache() : Parcelable {
     ParcelUtil.writeParcelableCollection(parcel, viewStateMap.map { Entry(it.key, it.value) })
   }
 
-  override fun describeContents(): Int {
-    return 0
-  }
+  override fun describeContents(): Int = 0
 
   companion object CREATOR : Parcelable.Creator<StoryViewStateCache> {
-    override fun createFromParcel(parcel: Parcel): StoryViewStateCache {
-      return StoryViewStateCache(parcel)
-    }
+    override fun createFromParcel(parcel: Parcel): StoryViewStateCache = StoryViewStateCache(parcel)
 
-    override fun newArray(size: Int): Array<StoryViewStateCache?> {
-      return arrayOfNulls(size)
-    }
+    override fun newArray(size: Int): Array<StoryViewStateCache?> = arrayOfNulls(size)
   }
 
   @Parcelize

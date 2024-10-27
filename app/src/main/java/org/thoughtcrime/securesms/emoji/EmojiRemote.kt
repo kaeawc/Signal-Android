@@ -15,25 +15,19 @@ object EmojiRemote {
 
   @JvmStatic
   @Throws(IOException::class)
-  fun getVersion(): Int {
-    return S3.getLong(VERSION_URI).toInt()
-  }
+  fun getVersion(): Int = S3.getLong(VERSION_URI).toInt()
 
   /**
    * Downloads and returns the MD5 hash stored in an S3 object's ETag
    */
   @JvmStatic
-  fun getMd5(emojiRequest: EmojiRequest): ByteArray? {
-    return S3.getObjectMD5(emojiRequest.uri)
-  }
+  fun getMd5(emojiRequest: EmojiRequest): ByteArray? = S3.getObjectMD5(emojiRequest.uri)
 
   /**
    * Downloads an object for the specified name.
    */
   @JvmStatic
-  fun getObject(emojiRequest: EmojiRequest): Response {
-    return S3.getObject(emojiRequest.uri)
-  }
+  fun getObject(emojiRequest: EmojiRequest): Response = S3.getObject(emojiRequest.uri)
 }
 
 interface EmojiRequest {

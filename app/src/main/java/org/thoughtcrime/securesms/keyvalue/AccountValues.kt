@@ -96,26 +96,22 @@ class AccountValues internal constructor(store: KeyValueStore, context: Context)
 
   public override fun onFirstEverAppLaunch() = Unit
 
-  public override fun getKeysToIncludeInBackup(): List<String> {
-    return listOf(
-      KEY_ACI_IDENTITY_PUBLIC_KEY,
-      KEY_ACI_IDENTITY_PRIVATE_KEY,
-      KEY_PNI_IDENTITY_PUBLIC_KEY,
-      KEY_PNI_IDENTITY_PRIVATE_KEY,
-      KEY_USERNAME,
-      KEY_USERNAME_LINK_ENTROPY,
-      KEY_USERNAME_LINK_SERVER_ID
-    )
-  }
+  public override fun getKeysToIncludeInBackup(): List<String> = listOf(
+    KEY_ACI_IDENTITY_PUBLIC_KEY,
+    KEY_ACI_IDENTITY_PRIVATE_KEY,
+    KEY_PNI_IDENTITY_PUBLIC_KEY,
+    KEY_PNI_IDENTITY_PRIVATE_KEY,
+    KEY_USERNAME,
+    KEY_USERNAME_LINK_ENTROPY,
+    KEY_USERNAME_LINK_SERVER_ID
+  )
 
   /** The local user's [ACI]. */
   val aci: ACI?
     get() = ACI.parseOrNull(getString(KEY_ACI, null))
 
   /** The local user's [ACI]. Will throw if not present. */
-  fun requireAci(): ACI {
-    return ACI.parseOrThrow(getString(KEY_ACI, null))
-  }
+  fun requireAci(): ACI = ACI.parseOrThrow(getString(KEY_ACI, null))
 
   fun setAci(aci: ACI) {
     putString(KEY_ACI, aci.toString())
@@ -126,17 +122,13 @@ class AccountValues internal constructor(store: KeyValueStore, context: Context)
     get() = PNI.parseOrNull(getString(KEY_PNI, null))
 
   /** The local user's [PNI]. Will throw if not present. */
-  fun requirePni(): PNI {
-    return PNI.parseOrThrow(getString(KEY_PNI, null))
-  }
+  fun requirePni(): PNI = PNI.parseOrThrow(getString(KEY_PNI, null))
 
   fun setPni(pni: PNI) {
     putString(KEY_PNI, pni.toString())
   }
 
-  fun getServiceIds(): ServiceIds {
-    return ServiceIds(requireAci(), pni)
-  }
+  fun getServiceIds(): ServiceIds = ServiceIds(requireAci(), pni)
 
   /** The local user's E164. */
   val e164: String?
@@ -185,9 +177,7 @@ class AccountValues internal constructor(store: KeyValueStore, context: Context)
       )
     }
 
-  fun hasAciIdentityKey(): Boolean {
-    return store.containsKey(KEY_ACI_IDENTITY_PUBLIC_KEY)
-  }
+  fun hasAciIdentityKey(): Boolean = store.containsKey(KEY_ACI_IDENTITY_PUBLIC_KEY)
 
   /** Generates and saves an identity key pair for the ACI identity. Should only be done once. */
   fun generateAciIdentityKeyIfNecessary() {
@@ -208,9 +198,7 @@ class AccountValues internal constructor(store: KeyValueStore, context: Context)
     }
   }
 
-  fun hasPniIdentityKey(): Boolean {
-    return store.containsKey(KEY_PNI_IDENTITY_PUBLIC_KEY)
-  }
+  fun hasPniIdentityKey(): Boolean = store.containsKey(KEY_PNI_IDENTITY_PUBLIC_KEY)
 
   /** Generates and saves an identity key pair for the PNI identity if one doesn't already exist. */
   fun generatePniIdentityKeyIfNecessary() {
@@ -528,9 +516,7 @@ class AccountValues internal constructor(store: KeyValueStore, context: Context)
       .commit()
   }
 
-  private fun SharedPreferences.hasStringData(key: String): Boolean {
-    return this.getString(key, null) != null
-  }
+  private fun SharedPreferences.hasStringData(key: String): Boolean = this.getString(key, null) != null
 
   enum class UsernameSyncState(private val value: Long) {
     /** Our username data is in sync with the service */
@@ -545,9 +531,7 @@ class AccountValues internal constructor(store: KeyValueStore, context: Context)
     fun serialize(): Long = value
 
     companion object {
-      fun deserialize(value: Long): UsernameSyncState {
-        return values().firstOrNull { it.value == value } ?: throw IllegalArgumentException("Invalid value: $value")
-      }
+      fun deserialize(value: Long): UsernameSyncState = values().firstOrNull { it.value == value } ?: throw IllegalArgumentException("Invalid value: $value")
     }
   }
 }

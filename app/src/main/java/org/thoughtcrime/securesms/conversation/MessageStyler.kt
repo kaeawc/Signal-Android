@@ -27,29 +27,19 @@ object MessageStyler {
   const val QUOTE_ID = "QUOTE"
 
   @JvmStatic
-  fun boldStyle(): CharacterStyle {
-    return StyleSpan(Typeface.BOLD)
-  }
+  fun boldStyle(): CharacterStyle = StyleSpan(Typeface.BOLD)
 
   @JvmStatic
-  fun italicStyle(): CharacterStyle {
-    return StyleSpan(Typeface.ITALIC)
-  }
+  fun italicStyle(): CharacterStyle = StyleSpan(Typeface.ITALIC)
 
   @JvmStatic
-  fun strikethroughStyle(): CharacterStyle {
-    return StrikethroughSpan()
-  }
+  fun strikethroughStyle(): CharacterStyle = StrikethroughSpan()
 
   @JvmStatic
-  fun monoStyle(): CharacterStyle {
-    return TypefaceSpan(MONOSPACE)
-  }
+  fun monoStyle(): CharacterStyle = TypefaceSpan(MONOSPACE)
 
   @JvmStatic
-  fun spoilerStyle(id: Any, start: Int, length: Int): Annotation {
-    return SpoilerAnnotation.spoilerAnnotation(arrayOf(id, start, length).contentHashCode())
-  }
+  fun spoilerStyle(id: Any, start: Int, length: Int): Annotation = SpoilerAnnotation.spoilerAnnotation(arrayOf(id, start, length).contentHashCode())
 
   @JvmStatic
   @JvmOverloads
@@ -208,11 +198,9 @@ object MessageStyler {
 
   @JvmStatic
   @JvmOverloads
-  fun hasStyling(text: Spanned, start: Int = 0, end: Int = text.length): Boolean {
-    return text
-      .getSpans(start, end, Object::class.java)
-      .any { s -> s.isSupportedStyle() && text.getSpanEnd(s) - text.getSpanStart(s) > 0 }
-  }
+  fun hasStyling(text: Spanned, start: Int = 0, end: Int = text.length): Boolean = text
+    .getSpans(start, end, Object::class.java)
+    .any { s -> s.isSupportedStyle() && text.getSpanEnd(s) - text.getSpanStart(s) > 0 }
 
   @JvmStatic
   fun getStyling(text: CharSequence?): BodyRangeList? {
@@ -277,71 +265,59 @@ object MessageStyler {
       }
   }
 
-  fun Any.isSupportedStyle(): Boolean {
-    return when (this) {
-      is CharacterStyle -> isSupportedCharacterStyle()
-      is Annotation -> SpoilerAnnotation.isSpoilerAnnotation(this)
-      else -> false
-    }
+  fun Any.isSupportedStyle(): Boolean = when (this) {
+    is CharacterStyle -> isSupportedCharacterStyle()
+    is Annotation -> SpoilerAnnotation.isSpoilerAnnotation(this)
+    else -> false
   }
 
-  private fun Any.isSupportedCharacterStyle(): Boolean {
-    return when (this) {
-      is StyleSpan -> style == Typeface.ITALIC || style == Typeface.BOLD
-      is StrikethroughSpan -> true
-      is TypefaceSpan -> family == MONOSPACE
-      else -> false
-    }
+  private fun Any.isSupportedCharacterStyle(): Boolean = when (this) {
+    is StyleSpan -> style == Typeface.ITALIC || style == Typeface.BOLD
+    is StrikethroughSpan -> true
+    is TypefaceSpan -> family == MONOSPACE
+    else -> false
   }
 
-  private fun Any.isStyle(style: BodyRange.Style): Boolean {
-    return when (this) {
-      is CharacterStyle -> isCharacterStyle(style)
-      is Annotation -> SpoilerAnnotation.isSpoilerAnnotation(this) && style == BodyRange.Style.SPOILER
-      else -> false
-    }
+  private fun Any.isStyle(style: BodyRange.Style): Boolean = when (this) {
+    is CharacterStyle -> isCharacterStyle(style)
+    is Annotation -> SpoilerAnnotation.isSpoilerAnnotation(this) && style == BodyRange.Style.SPOILER
+    else -> false
   }
 
-  private fun CharacterStyle.isCharacterStyle(style: BodyRange.Style): Boolean {
-    return when (this) {
-      is StyleSpan -> (this.style == Typeface.ITALIC && style == BodyRange.Style.ITALIC) || (this.style == Typeface.BOLD && style == BodyRange.Style.BOLD)
-      is StrikethroughSpan -> style == BodyRange.Style.STRIKETHROUGH
-      is TypefaceSpan -> this.family == MONOSPACE && style == BodyRange.Style.MONOSPACE
-      else -> false
-    }
+  private fun CharacterStyle.isCharacterStyle(style: BodyRange.Style): Boolean = when (this) {
+    is StyleSpan -> (this.style == Typeface.ITALIC && style == BodyRange.Style.ITALIC) || (this.style == Typeface.BOLD && style == BodyRange.Style.BOLD)
+    is StrikethroughSpan -> style == BodyRange.Style.STRIKETHROUGH
+    is TypefaceSpan -> this.family == MONOSPACE && style == BodyRange.Style.MONOSPACE
+    else -> false
   }
 
-  private fun copyStyleSpan(span: Any, start: Int, length: Int): Any? {
-    return when (span) {
-      is StyleSpan -> {
-        when (span.style) {
-          Typeface.BOLD -> boldStyle()
-          Typeface.ITALIC -> italicStyle()
-          else -> null
-        }
+  private fun copyStyleSpan(span: Any, start: Int, length: Int): Any? = when (span) {
+    is StyleSpan -> {
+      when (span.style) {
+        Typeface.BOLD -> boldStyle()
+        Typeface.ITALIC -> italicStyle()
+        else -> null
       }
-      is StrikethroughSpan -> strikethroughStyle()
-      is TypefaceSpan -> monoStyle()
-      is Annotation -> {
-        if (SpoilerAnnotation.isSpoilerAnnotation(span)) {
-          spoilerStyle(COMPOSE_ID, start, length)
-        } else {
-          null
-        }
-      }
-      else -> throw IllegalArgumentException("Provided text contains unsupported spans")
     }
+    is StrikethroughSpan -> strikethroughStyle()
+    is TypefaceSpan -> monoStyle()
+    is Annotation -> {
+      if (SpoilerAnnotation.isSpoilerAnnotation(span)) {
+        spoilerStyle(COMPOSE_ID, start, length)
+      } else {
+        null
+      }
+    }
+    else -> throw IllegalArgumentException("Provided text contains unsupported spans")
   }
 
-  private fun BodyRange.Style.toStyleSpan(start: Int, length: Int): Any {
-    return when (this) {
-      BodyRange.Style.BOLD -> boldStyle()
-      BodyRange.Style.ITALIC -> italicStyle()
-      BodyRange.Style.SPOILER -> spoilerStyle(COMPOSE_ID, start, length)
-      BodyRange.Style.STRIKETHROUGH -> strikethroughStyle()
-      BodyRange.Style.MONOSPACE -> monoStyle()
-      else -> throw IllegalArgumentException()
-    }
+  private fun BodyRange.Style.toStyleSpan(start: Int, length: Int): Any = when (this) {
+    BodyRange.Style.BOLD -> boldStyle()
+    BodyRange.Style.ITALIC -> italicStyle()
+    BodyRange.Style.SPOILER -> spoilerStyle(COMPOSE_ID, start, length)
+    BodyRange.Style.STRIKETHROUGH -> strikethroughStyle()
+    BodyRange.Style.MONOSPACE -> monoStyle()
+    else -> throw IllegalArgumentException()
   }
 
   data class Result(val hasStyleLinks: Boolean = false, val bottomButton: BodyRange.Button? = null) {
@@ -356,21 +332,13 @@ object MessageStyler {
 
   private data class SpanAndRange(val span: Any, val range: IntRange)
 
-  private fun IntRange.overlapsStart(other: IntRange): Boolean {
-    return this.first <= other.first && this.last > other.first
-  }
+  private fun IntRange.overlapsStart(other: IntRange): Boolean = this.first <= other.first && this.last > other.first
 
-  private fun IntRange.overlapsEnd(other: IntRange): Boolean {
-    return this.first < other.last && this.last >= other.last
-  }
+  private fun IntRange.overlapsEnd(other: IntRange): Boolean = this.first < other.last && this.last >= other.last
 
-  private fun IntRange.containedIn(other: IntRange): Boolean {
-    return this.first >= other.first && this.last <= other.last
-  }
+  private fun IntRange.containedIn(other: IntRange): Boolean = this.first >= other.first && this.last <= other.last
 
-  private fun IntRange.covers(other: IntRange): Boolean {
-    return this.first <= other.first && this.last >= other.last
-  }
+  private fun IntRange.covers(other: IntRange): Boolean = this.first <= other.first && this.last >= other.last
 
   /**
    * Checks if a sorted, non-overlapping list of ranges does not cover the provided [toggleRange] completely. That is,

@@ -129,12 +129,10 @@ sealed class AvatarPickerViewModel(private val repository: AvatarPickerRepositor
       refreshSelectableAvatars()
     }
 
-    override fun getAvatar(): Single<Avatar> {
-      return if (initialAvatar != null) {
-        Single.just(initialAvatar)
-      } else {
-        repository.getAvatarForGroup(groupId)
-      }
+    override fun getAvatar(): Single<Avatar> = if (initialAvatar != null) {
+      Single.just(initialAvatar)
+    } else {
+      repository.getAvatarForGroup(groupId)
     }
 
     override fun getDefaultAvatarFromRepository(): Avatar = repository.getDefaultAvatarForGroup(groupId)
@@ -162,12 +160,10 @@ sealed class AvatarPickerViewModel(private val repository: AvatarPickerRepositor
       refreshSelectableAvatars()
     }
 
-    override fun getAvatar(): Single<Avatar> {
-      return if (initialAvatar != null) {
-        Single.just(initialAvatar)
-      } else {
-        Single.fromCallable { getDefaultAvatarFromRepository() }
-      }
+    override fun getAvatar(): Single<Avatar> = if (initialAvatar != null) {
+      Single.just(initialAvatar)
+    } else {
+      Single.fromCallable { getDefaultAvatarFromRepository() }
     }
 
     override fun getDefaultAvatarFromRepository(): Avatar = repository.getDefaultAvatarForGroup(null)

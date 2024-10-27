@@ -64,7 +64,9 @@ import org.thoughtcrime.securesms.util.viewModel
 /**
  * Fragment allowing a user to set a custom nickname for the given recipient.
  */
-class NicknameActivity : PassphraseRequiredActivity(), NicknameContentCallback {
+class NicknameActivity :
+  PassphraseRequiredActivity(),
+  NicknameContentCallback {
 
   private val theme = DynamicNoActionBarTheme()
 
@@ -137,23 +139,19 @@ class NicknameActivity : PassphraseRequiredActivity(), NicknameContentCallback {
     val recipientId: RecipientId,
     val focusNoteFirst: Boolean
   ) {
-    fun toBundle(): Bundle {
-      return bundleOf(
-        RECIPIENT_ID to recipientId,
-        FOCUS_NOTE_FIRST to focusNoteFirst
-      )
-    }
+    fun toBundle(): Bundle = bundleOf(
+      RECIPIENT_ID to recipientId,
+      FOCUS_NOTE_FIRST to focusNoteFirst
+    )
 
     companion object {
       private const val RECIPIENT_ID = "recipient_id"
       private const val FOCUS_NOTE_FIRST = "focus_note_first"
 
-      fun fromBundle(bundle: Bundle): Args {
-        return Args(
-          recipientId = bundle.getParcelableCompat(RECIPIENT_ID, RecipientId::class.java)!!,
-          focusNoteFirst = bundle.getBoolean(FOCUS_NOTE_FIRST)
-        )
-      }
+      fun fromBundle(bundle: Bundle): Args = Args(
+        recipientId = bundle.getParcelableCompat(RECIPIENT_ID, RecipientId::class.java)!!,
+        focusNoteFirst = bundle.getBoolean(FOCUS_NOTE_FIRST)
+      )
     }
   }
 
@@ -162,9 +160,7 @@ class NicknameActivity : PassphraseRequiredActivity(), NicknameContentCallback {
    * Doesn't return a response, but is a helpful signal to know when to refresh UI.
    */
   class Contract : ActivityResultContract<Args, Unit>() {
-    override fun createIntent(context: Context, input: Args): Intent {
-      return Intent(context, NicknameActivity::class.java).putExtras(input.toBundle())
-    }
+    override fun createIntent(context: Context, input: Args): Intent = Intent(context, NicknameActivity::class.java).putExtras(input.toBundle())
 
     override fun parseResult(resultCode: Int, intent: Intent?) = Unit
   }

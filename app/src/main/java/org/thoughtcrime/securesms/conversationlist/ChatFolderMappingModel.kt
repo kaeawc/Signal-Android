@@ -7,11 +7,7 @@ data class ChatFolderMappingModel(
   val chatFolder: ChatFolderRecord,
   val isSelected: Boolean
 ) : MappingModel<ChatFolderMappingModel> {
-  override fun areItemsTheSame(newItem: ChatFolderMappingModel): Boolean {
-    return chatFolder == newItem.chatFolder
-  }
+  override fun areItemsTheSame(newItem: ChatFolderMappingModel): Boolean = chatFolder == newItem.chatFolder
 
-  override fun areContentsTheSame(newItem: ChatFolderMappingModel): Boolean {
-    return areItemsTheSame(newItem) && isSelected == newItem.isSelected
-  }
+  override fun areContentsTheSame(newItem: ChatFolderMappingModel): Boolean = areItemsTheSame(newItem) && isSelected == newItem.isSelected
 }

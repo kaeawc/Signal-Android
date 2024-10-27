@@ -68,50 +68,44 @@ data class FontVersion(val id: Long, val path: String) {
     }
 
     @WorkerThread
-    private fun writeVersionToDisk(context: Context, fontVersion: FontVersion): FontVersion? {
-      return try {
-        val versionPath = File(Fonts.getDirectory(context), PATH)
-        if (versionPath.exists()) {
-          versionPath.delete()
-        }
-
-        EncryptedStreamUtils.getOutputStream(context, versionPath).use {
-          objectMapper.writeValue(it, fontVersion)
-        }
-
-        File(Fonts.getDirectory(context), fontVersion.path).mkdir()
-
-        Log.i(TAG, "Wrote version ${fontVersion.id} to disk.")
-        SignalStore.story.lastFontVersionCheck = System.currentTimeMillis()
-        fontVersion
-      } catch (e: Exception) {
-        Log.e(TAG, "Failed to write new font version to disk", e)
-        null
+    private fun writeVersionToDisk(context: Context, fontVersion: FontVersion): FontVersion? = try {
+      val versionPath = File(Fonts.getDirectory(context), PATH)
+      if (versionPath.exists()) {
+        versionPath.delete()
       }
+
+      EncryptedStreamUtils.getOutputStream(context, versionPath).use {
+        objectMapper.writeValue(it, fontVersion)
+      }
+
+      File(Fonts.getDirectory(context), fontVersion.path).mkdir()
+
+      Log.i(TAG, "Wrote version ${fontVersion.id} to disk.")
+      SignalStore.story.lastFontVersionCheck = System.currentTimeMillis()
+      fontVersion
+    } catch (e: Exception) {
+      Log.e(TAG, "Failed to write new font version to disk", e)
+      null
     }
 
     @WorkerThread
-    private fun fromDisk(context: Context): FontVersion? {
-      return try {
-        EncryptedStreamUtils.getInputStream(context, File(Fonts.getDirectory(context), PATH)).use {
-          objectMapper.readValue(it, FontVersion::class.java)
-        }
-      } catch (e: Exception) {
-        Log.w(TAG, "Could not read font version from disk.")
-        null
+    private fun fromDisk(context: Context): FontVersion? = try {
+      EncryptedStreamUtils.getInputStream(context, File(Fonts.getDirectory(context), PATH)).use {
+        objectMapper.readValue(it, FontVersion::class.java)
       }
+    } catch (e: Exception) {
+      Log.w(TAG, "Could not read font version from disk.")
+      null
     }
 
     @WorkerThread
-    private fun fromNetwork(): FontVersion? {
-      return try {
-        FontVersion(Fonts.downloadLatestVersionLong(), UUID.randomUUID().toString()).apply {
-          Log.i(TAG, "Downloaded version $id")
-        }
-      } catch (e: Exception) {
-        Log.w(TAG, "Could not read font version from network.", e)
-        null
+    private fun fromNetwork(): FontVersion? = try {
+      FontVersion(Fonts.downloadLatestVersionLong(), UUID.randomUUID().toString()).apply {
+        Log.i(TAG, "Downloaded version $id")
       }
+    } catch (e: Exception) {
+      Log.w(TAG, "Could not read font version from network.", e)
+      null
     }
 
     @WorkerThread

@@ -24,9 +24,10 @@ import java.util.concurrent.TimeUnit
 /**
  * Landing fragment for sending gifts.
  */
-class GiftFlowStartFragment : DSLSettingsFragment(
-  layoutId = R.layout.gift_flow_start_fragment
-) {
+class GiftFlowStartFragment :
+  DSLSettingsFragment(
+    layoutId = R.layout.gift_flow_start_fragment
+  ) {
 
   private val viewModel: GiftFlowViewModel by viewModels(
     ownerProducer = { requireActivity() },
@@ -62,62 +63,60 @@ class GiftFlowStartFragment : DSLSettingsFragment(
     ViewUtil.hideKeyboard(requireContext(), requireView())
   }
 
-  private fun getConfiguration(state: GiftFlowState): DSLConfiguration {
-    return configure {
+  private fun getConfiguration(state: GiftFlowState): DSLConfiguration = configure {
+    customPref(
+      SplashImage.Model(
+        R.drawable.ic_gift_chat
+      )
+    )
+
+    noPadTextPref(
+      title = DSLSettingsText.from(
+        R.string.GiftFlowStartFragment__donate_for_a_friend,
+        DSLSettingsText.CenterModifier,
+        DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_Headline)
+      )
+    )
+
+    space(DimensionUnit.DP.toPixels(16f).toInt())
+
+    val days = state.giftBadge?.duration?.let { TimeUnit.MILLISECONDS.toDays(it) } ?: 60L
+    noPadTextPref(
+      title = DSLSettingsText.from(resources.getQuantityString(R.plurals.GiftFlowStartFragment__support_signal_by, days.toInt(), days), DSLSettingsText.CenterModifier)
+    )
+
+    space(DimensionUnit.DP.toPixels(16f).toInt())
+
+    customPref(
+      CurrencySelection.Model(
+        selectedCurrency = state.currency,
+        isEnabled = state.stage == GiftFlowState.Stage.READY,
+        onClick = {
+          val action = GiftFlowStartFragmentDirections.actionGiftFlowStartFragmentToSetCurrencyFragment(InAppPaymentType.ONE_TIME_GIFT, viewModel.getSupportedCurrencyCodes().toTypedArray())
+          findNavController().safeNavigate(action)
+        }
+      )
+    )
+
+    @Suppress("CascadeIf")
+    if (state.stage == GiftFlowState.Stage.FAILURE) {
       customPref(
-        SplashImage.Model(
-          R.drawable.ic_gift_chat
-        )
-      )
-
-      noPadTextPref(
-        title = DSLSettingsText.from(
-          R.string.GiftFlowStartFragment__donate_for_a_friend,
-          DSLSettingsText.CenterModifier,
-          DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_Headline)
-        )
-      )
-
-      space(DimensionUnit.DP.toPixels(16f).toInt())
-
-      val days = state.giftBadge?.duration?.let { TimeUnit.MILLISECONDS.toDays(it) } ?: 60L
-      noPadTextPref(
-        title = DSLSettingsText.from(resources.getQuantityString(R.plurals.GiftFlowStartFragment__support_signal_by, days.toInt(), days), DSLSettingsText.CenterModifier)
-      )
-
-      space(DimensionUnit.DP.toPixels(16f).toInt())
-
-      customPref(
-        CurrencySelection.Model(
-          selectedCurrency = state.currency,
-          isEnabled = state.stage == GiftFlowState.Stage.READY,
-          onClick = {
-            val action = GiftFlowStartFragmentDirections.actionGiftFlowStartFragmentToSetCurrencyFragment(InAppPaymentType.ONE_TIME_GIFT, viewModel.getSupportedCurrencyCodes().toTypedArray())
-            findNavController().safeNavigate(action)
+        NetworkFailure.Model(
+          onRetryClick = {
+            viewModel.retry()
           }
         )
       )
-
-      @Suppress("CascadeIf")
-      if (state.stage == GiftFlowState.Stage.FAILURE) {
+    } else if (state.stage == GiftFlowState.Stage.INIT) {
+      customPref(IndeterminateLoadingCircle)
+    } else if (state.giftBadge != null) {
+      state.giftPrices[state.currency]?.let {
         customPref(
-          NetworkFailure.Model(
-            onRetryClick = {
-              viewModel.retry()
-            }
+          GiftRowItem.Model(
+            giftBadge = state.giftBadge,
+            price = it
           )
         )
-      } else if (state.stage == GiftFlowState.Stage.INIT) {
-        customPref(IndeterminateLoadingCircle)
-      } else if (state.giftBadge != null) {
-        state.giftPrices[state.currency]?.let {
-          customPref(
-            GiftRowItem.Model(
-              giftBadge = state.giftBadge,
-              price = it
-            )
-          )
-        }
       }
     }
   }

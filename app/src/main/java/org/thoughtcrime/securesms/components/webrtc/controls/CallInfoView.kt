@@ -325,19 +325,17 @@ private fun CallInfo(
 }
 
 @Composable
-private fun getCallSheetLabel(state: ParticipantsState): String {
-  return if (!state.inCallLobby || state.isOngoing()) {
-    pluralStringResource(id = R.plurals.CallParticipantsListDialog_in_this_call, count = state.participantCountForDisplay, state.participantCountForDisplay)
-  } else if (state.isGroupCall()) {
-    val groupSize = state.groupMembers.size
-    if (state.ringGroup) {
-      pluralStringResource(id = R.plurals.CallParticipantsListDialog__signal_will_ring, count = groupSize, groupSize)
-    } else {
-      pluralStringResource(id = R.plurals.CallParticipantsListDialog__signal_will_notify, count = groupSize, groupSize)
-    }
+private fun getCallSheetLabel(state: ParticipantsState): String = if (!state.inCallLobby || state.isOngoing()) {
+  pluralStringResource(id = R.plurals.CallParticipantsListDialog_in_this_call, count = state.participantCountForDisplay, state.participantCountForDisplay)
+} else if (state.isGroupCall()) {
+  val groupSize = state.groupMembers.size
+  if (state.ringGroup) {
+    pluralStringResource(id = R.plurals.CallParticipantsListDialog__signal_will_ring, count = groupSize, groupSize)
   } else {
-    pluralStringResource(id = R.plurals.CallParticipantsListDialog__signal_will_ring, count = 1, 1)
+    pluralStringResource(id = R.plurals.CallParticipantsListDialog__signal_will_notify, count = groupSize, groupSize)
   }
+} else {
+  pluralStringResource(id = R.plurals.CallParticipantsListDialog__signal_will_ring, count = 1, 1)
 }
 
 @Preview
@@ -675,11 +673,7 @@ private data class ParticipantsState(
     participantCount
   }
 
-  fun isGroupCall(): Boolean {
-    return groupMembers.isNotEmpty()
-  }
+  fun isGroupCall(): Boolean = groupMembers.isNotEmpty()
 
-  fun isOngoing(): Boolean {
-    return remoteParticipants.isNotEmpty()
-  }
+  fun isOngoing(): Boolean = remoteParticipants.isNotEmpty()
 }

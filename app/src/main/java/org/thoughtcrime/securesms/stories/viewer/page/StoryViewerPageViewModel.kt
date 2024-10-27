@@ -113,13 +113,9 @@ class StoryViewerPageViewModel(
     store.dispose()
   }
 
-  fun hideStory(): Completable {
-    return repository.hideStory(args.recipientId)
-  }
+  fun hideStory(): Completable = repository.hideStory(args.recipientId)
 
-  fun unhideStory(): Completable {
-    return repository.unhideStory(args.recipientId).observeOn(AndroidSchedulers.mainThread())
-  }
+  fun unhideStory(): Completable = repository.unhideStory(args.recipientId).observeOn(AndroidSchedulers.mainThread())
 
   fun markViewed(storyPost: StoryPost) {
     repository.markViewed(storyPost)
@@ -170,29 +166,19 @@ class StoryViewerPageViewModel(
     setSelectedPostIndex(max(minIndex, postIndex - 1))
   }
 
-  fun getRestartIndex(): Int {
-    return min(store.state.selectedPostIndex, store.state.posts.lastIndex)
+  fun getRestartIndex(): Int = min(store.state.selectedPostIndex, store.state.posts.lastIndex)
+
+  fun getSwipeToReplyState(): StoryViewerPageState.ReplyState = store.state.replyState
+
+  fun hasPost(): Boolean = store.state.selectedPostIndex in store.state.posts.indices
+
+  fun getPost(): StoryPost? = if (hasPost()) {
+    store.state.posts[store.state.selectedPostIndex]
+  } else {
+    null
   }
 
-  fun getSwipeToReplyState(): StoryViewerPageState.ReplyState {
-    return store.state.replyState
-  }
-
-  fun hasPost(): Boolean {
-    return store.state.selectedPostIndex in store.state.posts.indices
-  }
-
-  fun getPost(): StoryPost? {
-    return if (hasPost()) {
-      store.state.posts[store.state.selectedPostIndex]
-    } else {
-      null
-    }
-  }
-
-  fun requirePost(): StoryPost {
-    return getPost()!!
-  }
+  fun requirePost(): StoryPost = getPost()!!
 
   fun forceDownloadSelectedPost() {
     disposables += repository.forceDownload(requirePost()).subscribe()
@@ -318,28 +304,20 @@ class StoryViewerPageViewModel(
     }
   }
 
-  private fun getNextUnreadPost(list: List<StoryPost>): StoryPost? {
-    return list.firstOrNull { !it.hasSelfViewed }
-  }
+  private fun getNextUnreadPost(list: List<StoryPost>): StoryPost? = list.firstOrNull { !it.hasSelfViewed }
 
-  fun getPostAt(index: Int): StoryPost? {
-    return store.state.posts.getOrNull(index)
-  }
+  fun getPostAt(index: Int): StoryPost? = store.state.posts.getOrNull(index)
 
   @CheckResult
-  fun resend(storyPost: StoryPost): Completable {
-    return repository
-      .resend(storyPost.conversationMessage.messageRecord)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun resend(storyPost: StoryPost): Completable = repository
+    .resend(storyPost.conversationMessage.messageRecord)
+    .observeOn(AndroidSchedulers.mainThread())
 
   class Factory(
     private val args: StoryViewerPageArgs,
     private val repository: StoryViewerPageRepository,
     private val storyCache: StoryCache
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(StoryViewerPageViewModel(args, repository, storyCache)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(StoryViewerPageViewModel(args, repository, storyCache)) as T
   }
 }

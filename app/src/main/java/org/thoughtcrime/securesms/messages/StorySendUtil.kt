@@ -45,14 +45,12 @@ object StorySendUtil {
     }
   }
 
-  private fun getStyle(style: StoryTextPost.Style): SignalServiceTextAttachment.Style {
-    return when (style) {
-      StoryTextPost.Style.REGULAR -> SignalServiceTextAttachment.Style.REGULAR
-      StoryTextPost.Style.BOLD -> SignalServiceTextAttachment.Style.BOLD
-      StoryTextPost.Style.SERIF -> SignalServiceTextAttachment.Style.SERIF
-      StoryTextPost.Style.SCRIPT -> SignalServiceTextAttachment.Style.SCRIPT
-      StoryTextPost.Style.CONDENSED -> SignalServiceTextAttachment.Style.CONDENSED
-      else -> SignalServiceTextAttachment.Style.DEFAULT
-    }
+  private fun getStyle(style: StoryTextPost.Style): SignalServiceTextAttachment.Style = when (style) {
+    StoryTextPost.Style.REGULAR -> SignalServiceTextAttachment.Style.REGULAR
+    StoryTextPost.Style.BOLD -> SignalServiceTextAttachment.Style.BOLD
+    StoryTextPost.Style.SERIF -> SignalServiceTextAttachment.Style.SERIF
+    StoryTextPost.Style.SCRIPT -> SignalServiceTextAttachment.Style.SCRIPT
+    StoryTextPost.Style.CONDENSED -> SignalServiceTextAttachment.Style.CONDENSED
+    else -> SignalServiceTextAttachment.Style.DEFAULT
   }
 }

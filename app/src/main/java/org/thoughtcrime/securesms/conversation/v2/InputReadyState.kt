@@ -28,19 +28,15 @@ class InputReadyState(
   val isAdmin: Boolean? = selfMemberLevel?.equals(GroupTable.MemberLevel.ADMINISTRATOR)
   val isRequestingMember: Boolean? = selfMemberLevel?.equals(GroupTable.MemberLevel.REQUESTING_MEMBER)
 
-  fun shouldShowInviteToSignal(): Boolean {
-    return !conversationRecipient.isPushGroup &&
-      !conversationRecipient.isRegistered &&
-      !conversationRecipient.isReleaseNotes
-  }
+  fun shouldShowInviteToSignal(): Boolean = !conversationRecipient.isPushGroup &&
+    !conversationRecipient.isRegistered &&
+    !conversationRecipient.isReleaseNotes
 
-  fun shouldClearDraft(): Boolean {
-    return isActiveGroup == false ||
-      isRequestingMember == true ||
-      (isAnnouncementGroup == true && isAdmin == false) ||
-      conversationRecipient.isReleaseNotes ||
-      shouldShowInviteToSignal()
-  }
+  fun shouldClearDraft(): Boolean = isActiveGroup == false ||
+    isRequestingMember == true ||
+    (isAnnouncementGroup == true && isAdmin == false) ||
+    conversationRecipient.isReleaseNotes ||
+    shouldShowInviteToSignal()
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true

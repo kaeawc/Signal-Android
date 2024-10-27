@@ -22,44 +22,42 @@ class InternalDonorErrorConfigurationFragment : DSLSettingsFragment() {
     }
   }
 
-  private fun getConfiguration(state: InternalDonorErrorConfigurationState): DSLConfiguration {
-    return configure {
-      radioListPref(
-        title = DSLSettingsText.from("Expired Badge"),
-        selected = state.badges.indexOf(state.selectedBadge),
-        listItems = state.badges.map { it.name }.toTypedArray(),
-        onSelected = { viewModel.setSelectedBadge(it) }
-      )
+  private fun getConfiguration(state: InternalDonorErrorConfigurationState): DSLConfiguration = configure {
+    radioListPref(
+      title = DSLSettingsText.from("Expired Badge"),
+      selected = state.badges.indexOf(state.selectedBadge),
+      listItems = state.badges.map { it.name }.toTypedArray(),
+      onSelected = { viewModel.setSelectedBadge(it) }
+    )
 
-      radioListPref(
-        title = DSLSettingsText.from("Cancellation Reason"),
-        selected = UnexpectedSubscriptionCancellation.values().indexOf(state.selectedUnexpectedSubscriptionCancellation),
-        listItems = UnexpectedSubscriptionCancellation.values().map { it.status }.toTypedArray(),
-        onSelected = { viewModel.setSelectedUnexpectedSubscriptionCancellation(it) },
-        isEnabled = state.selectedBadge == null || state.selectedBadge.isSubscription()
-      )
+    radioListPref(
+      title = DSLSettingsText.from("Cancellation Reason"),
+      selected = UnexpectedSubscriptionCancellation.values().indexOf(state.selectedUnexpectedSubscriptionCancellation),
+      listItems = UnexpectedSubscriptionCancellation.values().map { it.status }.toTypedArray(),
+      onSelected = { viewModel.setSelectedUnexpectedSubscriptionCancellation(it) },
+      isEnabled = state.selectedBadge == null || state.selectedBadge.isSubscription()
+    )
 
-      radioListPref(
-        title = DSLSettingsText.from("Charge Failure"),
-        selected = StripeDeclineCode.Code.values().indexOf(state.selectedStripeDeclineCode),
-        listItems = StripeDeclineCode.Code.values().map { it.code }.toTypedArray(),
-        onSelected = { viewModel.setStripeDeclineCode(it) },
-        isEnabled = state.selectedBadge == null || state.selectedBadge.isSubscription()
-      )
+    radioListPref(
+      title = DSLSettingsText.from("Charge Failure"),
+      selected = StripeDeclineCode.Code.values().indexOf(state.selectedStripeDeclineCode),
+      listItems = StripeDeclineCode.Code.values().map { it.code }.toTypedArray(),
+      onSelected = { viewModel.setStripeDeclineCode(it) },
+      isEnabled = state.selectedBadge == null || state.selectedBadge.isSubscription()
+    )
 
-      primaryButton(
-        text = DSLSettingsText.from("Save and Finish"),
-        onClick = {
-          lifecycleDisposable += viewModel.save().subscribe { requireActivity().finish() }
-        }
-      )
+    primaryButton(
+      text = DSLSettingsText.from("Save and Finish"),
+      onClick = {
+        lifecycleDisposable += viewModel.save().subscribe { requireActivity().finish() }
+      }
+    )
 
-      secondaryButtonNoOutline(
-        text = DSLSettingsText.from("Clear"),
-        onClick = {
-          lifecycleDisposable += viewModel.clearErrorState().subscribe()
-        }
-      )
-    }
+    secondaryButtonNoOutline(
+      text = DSLSettingsText.from("Clear"),
+      onClick = {
+        lifecycleDisposable += viewModel.clearErrorState().subscribe()
+      }
+    )
   }
 }

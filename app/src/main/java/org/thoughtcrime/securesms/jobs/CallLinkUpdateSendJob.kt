@@ -78,12 +78,10 @@ class CallLinkUpdateSendJob private constructor(
       .sendSyncMessage(SignalServiceSyncMessage.forCallLinkUpdate(callLinkUpdate))
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return when (e) {
-      is ServerRejectedException -> false
-      is PushNetworkException -> true
-      else -> false
-    }
+  override fun onShouldRetry(e: Exception): Boolean = when (e) {
+    is ServerRejectedException -> false
+    is PushNetworkException -> true
+    else -> false
   }
 
   class Factory : Job.Factory<CallLinkUpdateSendJob> {

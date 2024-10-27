@@ -38,38 +38,32 @@ class ConversationSettingsRepository(
   private val groupManagementRepository: GroupManagementRepository = GroupManagementRepository(context)
 ) {
 
-  fun getCallEvents(callRowIds: LongArray): Single<List<Pair<CallTable.Call, MessageRecord>>> {
-    return if (callRowIds.isEmpty()) {
-      Single.just(emptyList())
-    } else {
-      Single.fromCallable {
-        val callMap = SignalDatabase.calls.getCallsByRowIds(callRowIds.toList())
-        val messageIds = callMap.values.mapNotNull { it.messageId }
-        SignalDatabase.messages.getMessages(messageIds).iterator().asSequence()
-          .filter { callMap.containsKey(it.id) }
-          .map { callMap[it.id]!! to it }
-          .sortedByDescending { it.first.timestamp }
-          .toList()
-      }
+  fun getCallEvents(callRowIds: LongArray): Single<List<Pair<CallTable.Call, MessageRecord>>> = if (callRowIds.isEmpty()) {
+    Single.just(emptyList())
+  } else {
+    Single.fromCallable {
+      val callMap = SignalDatabase.calls.getCallsByRowIds(callRowIds.toList())
+      val messageIds = callMap.values.mapNotNull { it.messageId }
+      SignalDatabase.messages.getMessages(messageIds).iterator().asSequence()
+        .filter { callMap.containsKey(it.id) }
+        .map { callMap[it.id]!! to it }
+        .sortedByDescending { it.first.timestamp }
+        .toList()
     }
   }
 
   @WorkerThread
-  fun getThreadMedia(threadId: Long, limit: Int): Cursor? {
-    return if (threadId > 0) {
-      SignalDatabase.media.getGalleryMediaForThread(threadId, MediaTable.Sorting.Newest, limit)
-    } else {
-      null
-    }
+  fun getThreadMedia(threadId: Long, limit: Int): Cursor? = if (threadId > 0) {
+    SignalDatabase.media.getGalleryMediaForThread(threadId, MediaTable.Sorting.Newest, limit)
+  } else {
+    null
   }
 
-  fun getStoryViewState(groupId: GroupId): Observable<StoryViewState> {
-    return Observable.fromCallable {
-      SignalDatabase.recipients.getByGroupId(groupId)
-    }.flatMap {
-      StoryViewState.getForRecipientId(it.get())
-    }.observeOn(Schedulers.io())
-  }
+  fun getStoryViewState(groupId: GroupId): Observable<StoryViewState> = Observable.fromCallable {
+    SignalDatabase.recipients.getByGroupId(groupId)
+  }.flatMap {
+    StoryViewState.getForRecipientId(it.get())
+  }.observeOn(Schedulers.io())
 
   fun getThreadId(recipientId: RecipientId, consumer: (Long) -> Unit) {
     SignalExecutors.BOUNDED.execute {
@@ -211,13 +205,9 @@ class ConversationSettingsRepository(
   }
 
   @WorkerThread
-  fun isMessageRequestAccepted(recipient: Recipient): Boolean {
-    return RecipientUtil.isMessageRequestAccepted(context, recipient)
-  }
+  fun isMessageRequestAccepted(recipient: Recipient): Boolean = RecipientUtil.isMessageRequestAccepted(context, recipient)
 
-  fun getMembershipCountDescription(liveGroup: LiveGroup): LiveData<String> {
-    return liveGroup.getMembershipCountDescription(context.resources)
-  }
+  fun getMembershipCountDescription(liveGroup: LiveGroup): LiveData<String> = liveGroup.getMembershipCountDescription(context.resources)
 
   fun getExternalPossiblyMigratedGroupRecipientId(groupId: GroupId, consumer: (RecipientId) -> Unit) {
     SignalExecutors.BOUNDED.execute {

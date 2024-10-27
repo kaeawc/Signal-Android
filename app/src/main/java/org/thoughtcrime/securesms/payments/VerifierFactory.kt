@@ -11,29 +11,19 @@ import com.mobilecoin.lib.exceptions.AttestationException
 class VerifierFactory(private vararg val serviceConfigs: ServiceConfig) {
 
   @Throws(AttestationException::class)
-  fun createConsensusVerifier(): Verifier {
-    return createVerifier(ServiceConfig::consensus)
-  }
+  fun createConsensusVerifier(): Verifier = createVerifier(ServiceConfig::consensus)
 
   @Throws(AttestationException::class)
-  fun createLedgerVerifier(): Verifier {
-    return createVerifier(ServiceConfig::ledger)
-  }
+  fun createLedgerVerifier(): Verifier = createVerifier(ServiceConfig::ledger)
 
   @Throws(AttestationException::class)
-  fun createViewVerifier(): Verifier {
-    return createVerifier(ServiceConfig::view)
-  }
+  fun createViewVerifier(): Verifier = createVerifier(ServiceConfig::view)
 
   @Throws(AttestationException::class)
-  fun createReportVerifier(): Verifier {
-    return createVerifier(ServiceConfig::report)
-  }
+  fun createReportVerifier(): Verifier = createVerifier(ServiceConfig::report)
 
   @Throws(AttestationException::class)
-  private fun createVerifier(getConfigValue: (ServiceConfig) -> ByteArray): Verifier {
-    return serviceConfigs.fold(Verifier()) { verifier, config ->
-      verifier.withMrEnclave(getConfigValue(config), null, config.hardeningAdvisories)
-    }
+  private fun createVerifier(getConfigValue: (ServiceConfig) -> ByteArray): Verifier = serviceConfigs.fold(Verifier()) { verifier, config ->
+    verifier.withMrEnclave(getConfigValue(config), null, config.hardeningAdvisories)
   }
 }

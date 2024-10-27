@@ -72,9 +72,7 @@ class TransferControlView @JvmOverloads constructor(context: Context, attrs: Att
     state = newState
   }
 
-  fun isGone(): Boolean {
-    return mode == Mode.GONE
-  }
+  fun isGone(): Boolean = mode == Mode.GONE
 
   private fun applyState(currentState: TransferControlViewState) {
     val mode = deriveMode(currentState)
@@ -768,26 +766,18 @@ class TransferControlView @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     @JvmStatic
-    fun containsPlayableSlides(slides: List<Slide>): Boolean {
-      return slides.any { MediaUtil.isInstantVideoSupported(it) }
-    }
+    fun containsPlayableSlides(slides: List<Slide>): Boolean = slides.any { MediaUtil.isInstantVideoSupported(it) }
   }
 
   data class Progress(val completed: Long, val total: Long) {
     companion object {
-      fun fromEvent(event: PartProgressEvent): Progress {
-        return Progress(event.progress, event.total)
-      }
+      fun fromEvent(event: PartProgressEvent): Progress = Progress(event.progress, event.total)
     }
   }
 
-  private fun Map<Attachment, Progress>.sumCompleted(): Long {
-    return this.values.sumOf { it.completed }
-  }
+  private fun Map<Attachment, Progress>.sumCompleted(): Long = this.values.sumOf { it.completed }
 
-  private fun Map<Attachment, Progress>.sumTotal(): Long {
-    return this.values.sumOf { it.total }
-  }
+  private fun Map<Attachment, Progress>.sumTotal(): Long = this.values.sumOf { it.total }
 
   enum class Mode {
     PENDING_GALLERY,

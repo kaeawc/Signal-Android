@@ -40,8 +40,6 @@ open class InsetItemDecoration(
   abstract class SetInset {
     abstract fun setInset(outRect: Rect, view: View, parent: RecyclerView)
 
-    fun getPosition(view: View, parent: RecyclerView): Int {
-      return parent.getChildAdapterPosition(view)
-    }
+    fun getPosition(view: View, parent: RecyclerView): Int = parent.getChildAdapterPosition(view)
   }
 }

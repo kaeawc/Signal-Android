@@ -33,35 +33,33 @@ data class Stripe3DSData(
   @IgnoredOnParcel
   val isLongRunning: Boolean = paymentSourceType == PaymentSourceType.Stripe.SEPADebit || (inAppPayment.type.recurring && paymentSourceType.isBankTransfer)
 
-  fun toProtoBytes(): ByteArray {
-    return ExternalLaunchTransactionState(
-      stripeIntentAccessor = ExternalLaunchTransactionState.StripeIntentAccessor(
-        type = when (stripeIntentAccessor.objectType) {
-          StripeIntentAccessor.ObjectType.NONE, StripeIntentAccessor.ObjectType.PAYMENT_INTENT -> ExternalLaunchTransactionState.StripeIntentAccessor.Type.PAYMENT_INTENT
-          StripeIntentAccessor.ObjectType.SETUP_INTENT -> ExternalLaunchTransactionState.StripeIntentAccessor.Type.SETUP_INTENT
-        },
-        intentId = stripeIntentAccessor.intentId,
-        intentClientSecret = stripeIntentAccessor.intentClientSecret
-      ),
-      gatewayRequest = ExternalLaunchTransactionState.GatewayRequest(
-        inAppPaymentType = when (inAppPayment.type) {
-          InAppPaymentType.UNKNOWN -> error("Unsupported type UNKNOWN")
-          InAppPaymentType.ONE_TIME_DONATION -> ExternalLaunchTransactionState.GatewayRequest.InAppPaymentType.ONE_TIME_DONATION
-          InAppPaymentType.RECURRING_DONATION -> ExternalLaunchTransactionState.GatewayRequest.InAppPaymentType.RECURRING_DONATION
-          InAppPaymentType.ONE_TIME_GIFT -> ExternalLaunchTransactionState.GatewayRequest.InAppPaymentType.ONE_TIME_GIFT
-          InAppPaymentType.RECURRING_BACKUP -> ExternalLaunchTransactionState.GatewayRequest.InAppPaymentType.RECURRING_BACKUPS
-        },
-        badge = inAppPayment.data.badge,
-        label = inAppPayment.data.label,
-        price = inAppPayment.data.amount!!.amount,
-        currencyCode = inAppPayment.data.amount.currencyCode,
-        level = inAppPayment.data.level,
-        recipient_id = inAppPayment.data.recipientId?.toLong() ?: Recipient.self().id.toLong(),
-        additionalMessage = inAppPayment.data.additionalMessage ?: ""
-      ),
-      paymentSourceType = paymentSourceType.code
-    ).encode()
-  }
+  fun toProtoBytes(): ByteArray = ExternalLaunchTransactionState(
+    stripeIntentAccessor = ExternalLaunchTransactionState.StripeIntentAccessor(
+      type = when (stripeIntentAccessor.objectType) {
+        StripeIntentAccessor.ObjectType.NONE, StripeIntentAccessor.ObjectType.PAYMENT_INTENT -> ExternalLaunchTransactionState.StripeIntentAccessor.Type.PAYMENT_INTENT
+        StripeIntentAccessor.ObjectType.SETUP_INTENT -> ExternalLaunchTransactionState.StripeIntentAccessor.Type.SETUP_INTENT
+      },
+      intentId = stripeIntentAccessor.intentId,
+      intentClientSecret = stripeIntentAccessor.intentClientSecret
+    ),
+    gatewayRequest = ExternalLaunchTransactionState.GatewayRequest(
+      inAppPaymentType = when (inAppPayment.type) {
+        InAppPaymentType.UNKNOWN -> error("Unsupported type UNKNOWN")
+        InAppPaymentType.ONE_TIME_DONATION -> ExternalLaunchTransactionState.GatewayRequest.InAppPaymentType.ONE_TIME_DONATION
+        InAppPaymentType.RECURRING_DONATION -> ExternalLaunchTransactionState.GatewayRequest.InAppPaymentType.RECURRING_DONATION
+        InAppPaymentType.ONE_TIME_GIFT -> ExternalLaunchTransactionState.GatewayRequest.InAppPaymentType.ONE_TIME_GIFT
+        InAppPaymentType.RECURRING_BACKUP -> ExternalLaunchTransactionState.GatewayRequest.InAppPaymentType.RECURRING_BACKUPS
+      },
+      badge = inAppPayment.data.badge,
+      label = inAppPayment.data.label,
+      price = inAppPayment.data.amount!!.amount,
+      currencyCode = inAppPayment.data.amount.currencyCode,
+      level = inAppPayment.data.level,
+      recipient_id = inAppPayment.data.recipientId?.toLong() ?: Recipient.self().id.toLong(),
+      additionalMessage = inAppPayment.data.additionalMessage ?: ""
+    ),
+    paymentSourceType = paymentSourceType.code
+  ).encode()
 
   companion object {
     fun fromProtoBytes(byteArray: ByteArray): Stripe3DSData {

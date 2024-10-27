@@ -120,24 +120,22 @@ object BackupRepository {
   }
 
   @WorkerThread
-  fun turnOffAndDeleteBackup(): Boolean {
-    return try {
-      Log.d(TAG, "Attempting to disable backups.")
-      getBackupTier().runIfSuccessful { tier ->
-        if (tier == MessageBackupTier.PAID) {
-          Log.d(TAG, "User is currently on a paid tier. Canceling.")
-          RecurringInAppPaymentRepository.cancelActiveSubscriptionSync(InAppPaymentSubscriberRecord.Type.BACKUP)
-          Log.d(TAG, "Successfully canceled paid tier.")
-        }
+  fun turnOffAndDeleteBackup(): Boolean = try {
+    Log.d(TAG, "Attempting to disable backups.")
+    getBackupTier().runIfSuccessful { tier ->
+      if (tier == MessageBackupTier.PAID) {
+        Log.d(TAG, "User is currently on a paid tier. Canceling.")
+        RecurringInAppPaymentRepository.cancelActiveSubscriptionSync(InAppPaymentSubscriberRecord.Type.BACKUP)
+        Log.d(TAG, "Successfully canceled paid tier.")
       }
-
-      Log.d(TAG, "Disabling backups.")
-      SignalStore.backup.disableBackups()
-      true
-    } catch (e: Exception) {
-      Log.w(TAG, "Failed to turn off backups.", e)
-      false
     }
+
+    Log.d(TAG, "Disabling backups.")
+    SignalStore.backup.disableBackups()
+    true
+  } catch (e: Exception) {
+    Log.w(TAG, "Failed to turn off backups.", e)
+    false
   }
 
   private fun createSignalDatabaseSnapshot(baseName: String): SignalDatabase {
@@ -639,14 +637,12 @@ object BackupRepository {
    * If backups are initialized, this method will query the server for the current backup level.
    * If backups are not initialized, this method will return either the stored tier or a 404 result.
    */
-  fun getBackupTier(): NetworkResult<MessageBackupTier> {
-    return if (SignalStore.backup.backupsInitialized) {
-      getBackupTier(Recipient.self().requireAci())
-    } else if (SignalStore.backup.backupTier != null) {
-      NetworkResult.Success(SignalStore.backup.backupTier!!)
-    } else {
-      NetworkResult.StatusCodeError(NonSuccessfulResponseCodeException(404))
-    }
+  fun getBackupTier(): NetworkResult<MessageBackupTier> = if (SignalStore.backup.backupsInitialized) {
+    getBackupTier(Recipient.self().requireAci())
+  } else if (SignalStore.backup.backupTier != null) {
+    NetworkResult.Success(SignalStore.backup.backupTier!!)
+  } else {
+    NetworkResult.StatusCodeError(NonSuccessfulResponseCodeException(404))
   }
 
   /**
@@ -1043,15 +1039,11 @@ object BackupRepository {
       }
   }
 
-  suspend fun getAvailableBackupsTypes(availableBackupTiers: List<MessageBackupTier>): List<MessageBackupsType> {
-    return availableBackupTiers.mapNotNull { getBackupsType(it) }
-  }
+  suspend fun getAvailableBackupsTypes(availableBackupTiers: List<MessageBackupTier>): List<MessageBackupsType> = availableBackupTiers.mapNotNull { getBackupsType(it) }
 
-  suspend fun getBackupsType(tier: MessageBackupTier): MessageBackupsType? {
-    return when (tier) {
-      MessageBackupTier.FREE -> getFreeType()
-      MessageBackupTier.PAID -> getPaidType()
-    }
+  suspend fun getBackupsType(tier: MessageBackupTier): MessageBackupsType? = when (tier) {
+    MessageBackupTier.FREE -> getFreeType()
+    MessageBackupTier.PAID -> getPaidType()
   }
 
   private suspend fun getFreeType(): MessageBackupsType {
@@ -1143,13 +1135,9 @@ object BackupRepository {
     val profileKey: ProfileKey
   )
 
-  fun DatabaseAttachment.getMediaName(): MediaName {
-    return MediaName.fromDigest(remoteDigest!!)
-  }
+  fun DatabaseAttachment.getMediaName(): MediaName = MediaName.fromDigest(remoteDigest!!)
 
-  fun DatabaseAttachment.getThumbnailMediaName(): MediaName {
-    return MediaName.fromDigestForThumbnail(remoteDigest!!)
-  }
+  fun DatabaseAttachment.getThumbnailMediaName(): MediaName = MediaName.fromDigestForThumbnail(remoteDigest!!)
 
   private fun Attachment.toArchiveMediaRequest(mediaName: MediaName, backupKey: BackupKey): ArchiveMediaRequest {
     val mediaSecrets = backupKey.deriveMediaSecrets(mediaName)
@@ -1195,9 +1183,7 @@ class ImportState(val backupKey: BackupKey) {
   val chatIdToBackupRecipientId: MutableMap<Long, Long> = hashMapOf()
   val remoteToLocalColorId: MutableMap<Long, Long> = hashMapOf()
 
-  fun requireLocalRecipientId(remoteId: Long): RecipientId {
-    return remoteToLocalRecipientId[remoteId] ?: throw IllegalArgumentException("There is no local recipientId for remote recipientId $remoteId!")
-  }
+  fun requireLocalRecipientId(remoteId: Long): RecipientId = remoteToLocalRecipientId[remoteId] ?: throw IllegalArgumentException("There is no local recipientId for remote recipientId $remoteId!")
 }
 
 class BackupMetadata(

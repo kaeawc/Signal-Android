@@ -35,8 +35,6 @@ internal class BackupJitterMigrationJob(parameters: Parameters = Parameters.Buil
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<BackupJitterMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): BackupJitterMigrationJob {
-      return BackupJitterMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): BackupJitterMigrationJob = BackupJitterMigrationJob(parameters)
   }
 }

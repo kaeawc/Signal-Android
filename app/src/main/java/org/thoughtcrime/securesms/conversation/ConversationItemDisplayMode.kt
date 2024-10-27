@@ -13,7 +13,5 @@ sealed class ConversationItemDisplayMode(val scheduleMessageMode: Boolean = fals
   /** Less length restrictions. Used to show more info in message details. */
   object Detailed : ConversationItemDisplayMode()
 
-  fun displayWallpaper(): Boolean {
-    return this == Standard || this == Detailed
-  }
+  fun displayWallpaper(): Boolean = this == Standard || this == Detailed
 }

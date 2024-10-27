@@ -102,24 +102,22 @@ class ViewReceivedGiftViewModel(
     }
   }
 
-  private fun awaitRedemptionCompletion(setAsPrimary: Boolean): Completable {
-    return Completable.create { emitter ->
-      val messageObserver = MessageObserver { messageId ->
-        val message = SignalDatabase.messages.getMessageRecord(messageId.id)
-        when (message.requireGiftBadge().redemptionState) {
-          GiftBadge.RedemptionState.REDEEMED -> emitter.onComplete()
-          GiftBadge.RedemptionState.FAILED -> emitter.onError(DonationError.genericBadgeRedemptionFailure(DonationErrorSource.GIFT_REDEMPTION))
-          else -> Unit
-        }
+  private fun awaitRedemptionCompletion(setAsPrimary: Boolean): Completable = Completable.create { emitter ->
+    val messageObserver = MessageObserver { messageId ->
+      val message = SignalDatabase.messages.getMessageRecord(messageId.id)
+      when (message.requireGiftBadge().redemptionState) {
+        GiftBadge.RedemptionState.REDEEMED -> emitter.onComplete()
+        GiftBadge.RedemptionState.FAILED -> emitter.onError(DonationError.genericBadgeRedemptionFailure(DonationErrorSource.GIFT_REDEMPTION))
+        else -> Unit
       }
+    }
 
-      AppDependencies.jobManager.add(InAppPaymentRedemptionJob.create(MessageId(messageId), setAsPrimary))
-      AppDependencies.databaseObserver.registerMessageUpdateObserver(messageObserver)
-      emitter.setCancellable {
-        AppDependencies.databaseObserver.unregisterObserver(messageObserver)
-      }
-    }.timeout(10, TimeUnit.SECONDS, Completable.error(BadgeRedemptionError.TimeoutWaitingForTokenError(DonationErrorSource.GIFT_REDEMPTION)))
-  }
+    AppDependencies.jobManager.add(InAppPaymentRedemptionJob.create(MessageId(messageId), setAsPrimary))
+    AppDependencies.databaseObserver.registerMessageUpdateObserver(messageObserver)
+    emitter.setCancellable {
+      AppDependencies.databaseObserver.unregisterObserver(messageObserver)
+    }
+  }.timeout(10, TimeUnit.SECONDS, Completable.error(BadgeRedemptionError.TimeoutWaitingForTokenError(DonationErrorSource.GIFT_REDEMPTION)))
 
   class Factory(
     private val sentFrom: RecipientId,
@@ -127,8 +125,6 @@ class ViewReceivedGiftViewModel(
     private val repository: ViewGiftRepository,
     private val badgeRepository: BadgeRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(ViewReceivedGiftViewModel(sentFrom, messageId, repository, badgeRepository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(ViewReceivedGiftViewModel(sentFrom, messageId, repository, badgeRepository)) as T
   }
 }

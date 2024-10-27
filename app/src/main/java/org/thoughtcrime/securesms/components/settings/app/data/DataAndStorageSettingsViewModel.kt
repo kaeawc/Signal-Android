@@ -75,10 +75,7 @@ class DataAndStorageSettingsViewModel(
   class Factory(
     private val sharedPreferences: SharedPreferences,
     private val repository: DataAndStorageSettingsRepository
-  ) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(DataAndStorageSettingsViewModel(sharedPreferences, repository)))
-    }
+  ) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(DataAndStorageSettingsViewModel(sharedPreferences, repository)))
   }
 }

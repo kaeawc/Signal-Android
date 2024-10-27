@@ -57,15 +57,13 @@ class ResetSvrGuessCountJob private constructor(
     false
   )
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putString(KEY_CHANGE_SESSION_V2, serializedChangeSessionV2)
-      .putString(KEY_CHANGE_SESSION_V3, serializedChangeSessionV3)
-      .putBoolean(KEY_SVR2_COMPLETE, svr2Complete)
-      .putBoolean(KEY_SVR3_COMPLETE, svr3Complete)
-      .build()
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putString(KEY_CHANGE_SESSION_V2, serializedChangeSessionV2)
+    .putString(KEY_CHANGE_SESSION_V3, serializedChangeSessionV3)
+    .putBoolean(KEY_SVR2_COMPLETE, svr2Complete)
+    .putBoolean(KEY_SVR3_COMPLETE, svr3Complete)
+    .build()
+    .serialize()
 
   override fun getFactoryKey(): String = KEY
 

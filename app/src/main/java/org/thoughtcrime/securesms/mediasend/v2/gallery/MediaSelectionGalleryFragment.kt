@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
-import app.cash.exhaustive.Exhaustive
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import org.signal.core.util.concurrent.LifecycleDisposable
 import org.thoughtcrime.securesms.R
@@ -22,7 +21,9 @@ import org.thoughtcrime.securesms.permissions.Permissions
 
 private const val MEDIA_GALLERY_TAG = "MEDIA_GALLERY"
 
-class MediaSelectionGalleryFragment : Fragment(R.layout.fragment_container), MediaGalleryFragment.Callbacks {
+class MediaSelectionGalleryFragment :
+  Fragment(R.layout.fragment_container),
+  MediaGalleryFragment.Callbacks {
 
   private lateinit var mediaGalleryFragment: MediaGalleryFragment
 
@@ -72,7 +73,6 @@ class MediaSelectionGalleryFragment : Fragment(R.layout.fragment_container), Med
   }
 
   private fun handleError(error: MediaValidator.FilterError) {
-    @Exhaustive
     when (error) {
       MediaValidator.FilterError.None -> return
       MediaValidator.FilterError.ItemTooLarge -> Toast.makeText(requireContext(), R.string.MediaReviewFragment__one_or_more_items_were_too_large, Toast.LENGTH_SHORT).show()
@@ -112,9 +112,7 @@ class MediaSelectionGalleryFragment : Fragment(R.layout.fragment_container), Med
     Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
   }
 
-  override fun isMultiselectEnabled(): Boolean {
-    return true
-  }
+  override fun isMultiselectEnabled(): Boolean = true
 
   override fun onMediaSelected(media: Media) {
     sharedViewModel.addMedia(media)

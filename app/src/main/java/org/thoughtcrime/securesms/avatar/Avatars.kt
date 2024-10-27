@@ -29,9 +29,7 @@ object Avatars {
     A200("A200", 0xFF4F4F6D.toInt()),
     A210("A210", 0xFF5C5C5C.toInt());
 
-    fun deserialize(code: String): ForegroundColor {
-      return values().find { it.code == code } ?: throw IllegalArgumentException()
-    }
+    fun deserialize(code: String): ForegroundColor = values().find { it.code == code } ?: throw IllegalArgumentException()
 
     fun serialize(): String = code
   }
@@ -133,9 +131,7 @@ object Avatars {
   }
 
   @JvmStatic
-  fun getForegroundColor(avatarColor: AvatarColor): ForegroundColor {
-    return ForegroundColor.values().firstOrNull { it.serialize() == avatarColor.serialize() } ?: ForegroundColor.A210
-  }
+  fun getForegroundColor(avatarColor: AvatarColor): ForegroundColor = ForegroundColor.values().firstOrNull { it.serialize() == avatarColor.serialize() } ?: ForegroundColor.A210
 
   data class DefaultAvatar(
     @DrawableRes val vectorDrawableId: Int,

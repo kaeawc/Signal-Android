@@ -28,27 +28,25 @@ class AppUpdatesSettingsFragment : DSLSettingsFragment(R.string.preferences_app_
     adapter.submitList(getConfiguration().toMappingModelList())
   }
 
-  private fun getConfiguration(): DSLConfiguration {
-    return configure {
-      if (Build.VERSION.SDK_INT >= 31) {
-        switchPref(
-          title = DSLSettingsText.from("Automatic updates"),
-          summary = DSLSettingsText.from("Automatically download and install app updates"),
-          isChecked = SignalStore.apkUpdate.autoUpdate,
-          onClick = {
-            SignalStore.apkUpdate.autoUpdate = !SignalStore.apkUpdate.autoUpdate
-          }
-        )
-      }
-
-      clickPref(
-        title = DSLSettingsText.from("Check for updates"),
-        summary = DSLSettingsText.from("Last checked on: $lastSuccessfulUpdateString"),
+  private fun getConfiguration(): DSLConfiguration = configure {
+    if (Build.VERSION.SDK_INT >= 31) {
+      switchPref(
+        title = DSLSettingsText.from("Automatic updates"),
+        summary = DSLSettingsText.from("Automatically download and install app updates"),
+        isChecked = SignalStore.apkUpdate.autoUpdate,
         onClick = {
-          AppDependencies.jobManager.add(ApkUpdateJob())
+          SignalStore.apkUpdate.autoUpdate = !SignalStore.apkUpdate.autoUpdate
         }
       )
     }
+
+    clickPref(
+      title = DSLSettingsText.from("Check for updates"),
+      summary = DSLSettingsText.from("Last checked on: $lastSuccessfulUpdateString"),
+      onClick = {
+        AppDependencies.jobManager.add(ApkUpdateJob())
+      }
+    )
   }
 
   private val lastSuccessfulUpdateString: String

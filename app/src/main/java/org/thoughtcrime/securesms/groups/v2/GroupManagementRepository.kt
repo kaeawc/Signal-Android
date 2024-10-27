@@ -68,48 +68,40 @@ class GroupManagementRepository @JvmOverloads constructor(private val context: C
     }
   }
 
-  fun blockJoinRequests(groupId: GroupId.V2, recipient: Recipient): Single<GroupBlockJoinRequestResult> {
-    return Single.fromCallable {
-      try {
-        GroupManager.ban(context, groupId, recipient.id)
-        GroupBlockJoinRequestResult.Success
-      } catch (e: GroupChangeException) {
-        Log.w(TAG, e)
-        GroupBlockJoinRequestResult.Failure(GroupChangeFailureReason.fromException(e))
-      } catch (e: IOException) {
-        Log.w(TAG, e)
-        GroupBlockJoinRequestResult.Failure(GroupChangeFailureReason.fromException(e))
-      }
-    }.subscribeOn(Schedulers.io())
-  }
-
-  fun cancelJoinRequest(groupId: GroupId.V2): Single<Result<Unit, GroupChangeFailureReason>> {
-    return Single.create { emitter ->
-      try {
-        GroupManager.cancelJoinRequest(context, groupId)
-        emitter.onSuccess(Result.success(Unit))
-      } catch (gcfe: GroupChangeFailedException) {
-        Log.i(TAG, "Unable to cancel request", gcfe)
-        emitter.onSuccess(Result.failure(GroupChangeFailureReason.fromException(gcfe)))
-      } catch (ioe: IOException) {
-        Log.i(TAG, "Unable to cancel request", ioe)
-        emitter.onSuccess(Result.failure(GroupChangeFailureReason.fromException(ioe)))
-      } catch (gcbe: GroupChangeBusyException) {
-        Log.i(TAG, "Unable to cancel request", gcbe)
-        emitter.onSuccess(Result.failure(GroupChangeFailureReason.fromException(gcbe)))
-      }
-    }.subscribeOn(Schedulers.io())
-  }
-
-  fun removeUnmigratedV1Members(groupId: GroupId.V2): Completable {
-    return Completable.fromCallable {
-      SignalDatabase.groups.removeUnmigratedV1Members(groupId)
-    }.subscribeOn(Schedulers.io())
-  }
-
-  fun isJustSelf(groupId: GroupId): Single<Boolean> {
-    return Single.fromCallable {
-      SignalDatabase.groups.requireGroup(groupId).members == listOf(Recipient.self().id)
+  fun blockJoinRequests(groupId: GroupId.V2, recipient: Recipient): Single<GroupBlockJoinRequestResult> = Single.fromCallable {
+    try {
+      GroupManager.ban(context, groupId, recipient.id)
+      GroupBlockJoinRequestResult.Success
+    } catch (e: GroupChangeException) {
+      Log.w(TAG, e)
+      GroupBlockJoinRequestResult.Failure(GroupChangeFailureReason.fromException(e))
+    } catch (e: IOException) {
+      Log.w(TAG, e)
+      GroupBlockJoinRequestResult.Failure(GroupChangeFailureReason.fromException(e))
     }
+  }.subscribeOn(Schedulers.io())
+
+  fun cancelJoinRequest(groupId: GroupId.V2): Single<Result<Unit, GroupChangeFailureReason>> = Single.create { emitter ->
+    try {
+      GroupManager.cancelJoinRequest(context, groupId)
+      emitter.onSuccess(Result.success(Unit))
+    } catch (gcfe: GroupChangeFailedException) {
+      Log.i(TAG, "Unable to cancel request", gcfe)
+      emitter.onSuccess(Result.failure(GroupChangeFailureReason.fromException(gcfe)))
+    } catch (ioe: IOException) {
+      Log.i(TAG, "Unable to cancel request", ioe)
+      emitter.onSuccess(Result.failure(GroupChangeFailureReason.fromException(ioe)))
+    } catch (gcbe: GroupChangeBusyException) {
+      Log.i(TAG, "Unable to cancel request", gcbe)
+      emitter.onSuccess(Result.failure(GroupChangeFailureReason.fromException(gcbe)))
+    }
+  }.subscribeOn(Schedulers.io())
+
+  fun removeUnmigratedV1Members(groupId: GroupId.V2): Completable = Completable.fromCallable {
+    SignalDatabase.groups.removeUnmigratedV1Members(groupId)
+  }.subscribeOn(Schedulers.io())
+
+  fun isJustSelf(groupId: GroupId): Single<Boolean> = Single.fromCallable {
+    SignalDatabase.groups.requireGroup(groupId).members == listOf(Recipient.self().id)
   }
 }

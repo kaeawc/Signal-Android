@@ -162,11 +162,9 @@ class StorySlateView @JvmOverloads constructor(
     FAILED(5, false);
 
     companion object {
-      fun fromCode(code: Int): State {
-        return values().firstOrNull {
-          it.code == code
-        } ?: HIDDEN
-      }
+      fun fromCode(code: Int): State = values().firstOrNull {
+        it.code == code
+      } ?: HIDDEN
     }
   }
 }

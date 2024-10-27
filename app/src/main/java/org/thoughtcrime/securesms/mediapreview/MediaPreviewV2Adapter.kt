@@ -17,13 +17,9 @@ class MediaPreviewV2Adapter(fragment: Fragment) : FragmentStateAdapter(fragment)
   private val stableIdGenerator = StableIdGenerator<Attachment>()
   private val currentIdSet: HashSet<Long> = HashSet()
 
-  override fun getItemCount(): Int {
-    return items.count()
-  }
+  override fun getItemCount(): Int = items.count()
 
-  override fun getItemId(position: Int): Long {
-    return stableIdGenerator.getId(items[position])
-  }
+  override fun getItemId(position: Int): Long = stableIdGenerator.getId(items[position])
 
   override fun createFragment(position: Int): Fragment {
     val attachment: Attachment = items[position]
@@ -53,9 +49,7 @@ class MediaPreviewV2Adapter(fragment: Fragment) : FragmentStateAdapter(fragment)
     return fragment
   }
 
-  override fun containsItem(itemId: Long): Boolean {
-    return currentIdSet.contains(itemId)
-  }
+  override fun containsItem(itemId: Long): Boolean = currentIdSet.contains(itemId)
 
   fun getFragmentTag(position: Int): String? {
     if (items.isEmpty() || position < 0 || position > itemCount) {
@@ -65,9 +59,7 @@ class MediaPreviewV2Adapter(fragment: Fragment) : FragmentStateAdapter(fragment)
     return "f${getItemId(position)}"
   }
 
-  fun findItemPosition(media: Media): Int {
-    return items.indexOfFirst { it.uri == media.uri }
-  }
+  fun findItemPosition(media: Media): Int = items.indexOfFirst { it.uri == media.uri }
 
   fun updateBackingItems(newItems: Collection<Attachment>) {
     if (newItems != items) {

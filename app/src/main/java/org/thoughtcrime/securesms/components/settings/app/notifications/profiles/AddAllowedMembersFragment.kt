@@ -57,72 +57,70 @@ class AddAllowedMembersFragment : DSLSettingsFragment(layoutId = R.layout.fragme
       )
   }
 
-  private fun getConfiguration(profile: NotificationProfile, recipients: List<Recipient>): DSLConfiguration {
-    return configure {
-      sectionHeaderPref(R.string.AddAllowedMembers__allowed_notifications)
+  private fun getConfiguration(profile: NotificationProfile, recipients: List<Recipient>): DSLConfiguration = configure {
+    sectionHeaderPref(R.string.AddAllowedMembers__allowed_notifications)
 
-      customPref(
-        NotificationProfileAddMembers.Model(
-          onClick = { id, currentSelection ->
-            findNavController().safeNavigate(
-              AddAllowedMembersFragmentDirections.actionAddAllowedMembersFragmentToSelectRecipientsFragment(id)
-                .setCurrentSelection(currentSelection.toTypedArray())
-            )
-          },
-          profileId = profile.id,
-          currentSelection = profile.allowedMembers
-        )
-      )
-
-      for (member in recipients) {
-        customPref(
-          NotificationProfileRecipient.Model(
-            recipientModel = RecipientPreference.Model(
-              recipient = member,
-              onClick = {}
-            ),
-            onRemoveClick = { id ->
-              lifecycleDisposable += viewModel.removeMember(id)
-                .subscribeBy(
-                  onSuccess = { removed ->
-                    view?.let { view ->
-                      Snackbar.make(view, getString(R.string.NotificationProfileDetails__s_removed, removed.getDisplayName(requireContext())), Snackbar.LENGTH_LONG)
-                        .setAction(R.string.NotificationProfileDetails__undo) { undoRemove(id) }
-                        .show()
-                    }
-                  }
-                )
-            }
+    customPref(
+      NotificationProfileAddMembers.Model(
+        onClick = { id, currentSelection ->
+          findNavController().safeNavigate(
+            AddAllowedMembersFragmentDirections.actionAddAllowedMembersFragmentToSelectRecipientsFragment(id)
+              .setCurrentSelection(currentSelection.toTypedArray())
           )
-        )
-      }
-
-      sectionHeaderPref(R.string.AddAllowedMembers__exceptions)
-
-      switchPref(
-        title = DSLSettingsText.from(R.string.AddAllowedMembers__allow_all_calls),
-        icon = DSLSettingsIcon.from(R.drawable.symbol_phone_24),
-        isChecked = profile.allowAllCalls,
-        onClick = {
-          lifecycleDisposable += viewModel.toggleAllowAllCalls()
-            .subscribeBy(
-              onError = { Log.w(TAG, "Error updating profile", it) }
-            )
-        }
+        },
+        profileId = profile.id,
+        currentSelection = profile.allowedMembers
       )
+    )
 
-      switchPref(
-        title = DSLSettingsText.from(R.string.AddAllowedMembers__notify_for_all_mentions),
-        icon = DSLSettingsIcon.from(R.drawable.symbol_at_24),
-        isChecked = profile.allowAllMentions,
-        onClick = {
-          lifecycleDisposable += viewModel.toggleAllowAllMentions()
-            .subscribeBy(
-              onError = { Log.w(TAG, "Error updating profile", it) }
-            )
-        }
+    for (member in recipients) {
+      customPref(
+        NotificationProfileRecipient.Model(
+          recipientModel = RecipientPreference.Model(
+            recipient = member,
+            onClick = {}
+          ),
+          onRemoveClick = { id ->
+            lifecycleDisposable += viewModel.removeMember(id)
+              .subscribeBy(
+                onSuccess = { removed ->
+                  view?.let { view ->
+                    Snackbar.make(view, getString(R.string.NotificationProfileDetails__s_removed, removed.getDisplayName(requireContext())), Snackbar.LENGTH_LONG)
+                      .setAction(R.string.NotificationProfileDetails__undo) { undoRemove(id) }
+                      .show()
+                  }
+                }
+              )
+          }
+        )
       )
     }
+
+    sectionHeaderPref(R.string.AddAllowedMembers__exceptions)
+
+    switchPref(
+      title = DSLSettingsText.from(R.string.AddAllowedMembers__allow_all_calls),
+      icon = DSLSettingsIcon.from(R.drawable.symbol_phone_24),
+      isChecked = profile.allowAllCalls,
+      onClick = {
+        lifecycleDisposable += viewModel.toggleAllowAllCalls()
+          .subscribeBy(
+            onError = { Log.w(TAG, "Error updating profile", it) }
+          )
+      }
+    )
+
+    switchPref(
+      title = DSLSettingsText.from(R.string.AddAllowedMembers__notify_for_all_mentions),
+      icon = DSLSettingsIcon.from(R.drawable.symbol_at_24),
+      isChecked = profile.allowAllMentions,
+      onClick = {
+        lifecycleDisposable += viewModel.toggleAllowAllMentions()
+          .subscribeBy(
+            onError = { Log.w(TAG, "Error updating profile", it) }
+          )
+      }
+    )
   }
 
   private fun undoRemove(id: RecipientId) {

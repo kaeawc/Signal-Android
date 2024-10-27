@@ -126,46 +126,42 @@ class StripePaymentInProgressFragment : DialogFragment(R.layout.donation_in_prog
     }
   }
 
-  private fun getProcessingStatus(): String {
-    return if (args.inAppPaymentType == InAppPaymentType.RECURRING_BACKUP) {
-      getString(R.string.InAppPaymentInProgressFragment__processing_payment)
-    } else {
-      getString(R.string.InAppPaymentInProgressFragment__processing_donation)
-    }
+  private fun getProcessingStatus(): String = if (args.inAppPaymentType == InAppPaymentType.RECURRING_BACKUP) {
+    getString(R.string.InAppPaymentInProgressFragment__processing_payment)
+  } else {
+    getString(R.string.InAppPaymentInProgressFragment__processing_donation)
   }
-  private fun handleSecure3dsAction(secure3dsAction: StripeApi.Secure3DSAction, inAppPayment: InAppPaymentTable.InAppPayment): Single<StripeIntentAccessor> {
-    return when (secure3dsAction) {
-      is StripeApi.Secure3DSAction.NotNeeded -> {
-        Log.d(TAG, "No 3DS action required.")
-        Single.just(StripeIntentAccessor.NO_ACTION_REQUIRED)
-      }
+  private fun handleSecure3dsAction(secure3dsAction: StripeApi.Secure3DSAction, inAppPayment: InAppPaymentTable.InAppPayment): Single<StripeIntentAccessor> = when (secure3dsAction) {
+    is StripeApi.Secure3DSAction.NotNeeded -> {
+      Log.d(TAG, "No 3DS action required.")
+      Single.just(StripeIntentAccessor.NO_ACTION_REQUIRED)
+    }
 
-      is StripeApi.Secure3DSAction.ConfirmRequired -> {
-        Log.d(TAG, "3DS action required. Displaying dialog...")
-        Single.create { emitter ->
-          val listener = FragmentResultListener { _, bundle ->
-            val result: StripeIntentAccessor? = bundle.getParcelableCompat(Stripe3DSDialogFragment.REQUEST_KEY, StripeIntentAccessor::class.java)
-            if (result != null) {
-              emitter.onSuccess(result)
+    is StripeApi.Secure3DSAction.ConfirmRequired -> {
+      Log.d(TAG, "3DS action required. Displaying dialog...")
+      Single.create { emitter ->
+        val listener = FragmentResultListener { _, bundle ->
+          val result: StripeIntentAccessor? = bundle.getParcelableCompat(Stripe3DSDialogFragment.REQUEST_KEY, StripeIntentAccessor::class.java)
+          if (result != null) {
+            emitter.onSuccess(result)
+          } else {
+            val didLaunchExternal = bundle.getBoolean(Stripe3DSDialogFragment.LAUNCHED_EXTERNAL, false)
+            if (didLaunchExternal) {
+              emitter.onError(DonationError.UserLaunchedExternalApplication(args.inAppPaymentType.toErrorSource()))
             } else {
-              val didLaunchExternal = bundle.getBoolean(Stripe3DSDialogFragment.LAUNCHED_EXTERNAL, false)
-              if (didLaunchExternal) {
-                emitter.onError(DonationError.UserLaunchedExternalApplication(args.inAppPaymentType.toErrorSource()))
-              } else {
-                emitter.onError(DonationError.UserCancelledPaymentError(args.inAppPaymentType.toErrorSource()))
-              }
+              emitter.onError(DonationError.UserCancelledPaymentError(args.inAppPaymentType.toErrorSource()))
             }
           }
+        }
 
-          parentFragmentManager.setFragmentResultListener(Stripe3DSDialogFragment.REQUEST_KEY, this, listener)
+        parentFragmentManager.setFragmentResultListener(Stripe3DSDialogFragment.REQUEST_KEY, this, listener)
 
-          findNavController().safeNavigate(StripePaymentInProgressFragmentDirections.actionStripePaymentInProgressFragmentToStripe3dsDialogFragment(secure3dsAction.uri, secure3dsAction.returnUri, inAppPayment))
+        findNavController().safeNavigate(StripePaymentInProgressFragmentDirections.actionStripePaymentInProgressFragmentToStripe3dsDialogFragment(secure3dsAction.uri, secure3dsAction.returnUri, inAppPayment))
 
-          emitter.setCancellable {
-            parentFragmentManager.clearFragmentResultListener(Stripe3DSDialogFragment.REQUEST_KEY)
-          }
-        }.subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io())
-      }
+        emitter.setCancellable {
+          parentFragmentManager.clearFragmentResultListener(Stripe3DSDialogFragment.REQUEST_KEY)
+        }
+      }.subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io())
     }
   }
 }

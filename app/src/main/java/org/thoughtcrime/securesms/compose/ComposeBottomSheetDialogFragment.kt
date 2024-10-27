@@ -20,20 +20,18 @@ abstract class ComposeBottomSheetDialogFragment : FixedRoundedCornerBottomSheetD
 
   protected open val forceDarkTheme = false
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-    return ComposeView(requireContext()).apply {
-      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-      setContent {
-        SignalTheme(
-          isDarkMode = forceDarkTheme || DynamicTheme.isDarkTheme(LocalContext.current)
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = ComposeView(requireContext()).apply {
+    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    setContent {
+      SignalTheme(
+        isDarkMode = forceDarkTheme || DynamicTheme.isDarkTheme(LocalContext.current)
+      ) {
+        Surface(
+          shape = RoundedCornerShape(18.dp, 18.dp),
+          color = SignalTheme.colors.colorSurface1,
+          contentColor = MaterialTheme.colorScheme.onSurface
         ) {
-          Surface(
-            shape = RoundedCornerShape(18.dp, 18.dp),
-            color = SignalTheme.colors.colorSurface1,
-            contentColor = MaterialTheme.colorScheme.onSurface
-          ) {
-            SheetContent()
-          }
+          SheetContent()
         }
       }
     }

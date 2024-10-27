@@ -71,26 +71,24 @@ class PaymentsValues internal constructor(store: KeyValueStore) : SignalStoreVal
 
   public override fun onFirstEverAppLaunch() {}
 
-  public override fun getKeysToIncludeInBackup(): List<String> {
-    return listOf(
-      PAYMENTS_ENTROPY,
-      MOB_PAYMENTS_ENABLED,
-      MOB_LEDGER,
-      PAYMENTS_CURRENT_CURRENCY,
-      DEFAULT_CURRENCY_CODE,
-      USER_CONFIRMED_MNEMONIC,
-      USER_CONFIRMED_MNEMONIC_LARGE_BALANCE,
-      SHOW_ABOUT_MOBILE_COIN_INFO_CARD,
-      SHOW_ADDING_TO_YOUR_WALLET_INFO_CARD,
-      SHOW_CASHING_OUT_INFO_CARD,
-      SHOW_RECOVERY_PHRASE_INFO_CARD,
-      SHOW_UPDATE_PIN_INFO_CARD,
-      PAYMENT_LOCK_ENABLED,
-      PAYMENT_LOCK_TIMESTAMP,
-      PAYMENT_LOCK_SKIP_COUNT,
-      SHOW_SAVE_RECOVERY_PHRASE
-    )
-  }
+  public override fun getKeysToIncludeInBackup(): List<String> = listOf(
+    PAYMENTS_ENTROPY,
+    MOB_PAYMENTS_ENABLED,
+    MOB_LEDGER,
+    PAYMENTS_CURRENT_CURRENCY,
+    DEFAULT_CURRENCY_CODE,
+    USER_CONFIRMED_MNEMONIC,
+    USER_CONFIRMED_MNEMONIC_LARGE_BALANCE,
+    SHOW_ABOUT_MOBILE_COIN_INFO_CARD,
+    SHOW_ADDING_TO_YOUR_WALLET_INFO_CARD,
+    SHOW_CASHING_OUT_INFO_CARD,
+    SHOW_RECOVERY_PHRASE_INFO_CARD,
+    SHOW_UPDATE_PIN_INFO_CARD,
+    PAYMENT_LOCK_ENABLED,
+    PAYMENT_LOCK_TIMESTAMP,
+    PAYMENT_LOCK_SKIP_COUNT,
+    SHOW_SAVE_RECOVERY_PHRASE
+  )
 
   fun confirmMnemonic(confirmed: Boolean) {
     if (userHasLargeBalance()) {
@@ -103,9 +101,7 @@ class PaymentsValues internal constructor(store: KeyValueStore) : SignalStoreVal
   /**
    * Consider using [.getPaymentsAvailability] which includes feature flag and region status.
    */
-  fun mobileCoinPaymentsEnabled(): Boolean {
-    return getBoolean(MOB_PAYMENTS_ENABLED, false)
-  }
+  fun mobileCoinPaymentsEnabled(): Boolean = getBoolean(MOB_PAYMENTS_ENABLED, false)
 
   /**
    * Applies feature flags and region restrictions to return an enum which describes the available feature set for the user.
@@ -171,9 +167,7 @@ class PaymentsValues internal constructor(store: KeyValueStore) : SignalStoreVal
   /**
    * True if a local entropy is set, regardless of whether payments is currently enabled.
    */
-  fun hasPaymentsEntropy(): Boolean {
-    return paymentsEntropy != null
-  }
+  fun hasPaymentsEntropy(): Boolean = paymentsEntropy != null
 
   /**
    * Returns the local payments entropy, regardless of whether payments is currently enabled.
@@ -184,17 +178,11 @@ class PaymentsValues internal constructor(store: KeyValueStore) : SignalStoreVal
   val paymentsEntropy: Entropy?
     get() = Entropy.fromBytes(store.getBlob(PAYMENTS_ENTROPY, null))
 
-  fun mobileCoinLatestBalance(): Balance {
-    return mobileCoinLatestFullLedger().balance
-  }
+  fun mobileCoinLatestBalance(): Balance = mobileCoinLatestFullLedger().balance
 
-  fun liveMobileCoinLedger(): LiveData<MobileCoinLedgerWrapper> {
-    return liveMobileCoinLedger
-  }
+  fun liveMobileCoinLedger(): LiveData<MobileCoinLedgerWrapper> = liveMobileCoinLedger
 
-  fun liveMobileCoinBalance(): LiveData<Balance> {
-    return liveMobileCoinBalance
-  }
+  fun liveMobileCoinBalance(): LiveData<Balance> = liveMobileCoinBalance
 
   fun setCurrentCurrency(currentCurrency: Currency) {
     store.beginWrite()
@@ -208,47 +196,34 @@ class PaymentsValues internal constructor(store: KeyValueStore) : SignalStoreVal
     return if (currencyCode == null) determineCurrency() else Currency.getInstance(currencyCode)
   }
 
-  fun liveCurrentCurrency(): MutableLiveData<Currency> {
-    return liveCurrentCurrency
-  }
+  fun liveCurrentCurrency(): MutableLiveData<Currency> = liveCurrentCurrency
 
   fun setEnclaveFailure(failure: Boolean) {
     enclaveFailure.postValue(failure)
   }
 
-  fun enclaveFailure(): LiveData<Boolean> {
-    return enclaveFailure
+  fun enclaveFailure(): LiveData<Boolean> = enclaveFailure
+
+  fun showAboutMobileCoinInfoCard(): Boolean = store.getBoolean(SHOW_ABOUT_MOBILE_COIN_INFO_CARD, true)
+
+  fun showAddingToYourWalletInfoCard(): Boolean = store.getBoolean(SHOW_ADDING_TO_YOUR_WALLET_INFO_CARD, true)
+
+  fun showCashingOutInfoCard(): Boolean = store.getBoolean(SHOW_CASHING_OUT_INFO_CARD, true)
+
+  fun isMnemonicConfirmed(): Boolean = if (userHasLargeBalance()) {
+    userConfirmedMnemonicLargeBalance
+  } else {
+    userConfirmedMnemonic
   }
 
-  fun showAboutMobileCoinInfoCard(): Boolean {
-    return store.getBoolean(SHOW_ABOUT_MOBILE_COIN_INFO_CARD, true)
-  }
-
-  fun showAddingToYourWalletInfoCard(): Boolean {
-    return store.getBoolean(SHOW_ADDING_TO_YOUR_WALLET_INFO_CARD, true)
-  }
-
-  fun showCashingOutInfoCard(): Boolean {
-    return store.getBoolean(SHOW_CASHING_OUT_INFO_CARD, true)
-  }
-
-  fun isMnemonicConfirmed(): Boolean {
-    return if (userHasLargeBalance()) {
-      userConfirmedMnemonicLargeBalance
-    } else {
-      userConfirmedMnemonic
-    }
-  }
-
-  fun showUpdatePinInfoCard(): Boolean {
-    return if (userHasLargeBalance() &&
-      SignalStore.svr.hasPin() &&
-      !SignalStore.svr.hasOptedOut() && SignalStore.pin.keyboardType == PinKeyboardType.NUMERIC
-    ) {
-      store.getBoolean(SHOW_CASHING_OUT_INFO_CARD, true)
-    } else {
-      false
-    }
+  fun showUpdatePinInfoCard(): Boolean = if (userHasLargeBalance() &&
+    SignalStore.svr.hasPin() &&
+    !SignalStore.svr.hasOptedOut() &&
+    SignalStore.pin.keyboardType == PinKeyboardType.NUMERIC
+  ) {
+    store.getBoolean(SHOW_CASHING_OUT_INFO_CARD, true)
+  } else {
+    false
   }
 
   fun dismissAboutMobileCoinInfoCard() {
@@ -360,7 +335,5 @@ class PaymentsValues internal constructor(store: KeyValueStore) : SignalStoreVal
     MNEMONIC_ERROR
   }
 
-  private fun userHasLargeBalance(): Boolean {
-    return mobileCoinLatestBalance().fullAmount.requireMobileCoin().greaterThan(LARGE_BALANCE_THRESHOLD)
-  }
+  private fun userHasLargeBalance(): Boolean = mobileCoinLatestBalance().fullAmount.requireMobileCoin().greaterThan(LARGE_BALANCE_THRESHOLD)
 }

@@ -88,15 +88,11 @@ class ConversationListTabsViewModel(repository: ConversationListTabRepository) :
     }
   }
 
-  private fun <T : Any> performStoreUpdate(flowable: Flowable<T>, fn: (T, ConversationListTabsState) -> ConversationListTabsState): Disposable {
-    return store.update(flowable) { t, state ->
-      fn(t, state.copy(prevTab = state.tab))
-    }
+  private fun <T : Any> performStoreUpdate(flowable: Flowable<T>, fn: (T, ConversationListTabsState) -> ConversationListTabsState): Disposable = store.update(flowable) { t, state ->
+    fn(t, state.copy(prevTab = state.tab))
   }
 
   class Factory(private val repository: ConversationListTabRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(ConversationListTabsViewModel(repository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(ConversationListTabsViewModel(repository)) as T
   }
 }

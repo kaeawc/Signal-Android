@@ -10,7 +10,5 @@ data class ServiceMessageId(
   val sender: RecipientId,
   val sentTimestamp: Long
 ) {
-  override fun toString(): String {
-    return "MessageId($sender, $sentTimestamp)"
-  }
+  override fun toString(): String = "MessageId($sender, $sentTimestamp)"
 }

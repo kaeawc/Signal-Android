@@ -104,8 +104,6 @@ class AttachmentHashBackfillJob private constructor(parameters: Parameters) : Jo
   }
 
   class Factory : Job.Factory<AttachmentHashBackfillJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): AttachmentHashBackfillJob {
-      return AttachmentHashBackfillJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): AttachmentHashBackfillJob = AttachmentHashBackfillJob(parameters)
   }
 }

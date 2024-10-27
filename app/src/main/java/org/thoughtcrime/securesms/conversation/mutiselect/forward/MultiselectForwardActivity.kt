@@ -17,7 +17,10 @@ import org.thoughtcrime.securesms.components.FragmentWrapperActivity
 import org.thoughtcrime.securesms.contacts.paged.ContactSearchKey
 import org.thoughtcrime.securesms.conversation.mutiselect.forward.MultiselectForwardFragment.Companion.RESULT_SELECTION
 
-open class MultiselectForwardActivity : FragmentWrapperActivity(), MultiselectForwardFragment.Callback, SearchConfigurationProvider {
+open class MultiselectForwardActivity :
+  FragmentWrapperActivity(),
+  MultiselectForwardFragment.Callback,
+  SearchConfigurationProvider {
 
   companion object {
     private val TAG = Log.tag(MultiselectForwardActivity::class.java)
@@ -36,9 +39,7 @@ open class MultiselectForwardActivity : FragmentWrapperActivity(), MultiselectFo
     toolbar.setNavigationOnClickListener { exitFlow() }
   }
 
-  override fun getFragment(): Fragment {
-    return MultiselectForwardFragment.create(args)
-  }
+  override fun getFragment(): Fragment = MultiselectForwardFragment.create(args)
 
   override fun onFinishForwardAction() {
     Log.d(TAG, "Completed forward action...")
@@ -56,28 +57,20 @@ open class MultiselectForwardActivity : FragmentWrapperActivity(), MultiselectFo
   }
 
   @Suppress("WrongViewCast")
-  override fun getContainer(): ViewGroup {
-    return findViewById(R.id.fragment_container_wrapper)
-  }
+  override fun getContainer(): ViewGroup = findViewById(R.id.fragment_container_wrapper)
 
-  override fun getDialogBackgroundColor(): Int {
-    return ContextCompat.getColor(this, R.color.signal_colorBackground)
-  }
+  override fun getDialogBackgroundColor(): Int = ContextCompat.getColor(this, R.color.signal_colorBackground)
 
   class SelectionContract : ActivityResultContract<MultiselectForwardFragmentArgs, List<ContactSearchKey.RecipientSearchKey>>() {
-    override fun createIntent(context: Context, input: MultiselectForwardFragmentArgs): Intent {
-      return Intent(context, MultiselectForwardActivity::class.java).putExtra(ARGS, input)
-    }
+    override fun createIntent(context: Context, input: MultiselectForwardFragmentArgs): Intent = Intent(context, MultiselectForwardActivity::class.java).putExtra(ARGS, input)
 
-    override fun parseResult(resultCode: Int, intent: Intent?): List<ContactSearchKey.RecipientSearchKey> {
-      return if (resultCode != RESULT_OK) {
-        emptyList()
-      } else if (intent == null || !intent.hasExtra(RESULT_SELECTION)) {
-        throw IllegalStateException("Selection contract requires a selection.")
-      } else {
-        val selection: List<ContactSearchKey.RecipientSearchKey> = intent.getParcelableArrayListExtraCompat(RESULT_SELECTION, ContactSearchKey.RecipientSearchKey::class.java)!!
-        selection
-      }
+    override fun parseResult(resultCode: Int, intent: Intent?): List<ContactSearchKey.RecipientSearchKey> = if (resultCode != RESULT_OK) {
+      emptyList()
+    } else if (intent == null || !intent.hasExtra(RESULT_SELECTION)) {
+      throw IllegalStateException("Selection contract requires a selection.")
+    } else {
+      val selection: List<ContactSearchKey.RecipientSearchKey> = intent.getParcelableArrayListExtraCompat(RESULT_SELECTION, ContactSearchKey.RecipientSearchKey::class.java)!!
+      selection
     }
   }
 }

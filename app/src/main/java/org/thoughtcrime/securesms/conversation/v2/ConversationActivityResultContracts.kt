@@ -140,12 +140,10 @@ class ConversationActivityResultContracts(private val fragment: Fragment, privat
       return MediaSelectionActivity.editor(context, MessageSendType.SignalMessageSendType, media, recipientId, text)
     }
 
-    override fun parseResult(resultCode: Int, intent: Intent?): MediaSendActivityResult? {
-      return if (resultCode == Activity.RESULT_OK) {
-        intent?.let { MediaSendActivityResult.fromData(intent) }
-      } else {
-        null
-      }
+    override fun parseResult(resultCode: Int, intent: Intent?): MediaSendActivityResult? = if (resultCode == Activity.RESULT_OK) {
+      intent?.let { MediaSendActivityResult.fromData(intent) }
+    } else {
+      null
     }
   }
 
@@ -155,12 +153,10 @@ class ConversationActivityResultContracts(private val fragment: Fragment, privat
       return MediaSelectionActivity.camera(context, MessageSendType.SignalMessageSendType, recipientId, isReply)
     }
 
-    override fun parseResult(resultCode: Int, intent: Intent?): MediaSendActivityResult? {
-      return if (resultCode == Activity.RESULT_OK) {
-        intent?.let { MediaSendActivityResult.fromData(intent) }
-      } else {
-        null
-      }
+    override fun parseResult(resultCode: Int, intent: Intent?): MediaSendActivityResult? = if (resultCode == Activity.RESULT_OK) {
+      intent?.let { MediaSendActivityResult.fromData(intent) }
+    } else {
+      null
     }
   }
 
@@ -170,12 +166,10 @@ class ConversationActivityResultContracts(private val fragment: Fragment, privat
       return MediaSelectionActivity.gallery(context, MessageSendType.SignalMessageSendType, media, recipientId, text, isReply)
     }
 
-    override fun parseResult(resultCode: Int, intent: Intent?): MediaSendActivityResult? {
-      return if (resultCode == Activity.RESULT_OK) {
-        intent?.let { MediaSendActivityResult.fromData(intent) }
-      } else {
-        null
-      }
+    override fun parseResult(resultCode: Int, intent: Intent?): MediaSendActivityResult? = if (resultCode == Activity.RESULT_OK) {
+      intent?.let { MediaSendActivityResult.fromData(intent) }
+    } else {
+      null
     }
   }
 
@@ -185,81 +179,63 @@ class ConversationActivityResultContracts(private val fragment: Fragment, privat
       return ContactShareEditActivity.getIntent(context, listOf(uri), chatColors.asSingleColor())
     }
 
-    override fun parseResult(resultCode: Int, intent: Intent?): List<Contact> {
-      return if (resultCode == Activity.RESULT_OK) {
-        intent?.let { IntentCompat.getParcelableArrayListExtra(intent, ContactShareEditActivity.KEY_CONTACTS, Contact::class.java) } ?: emptyList()
-      } else {
-        emptyList()
-      }
+    override fun parseResult(resultCode: Int, intent: Intent?): List<Contact> = if (resultCode == Activity.RESULT_OK) {
+      intent?.let { IntentCompat.getParcelableArrayListExtra(intent, ContactShareEditActivity.KEY_CONTACTS, Contact::class.java) } ?: emptyList()
+    } else {
+      emptyList()
     }
   }
 
   private object SelectContact : ActivityResultContract<Unit, Uri?>() {
-    override fun createIntent(context: Context, input: Unit): Intent {
-      return Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
-    }
+    override fun createIntent(context: Context, input: Unit): Intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
 
-    override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-      return if (resultCode == Activity.RESULT_OK) {
-        intent?.data
-      } else {
-        null
-      }
+    override fun parseResult(resultCode: Int, intent: Intent?): Uri? = if (resultCode == Activity.RESULT_OK) {
+      intent?.data
+    } else {
+      null
     }
   }
 
   private object GifSearch : ActivityResultContract<GifSearchInput, MediaSendActivityResult?>() {
-    override fun createIntent(context: Context, input: GifSearchInput): Intent {
-      return Intent(context, GiphyActivity::class.java).apply {
-        putExtra(GiphyActivity.EXTRA_IS_MMS, false)
-        putExtra(GiphyActivity.EXTRA_RECIPIENT_ID, input.recipientId)
-        putExtra(GiphyActivity.EXTRA_TRANSPORT, MessageSendType.SignalMessageSendType)
-        putExtra(GiphyActivity.EXTRA_TEXT, input.text)
-      }
+    override fun createIntent(context: Context, input: GifSearchInput): Intent = Intent(context, GiphyActivity::class.java).apply {
+      putExtra(GiphyActivity.EXTRA_IS_MMS, false)
+      putExtra(GiphyActivity.EXTRA_RECIPIENT_ID, input.recipientId)
+      putExtra(GiphyActivity.EXTRA_TRANSPORT, MessageSendType.SignalMessageSendType)
+      putExtra(GiphyActivity.EXTRA_TEXT, input.text)
     }
 
-    override fun parseResult(resultCode: Int, intent: Intent?): MediaSendActivityResult? {
-      return if (resultCode == Activity.RESULT_OK) {
-        intent?.let { MediaSendActivityResult.fromData(intent) }
-      } else {
-        null
-      }
+    override fun parseResult(resultCode: Int, intent: Intent?): MediaSendActivityResult? = if (resultCode == Activity.RESULT_OK) {
+      intent?.let { MediaSendActivityResult.fromData(intent) }
+    } else {
+      null
     }
   }
 
   private object SelectLocation : ActivityResultContract<ChatColors, SelectLocationOutput?>() {
-    override fun createIntent(context: Context, input: ChatColors): Intent {
-      return Intent(context, PlacePickerActivity::class.java)
-        .putExtra(PlacePickerActivity.KEY_CHAT_COLOR, input.asSingleColor())
-    }
+    override fun createIntent(context: Context, input: ChatColors): Intent = Intent(context, PlacePickerActivity::class.java)
+      .putExtra(PlacePickerActivity.KEY_CHAT_COLOR, input.asSingleColor())
 
-    override fun parseResult(resultCode: Int, intent: Intent?): SelectLocationOutput? {
-      return if (resultCode == Activity.RESULT_OK) {
-        intent?.data?.let { uri -> SelectLocationOutput(SignalPlace(PlacePickerActivity.addressFromData(intent)), uri) }
-      } else {
-        null
-      }
+    override fun parseResult(resultCode: Int, intent: Intent?): SelectLocationOutput? = if (resultCode == Activity.RESULT_OK) {
+      intent?.data?.let { uri -> SelectLocationOutput(SignalPlace(PlacePickerActivity.addressFromData(intent)), uri) }
+    } else {
+      null
     }
   }
 
   private object SelectFile : ActivityResultContract<SelectFile.SelectFileMode, Uri?>() {
-    override fun createIntent(context: Context, input: SelectFileMode): Intent {
-      return Intent().apply {
-        type = "*/*"
+    override fun createIntent(context: Context, input: SelectFileMode): Intent = Intent().apply {
+      type = "*/*"
 
-        action = when (input) {
-          SelectFileMode.DOCUMENT -> Intent.ACTION_OPEN_DOCUMENT
-          SelectFileMode.CONTENT -> Intent.ACTION_GET_CONTENT
-        }
+      action = when (input) {
+        SelectFileMode.DOCUMENT -> Intent.ACTION_OPEN_DOCUMENT
+        SelectFileMode.CONTENT -> Intent.ACTION_GET_CONTENT
       }
     }
 
-    override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-      return if (resultCode == Activity.RESULT_OK) {
-        intent?.data
-      } else {
-        null
-      }
+    override fun parseResult(resultCode: Int, intent: Intent?): Uri? = if (resultCode == Activity.RESULT_OK) {
+      intent?.data
+    } else {
+      null
     }
 
     enum class SelectFileMode {

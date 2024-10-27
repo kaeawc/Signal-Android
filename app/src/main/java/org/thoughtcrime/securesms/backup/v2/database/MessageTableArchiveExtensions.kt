@@ -74,6 +74,4 @@ fun MessageTable.getMessagesForBackup(db: SignalDatabase, backupTime: Long, medi
   return ChatItemArchiveExporter(db, cursor, 100, mediaBackupEnabled)
 }
 
-fun MessageTable.createChatItemInserter(importState: ImportState): ChatItemArchiveImporter {
-  return ChatItemArchiveImporter(writableDatabase, importState, 500)
-}
+fun MessageTable.createChatItemInserter(importState: ImportState): ChatItemArchiveImporter = ChatItemArchiveImporter(writableDatabase, importState, 500)

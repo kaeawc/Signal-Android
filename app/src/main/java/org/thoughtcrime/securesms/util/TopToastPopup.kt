@@ -13,11 +13,12 @@ import java.util.concurrent.TimeUnit
 /**
  * Show a "toast" like message with text and icon that animates in from the top and then animates out to the top.
  */
-class TopToastPopup private constructor(parent: ViewGroup, iconResource: Int, descriptionText: String) : PopupWindow(
-  LayoutInflater.from(parent.context).inflate(R.layout.top_toast_popup, parent, false),
-  ViewGroup.LayoutParams.MATCH_PARENT,
-  ViewUtil.dpToPx(86)
-) {
+class TopToastPopup private constructor(parent: ViewGroup, iconResource: Int, descriptionText: String) :
+  PopupWindow(
+    LayoutInflater.from(parent.context).inflate(R.layout.top_toast_popup, parent, false),
+    ViewGroup.LayoutParams.MATCH_PARENT,
+    ViewUtil.dpToPx(86)
+  ) {
 
   private val icon: ImageView = contentView.findViewById(R.id.top_toast_popup_icon)
   private val description: TextView = contentView.findViewById(R.id.top_toast_popup_description)

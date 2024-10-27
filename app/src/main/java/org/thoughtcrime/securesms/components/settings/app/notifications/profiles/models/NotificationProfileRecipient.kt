@@ -19,13 +19,9 @@ object NotificationProfileRecipient {
   }
 
   class Model(val recipientModel: RecipientPreference.Model, val onRemoveClick: (RecipientId) -> Unit) : PreferenceModel<Model>() {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return recipientModel.recipient.id == newItem.recipientModel.recipient.id
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = recipientModel.recipient.id == newItem.recipientModel.recipient.id
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return super.areContentsTheSame(newItem) && recipientModel.areContentsTheSame(newItem.recipientModel)
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = super.areContentsTheSame(newItem) && recipientModel.areContentsTheSame(newItem.recipientModel)
   }
 
   class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {

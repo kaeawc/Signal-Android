@@ -58,28 +58,26 @@ object DateUtils : android.text.format.DateUtils() {
    * A relative timestamp to use in space-constrained areas, like the conversation list.
    */
   @JvmStatic
-  fun getBriefRelativeTimeSpanString(c: Context, locale: Locale, timestamp: Long): String {
-    return when {
-      isNow(timestamp) -> {
-        c.getString(R.string.DateUtils_just_now)
-      }
-      timestamp.isWithin(1.hours) -> {
-        val minutes = timestamp.convertDeltaTo(DurationUnit.MINUTES)
-        c.resources.getString(R.string.DateUtils_minutes_ago, minutes)
-      }
-      timestamp.isWithin(1.days) -> {
-        val hours = timestamp.convertDeltaTo(DurationUnit.HOURS)
-        c.resources.getQuantityString(R.plurals.hours_ago, hours, hours)
-      }
-      timestamp.isWithin(6.days) -> {
-        timestamp.toDateString("EEE", locale)
-      }
-      timestamp.isWithin(365.days) -> {
-        timestamp.toDateString("MMM d", locale)
-      }
-      else -> {
-        timestamp.toDateString("MMM d, yyyy", locale)
-      }
+  fun getBriefRelativeTimeSpanString(c: Context, locale: Locale, timestamp: Long): String = when {
+    isNow(timestamp) -> {
+      c.getString(R.string.DateUtils_just_now)
+    }
+    timestamp.isWithin(1.hours) -> {
+      val minutes = timestamp.convertDeltaTo(DurationUnit.MINUTES)
+      c.resources.getString(R.string.DateUtils_minutes_ago, minutes)
+    }
+    timestamp.isWithin(1.days) -> {
+      val hours = timestamp.convertDeltaTo(DurationUnit.HOURS)
+      c.resources.getQuantityString(R.plurals.hours_ago, hours, hours)
+    }
+    timestamp.isWithin(6.days) -> {
+      timestamp.toDateString("EEE", locale)
+    }
+    timestamp.isWithin(365.days) -> {
+      timestamp.toDateString("MMM d", locale)
+    }
+    else -> {
+      timestamp.toDateString("MMM d, yyyy", locale)
     }
   }
 
@@ -87,34 +85,32 @@ object DateUtils : android.text.format.DateUtils() {
    * Similar to [getBriefRelativeTimeSpanString], except this will include additional time information in longer formats.
    */
   @JvmStatic
-  fun getExtendedRelativeTimeSpanString(context: Context, locale: Locale, timestamp: Long): String {
-    return when {
-      isNow(timestamp) -> {
-        context.getString(R.string.DateUtils_just_now)
-      }
-      timestamp.isWithin(1.hours) -> {
-        val minutes = timestamp.convertDeltaTo(DurationUnit.MINUTES)
-        context.resources.getString(R.string.DateUtils_minutes_ago, minutes)
-      }
-      else -> {
-        val format = StringBuilder()
+  fun getExtendedRelativeTimeSpanString(context: Context, locale: Locale, timestamp: Long): String = when {
+    isNow(timestamp) -> {
+      context.getString(R.string.DateUtils_just_now)
+    }
+    timestamp.isWithin(1.hours) -> {
+      val minutes = timestamp.convertDeltaTo(DurationUnit.MINUTES)
+      context.resources.getString(R.string.DateUtils_minutes_ago, minutes)
+    }
+    else -> {
+      val format = StringBuilder()
 
-        if (timestamp.isWithin(6.days)) {
-          format.append("EEE ")
-        } else if (timestamp.isWithin(365.days)) {
-          format.append("MMM d, ")
-        } else {
-          format.append("MMM d, yyyy, ")
-        }
-
-        if (context.is24HourFormat()) {
-          format.append("HH:mm")
-        } else {
-          format.append("hh:mm a")
-        }
-
-        timestamp.toDateString(format.toString(), locale)
+      if (timestamp.isWithin(6.days)) {
+        format.append("EEE ")
+      } else if (timestamp.isWithin(365.days)) {
+        format.append("MMM d, ")
+      } else {
+        format.append("MMM d, yyyy, ")
       }
+
+      if (context.is24HourFormat()) {
+        format.append("HH:mm")
+      } else {
+        format.append("hh:mm a")
+      }
+
+      timestamp.toDateString(format.toString(), locale)
     }
   }
 
@@ -123,23 +119,19 @@ object DateUtils : android.text.format.DateUtils() {
    * that communicates the date elsewhere.
    */
   @JvmStatic
-  fun getDatelessRelativeTimeSpanString(context: Context, locale: Locale, timestamp: Long): String {
-    return getDatelessRelativeTimeSpanFormattedDate(context, locale, timestamp).value
-  }
+  fun getDatelessRelativeTimeSpanString(context: Context, locale: Locale, timestamp: Long): String = getDatelessRelativeTimeSpanFormattedDate(context, locale, timestamp).value
 
   @JvmStatic
-  fun getDatelessRelativeTimeSpanFormattedDate(context: Context, locale: Locale, timestamp: Long): FormattedDate {
-    return when {
-      isNow(timestamp) -> {
-        FormattedDate(isRelative = true, isNow = true, value = context.getString(R.string.DateUtils_just_now))
-      }
-      timestamp.isWithin(1.hours) -> {
-        val minutes = timestamp.convertDeltaTo(DurationUnit.MINUTES)
-        FormattedDate(isRelative = true, isNow = false, value = context.resources.getString(R.string.DateUtils_minutes_ago, minutes))
-      }
-      else -> {
-        FormattedDate(isRelative = false, isNow = false, value = getOnlyTimeString(context, timestamp))
-      }
+  fun getDatelessRelativeTimeSpanFormattedDate(context: Context, locale: Locale, timestamp: Long): FormattedDate = when {
+    isNow(timestamp) -> {
+      FormattedDate(isRelative = true, isNow = true, value = context.getString(R.string.DateUtils_just_now))
+    }
+    timestamp.isWithin(1.hours) -> {
+      val minutes = timestamp.convertDeltaTo(DurationUnit.MINUTES)
+      FormattedDate(isRelative = true, isNow = false, value = context.resources.getString(R.string.DateUtils_minutes_ago, minutes))
+    }
+    else -> {
+      FormattedDate(isRelative = false, isNow = false, value = getOnlyTimeString(context, timestamp))
     }
   }
 
@@ -151,9 +143,7 @@ object DateUtils : android.text.format.DateUtils() {
    * For 24 hour locale: 19:23
    */
   @JvmStatic
-  fun getOnlyTimeString(context: Context, timestamp: Long): String {
-    return timestamp.toLocalTime().formatHours(context)
-  }
+  fun getOnlyTimeString(context: Context, timestamp: Long): String = timestamp.toLocalTime().formatHours(context)
 
   /**
    * If on the same day, will return just the time. Otherwise it'll include relative date info.
@@ -192,26 +182,22 @@ object DateUtils : android.text.format.DateUtils() {
    * - Feb 4
    * - Jan 12, 2033
    */
-  fun getDayPrecisionTimeString(context: Context, locale: Locale, timestamp: Long): String {
-    return if (isSameDay(System.currentTimeMillis(), timestamp)) {
-      context.getString(R.string.DeviceListItem_today)
-    } else {
-      val format: String = when {
-        timestamp.isWithinAbs(6.days) -> "EEE "
-        timestamp.isWithinAbs(365.days) -> "MMM d"
-        else -> "MMM d, yyy"
-      }
-      timestamp.toDateString(format, locale)
+  fun getDayPrecisionTimeString(context: Context, locale: Locale, timestamp: Long): String = if (isSameDay(System.currentTimeMillis(), timestamp)) {
+    context.getString(R.string.DeviceListItem_today)
+  } else {
+    val format: String = when {
+      timestamp.isWithinAbs(6.days) -> "EEE "
+      timestamp.isWithinAbs(365.days) -> "MMM d"
+      else -> "MMM d, yyy"
     }
+    timestamp.toDateString(format, locale)
   }
 
   @JvmStatic
-  fun getDayPrecisionTimeSpanString(context: Context, locale: Locale, timestamp: Long): String {
-    return if (isSameDay(System.currentTimeMillis(), timestamp)) {
-      context.getString(R.string.DeviceListItem_today)
-    } else {
-      timestamp.toDateString("dd/MM/yy", locale)
-    }
+  fun getDayPrecisionTimeSpanString(context: Context, locale: Locale, timestamp: Long): String = if (isSameDay(System.currentTimeMillis(), timestamp)) {
+    context.getString(R.string.DeviceListItem_today)
+  } else {
+    timestamp.toDateString("dd/MM/yy", locale)
   }
 
   @JvmStatic
@@ -229,27 +215,23 @@ object DateUtils : android.text.format.DateUtils() {
     context: Context,
     locale: Locale,
     timestamp: Long
-  ): String {
-    return if (isToday(timestamp)) {
-      context.getString(R.string.DateUtils_today)
-    } else if (isYesterday(timestamp)) {
-      context.getString(R.string.DateUtils_yesterday)
-    } else if (timestamp.isWithin(HALF_A_YEAR_IN_DAYS.days)) {
-      formatDateWithDayOfWeek(locale, timestamp)
-    } else {
-      formatDateWithYear(locale, timestamp)
-    }
+  ): String = if (isToday(timestamp)) {
+    context.getString(R.string.DateUtils_today)
+  } else if (isYesterday(timestamp)) {
+    context.getString(R.string.DateUtils_yesterday)
+  } else if (timestamp.isWithin(HALF_A_YEAR_IN_DAYS.days)) {
+    formatDateWithDayOfWeek(locale, timestamp)
+  } else {
+    formatDateWithYear(locale, timestamp)
   }
 
   @JvmStatic
-  fun getScheduledMessagesDateHeaderString(context: Context, locale: Locale, timestamp: Long): String {
-    return if (isToday(timestamp)) {
-      context.getString(R.string.DateUtils_today)
-    } else if (timestamp.isWithinAbs(HALF_A_YEAR_IN_DAYS.days)) {
-      formatDateWithDayOfWeek(locale, timestamp)
-    } else {
-      formatDateWithYear(locale, timestamp)
-    }
+  fun getScheduledMessagesDateHeaderString(context: Context, locale: Locale, timestamp: Long): String = if (isToday(timestamp)) {
+    context.getString(R.string.DateUtils_today)
+  } else if (timestamp.isWithinAbs(HALF_A_YEAR_IN_DAYS.days)) {
+    formatDateWithDayOfWeek(locale, timestamp)
+  } else {
+    formatDateWithYear(locale, timestamp)
   }
 
   fun getScheduledMessageDateString(context: Context, timestamp: Long): String {
@@ -268,23 +250,15 @@ object DateUtils : android.text.format.DateUtils() {
     return context.getString(R.string.DateUtils_schedule_at, dayModifier, time)
   }
 
-  fun formatDateWithDayOfWeek(locale: Locale, timestamp: Long): String {
-    return timestamp.toDateString("EEE, MMM d", locale)
-  }
+  fun formatDateWithDayOfWeek(locale: Locale, timestamp: Long): String = timestamp.toDateString("EEE, MMM d", locale)
 
-  fun formatDateWithYear(locale: Locale, timestamp: Long): String {
-    return timestamp.toDateString("MMM d, yyyy", locale)
-  }
+  fun formatDateWithYear(locale: Locale, timestamp: Long): String = timestamp.toDateString("MMM d, yyyy", locale)
 
   @JvmStatic
-  fun formatDate(locale: Locale, timestamp: Long): String {
-    return timestamp.toDateString("EEE, MMM d, yyyy", locale)
-  }
+  fun formatDate(locale: Locale, timestamp: Long): String = timestamp.toDateString("EEE, MMM d, yyyy", locale)
 
   @JvmStatic
-  fun formatDateWithoutDayOfWeek(locale: Locale, timestamp: Long): String {
-    return timestamp.toDateString("MMM d yyyy", locale)
-  }
+  fun formatDateWithoutDayOfWeek(locale: Locale, timestamp: Long): String = timestamp.toDateString("MMM d yyyy", locale)
 
   /**
    * True if the two timestamps occur on the same day, otherwise false.
@@ -297,9 +271,7 @@ object DateUtils : android.text.format.DateUtils() {
   }
 
   @JvmStatic
-  fun isSameExtendedRelativeTimestamp(second: Long, first: Long): Boolean {
-    return second - first < MAX_RELATIVE_TIMESTAMP
-  }
+  fun isSameExtendedRelativeTimestamp(second: Long, first: Long): Boolean = second - first < MAX_RELATIVE_TIMESTAMP
 
   /**
    * e.g. 2020-09-04T19:17:51Z
@@ -340,17 +312,11 @@ object DateUtils : android.text.format.DateUtils() {
   @JvmStatic
   fun isNow(timestamp: Long) = timestamp.isWithin(1.minutes)
 
-  private fun Long.isWithin(duration: Duration): Boolean {
-    return System.currentTimeMillis() - this <= duration.inWholeMilliseconds
-  }
+  private fun Long.isWithin(duration: Duration): Boolean = System.currentTimeMillis() - this <= duration.inWholeMilliseconds
 
-  private fun Long.isWithinAbs(duration: Duration): Boolean {
-    return abs(System.currentTimeMillis() - this) <= duration.inWholeMilliseconds
-  }
+  private fun Long.isWithinAbs(duration: Duration): Boolean = abs(System.currentTimeMillis() - this) <= duration.inWholeMilliseconds
 
-  private fun isYesterday(time: Long): Boolean {
-    return isToday(time + TimeUnit.DAYS.toMillis(1))
-  }
+  private fun isYesterday(time: Long): Boolean = isToday(time + TimeUnit.DAYS.toMillis(1))
 
   private fun Context.is24HourFormat(): Boolean {
     is24HourDateCache?.let {
@@ -364,17 +330,13 @@ object DateUtils : android.text.format.DateUtils() {
     return result
   }
 
-  private fun Long.convertDeltaTo(unit: DurationUnit): Int {
-    return (System.currentTimeMillis() - this).milliseconds.toInt(unit)
-  }
+  private fun Long.convertDeltaTo(unit: DurationUnit): Int = (System.currentTimeMillis() - this).milliseconds.toInt(unit)
 
-  private fun Long.toDateString(template: String, locale: Locale): String {
-    return template
-      .localizeTemplate(locale)
-      .toSimpleDateFormat(locale)
-      .setLowercaseAmPmStrings(locale)
-      .format(Date(this))
-  }
+  private fun Long.toDateString(template: String, locale: Locale): String = template
+    .localizeTemplate(locale)
+    .toSimpleDateFormat(locale)
+    .setLowercaseAmPmStrings(locale)
+    .format(Date(this))
 
   private fun String.localizeTemplate(locale: Locale): String {
     val key = TemplateLocale(this, locale)

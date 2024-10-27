@@ -34,9 +34,7 @@ class MediaReviewFragmentPagerAdapter(fragment: Fragment) : FragmentStateAdapter
     return mediaList[position].uri.hashCode().toLong()
   }
 
-  override fun containsItem(itemId: Long): Boolean {
-    return mediaList.any { it.uri.hashCode().toLong() == itemId }
-  }
+  override fun containsItem(itemId: Long): Boolean = mediaList.any { it.uri.hashCode().toLong() == itemId }
 
   override fun getItemCount(): Int = mediaList.size
 
@@ -62,12 +60,8 @@ class MediaReviewFragmentPagerAdapter(fragment: Fragment) : FragmentStateAdapter
 
     override fun getNewListSize(): Int = newList.size
 
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-      return oldList[oldItemPosition].uri == newList[newItemPosition].uri
-    }
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = oldList[oldItemPosition].uri == newList[newItemPosition].uri
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-      return oldList[oldItemPosition] == newList[newItemPosition]
-    }
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = oldList[oldItemPosition] == newList[newItemPosition]
   }
 }

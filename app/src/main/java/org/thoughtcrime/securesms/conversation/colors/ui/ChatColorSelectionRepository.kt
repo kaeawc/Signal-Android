@@ -92,12 +92,10 @@ sealed class ChatColorSelectionRepository(context: Context) {
   }
 
   companion object {
-    fun create(context: Context, recipientId: RecipientId?): ChatColorSelectionRepository {
-      return if (recipientId != null) {
-        Single(context, recipientId)
-      } else {
-        Global(context)
-      }
+    fun create(context: Context, recipientId: RecipientId?): ChatColorSelectionRepository = if (recipientId != null) {
+      Single(context, recipientId)
+    } else {
+      Global(context)
     }
   }
 }

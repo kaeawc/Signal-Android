@@ -232,9 +232,7 @@ class V2ConversationItemThumbnail @JvmOverloads constructor(
     )
   }
 
-  private fun isThumbnailMetricsSatisfied(maxWidth: Int, maxHeight: Int): Boolean {
-    return thumbnailSize.width in 1..maxWidth && thumbnailSize.height in 1..maxHeight
-  }
+  private fun isThumbnailMetricsSatisfied(maxWidth: Int, maxHeight: Int): Boolean = thumbnailSize.width in 1..maxWidth && thumbnailSize.height in 1..maxHeight
 
   private class PlaceholderTarget(view: ImageView) : CustomViewTarget<ImageView, Drawable>(view) {
     override fun onLoadFailed(errorDrawable: Drawable?) {

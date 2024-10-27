@@ -59,7 +59,5 @@ object NotificationProfiles {
     return context.getString(R.string.NotificationProfileSelection__on_until_s, profile.schedule.endTime().formatHours(context))
   }
 
-  private fun Long.isForever(): Boolean {
-    return this == Long.MAX_VALUE
-  }
+  private fun Long.isForever(): Boolean = this == Long.MAX_VALUE
 }

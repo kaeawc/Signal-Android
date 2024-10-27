@@ -36,9 +36,7 @@ object LocalMetrics {
   private val db: LocalMetricsDatabase by lazy { LocalMetricsDatabase.getInstance(AppDependencies.application) }
 
   @JvmStatic
-  fun getInstance(): LocalMetrics {
-    return LocalMetrics
-  }
+  fun getInstance(): LocalMetrics = LocalMetrics
 
   /**
    * Starts an event with the provided ID and name.

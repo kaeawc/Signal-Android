@@ -24,11 +24,12 @@ import org.thoughtcrime.securesms.util.visible
  * A popup window for calls that holds extra actions, such as reactions, raise hand, and screen sharing.
  *
  */
-class CallOverflowPopupWindow(private val activity: FragmentActivity, parentViewGroup: ViewGroup, private val raisedHandDelegate: RaisedHandDelegate) : PopupWindow(
-  LayoutInflater.from(activity).inflate(R.layout.call_overflow_holder, parentViewGroup, false),
-  activity.resources.getDimension(R.dimen.calling_reaction_popup_menu_width).toInt(),
-  activity.resources.getDimension(R.dimen.calling_reaction_popup_menu_height).toInt()
-) {
+class CallOverflowPopupWindow(private val activity: FragmentActivity, parentViewGroup: ViewGroup, private val raisedHandDelegate: RaisedHandDelegate) :
+  PopupWindow(
+    LayoutInflater.from(activity).inflate(R.layout.call_overflow_holder, parentViewGroup, false),
+    activity.resources.getDimension(R.dimen.calling_reaction_popup_menu_width).toInt(),
+    activity.resources.getDimension(R.dimen.calling_reaction_popup_menu_height).toInt()
+  ) {
   private val raiseHandLabel: TextView = (contentView as LinearLayout).findViewById(R.id.raise_hand_label)
 
   init {

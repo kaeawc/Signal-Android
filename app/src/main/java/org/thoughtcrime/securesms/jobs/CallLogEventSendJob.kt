@@ -100,22 +100,18 @@ class CallLogEventSendJob private constructor(
       .sendSyncMessage(SignalServiceSyncMessage.forCallLogEvent(callLogEvent))
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return when (e) {
-      is ServerRejectedException -> false
-      is PushNetworkException -> true
-      else -> false
-    }
+  override fun onShouldRetry(e: Exception): Boolean = when (e) {
+    is ServerRejectedException -> false
+    is PushNetworkException -> true
+    else -> false
   }
 
   class Factory : Job.Factory<CallLogEventSendJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): CallLogEventSendJob {
-      return CallLogEventSendJob(
-        parameters,
-        SyncMessage.CallLogEvent.ADAPTER.decode(
-          CallLogEventSendJobData.ADAPTER.decode(serializedData!!).callLogEvent.toByteArray()
-        )
+    override fun create(parameters: Parameters, serializedData: ByteArray?): CallLogEventSendJob = CallLogEventSendJob(
+      parameters,
+      SyncMessage.CallLogEvent.ADAPTER.decode(
+        CallLogEventSendJobData.ADAPTER.decode(serializedData!!).callLogEvent.toByteArray()
       )
-    }
+    )
   }
 }

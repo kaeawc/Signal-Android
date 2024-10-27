@@ -24,9 +24,7 @@ class ScheduleMessageFtuxBottomSheetDialog : FixedRoundedCornerBottomSheetDialog
 
   private val binding by ViewBinderDelegate(ScheduleMessageFtuxBottomSheetBinding::bind)
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-    return inflater.inflate(R.layout.schedule_message_ftux_bottom_sheet, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.schedule_message_ftux_bottom_sheet, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     if (Build.VERSION.SDK_INT >= 31 && !ServiceUtil.getAlarmManager(context).canScheduleExactAlarms()) {

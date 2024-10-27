@@ -22,13 +22,9 @@ object MediaGallerySelectedItem {
   }
 
   class Model(val media: Media) : MappingModel<Model> {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return media.uri == newItem.media.uri
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = media.uri == newItem.media.uri
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return media.uri == newItem.media.uri
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = media.uri == newItem.media.uri
   }
 
   class ViewHolder(itemView: View, private val onSelectedMediaClicked: OnSelectedMediaClicked) : MappingViewHolder<Model>(itemView) {

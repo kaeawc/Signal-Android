@@ -292,9 +292,7 @@ class VoiceNoteMediaNotificationProvider(val context: Context) : MediaNotificati
   /**
    * We do not currently support any custom commands in the notification area.
    */
-  override fun handleCustomCommand(session: MediaSession, action: String, extras: Bundle): Boolean {
-    throw UnsupportedOperationException("Custom command handler for Notification is unused.")
-  }
+  override fun handleCustomCommand(session: MediaSession, action: String, extras: Bundle): Boolean = throw UnsupportedOperationException("Custom command handler for Notification is unused.")
 
   companion object {
     private const val NOW_PLAYING_NOTIFICATION_ID = 32221

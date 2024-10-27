@@ -44,15 +44,11 @@ class RebuildMessageSearchIndexJob private constructor(params: Parameters) : Bas
     }
   }
 
-  override fun getNextRunAttemptBackoff(pastAttemptCount: Int, exception: Exception): Long {
-    return 10.seconds.inWholeMilliseconds
-  }
+  override fun getNextRunAttemptBackoff(pastAttemptCount: Int, exception: Exception): Long = 10.seconds.inWholeMilliseconds
 
   override fun onShouldRetry(e: Exception): Boolean = e is RetryLaterException
 
   class Factory : Job.Factory<RebuildMessageSearchIndexJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): RebuildMessageSearchIndexJob {
-      return RebuildMessageSearchIndexJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): RebuildMessageSearchIndexJob = RebuildMessageSearchIndexJob(parameters)
   }
 }

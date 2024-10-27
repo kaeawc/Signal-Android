@@ -149,9 +149,7 @@ class MediaTable internal constructor(context: Context?, databaseHelper: SignalD
         )"""
     )
 
-    private fun applyEqualityOperator(threadId: Long, query: String): String {
-      return query.replace("__EQUALITY__", if (threadId == ALL_THREADS.toLong()) "!=" else "=")
-    }
+    private fun applyEqualityOperator(threadId: Long, query: String): String = query.replace("__EQUALITY__", if (threadId == ALL_THREADS.toLong()) "!=" else "=")
   }
 
   @JvmOverloads
@@ -289,21 +287,17 @@ class MediaTable internal constructor(context: Context?, databaseHelper: SignalD
       postFix = " ORDER BY $order"
     }
 
-    fun applyToQuery(query: String): String {
-      return query + postFix
-    }
+    fun applyToQuery(query: String): String = query + postFix
 
     val isRelatedToFileSize: Boolean
       get() = this == Largest
 
     companion object {
-      fun deserialize(code: Int): Sorting {
-        return when (code) {
-          0 -> Newest
-          1 -> Oldest
-          2 -> Largest
-          else -> throw IllegalArgumentException("Unknown code: $code")
-        }
+      fun deserialize(code: Int): Sorting = when (code) {
+        0 -> Newest
+        1 -> Oldest
+        2 -> Largest
+        else -> throw IllegalArgumentException("Unknown code: $code")
       }
     }
   }

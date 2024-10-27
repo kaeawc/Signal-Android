@@ -163,17 +163,15 @@ class SignalContextMenu private constructor(
       return this
     }
 
-    fun show(items: List<ActionItem>): SignalContextMenu {
-      return SignalContextMenu(
-        anchor = anchor,
-        container = container,
-        items = items,
-        baseOffsetX = offsetX,
-        baseOffsetY = offsetY,
-        horizontalPosition = horizontalPosition,
-        verticalPosition = verticalPosition,
-        onDismiss = onDismiss
-      ).show()
-    }
+    fun show(items: List<ActionItem>): SignalContextMenu = SignalContextMenu(
+      anchor = anchor,
+      container = container,
+      items = items,
+      baseOffsetX = offsetX,
+      baseOffsetY = offsetY,
+      horizontalPosition = horizontalPosition,
+      verticalPosition = verticalPosition,
+      onDismiss = onDismiss
+    ).show()
   }
 }

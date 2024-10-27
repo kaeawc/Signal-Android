@@ -1,5 +1,6 @@
 package org.thoughtcrime.securesms.gcm
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
@@ -70,6 +71,7 @@ object FcmFetchManager {
     }
   }
 
+  @SuppressLint("MissingPermission")
   private fun postMayHaveMessagesNotification(context: Context) {
     if (RemoteConfig.fcmMayHaveMessagesNotificationKillSwitch) {
       Log.w(TAG, "May have messages notification kill switch")

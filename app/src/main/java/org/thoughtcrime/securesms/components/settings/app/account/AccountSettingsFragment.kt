@@ -63,124 +63,122 @@ class AccountSettingsFragment : DSLSettingsFragment(R.string.AccountSettingsFrag
     }
   }
 
-  private fun getConfiguration(state: AccountSettingsState): DSLConfiguration {
-    return configure {
-      sectionHeaderPref(R.string.preferences_app_protection__signal_pin)
+  private fun getConfiguration(state: AccountSettingsState): DSLConfiguration = configure {
+    sectionHeaderPref(R.string.preferences_app_protection__signal_pin)
 
-      @Suppress("DEPRECATION")
-      clickPref(
-        title = DSLSettingsText.from(if (state.hasPin) R.string.preferences_app_protection__change_your_pin else R.string.preferences_app_protection__create_a_pin),
-        isEnabled = state.isDeprecatedOrUnregistered(),
-        onClick = {
-          if (state.hasPin) {
-            startActivityForResult(CreateSvrPinActivity.getIntentForPinChangeFromSettings(requireContext()), CreateSvrPinActivity.REQUEST_NEW_PIN)
-          } else {
-            startActivityForResult(CreateSvrPinActivity.getIntentForPinCreate(requireContext()), CreateSvrPinActivity.REQUEST_NEW_PIN)
-          }
+    @Suppress("DEPRECATION")
+    clickPref(
+      title = DSLSettingsText.from(if (state.hasPin) R.string.preferences_app_protection__change_your_pin else R.string.preferences_app_protection__create_a_pin),
+      isEnabled = state.isDeprecatedOrUnregistered(),
+      onClick = {
+        if (state.hasPin) {
+          startActivityForResult(CreateSvrPinActivity.getIntentForPinChangeFromSettings(requireContext()), CreateSvrPinActivity.REQUEST_NEW_PIN)
+        } else {
+          startActivityForResult(CreateSvrPinActivity.getIntentForPinCreate(requireContext()), CreateSvrPinActivity.REQUEST_NEW_PIN)
         }
-      )
-
-      switchPref(
-        title = DSLSettingsText.from(R.string.preferences_app_protection__pin_reminders),
-        summary = DSLSettingsText.from(R.string.AccountSettingsFragment__youll_be_asked_less_frequently),
-        isChecked = state.hasPin && state.pinRemindersEnabled,
-        isEnabled = state.hasPin && state.isDeprecatedOrUnregistered(),
-        onClick = {
-          setPinRemindersEnabled(!state.pinRemindersEnabled)
-        }
-      )
-
-      switchPref(
-        title = DSLSettingsText.from(R.string.preferences_app_protection__registration_lock),
-        summary = DSLSettingsText.from(R.string.AccountSettingsFragment__require_your_signal_pin),
-        isChecked = state.registrationLockEnabled,
-        isEnabled = state.hasPin && state.isDeprecatedOrUnregistered(),
-        onClick = {
-          setRegistrationLockEnabled(!state.registrationLockEnabled)
-        }
-      )
-
-      clickPref(
-        title = DSLSettingsText.from(R.string.preferences__advanced_pin_settings),
-        isEnabled = state.isDeprecatedOrUnregistered(),
-        onClick = {
-          Navigation.findNavController(requireView()).safeNavigate(R.id.action_accountSettingsFragment_to_advancedPinSettingsActivity)
-        }
-      )
-
-      dividerPref()
-
-      sectionHeaderPref(R.string.AccountSettingsFragment__account)
-
-      if (SignalStore.account.isRegistered) {
-        clickPref(
-          title = DSLSettingsText.from(R.string.AccountSettingsFragment__change_phone_number),
-          isEnabled = state.isDeprecatedOrUnregistered(),
-          onClick = {
-            Navigation.findNavController(requireView()).safeNavigate(R.id.action_accountSettingsFragment_to_changePhoneNumberFragment)
-          }
-        )
       }
+    )
 
-      clickPref(
-        title = DSLSettingsText.from(R.string.preferences_chats__transfer_account),
-        summary = DSLSettingsText.from(R.string.preferences_chats__transfer_account_to_a_new_android_device),
-        isEnabled = state.isDeprecatedOrUnregistered(),
-        onClick = {
-          Navigation.findNavController(requireView()).safeNavigate(R.id.action_accountSettingsFragment_to_oldDeviceTransferActivity)
-        }
-      )
-
-      clickPref(
-        title = DSLSettingsText.from(R.string.AccountSettingsFragment__request_account_data),
-        isEnabled = state.isDeprecatedOrUnregistered(),
-        onClick = {
-          Navigation.findNavController(requireView()).safeNavigate(R.id.action_accountSettingsFragment_to_exportAccountFragment)
-        }
-      )
-
-      if (!state.isDeprecatedOrUnregistered()) {
-        if (state.clientDeprecated) {
-          clickPref(
-            title = DSLSettingsText.from(R.string.preferences_account_update_signal),
-            onClick = {
-              PlayStoreUtil.openPlayStoreOrOurApkDownloadPage(requireContext())
-            }
-          )
-        } else if (state.userUnregistered) {
-          clickPref(
-            title = DSLSettingsText.from(R.string.preferences_account_reregister),
-            onClick = {
-              startActivity(RegistrationActivity.newIntentForReRegistration(requireContext()))
-            }
-          )
-        }
-
-        clickPref(
-          title = DSLSettingsText.from(R.string.preferences_account_delete_all_data, ContextCompat.getColor(requireContext(), R.color.signal_alert_primary)),
-          onClick = {
-            MaterialAlertDialogBuilder(requireContext())
-              .setTitle(R.string.preferences_account_delete_all_data_confirmation_title)
-              .setMessage(R.string.preferences_account_delete_all_data_confirmation_message)
-              .setPositiveButton(R.string.preferences_account_delete_all_data_confirmation_proceed) { _: DialogInterface, _: Int ->
-                if (!ServiceUtil.getActivityManager(AppDependencies.application).clearApplicationUserData()) {
-                  Toast.makeText(requireContext(), R.string.preferences_account_delete_all_data_failed, Toast.LENGTH_LONG).show()
-                }
-              }
-              .setNegativeButton(R.string.preferences_account_delete_all_data_confirmation_cancel, null)
-              .show()
-          }
-        )
+    switchPref(
+      title = DSLSettingsText.from(R.string.preferences_app_protection__pin_reminders),
+      summary = DSLSettingsText.from(R.string.AccountSettingsFragment__youll_be_asked_less_frequently),
+      isChecked = state.hasPin && state.pinRemindersEnabled,
+      isEnabled = state.hasPin && state.isDeprecatedOrUnregistered(),
+      onClick = {
+        setPinRemindersEnabled(!state.pinRemindersEnabled)
       }
+    )
 
+    switchPref(
+      title = DSLSettingsText.from(R.string.preferences_app_protection__registration_lock),
+      summary = DSLSettingsText.from(R.string.AccountSettingsFragment__require_your_signal_pin),
+      isChecked = state.registrationLockEnabled,
+      isEnabled = state.hasPin && state.isDeprecatedOrUnregistered(),
+      onClick = {
+        setRegistrationLockEnabled(!state.registrationLockEnabled)
+      }
+    )
+
+    clickPref(
+      title = DSLSettingsText.from(R.string.preferences__advanced_pin_settings),
+      isEnabled = state.isDeprecatedOrUnregistered(),
+      onClick = {
+        Navigation.findNavController(requireView()).safeNavigate(R.id.action_accountSettingsFragment_to_advancedPinSettingsActivity)
+      }
+    )
+
+    dividerPref()
+
+    sectionHeaderPref(R.string.AccountSettingsFragment__account)
+
+    if (SignalStore.account.isRegistered) {
       clickPref(
-        title = DSLSettingsText.from(R.string.preferences__delete_account, ContextCompat.getColor(requireContext(), if (state.isDeprecatedOrUnregistered()) R.color.signal_alert_primary else R.color.signal_alert_primary_50)),
+        title = DSLSettingsText.from(R.string.AccountSettingsFragment__change_phone_number),
         isEnabled = state.isDeprecatedOrUnregistered(),
         onClick = {
-          Navigation.findNavController(requireView()).safeNavigate(R.id.action_accountSettingsFragment_to_deleteAccountFragment)
+          Navigation.findNavController(requireView()).safeNavigate(R.id.action_accountSettingsFragment_to_changePhoneNumberFragment)
         }
       )
     }
+
+    clickPref(
+      title = DSLSettingsText.from(R.string.preferences_chats__transfer_account),
+      summary = DSLSettingsText.from(R.string.preferences_chats__transfer_account_to_a_new_android_device),
+      isEnabled = state.isDeprecatedOrUnregistered(),
+      onClick = {
+        Navigation.findNavController(requireView()).safeNavigate(R.id.action_accountSettingsFragment_to_oldDeviceTransferActivity)
+      }
+    )
+
+    clickPref(
+      title = DSLSettingsText.from(R.string.AccountSettingsFragment__request_account_data),
+      isEnabled = state.isDeprecatedOrUnregistered(),
+      onClick = {
+        Navigation.findNavController(requireView()).safeNavigate(R.id.action_accountSettingsFragment_to_exportAccountFragment)
+      }
+    )
+
+    if (!state.isDeprecatedOrUnregistered()) {
+      if (state.clientDeprecated) {
+        clickPref(
+          title = DSLSettingsText.from(R.string.preferences_account_update_signal),
+          onClick = {
+            PlayStoreUtil.openPlayStoreOrOurApkDownloadPage(requireContext())
+          }
+        )
+      } else if (state.userUnregistered) {
+        clickPref(
+          title = DSLSettingsText.from(R.string.preferences_account_reregister),
+          onClick = {
+            startActivity(RegistrationActivity.newIntentForReRegistration(requireContext()))
+          }
+        )
+      }
+
+      clickPref(
+        title = DSLSettingsText.from(R.string.preferences_account_delete_all_data, ContextCompat.getColor(requireContext(), R.color.signal_alert_primary)),
+        onClick = {
+          MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.preferences_account_delete_all_data_confirmation_title)
+            .setMessage(R.string.preferences_account_delete_all_data_confirmation_message)
+            .setPositiveButton(R.string.preferences_account_delete_all_data_confirmation_proceed) { _: DialogInterface, _: Int ->
+              if (!ServiceUtil.getActivityManager(AppDependencies.application).clearApplicationUserData()) {
+                Toast.makeText(requireContext(), R.string.preferences_account_delete_all_data_failed, Toast.LENGTH_LONG).show()
+              }
+            }
+            .setNegativeButton(R.string.preferences_account_delete_all_data_confirmation_cancel, null)
+            .show()
+        }
+      )
+    }
+
+    clickPref(
+      title = DSLSettingsText.from(R.string.preferences__delete_account, ContextCompat.getColor(requireContext(), if (state.isDeprecatedOrUnregistered()) R.color.signal_alert_primary else R.color.signal_alert_primary_50)),
+      isEnabled = state.isDeprecatedOrUnregistered(),
+      onClick = {
+        Navigation.findNavController(requireView()).safeNavigate(R.id.action_accountSettingsFragment_to_deleteAccountFragment)
+      }
+    )
   }
 
   private fun setRegistrationLockEnabled(enabled: Boolean) {

@@ -28,15 +28,11 @@ class LeaveGroupV2WorkerJob(parameters: Parameters, private val groupId: GroupId
     groupId = groupId
   )
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putString(KEY_GROUP_ID, groupId.toString())
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putString(KEY_GROUP_ID, groupId.toString())
+    .serialize()
 
-  override fun getFactoryKey(): String {
-    return KEY
-  }
+  override fun getFactoryKey(): String = KEY
 
   override fun onRun() {
     Log.i(TAG, "Attempting to leave group $groupId")
@@ -54,9 +50,7 @@ class LeaveGroupV2WorkerJob(parameters: Parameters, private val groupId: GroupId
     }
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return e is GroupChangeBusyException || e is GroupChangeFailedException || e is IOException
-  }
+  override fun onShouldRetry(e: Exception): Boolean = e is GroupChangeBusyException || e is GroupChangeFailedException || e is IOException
 
   override fun onFailure() = Unit
 

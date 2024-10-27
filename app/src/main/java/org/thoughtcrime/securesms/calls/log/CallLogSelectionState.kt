@@ -15,41 +15,27 @@ sealed interface CallLogSelectionState {
   fun select(callId: CallLogRow.Id): CallLogSelectionState
   fun deselect(callId: CallLogRow.Id): CallLogSelectionState
 
-  fun toggle(callId: CallLogRow.Id): CallLogSelectionState {
-    return if (contains(callId)) {
-      deselect(callId)
-    } else {
-      select(callId)
-    }
+  fun toggle(callId: CallLogRow.Id): CallLogSelectionState = if (contains(callId)) {
+    deselect(callId)
+  } else {
+    select(callId)
   }
 
   /**
    * Includes contains an opt-in list of call logs.
    */
   data class Includes(private val includes: Set<CallLogRow.Id>) : CallLogSelectionState {
-    override fun contains(callId: CallLogRow.Id): Boolean {
-      return includes.contains(callId)
-    }
+    override fun contains(callId: CallLogRow.Id): Boolean = includes.contains(callId)
 
-    override fun isNotEmpty(totalCount: Int): Boolean {
-      return includes.isNotEmpty()
-    }
+    override fun isNotEmpty(totalCount: Int): Boolean = includes.isNotEmpty()
 
-    override fun count(totalCount: Int): Int {
-      return includes.size
-    }
+    override fun count(totalCount: Int): Int = includes.size
 
-    override fun select(callId: CallLogRow.Id): CallLogSelectionState {
-      return Includes(includes + callId)
-    }
+    override fun select(callId: CallLogRow.Id): CallLogSelectionState = Includes(includes + callId)
 
-    override fun deselect(callId: CallLogRow.Id): CallLogSelectionState {
-      return Includes(includes - callId)
-    }
+    override fun deselect(callId: CallLogRow.Id): CallLogSelectionState = Includes(includes - callId)
 
-    override fun selected(): Set<CallLogRow.Id> {
-      return includes
-    }
+    override fun selected(): Set<CallLogRow.Id> = includes
   }
 
   /**
@@ -59,17 +45,11 @@ sealed interface CallLogSelectionState {
     override fun contains(callId: CallLogRow.Id): Boolean = !excluded.contains(callId)
     override fun isNotEmpty(totalCount: Int): Boolean = excluded.size < totalCount
 
-    override fun count(totalCount: Int): Int {
-      return totalCount - excluded.size
-    }
+    override fun count(totalCount: Int): Int = totalCount - excluded.size
 
-    override fun select(callId: CallLogRow.Id): CallLogSelectionState {
-      return Excludes(excluded - callId)
-    }
+    override fun select(callId: CallLogRow.Id): CallLogSelectionState = Excludes(excluded - callId)
 
-    override fun deselect(callId: CallLogRow.Id): CallLogSelectionState {
-      return Excludes(excluded + callId)
-    }
+    override fun deselect(callId: CallLogRow.Id): CallLogSelectionState = Excludes(excluded + callId)
 
     override fun selected(): Set<CallLogRow.Id> = excluded
   }

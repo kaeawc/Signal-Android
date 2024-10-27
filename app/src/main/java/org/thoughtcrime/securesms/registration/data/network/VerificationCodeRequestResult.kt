@@ -37,45 +37,43 @@ sealed class VerificationCodeRequestResult(cause: Throwable?) : RegistrationResu
     private val TAG = Log.tag(VerificationCodeRequestResult::class.java)
 
     @JvmStatic
-    fun from(networkResult: NetworkResult<RegistrationSessionMetadataResponse>): VerificationCodeRequestResult {
-      return when (networkResult) {
-        is NetworkResult.Success -> {
-          val challenges = Challenge.parse(networkResult.result.body.requestedInformation)
-          if (challenges.isNotEmpty()) {
-            Log.d(TAG, "Received \"successful\" response that contains challenges: ${challenges.joinToString { it.key }}")
-            ChallengeRequired(challenges)
-          } else {
-            Success(
-              sessionId = networkResult.result.body.id,
-              nextSmsTimestamp = RegistrationRepository.deriveTimestamp(networkResult.result.headers, networkResult.result.body.nextSms),
-              nextCallTimestamp = RegistrationRepository.deriveTimestamp(networkResult.result.headers, networkResult.result.body.nextCall),
-              nextVerificationAttempt = RegistrationRepository.deriveTimestamp(networkResult.result.headers, networkResult.result.body.nextVerificationAttempt),
-              allowedToRequestCode = networkResult.result.body.allowedToRequestCode,
-              challengesRequested = Challenge.parse(networkResult.result.body.requestedInformation),
-              verified = networkResult.result.body.verified
-            )
-          }
+    fun from(networkResult: NetworkResult<RegistrationSessionMetadataResponse>): VerificationCodeRequestResult = when (networkResult) {
+      is NetworkResult.Success -> {
+        val challenges = Challenge.parse(networkResult.result.body.requestedInformation)
+        if (challenges.isNotEmpty()) {
+          Log.d(TAG, "Received \"successful\" response that contains challenges: ${challenges.joinToString { it.key }}")
+          ChallengeRequired(challenges)
+        } else {
+          Success(
+            sessionId = networkResult.result.body.id,
+            nextSmsTimestamp = RegistrationRepository.deriveTimestamp(networkResult.result.headers, networkResult.result.body.nextSms),
+            nextCallTimestamp = RegistrationRepository.deriveTimestamp(networkResult.result.headers, networkResult.result.body.nextCall),
+            nextVerificationAttempt = RegistrationRepository.deriveTimestamp(networkResult.result.headers, networkResult.result.body.nextVerificationAttempt),
+            allowedToRequestCode = networkResult.result.body.allowedToRequestCode,
+            challengesRequested = Challenge.parse(networkResult.result.body.requestedInformation),
+            verified = networkResult.result.body.verified
+          )
         }
+      }
 
-        is NetworkResult.ApplicationError -> UnknownError(networkResult.throwable)
-        is NetworkResult.NetworkError -> UnknownError(networkResult.exception)
-        is NetworkResult.StatusCodeError -> {
-          when (val cause = networkResult.exception) {
-            is PushChallengeRequiredException -> createChallengeRequiredProcessor(networkResult)
-            is CaptchaRequiredException -> createChallengeRequiredProcessor(networkResult)
-            is RateLimitException -> createRateLimitProcessor(cause)
-            is ImpossiblePhoneNumberException -> ImpossibleNumber(cause)
-            is NonNormalizedPhoneNumberException -> NonNormalizedNumber(cause = cause, originalNumber = cause.originalNumber, normalizedNumber = cause.normalizedNumber)
-            is TokenNotAcceptedException -> TokenNotAccepted(cause)
-            is ExternalServiceFailureException -> ExternalServiceFailure(cause)
-            is InvalidTransportModeException -> InvalidTransportModeFailure(cause)
-            is MalformedRequestException -> MalformedRequest(cause)
-            is RegistrationRetryException -> MustRetry(cause)
-            is LockedException -> RegistrationLocked(cause = cause, timeRemaining = cause.timeRemaining, svr2Credentials = cause.svr2Credentials, svr3Credentials = cause.svr3Credentials)
-            is NoSuchSessionException -> NoSuchSession(cause)
-            is AlreadyVerifiedException -> AlreadyVerified(cause)
-            else -> UnknownError(cause)
-          }
+      is NetworkResult.ApplicationError -> UnknownError(networkResult.throwable)
+      is NetworkResult.NetworkError -> UnknownError(networkResult.exception)
+      is NetworkResult.StatusCodeError -> {
+        when (val cause = networkResult.exception) {
+          is PushChallengeRequiredException -> createChallengeRequiredProcessor(networkResult)
+          is CaptchaRequiredException -> createChallengeRequiredProcessor(networkResult)
+          is RateLimitException -> createRateLimitProcessor(cause)
+          is ImpossiblePhoneNumberException -> ImpossibleNumber(cause)
+          is NonNormalizedPhoneNumberException -> NonNormalizedNumber(cause = cause, originalNumber = cause.originalNumber, normalizedNumber = cause.normalizedNumber)
+          is TokenNotAcceptedException -> TokenNotAccepted(cause)
+          is ExternalServiceFailureException -> ExternalServiceFailure(cause)
+          is InvalidTransportModeException -> InvalidTransportModeFailure(cause)
+          is MalformedRequestException -> MalformedRequest(cause)
+          is RegistrationRetryException -> MustRetry(cause)
+          is LockedException -> RegistrationLocked(cause = cause, timeRemaining = cause.timeRemaining, svr2Credentials = cause.svr2Credentials, svr3Credentials = cause.svr3Credentials)
+          is NoSuchSessionException -> NoSuchSession(cause)
+          is AlreadyVerifiedException -> AlreadyVerified(cause)
+          else -> UnknownError(cause)
         }
       }
     }
@@ -95,12 +93,10 @@ sealed class VerificationCodeRequestResult(cause: Throwable?) : RegistrationResu
       }
     }
 
-    private fun createRateLimitProcessor(exception: RateLimitException): VerificationCodeRequestResult {
-      return if (exception.retryAfterMilliseconds.isPresent) {
-        RateLimited(exception, exception.retryAfterMilliseconds.get())
-      } else {
-        AttemptsExhausted(exception)
-      }
+    private fun createRateLimitProcessor(exception: RateLimitException): VerificationCodeRequestResult = if (exception.retryAfterMilliseconds.isPresent) {
+      RateLimited(exception, exception.retryAfterMilliseconds.get())
+    } else {
+      AttemptsExhausted(exception)
     }
   }
 

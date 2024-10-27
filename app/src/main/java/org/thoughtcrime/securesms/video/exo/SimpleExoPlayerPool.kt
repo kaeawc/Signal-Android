@@ -61,13 +61,11 @@ class SimpleExoPlayerPool(context: Context) : ExoPlayerPool<ExoPlayer>(MAXIMUM_R
   }
 
   @MainThread
-  override fun createPlayer(): ExoPlayer {
-    return ExoPlayer.Builder(context)
-      .setMediaSourceFactory(mediaSourceFactory)
-      .setSeekBackIncrementMs(SEEK_INTERVAL.inWholeMilliseconds)
-      .setSeekForwardIncrementMs(SEEK_INTERVAL.inWholeMilliseconds)
-      .build()
-  }
+  override fun createPlayer(): ExoPlayer = ExoPlayer.Builder(context)
+    .setMediaSourceFactory(mediaSourceFactory)
+    .setSeekBackIncrementMs(SEEK_INTERVAL.inWholeMilliseconds)
+    .setSeekForwardIncrementMs(SEEK_INTERVAL.inWholeMilliseconds)
+    .build()
 
   companion object {
     private const val MAXIMUM_RESERVED_PLAYERS = 1
@@ -101,9 +99,7 @@ abstract class ExoPlayerPool<T : ExoPlayer>(
    * @return A player if one is available, otherwise null
    */
   @MainThread
-  fun get(tag: String): T? {
-    return get(allowReserved = false, tag = tag)
-  }
+  fun get(tag: String): T? = get(allowReserved = false, tag = tag)
 
   /**
    * Get a player, preferring reserved players.
@@ -112,9 +108,7 @@ abstract class ExoPlayerPool<T : ExoPlayer>(
    * @throws IllegalStateException if no player is available.
    */
   @MainThread
-  fun require(tag: String): T {
-    return checkNotNull(get(allowReserved = true, tag = tag)) { "Required exoPlayer could not be acquired for $tag! :: ${poolStats()}" }
-  }
+  fun require(tag: String): T = checkNotNull(get(allowReserved = true, tag = tag)) { "Required exoPlayer could not be acquired for $tag! :: ${poolStats()}" }
 
   /**
    * Returns a player to the pool. If the player is not from the pool, an exception is thrown.
@@ -153,33 +147,23 @@ abstract class ExoPlayerPool<T : ExoPlayer>(
     }
   }
 
-  private fun getMaximumAllowed(allowReserved: Boolean): Int {
-    return if (allowReserved) getMaxSimultaneousPlayback() else getMaxSimultaneousPlayback() - maximumReservedPlayers
+  private fun getMaximumAllowed(allowReserved: Boolean): Int = if (allowReserved) getMaxSimultaneousPlayback() else getMaxSimultaneousPlayback() - maximumReservedPlayers
+
+  private fun createPoolStateForNewEntry(allowReserved: Boolean, tag: String?): PoolState = if (allowReserved && pool.none { (_, v) -> v.reserved }) {
+    PoolState(available = false, reserved = true, tag = tag)
+  } else {
+    PoolState(available = false, reserved = false, tag = tag)
   }
 
-  private fun createPoolStateForNewEntry(allowReserved: Boolean, tag: String?): PoolState {
-    return if (allowReserved && pool.none { (_, v) -> v.reserved }) {
-      PoolState(available = false, reserved = true, tag = tag)
-    } else {
-      PoolState(available = false, reserved = false, tag = tag)
-    }
+  private fun findAvailablePlayer(allowReserved: Boolean): T? = if (allowReserved) {
+    findFirstReservedAndAvailablePlayer() ?: findFirstUnreservedAndAvailablePlayer()
+  } else {
+    findFirstUnreservedAndAvailablePlayer()
   }
 
-  private fun findAvailablePlayer(allowReserved: Boolean): T? {
-    return if (allowReserved) {
-      findFirstReservedAndAvailablePlayer() ?: findFirstUnreservedAndAvailablePlayer()
-    } else {
-      findFirstUnreservedAndAvailablePlayer()
-    }
-  }
+  private fun findFirstReservedAndAvailablePlayer(): T? = pool.filter { (_, v) -> v.reservedAndAvailable }.keys.firstOrNull()
 
-  private fun findFirstReservedAndAvailablePlayer(): T? {
-    return pool.filter { (_, v) -> v.reservedAndAvailable }.keys.firstOrNull()
-  }
-
-  private fun findFirstUnreservedAndAvailablePlayer(): T? {
-    return pool.filter { (_, v) -> v.unreservedAndAvailable }.keys.firstOrNull()
-  }
+  private fun findFirstUnreservedAndAvailablePlayer(): T? = pool.filter { (_, v) -> v.unreservedAndAvailable }.keys.firstOrNull()
 
   protected abstract fun createPlayer(): T
 
@@ -191,9 +175,7 @@ abstract class ExoPlayerPool<T : ExoPlayer>(
     playersToRelease.forEach { it.release() }
   }
 
-  private fun poolStats(): String {
-    return getPoolStats().toString()
-  }
+  private fun poolStats(): String = getPoolStats().toString()
 
   fun getPoolStats(): PoolStats {
     val poolStats = PoolStats(

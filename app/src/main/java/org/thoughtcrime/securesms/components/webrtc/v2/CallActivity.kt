@@ -57,7 +57,9 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * Entry-point for receiving and making Signal calls.
  */
-class CallActivity : BaseActivity(), CallControlsCallback {
+class CallActivity :
+  BaseActivity(),
+  CallControlsCallback {
 
   companion object {
     private val TAG = Log.tag(CallActivity::class.java)
@@ -334,11 +336,7 @@ class CallActivity : BaseActivity(), CallControlsCallback {
     }
   }
 
-  private fun isInPipMode(): Boolean {
-    return isSystemPipEnabledAndAvailable() && isInPictureInPictureMode
-  }
+  private fun isInPipMode(): Boolean = isSystemPipEnabledAndAvailable() && isInPictureInPictureMode
 
-  private fun isSystemPipEnabledAndAvailable(): Boolean {
-    return Build.VERSION.SDK_INT >= 26 && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
-  }
+  private fun isSystemPipEnabledAndAvailable(): Boolean = Build.VERSION.SDK_INT >= 26 && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
 }

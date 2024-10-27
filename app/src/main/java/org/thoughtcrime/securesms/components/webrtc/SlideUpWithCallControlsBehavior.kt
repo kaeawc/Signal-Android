@@ -47,9 +47,7 @@ class SlideUpWithCallControlsBehavior(
     return false
   }
 
-  override fun layoutDependsOn(parent: CoordinatorLayout, child: View, dependency: View): Boolean {
-    return dependency.id == R.id.call_controls_info_parent
-  }
+  override fun layoutDependsOn(parent: CoordinatorLayout, child: View, dependency: View): Boolean = dependency.id == R.id.call_controls_info_parent
 
   private fun emitViewChanged(child: View) {
     val barrier = child.findViewById<Barrier>(R.id.call_screen_above_controls_barrier)

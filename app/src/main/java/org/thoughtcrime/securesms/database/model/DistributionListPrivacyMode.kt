@@ -14,22 +14,16 @@ enum class DistributionListPrivacyMode(private val code: Long) {
   val isBlockList: Boolean
     get() = this != ONLY_WITH
 
-  fun serialize(): Long {
-    return code
-  }
+  fun serialize(): Long = code
 
   companion object Serializer : LongSerializer<DistributionListPrivacyMode> {
-    override fun serialize(data: DistributionListPrivacyMode): Long {
-      return data.serialize()
-    }
+    override fun serialize(data: DistributionListPrivacyMode): Long = data.serialize()
 
-    override fun deserialize(data: Long): DistributionListPrivacyMode {
-      return when (data) {
-        ONLY_WITH.code -> ONLY_WITH
-        ALL_EXCEPT.code -> ALL_EXCEPT
-        ALL.code -> ALL
-        else -> throw AssertionError("Unknown privacy mode: $data")
-      }
+    override fun deserialize(data: Long): DistributionListPrivacyMode = when (data) {
+      ONLY_WITH.code -> ONLY_WITH
+      ALL_EXCEPT.code -> ALL_EXCEPT
+      ALL.code -> ALL
+      else -> throw AssertionError("Unknown privacy mode: $data")
     }
   }
 }

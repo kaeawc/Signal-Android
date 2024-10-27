@@ -27,13 +27,9 @@ class MyStoriesViewModel(private val repository: MyStoriesRepository) : ViewMode
     disposables.clear()
   }
 
-  fun resend(story: MessageRecord): Completable {
-    return repository.resend(story)
-  }
+  fun resend(story: MessageRecord): Completable = repository.resend(story)
 
   class Factory(private val repository: MyStoriesRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(MyStoriesViewModel(repository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(MyStoriesViewModel(repository)) as T
   }
 }

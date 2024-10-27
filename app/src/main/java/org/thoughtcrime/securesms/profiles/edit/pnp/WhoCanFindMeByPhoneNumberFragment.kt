@@ -19,10 +19,11 @@ import org.thoughtcrime.securesms.util.adapter.mapping.MappingAdapter
 /**
  * Allows the user to select who can see their phone number during registration.
  */
-class WhoCanFindMeByPhoneNumberFragment : DSLSettingsFragment(
-  titleId = R.string.WhoCanSeeMyPhoneNumberFragment__who_can_find_me_by_number,
-  layoutId = R.layout.who_can_find_me_by_phone_number_fragment
-) {
+class WhoCanFindMeByPhoneNumberFragment :
+  DSLSettingsFragment(
+    titleId = R.string.WhoCanSeeMyPhoneNumberFragment__who_can_find_me_by_number,
+    layoutId = R.layout.who_can_find_me_by_phone_number_fragment
+  ) {
 
   companion object {
     /**
@@ -50,30 +51,28 @@ class WhoCanFindMeByPhoneNumberFragment : DSLSettingsFragment(
     }
   }
 
-  private fun getConfiguration(state: WhoCanFindMeByPhoneNumberState): DSLConfiguration {
-    return configure {
-      radioPref(
-        title = DSLSettingsText.from(R.string.PhoneNumberPrivacy_everyone),
-        isChecked = state == WhoCanFindMeByPhoneNumberState.EVERYONE,
-        onClick = { viewModel.onEveryoneCanFindMeByPhoneNumberSelected() }
-      )
+  private fun getConfiguration(state: WhoCanFindMeByPhoneNumberState): DSLConfiguration = configure {
+    radioPref(
+      title = DSLSettingsText.from(R.string.PhoneNumberPrivacy_everyone),
+      isChecked = state == WhoCanFindMeByPhoneNumberState.EVERYONE,
+      onClick = { viewModel.onEveryoneCanFindMeByPhoneNumberSelected() }
+    )
 
-      radioPref(
-        title = DSLSettingsText.from(R.string.PhoneNumberPrivacy_nobody),
-        isChecked = state == WhoCanFindMeByPhoneNumberState.NOBODY,
-        onClick = { viewModel.onNobodyCanFindMeByPhoneNumberSelected() }
-      )
+    radioPref(
+      title = DSLSettingsText.from(R.string.PhoneNumberPrivacy_nobody),
+      isChecked = state == WhoCanFindMeByPhoneNumberState.NOBODY,
+      onClick = { viewModel.onNobodyCanFindMeByPhoneNumberSelected() }
+    )
 
-      textPref(
-        title = DSLSettingsText.from(
-          when (state) {
-            WhoCanFindMeByPhoneNumberState.EVERYONE -> R.string.WhoCanSeeMyPhoneNumberFragment__anyone_who_has_your
-            WhoCanFindMeByPhoneNumberState.NOBODY -> R.string.WhoCanSeeMyPhoneNumberFragment__nobody_will_be_able
-          },
-          DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_BodyMedium),
-          DSLSettingsText.ColorModifier(ContextCompat.getColor(requireContext(), R.color.signal_colorOnSurfaceVariant))
-        )
+    textPref(
+      title = DSLSettingsText.from(
+        when (state) {
+          WhoCanFindMeByPhoneNumberState.EVERYONE -> R.string.WhoCanSeeMyPhoneNumberFragment__anyone_who_has_your
+          WhoCanFindMeByPhoneNumberState.NOBODY -> R.string.WhoCanSeeMyPhoneNumberFragment__nobody_will_be_able
+        },
+        DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_BodyMedium),
+        DSLSettingsText.ColorModifier(ContextCompat.getColor(requireContext(), R.color.signal_colorOnSurfaceVariant))
       )
-    }
+    )
   }
 }

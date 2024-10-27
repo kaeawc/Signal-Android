@@ -17,30 +17,22 @@ object RxDatabaseObserver {
   val notificationProfiles: Flowable<Unit> by lazy { notificationProfilesFlowable() }
   val chatFolders: Flowable<Unit> by lazy { chatFoldersFlowable() }
 
-  private fun conversationListFlowable(): Flowable<Unit> {
-    return databaseFlowable { listener ->
-      AppDependencies.databaseObserver.registerConversationListObserver(listener)
-    }
+  private fun conversationListFlowable(): Flowable<Unit> = databaseFlowable { listener ->
+    AppDependencies.databaseObserver.registerConversationListObserver(listener)
   }
 
-  fun conversation(threadId: Long): Flowable<Unit> {
-    return databaseFlowable { listener ->
-      AppDependencies.databaseObserver.registerVerboseConversationObserver(threadId, listener)
-    }
+  fun conversation(threadId: Long): Flowable<Unit> = databaseFlowable { listener ->
+    AppDependencies.databaseObserver.registerVerboseConversationObserver(threadId, listener)
   }
 
   @Suppress("RedundantUnitExpression")
-  private fun notificationProfilesFlowable(): Flowable<Unit> {
-    return Flowable.combineLatest(
-      Flowable.interval(0, 30, TimeUnit.SECONDS),
-      databaseFlowable { AppDependencies.databaseObserver.registerNotificationProfileObserver(it) }
-    ) { _, _ -> Unit }
-  }
+  private fun notificationProfilesFlowable(): Flowable<Unit> = Flowable.combineLatest(
+    Flowable.interval(0, 30, TimeUnit.SECONDS),
+    databaseFlowable { AppDependencies.databaseObserver.registerNotificationProfileObserver(it) }
+  ) { _, _ -> Unit }
 
-  private fun chatFoldersFlowable(): Flowable<Unit> {
-    return databaseFlowable { listener ->
-      AppDependencies.databaseObserver.registerChatFolderObserver(listener)
-    }
+  private fun chatFoldersFlowable(): Flowable<Unit> = databaseFlowable { listener ->
+    AppDependencies.databaseObserver.registerChatFolderObserver(listener)
   }
 
   private fun databaseFlowable(registerObserver: (RxObserver) -> Unit): Flowable<Unit> {

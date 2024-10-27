@@ -105,7 +105,8 @@ class VoiceMessageRecordingDelegate(
   private inner class Session(
     observable: Single<VoiceNoteDraft>,
     private val sessionCallback: SessionCallback
-  ) : SingleObserver<VoiceNoteDraft>, Disposable {
+  ) : SingleObserver<VoiceNoteDraft>,
+    Disposable {
 
     private var saveDraft = true
     private var shouldSend = false

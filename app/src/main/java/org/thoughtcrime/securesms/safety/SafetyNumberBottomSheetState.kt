@@ -12,15 +12,11 @@ data class SafetyNumberBottomSheetState(
   val loadState: LoadState = LoadState.INIT
 ) {
 
-  fun isEmpty(): Boolean {
-    return !hasLargeNumberOfUntrustedRecipients && destinationToRecipientMap.values.flatten().isEmpty() && loadState == LoadState.READY
-  }
+  fun isEmpty(): Boolean = !hasLargeNumberOfUntrustedRecipients && destinationToRecipientMap.values.flatten().isEmpty() && loadState == LoadState.READY
 
-  fun isCheckupComplete(): Boolean {
-    return loadState == LoadState.DONE ||
-      isEmpty() ||
-      destinationToRecipientMap.values.flatten().all { it.identityRecord.verifiedStatus == IdentityTable.VerifiedStatus.VERIFIED }
-  }
+  fun isCheckupComplete(): Boolean = loadState == LoadState.DONE ||
+    isEmpty() ||
+    destinationToRecipientMap.values.flatten().all { it.identityRecord.verifiedStatus == IdentityTable.VerifiedStatus.VERIFIED }
 
   enum class LoadState {
     INIT,

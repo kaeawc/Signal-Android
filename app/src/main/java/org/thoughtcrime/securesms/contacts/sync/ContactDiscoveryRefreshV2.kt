@@ -247,21 +247,17 @@ object ContactDiscoveryRefreshV2 {
       .toSet()
   }
 
-  private fun Set<String>.toE164s(context: Context): Set<String> {
-    return this.map { PhoneNumberFormatter.get(context).format(it) }.toSet()
-  }
+  private fun Set<String>.toE164s(context: Context): Set<String> = this.map { PhoneNumberFormatter.get(context).format(it) }.toSet()
 
-  private fun Set<String>.sanitize(): Set<String> {
-    return this
-      .filter {
-        try {
-          it.startsWith("+") && it.length > 1 && it[1] != '0' && it.toLong() > 0
-        } catch (e: NumberFormatException) {
-          false
-        }
+  private fun Set<String>.sanitize(): Set<String> = this
+    .filter {
+      try {
+        it.startsWith("+") && it.length > 1 && it[1] != '0' && it.toLong() > 0
+      } catch (e: NumberFormatException) {
+        false
       }
-      .toSet()
-  }
+    }
+    .toSet()
 
   private fun Int.roundedString(): String {
     val nearestThousand = (this.toDouble() / 1000).roundToInt()

@@ -13,10 +13,8 @@ import kotlinx.coroutines.runBlocking
  */
 abstract class CoroutineJob(parameters: Parameters) : Job(parameters) {
 
-  override fun run(): Result {
-    return runBlocking {
-      doRun()
-    }
+  override fun run(): Result = runBlocking {
+    doRun()
   }
 
   abstract suspend fun doRun(): Result

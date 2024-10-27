@@ -37,11 +37,9 @@ object UriUtil {
   /**
    * Parses a string to a URI if it's valid, otherwise null.
    */
-  fun parseOrNull(uri: String): Uri? {
-    return try {
-      Uri.parse(uri)
-    } catch (e: Exception) {
-      null
-    }
+  fun parseOrNull(uri: String): Uri? = try {
+    Uri.parse(uri)
+  } catch (e: Exception) {
+    null
   }
 }

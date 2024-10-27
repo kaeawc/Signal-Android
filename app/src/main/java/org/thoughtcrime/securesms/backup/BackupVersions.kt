@@ -10,12 +10,8 @@ object BackupVersions {
   const val MINIMUM_VERSION = 0
 
   @JvmStatic
-  fun isCompatible(version: Int): Boolean {
-    return version in MINIMUM_VERSION..CURRENT_VERSION
-  }
+  fun isCompatible(version: Int): Boolean = version in MINIMUM_VERSION..CURRENT_VERSION
 
   @JvmStatic
-  fun isFrameLengthEncrypted(version: Int): Boolean {
-    return version >= 1
-  }
+  fun isFrameLengthEncrypted(version: Int): Boolean = version >= 1
 }

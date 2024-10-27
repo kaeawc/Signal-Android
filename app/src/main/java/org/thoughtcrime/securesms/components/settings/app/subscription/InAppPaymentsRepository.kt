@@ -72,11 +72,9 @@ object InAppPaymentsRepository {
   /**
    * Wraps an in-app-payment update in a completable.
    */
-  fun updateInAppPayment(inAppPayment: InAppPaymentTable.InAppPayment): Completable {
-    return Completable.fromAction {
-      SignalDatabase.inAppPayments.update(inAppPayment)
-    }.subscribeOn(Schedulers.io())
-  }
+  fun updateInAppPayment(inAppPayment: InAppPaymentTable.InAppPayment): Completable = Completable.fromAction {
+    SignalDatabase.inAppPayments.update(inAppPayment)
+  }.subscribeOn(Schedulers.io())
 
   /**
    * Common logic for handling errors coming from the Rx chains that handle payments. These errors
@@ -113,59 +111,51 @@ object InAppPaymentsRepository {
    * Observe a stream of "temporary errors". These are situations in which either the user cancelled out, opened an external application,
    * or needs to wait a longer time period than 10s for the completion of their payment.
    */
-  fun observeTemporaryErrors(inAppPaymentId: InAppPaymentTable.InAppPaymentId): Flowable<Pair<InAppPaymentTable.InAppPaymentId, Throwable>> {
-    return temporaryErrorProcessor.filter { (id, _) -> id == inAppPaymentId }
-  }
+  fun observeTemporaryErrors(inAppPaymentId: InAppPaymentTable.InAppPaymentId): Flowable<Pair<InAppPaymentTable.InAppPaymentId, Throwable>> = temporaryErrorProcessor.filter { (id, _) -> id == inAppPaymentId }
 
   /**
    * Writes the given error to the database, if and only if there is not already an error set.
    */
-  private fun setErrorIfNotPresent(inAppPaymentId: InAppPaymentTable.InAppPaymentId, error: InAppPaymentData.Error?): Completable {
-    return Completable.fromAction {
-      val inAppPayment = SignalDatabase.inAppPayments.getById(inAppPaymentId)!!
-      if (inAppPayment.data.error == null) {
-        SignalDatabase.inAppPayments.update(
-          inAppPayment.copy(
-            notified = false,
-            state = InAppPaymentTable.State.END,
-            data = inAppPayment.data.copy(error = error)
-          )
+  private fun setErrorIfNotPresent(inAppPaymentId: InAppPaymentTable.InAppPaymentId, error: InAppPaymentData.Error?): Completable = Completable.fromAction {
+    val inAppPayment = SignalDatabase.inAppPayments.getById(inAppPaymentId)!!
+    if (inAppPayment.data.error == null) {
+      SignalDatabase.inAppPayments.update(
+        inAppPayment.copy(
+          notified = false,
+          state = InAppPaymentTable.State.END,
+          data = inAppPayment.data.copy(error = error)
         )
-      }
-    }.subscribeOn(Schedulers.io())
-  }
+      )
+    }
+  }.subscribeOn(Schedulers.io())
 
   /**
    * Returns a Single that can give a snapshot of the given payment, and will throw if it is not found.
    */
-  fun requireInAppPayment(inAppPaymentId: InAppPaymentTable.InAppPaymentId): Single<InAppPaymentTable.InAppPayment> {
-    return Single.fromCallable {
-      SignalDatabase.inAppPayments.getById(inAppPaymentId) ?: throw Exception("Not found.")
-    }.subscribeOn(Schedulers.io())
-  }
+  fun requireInAppPayment(inAppPaymentId: InAppPaymentTable.InAppPaymentId): Single<InAppPaymentTable.InAppPayment> = Single.fromCallable {
+    SignalDatabase.inAppPayments.getById(inAppPaymentId) ?: throw Exception("Not found.")
+  }.subscribeOn(Schedulers.io())
 
   /**
    * Returns a Flowable source of InAppPayments that emits whenever the payment with the given id is updated. This
    * flowable is primed with the current state.
    */
-  fun observeUpdates(inAppPaymentId: InAppPaymentTable.InAppPaymentId): Flowable<InAppPaymentTable.InAppPayment> {
-    return Flowable.create({ emitter ->
-      val observer = InAppPaymentObserver {
-        if (it.id == inAppPaymentId) {
-          emitter.onNext(it)
-        }
+  fun observeUpdates(inAppPaymentId: InAppPaymentTable.InAppPaymentId): Flowable<InAppPaymentTable.InAppPayment> = Flowable.create({ emitter ->
+    val observer = InAppPaymentObserver {
+      if (it.id == inAppPaymentId) {
+        emitter.onNext(it)
       }
+    }
 
-      AppDependencies.databaseObserver.registerInAppPaymentObserver(observer)
-      emitter.setCancellable {
-        AppDependencies.databaseObserver.unregisterObserver(observer)
-      }
+    AppDependencies.databaseObserver.registerInAppPaymentObserver(observer)
+    emitter.setCancellable {
+      AppDependencies.databaseObserver.unregisterObserver(observer)
+    }
 
-      SignalDatabase.inAppPayments.getById(inAppPaymentId)?.also {
-        observer.onInAppPaymentChanged(it)
-      }
-    }, BackpressureStrategy.LATEST)
-  }
+    SignalDatabase.inAppPayments.getById(inAppPaymentId)?.also {
+      observer.onInAppPaymentChanged(it)
+    }
+  }, BackpressureStrategy.LATEST)
 
   /**
    * For one-time:
@@ -174,27 +164,21 @@ object InAppPaymentsRepository {
    * For recurring:
    *  - Each job chain is serialized with respect to the in-app-payment type
    */
-  fun resolveJobQueueKey(inAppPayment: InAppPaymentTable.InAppPayment): String {
-    return when (inAppPayment.type) {
-      InAppPaymentType.UNKNOWN -> error("Unsupported type UNKNOWN.")
-      InAppPaymentType.ONE_TIME_GIFT, InAppPaymentType.ONE_TIME_DONATION -> "$JOB_PREFIX${inAppPayment.id.serialize()}"
-      InAppPaymentType.RECURRING_DONATION, InAppPaymentType.RECURRING_BACKUP -> getRecurringJobQueueKey(inAppPayment.type)
-    }
+  fun resolveJobQueueKey(inAppPayment: InAppPaymentTable.InAppPayment): String = when (inAppPayment.type) {
+    InAppPaymentType.UNKNOWN -> error("Unsupported type UNKNOWN.")
+    InAppPaymentType.ONE_TIME_GIFT, InAppPaymentType.ONE_TIME_DONATION -> "$JOB_PREFIX${inAppPayment.id.serialize()}"
+    InAppPaymentType.RECURRING_DONATION, InAppPaymentType.RECURRING_BACKUP -> getRecurringJobQueueKey(inAppPayment.type)
   }
 
-  fun getRecurringJobQueueKey(inAppPaymentType: InAppPaymentType): String {
-    return "$JOB_PREFIX${inAppPaymentType.code}"
-  }
+  fun getRecurringJobQueueKey(inAppPaymentType: InAppPaymentType): String = "$JOB_PREFIX${inAppPaymentType.code}"
 
   /**
    * Returns a duration to utilize for jobs tied to different payment methods. For long running bank transfers, we need to
    * allow extra time for completion.
    */
-  fun resolveContextJobLifespan(inAppPayment: InAppPaymentTable.InAppPayment): Duration {
-    return when (inAppPayment.data.paymentMethodType) {
-      InAppPaymentData.PaymentMethodType.SEPA_DEBIT, InAppPaymentData.PaymentMethodType.IDEAL -> 30.days
-      else -> 1.days
-    }
+  fun resolveContextJobLifespan(inAppPayment: InAppPaymentTable.InAppPayment): Duration = when (inAppPayment.data.paymentMethodType) {
+    InAppPaymentData.PaymentMethodType.SEPA_DEBIT, InAppPaymentData.PaymentMethodType.IDEAL -> 30.days
+    else -> 1.days
   }
 
   /**
@@ -209,109 +193,91 @@ object InAppPaymentsRepository {
   /**
    * Maps a payment type into a request code for grabbing a Google Pay token.
    */
-  fun getGooglePayRequestCode(inAppPaymentType: InAppPaymentType): Int {
-    return when (inAppPaymentType) {
-      InAppPaymentType.UNKNOWN -> error("Unsupported type UNKNOWN")
-      InAppPaymentType.ONE_TIME_GIFT -> 16143
-      InAppPaymentType.ONE_TIME_DONATION -> 16141
-      InAppPaymentType.RECURRING_DONATION -> 16142
-      InAppPaymentType.RECURRING_BACKUP -> 16144
-    }
+  fun getGooglePayRequestCode(inAppPaymentType: InAppPaymentType): Int = when (inAppPaymentType) {
+    InAppPaymentType.UNKNOWN -> error("Unsupported type UNKNOWN")
+    InAppPaymentType.ONE_TIME_GIFT -> 16143
+    InAppPaymentType.ONE_TIME_DONATION -> 16141
+    InAppPaymentType.RECURRING_DONATION -> 16142
+    InAppPaymentType.RECURRING_BACKUP -> 16144
   }
 
   /**
    * Converts an error source to a persistable type. For types that don't map,
    * UNKNOWN is returned.
    */
-  fun DonationErrorSource.toInAppPaymentType(): InAppPaymentType {
-    return when (this) {
-      DonationErrorSource.ONE_TIME -> InAppPaymentType.ONE_TIME_DONATION
-      DonationErrorSource.MONTHLY -> InAppPaymentType.RECURRING_DONATION
-      DonationErrorSource.GIFT -> InAppPaymentType.ONE_TIME_GIFT
-      DonationErrorSource.BACKUPS -> InAppPaymentType.RECURRING_BACKUP
-      DonationErrorSource.GIFT_REDEMPTION -> InAppPaymentType.UNKNOWN
-      DonationErrorSource.KEEP_ALIVE -> InAppPaymentType.UNKNOWN
-      DonationErrorSource.UNKNOWN -> InAppPaymentType.UNKNOWN
-    }
+  fun DonationErrorSource.toInAppPaymentType(): InAppPaymentType = when (this) {
+    DonationErrorSource.ONE_TIME -> InAppPaymentType.ONE_TIME_DONATION
+    DonationErrorSource.MONTHLY -> InAppPaymentType.RECURRING_DONATION
+    DonationErrorSource.GIFT -> InAppPaymentType.ONE_TIME_GIFT
+    DonationErrorSource.BACKUPS -> InAppPaymentType.RECURRING_BACKUP
+    DonationErrorSource.GIFT_REDEMPTION -> InAppPaymentType.UNKNOWN
+    DonationErrorSource.KEEP_ALIVE -> InAppPaymentType.UNKNOWN
+    DonationErrorSource.UNKNOWN -> InAppPaymentType.UNKNOWN
   }
 
   /**
    * Converts the structured payment source type into a type we can write to the database.
    */
-  fun PaymentSourceType.toPaymentMethodType(): InAppPaymentData.PaymentMethodType {
-    return when (this) {
-      PaymentSourceType.GooglePlayBilling -> InAppPaymentData.PaymentMethodType.GOOGLE_PLAY_BILLING
-      PaymentSourceType.PayPal -> InAppPaymentData.PaymentMethodType.PAYPAL
-      PaymentSourceType.Stripe.CreditCard -> InAppPaymentData.PaymentMethodType.CARD
-      PaymentSourceType.Stripe.GooglePay -> InAppPaymentData.PaymentMethodType.GOOGLE_PAY
-      PaymentSourceType.Stripe.IDEAL -> InAppPaymentData.PaymentMethodType.IDEAL
-      PaymentSourceType.Stripe.SEPADebit -> InAppPaymentData.PaymentMethodType.SEPA_DEBIT
-      PaymentSourceType.Unknown -> InAppPaymentData.PaymentMethodType.UNKNOWN
-    }
+  fun PaymentSourceType.toPaymentMethodType(): InAppPaymentData.PaymentMethodType = when (this) {
+    PaymentSourceType.GooglePlayBilling -> InAppPaymentData.PaymentMethodType.GOOGLE_PLAY_BILLING
+    PaymentSourceType.PayPal -> InAppPaymentData.PaymentMethodType.PAYPAL
+    PaymentSourceType.Stripe.CreditCard -> InAppPaymentData.PaymentMethodType.CARD
+    PaymentSourceType.Stripe.GooglePay -> InAppPaymentData.PaymentMethodType.GOOGLE_PAY
+    PaymentSourceType.Stripe.IDEAL -> InAppPaymentData.PaymentMethodType.IDEAL
+    PaymentSourceType.Stripe.SEPADebit -> InAppPaymentData.PaymentMethodType.SEPA_DEBIT
+    PaymentSourceType.Unknown -> InAppPaymentData.PaymentMethodType.UNKNOWN
   }
 
   /**
    * Converts the database payment method type to the structured sealed type
    */
-  fun InAppPaymentData.PaymentMethodType.toPaymentSourceType(): PaymentSourceType {
-    return when (this) {
-      InAppPaymentData.PaymentMethodType.PAYPAL -> PaymentSourceType.PayPal
-      InAppPaymentData.PaymentMethodType.CARD -> PaymentSourceType.Stripe.CreditCard
-      InAppPaymentData.PaymentMethodType.GOOGLE_PAY -> PaymentSourceType.Stripe.GooglePay
-      InAppPaymentData.PaymentMethodType.IDEAL -> PaymentSourceType.Stripe.IDEAL
-      InAppPaymentData.PaymentMethodType.SEPA_DEBIT -> PaymentSourceType.Stripe.SEPADebit
-      InAppPaymentData.PaymentMethodType.UNKNOWN -> PaymentSourceType.Unknown
-      InAppPaymentData.PaymentMethodType.GOOGLE_PLAY_BILLING -> PaymentSourceType.GooglePlayBilling
-    }
+  fun InAppPaymentData.PaymentMethodType.toPaymentSourceType(): PaymentSourceType = when (this) {
+    InAppPaymentData.PaymentMethodType.PAYPAL -> PaymentSourceType.PayPal
+    InAppPaymentData.PaymentMethodType.CARD -> PaymentSourceType.Stripe.CreditCard
+    InAppPaymentData.PaymentMethodType.GOOGLE_PAY -> PaymentSourceType.Stripe.GooglePay
+    InAppPaymentData.PaymentMethodType.IDEAL -> PaymentSourceType.Stripe.IDEAL
+    InAppPaymentData.PaymentMethodType.SEPA_DEBIT -> PaymentSourceType.Stripe.SEPADebit
+    InAppPaymentData.PaymentMethodType.UNKNOWN -> PaymentSourceType.Unknown
+    InAppPaymentData.PaymentMethodType.GOOGLE_PLAY_BILLING -> PaymentSourceType.GooglePlayBilling
   }
 
-  fun InAppPaymentType.toErrorSource(): DonationErrorSource {
-    return when (this) {
-      InAppPaymentType.UNKNOWN -> DonationErrorSource.UNKNOWN
-      InAppPaymentType.ONE_TIME_GIFT -> DonationErrorSource.GIFT
-      InAppPaymentType.ONE_TIME_DONATION -> DonationErrorSource.ONE_TIME
-      InAppPaymentType.RECURRING_DONATION -> DonationErrorSource.MONTHLY
-      InAppPaymentType.RECURRING_BACKUP -> DonationErrorSource.BACKUPS
-    }
+  fun InAppPaymentType.toErrorSource(): DonationErrorSource = when (this) {
+    InAppPaymentType.UNKNOWN -> DonationErrorSource.UNKNOWN
+    InAppPaymentType.ONE_TIME_GIFT -> DonationErrorSource.GIFT
+    InAppPaymentType.ONE_TIME_DONATION -> DonationErrorSource.ONE_TIME
+    InAppPaymentType.RECURRING_DONATION -> DonationErrorSource.MONTHLY
+    InAppPaymentType.RECURRING_BACKUP -> DonationErrorSource.BACKUPS
   }
 
-  fun InAppPaymentType.toSubscriberType(): InAppPaymentSubscriberRecord.Type? {
-    return when (this) {
-      InAppPaymentType.RECURRING_BACKUP -> InAppPaymentSubscriberRecord.Type.BACKUP
-      InAppPaymentType.RECURRING_DONATION -> InAppPaymentSubscriberRecord.Type.DONATION
-      else -> null
-    }
+  fun InAppPaymentType.toSubscriberType(): InAppPaymentSubscriberRecord.Type? = when (this) {
+    InAppPaymentType.RECURRING_BACKUP -> InAppPaymentSubscriberRecord.Type.BACKUP
+    InAppPaymentType.RECURRING_DONATION -> InAppPaymentSubscriberRecord.Type.DONATION
+    else -> null
   }
 
-  fun InAppPaymentType.requireSubscriberType(): InAppPaymentSubscriberRecord.Type {
-    return requireNotNull(toSubscriberType())
-  }
+  fun InAppPaymentType.requireSubscriberType(): InAppPaymentSubscriberRecord.Type = requireNotNull(toSubscriberType())
 
   /**
    * Converts network ChargeFailure objects into the form we can persist in the database.
    */
-  fun ActiveSubscription.ChargeFailure.toInAppPaymentDataChargeFailure(): InAppPaymentData.ChargeFailure {
-    return InAppPaymentData.ChargeFailure(
-      code = this.code ?: "",
-      message = this.message ?: "",
-      outcomeNetworkStatus = outcomeNetworkStatus ?: "",
-      outcomeNetworkReason = outcomeNetworkReason ?: "",
-      outcomeType = outcomeType ?: ""
-    )
-  }
+  fun ActiveSubscription.ChargeFailure.toInAppPaymentDataChargeFailure(): InAppPaymentData.ChargeFailure = InAppPaymentData.ChargeFailure(
+    code = this.code ?: "",
+    message = this.message ?: "",
+    outcomeNetworkStatus = outcomeNetworkStatus ?: "",
+    outcomeNetworkReason = outcomeNetworkReason ?: "",
+    outcomeType = outcomeType ?: ""
+  )
 
   /**
    * Converts our database persistable ChargeFailure objects into the form we expect from the network.
    */
-  fun InAppPaymentData.ChargeFailure.toActiveSubscriptionChargeFailure(): ActiveSubscription.ChargeFailure {
-    return ActiveSubscription.ChargeFailure(
-      code,
-      message,
-      outcomeNetworkStatus,
-      outcomeNetworkReason,
-      outcomeType
-    )
-  }
+  fun InAppPaymentData.ChargeFailure.toActiveSubscriptionChargeFailure(): ActiveSubscription.ChargeFailure = ActiveSubscription.ChargeFailure(
+    code,
+    message,
+    outcomeNetworkStatus,
+    outcomeNetworkReason,
+    outcomeType
+  )
 
   /**
    * Retrieves the latest payment method type, biasing the result towards what is available in the database and falling
@@ -334,12 +300,10 @@ object InAppPaymentsRepository {
    * Checks whether the user marked subscriptions of the given type as manually cancelled.
    */
   @JvmStatic
-  fun isUserManuallyCancelled(subscriberType: InAppPaymentSubscriberRecord.Type): Boolean {
-    return if (subscriberType == InAppPaymentSubscriberRecord.Type.DONATION) {
-      SignalStore.inAppPayments.isDonationSubscriptionManuallyCancelled()
-    } else {
-      SignalStore.inAppPayments.isBackupSubscriptionManuallyCancelled()
-    }
+  fun isUserManuallyCancelled(subscriberType: InAppPaymentSubscriberRecord.Type): Boolean = if (subscriberType == InAppPaymentSubscriberRecord.Type.DONATION) {
+    SignalStore.inAppPayments.isDonationSubscriptionManuallyCancelled()
+  } else {
+    SignalStore.inAppPayments.isBackupSubscriptionManuallyCancelled()
   }
 
   /**
@@ -350,12 +314,10 @@ object InAppPaymentsRepository {
    * subscription, so the next time it runs calling this method will be avoided entirely.
    */
   @JvmStatic
-  fun getFallbackLastEndOfPeriod(subscriberType: InAppPaymentSubscriberRecord.Type): Duration {
-    return if (subscriberType == InAppPaymentSubscriberRecord.Type.DONATION) {
-      SignalStore.inAppPayments.getLastEndOfPeriod().seconds
-    } else {
-      0.seconds
-    }
+  fun getFallbackLastEndOfPeriod(subscriberType: InAppPaymentSubscriberRecord.Type): Duration = if (subscriberType == InAppPaymentSubscriberRecord.Type.DONATION) {
+    SignalStore.inAppPayments.getLastEndOfPeriod().seconds
+  } else {
+    0.seconds
   }
 
   /**
@@ -471,9 +433,7 @@ object InAppPaymentsRepository {
    */
   @JvmStatic
   @WorkerThread
-  fun requireSubscriber(type: InAppPaymentSubscriberRecord.Type): InAppPaymentSubscriberRecord {
-    return requireNotNull(getSubscriber(type))
-  }
+  fun requireSubscriber(type: InAppPaymentSubscriberRecord.Type): InAppPaymentSubscriberRecord = requireNotNull(getSubscriber(type))
 
   /**
    * Sets the subscriber, writing them to the database.
@@ -488,9 +448,7 @@ object InAppPaymentsRepository {
    * Checks whether or not a pending donation exists either in the database or via the legacy job watcher.
    */
   @WorkerThread
-  fun hasPendingDonation(): Boolean {
-    return SignalDatabase.inAppPayments.hasPendingDonation() || DonationRedemptionJobWatcher.hasPendingRedemptionJob()
-  }
+  fun hasPendingDonation(): Boolean = SignalDatabase.inAppPayments.hasPendingDonation() || DonationRedemptionJobWatcher.hasPendingRedemptionJob()
 
   /**
    * Emits a stream of status updates for donations of the given type. Only One-time donations and recurring donations are currently supported.
@@ -661,16 +619,14 @@ object InAppPaymentsRepository {
   /**
    * Converts a payment method type into the processor that manages it, either Stripe or PayPal.
    */
-  fun InAppPaymentData.PaymentMethodType.toDonationProcessor(): DonationProcessor {
-    return when (this) {
-      InAppPaymentData.PaymentMethodType.UNKNOWN -> DonationProcessor.STRIPE
-      InAppPaymentData.PaymentMethodType.GOOGLE_PAY -> DonationProcessor.STRIPE
-      InAppPaymentData.PaymentMethodType.CARD -> DonationProcessor.STRIPE
-      InAppPaymentData.PaymentMethodType.SEPA_DEBIT -> DonationProcessor.STRIPE
-      InAppPaymentData.PaymentMethodType.IDEAL -> DonationProcessor.STRIPE
-      InAppPaymentData.PaymentMethodType.PAYPAL -> DonationProcessor.PAYPAL
-      InAppPaymentData.PaymentMethodType.GOOGLE_PLAY_BILLING -> error("Google Play Billing does not support donation payments.")
-    }
+  fun InAppPaymentData.PaymentMethodType.toDonationProcessor(): DonationProcessor = when (this) {
+    InAppPaymentData.PaymentMethodType.UNKNOWN -> DonationProcessor.STRIPE
+    InAppPaymentData.PaymentMethodType.GOOGLE_PAY -> DonationProcessor.STRIPE
+    InAppPaymentData.PaymentMethodType.CARD -> DonationProcessor.STRIPE
+    InAppPaymentData.PaymentMethodType.SEPA_DEBIT -> DonationProcessor.STRIPE
+    InAppPaymentData.PaymentMethodType.IDEAL -> DonationProcessor.STRIPE
+    InAppPaymentData.PaymentMethodType.PAYPAL -> DonationProcessor.PAYPAL
+    InAppPaymentData.PaymentMethodType.GOOGLE_PLAY_BILLING -> error("Google Play Billing does not support donation payments.")
   }
 
   enum class ExpiredBackupDeletionState {

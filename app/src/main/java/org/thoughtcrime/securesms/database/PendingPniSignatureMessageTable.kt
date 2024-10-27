@@ -19,7 +19,9 @@ import kotlin.concurrent.withLock
  * When we receive delivery receipts for these messages, we remove entries from the table and can clear
  * the `needsPniSignature` flag on the recipient when all are delivered.
  */
-class PendingPniSignatureMessageTable(context: Context, databaseHelper: SignalDatabase) : DatabaseTable(context, databaseHelper), RecipientIdDatabaseReference {
+class PendingPniSignatureMessageTable(context: Context, databaseHelper: SignalDatabase) :
+  DatabaseTable(context, databaseHelper),
+  RecipientIdDatabaseReference {
 
   companion object {
     private val TAG = Log.tag(PendingPniSignatureMessageTable::class.java)

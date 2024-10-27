@@ -26,11 +26,9 @@ class StoriesLandingRepository(context: Context) {
 
   private val context = context.applicationContext
 
-  fun resend(story: MessageRecord): Completable {
-    return Completable.fromAction {
-      MessageSender.resend(context, story)
-    }.subscribeOn(Schedulers.io())
-  }
+  fun resend(story: MessageRecord): Completable = Completable.fromAction {
+    MessageSender.resend(context, story)
+  }.subscribeOn(Schedulers.io())
 
   @Suppress("UsePropertyAccessSyntax")
   fun getStories(): Observable<List<StoriesLandingItemData>> {
@@ -153,11 +151,9 @@ class StoriesLandingRepository(context: Context) {
     }
   }
 
-  fun setHideStory(recipientId: RecipientId, hideStory: Boolean): Completable {
-    return Completable.fromAction {
-      SignalDatabase.recipients.setHideStory(recipientId, hideStory)
-    }.subscribeOn(Schedulers.io())
-  }
+  fun setHideStory(recipientId: RecipientId, hideStory: Boolean): Completable = Completable.fromAction {
+    SignalDatabase.recipients.setHideStory(recipientId, hideStory)
+  }.subscribeOn(Schedulers.io())
 
   /**
    * Marks all stories as "seen" by the user (marking them as read in the database)

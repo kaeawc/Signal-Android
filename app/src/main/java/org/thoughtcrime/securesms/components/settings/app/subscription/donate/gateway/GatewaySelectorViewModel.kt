@@ -62,17 +62,13 @@ class GatewaySelectorViewModel(
     disposables.clear()
   }
 
-  fun updateInAppPaymentMethod(inAppPaymentMethodType: InAppPaymentData.PaymentMethodType): Single<InAppPaymentTable.InAppPayment> {
-    return gatewaySelectorRepository.setInAppPaymentMethodType(store.state.inAppPayment, inAppPaymentMethodType).observeOn(AndroidSchedulers.mainThread())
-  }
+  fun updateInAppPaymentMethod(inAppPaymentMethodType: InAppPaymentData.PaymentMethodType): Single<InAppPaymentTable.InAppPayment> = gatewaySelectorRepository.setInAppPaymentMethodType(store.state.inAppPayment, inAppPaymentMethodType).observeOn(AndroidSchedulers.mainThread())
 
   class Factory(
     private val args: GatewaySelectorBottomSheetArgs,
     private val repository: StripeRepository,
     private val gatewaySelectorRepository: GatewaySelectorRepository = GatewaySelectorRepository(AppDependencies.donationsService)
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(GatewaySelectorViewModel(args, repository, gatewaySelectorRepository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(GatewaySelectorViewModel(args, repository, gatewaySelectorRepository)) as T
   }
 }

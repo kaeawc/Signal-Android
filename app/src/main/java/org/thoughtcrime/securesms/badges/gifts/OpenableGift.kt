@@ -42,13 +42,11 @@ interface OpenableGift {
 
     companion object {
       @JvmStatic
-      fun get(isLtr: Boolean, isOutgoing: Boolean): AnimationSign {
-        return when {
-          isLtr && isOutgoing -> NEGATIVE
-          isLtr -> POSITIVE
-          isOutgoing -> POSITIVE
-          else -> NEGATIVE
-        }
+      fun get(isLtr: Boolean, isOutgoing: Boolean): AnimationSign = when {
+        isLtr && isOutgoing -> NEGATIVE
+        isLtr -> POSITIVE
+        isOutgoing -> POSITIVE
+        else -> NEGATIVE
       }
     }
   }

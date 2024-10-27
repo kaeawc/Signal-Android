@@ -30,27 +30,25 @@ class ViewGiftRepository {
       .subscribeOn(Schedulers.io())
   }
 
-  fun getGiftBadge(messageId: Long): Observable<GiftBadge> {
-    return Observable.create { emitter ->
-      fun refresh() {
-        val record = SignalDatabase.messages.getMessageRecord(messageId)
-        val giftBadge: GiftBadge = (record as MmsMessageRecord).giftBadge!!
+  fun getGiftBadge(messageId: Long): Observable<GiftBadge> = Observable.create { emitter ->
+    fun refresh() {
+      val record = SignalDatabase.messages.getMessageRecord(messageId)
+      val giftBadge: GiftBadge = (record as MmsMessageRecord).giftBadge!!
 
-        emitter.onNext(giftBadge)
-      }
-
-      val messageObserver = DatabaseObserver.MessageObserver {
-        if (messageId == it.id) {
-          refresh()
-        }
-      }
-
-      AppDependencies.databaseObserver.registerMessageUpdateObserver(messageObserver)
-      emitter.setCancellable {
-        AppDependencies.databaseObserver.unregisterObserver(messageObserver)
-      }
-
-      refresh()
+      emitter.onNext(giftBadge)
     }
+
+    val messageObserver = DatabaseObserver.MessageObserver {
+      if (messageId == it.id) {
+        refresh()
+      }
+    }
+
+    AppDependencies.databaseObserver.registerMessageUpdateObserver(messageObserver)
+    emitter.setCancellable {
+      AppDependencies.databaseObserver.unregisterObserver(messageObserver)
+    }
+
+    refresh()
   }
 }

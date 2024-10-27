@@ -27,11 +27,10 @@ import java.io.Closeable
 class DistributionListArchiveExporter(
   private val cursor: Cursor,
   private val distributionListTables: DistributionListTables
-) : Iterator<ArchiveRecipient>, Closeable {
+) : Iterator<ArchiveRecipient>,
+  Closeable {
 
-  override fun hasNext(): Boolean {
-    return cursor.count > 0 && !cursor.isLast
-  }
+  override fun hasNext(): Boolean = cursor.count > 0 && !cursor.isLast
 
   override fun next(): ArchiveRecipient {
     if (!cursor.moveToNext()) {
@@ -82,10 +81,8 @@ class DistributionListArchiveExporter(
   }
 }
 
-private fun DistributionListPrivacyMode.toBackupPrivacyMode(): DistributionList.PrivacyMode {
-  return when (this) {
-    DistributionListPrivacyMode.ONLY_WITH -> DistributionList.PrivacyMode.ONLY_WITH
-    DistributionListPrivacyMode.ALL -> DistributionList.PrivacyMode.ALL
-    DistributionListPrivacyMode.ALL_EXCEPT -> DistributionList.PrivacyMode.ALL_EXCEPT
-  }
+private fun DistributionListPrivacyMode.toBackupPrivacyMode(): DistributionList.PrivacyMode = when (this) {
+  DistributionListPrivacyMode.ONLY_WITH -> DistributionList.PrivacyMode.ONLY_WITH
+  DistributionListPrivacyMode.ALL -> DistributionList.PrivacyMode.ALL
+  DistributionListPrivacyMode.ALL_EXCEPT -> DistributionList.PrivacyMode.ALL_EXCEPT
 }

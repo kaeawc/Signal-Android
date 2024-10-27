@@ -8,9 +8,7 @@ import android.text.TextUtils
 object JobLogger {
 
   @JvmStatic
-  fun format(job: Job, event: String): String {
-    return format(job, "", event)
-  }
+  fun format(job: Job, event: String): String = format(job, "", event)
 
   @JvmStatic
   fun format(job: Job, extraTag: String, event: String): String {

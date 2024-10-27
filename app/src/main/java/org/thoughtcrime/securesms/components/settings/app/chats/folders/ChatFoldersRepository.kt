@@ -7,9 +7,7 @@ import org.thoughtcrime.securesms.database.SignalDatabase
  */
 object ChatFoldersRepository {
 
-  fun getCurrentFolders(includeUnreadCount: Boolean = false): List<ChatFolderRecord> {
-    return SignalDatabase.chatFolders.getChatFolders(includeUnreadCount)
-  }
+  fun getCurrentFolders(includeUnreadCount: Boolean = false): List<ChatFolderRecord> = SignalDatabase.chatFolders.getChatFolders(includeUnreadCount)
 
   fun createFolder(folder: ChatFolderRecord) {
     val includedChats = folder.includedRecipients.map { recipient -> SignalDatabase.threads.getOrCreateThreadIdFor(recipient) }
@@ -41,7 +39,5 @@ object ChatFoldersRepository {
     SignalDatabase.chatFolders.updatePositions(folders)
   }
 
-  fun getFolder(id: Long): ChatFolderRecord {
-    return SignalDatabase.chatFolders.getChatFolder(id)
-  }
+  fun getFolder(id: Long): ChatFolderRecord = SignalDatabase.chatFolders.getChatFolder(id)
 }

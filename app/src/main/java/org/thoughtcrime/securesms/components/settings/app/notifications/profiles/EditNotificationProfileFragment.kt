@@ -33,7 +33,9 @@ import org.thoughtcrime.securesms.util.views.CircularProgressMaterialButton
  * Dual use Edit/Create notification profile fragment. Use to create in the create profile flow,
  * and then to edit from profile details. Responsible for naming and emoji.
  */
-class EditNotificationProfileFragment : DSLSettingsFragment(layoutId = R.layout.fragment_edit_notification_profile), ReactWithAnyEmojiBottomSheetDialogFragment.Callback {
+class EditNotificationProfileFragment :
+  DSLSettingsFragment(layoutId = R.layout.fragment_edit_notification_profile),
+  ReactWithAnyEmojiBottomSheetDialogFragment.Callback {
 
   private val viewModel: EditNotificationProfileViewModel by viewModels(factoryProducer = this::createFactory)
   private val lifecycleDisposable = LifecycleDisposable()

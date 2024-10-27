@@ -150,9 +150,7 @@ object AudioWaveForms {
       lock.write { cache.put(key, info) }
     }
 
-    fun get(key: String): AudioFileInfo? {
-      return lock.read { cache.get(key) }
-    }
+    fun get(key: String): AudioFileInfo? = lock.read { cache.get(key) }
   }
 
   private sealed class CacheCheckResult

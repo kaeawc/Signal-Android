@@ -23,12 +23,10 @@ class V2ConversationItemTheme(
 ) {
 
   @ColorInt
-  fun getReplyIconBackgroundColor(): Int {
-    return if (conversationContext.hasWallpaper()) {
-      ContextCompat.getColor(context, R.color.signal_colorSurface1)
-    } else {
-      Color.TRANSPARENT
-    }
+  fun getReplyIconBackgroundColor(): Int = if (conversationContext.hasWallpaper()) {
+    ContextCompat.getColor(context, R.color.signal_colorSurface1)
+  } else {
+    Color.TRANSPARENT
   }
 
   @ColorInt
@@ -53,13 +51,11 @@ class V2ConversationItemTheme(
   @ColorInt
   fun getBodyTextColor(
     conversationMessage: ConversationMessage
-  ): Int {
-    return getColor(
-      conversationMessage,
-      conversationContext.getColorizer()::getOutgoingBodyTextColor,
-      conversationContext.getColorizer()::getIncomingBodyTextColor
-    )
-  }
+  ): Int = getColor(
+    conversationMessage,
+    conversationContext.getColorizer()::getOutgoingBodyTextColor,
+    conversationContext.getColorizer()::getIncomingBodyTextColor
+  )
 
   @ColorInt
   fun getBodyBubbleColor(
@@ -75,15 +71,13 @@ class V2ConversationItemTheme(
   @ColorInt
   fun getFooterBubbleColor(
     conversationMessage: ConversationMessage
-  ): Int {
-    return if (conversationMessage.messageRecord.isOutgoing) {
-      Color.TRANSPARENT
+  ): Int = if (conversationMessage.messageRecord.isOutgoing) {
+    Color.TRANSPARENT
+  } else {
+    if (conversationContext.hasWallpaper()) {
+      ContextCompat.getColor(context, R.color.conversation_item_recv_bubble_color_wallpaper)
     } else {
-      if (conversationContext.hasWallpaper()) {
-        ContextCompat.getColor(context, R.color.conversation_item_recv_bubble_color_wallpaper)
-      } else {
-        ContextCompat.getColor(context, R.color.conversation_item_recv_bubble_color_normal)
-      }
+      ContextCompat.getColor(context, R.color.conversation_item_recv_bubble_color_normal)
     }
   }
 
@@ -92,11 +86,9 @@ class V2ConversationItemTheme(
     conversationMessage: ConversationMessage,
     outgoingColor: (Context) -> Int,
     incomingColor: (Context, Boolean) -> Int
-  ): Int {
-    return if (conversationMessage.messageRecord.isOutgoing) {
-      outgoingColor(context)
-    } else {
-      incomingColor(context, conversationContext.hasWallpaper())
-    }
+  ): Int = if (conversationMessage.messageRecord.isOutgoing) {
+    outgoingColor(context)
+  } else {
+    incomingColor(context, conversationContext.hasWallpaper())
   }
 }

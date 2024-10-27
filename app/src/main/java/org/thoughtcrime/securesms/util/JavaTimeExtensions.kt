@@ -21,84 +21,62 @@ import java.util.concurrent.TimeUnit
 /**
  * Given a [ZoneId] return the time offset as a [ZoneOffset].
  */
-fun ZoneId.toOffset(): ZoneOffset {
-  return OffsetDateTime.now(this).offset
-}
+fun ZoneId.toOffset(): ZoneOffset = OffsetDateTime.now(this).offset
 
 /**
  * Convert [LocalDateTime] to be same as [System.currentTimeMillis]
  */
 @JvmOverloads
-fun LocalDateTime.toMillis(zoneOffset: ZoneOffset = ZoneId.systemDefault().toOffset()): Long {
-  return TimeUnit.SECONDS.toMillis(toEpochSecond(zoneOffset))
-}
+fun LocalDateTime.toMillis(zoneOffset: ZoneOffset = ZoneId.systemDefault().toOffset()): Long = TimeUnit.SECONDS.toMillis(toEpochSecond(zoneOffset))
 
 /**
  * Convert [ZonedDateTime] to be same as [System.currentTimeMillis]
  */
-fun ZonedDateTime.toMillis(): Long {
-  return TimeUnit.SECONDS.toMillis(toEpochSecond())
-}
+fun ZonedDateTime.toMillis(): Long = TimeUnit.SECONDS.toMillis(toEpochSecond())
 
 /**
  * Convert [LocalDateTime] to a [ZonedDateTime] at the UTC offset
  */
-fun LocalDateTime.atUTC(): ZonedDateTime {
-  return atZone(ZoneId.ofOffset("UTC", ZoneOffset.UTC))
-}
+fun LocalDateTime.atUTC(): ZonedDateTime = atZone(ZoneId.ofOffset("UTC", ZoneOffset.UTC))
 
 /**
  * Create a LocalDateTime with the same year, month, and day, but set
  * to midnight.
  */
-fun LocalDateTime.atMidnight(): LocalDateTime {
-  return LocalDateTime.of(year, month, dayOfMonth, 0, 0)
-}
+fun LocalDateTime.atMidnight(): LocalDateTime = LocalDateTime.of(year, month, dayOfMonth, 0, 0)
 
 /**
  * Return true if the [LocalDateTime] is within [start] and [end] inclusive.
  */
-fun LocalDateTime.isBetween(start: LocalDateTime, end: LocalDateTime): Boolean {
-  return (isEqual(start) || isAfter(start)) && (isEqual(end) || isBefore(end))
-}
+fun LocalDateTime.isBetween(start: LocalDateTime, end: LocalDateTime): Boolean = (isEqual(start) || isAfter(start)) && (isEqual(end) || isBefore(end))
 
 /**
  * Convert milliseconds to local date time with provided [zoneId].
  */
-fun Long.toLocalDateTime(zoneId: ZoneId = ZoneId.systemDefault()): LocalDateTime {
-  return LocalDateTime.ofInstant(Instant.ofEpochMilli(this), zoneId)
-}
+fun Long.toLocalDateTime(zoneId: ZoneId = ZoneId.systemDefault()): LocalDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(this), zoneId)
 
 /**
  * Convert milliseconds to local date with provided [zoneId].
  */
-fun Long.toLocalDate(zoneId: ZoneId = ZoneId.systemDefault()): LocalDate {
-  return Instant.ofEpochMilli(this).atZone(zoneId).toLocalDate()
-}
+fun Long.toLocalDate(zoneId: ZoneId = ZoneId.systemDefault()): LocalDate = Instant.ofEpochMilli(this).atZone(zoneId).toLocalDate()
 
 /**
  * Convert milliseconds to local date time with provided [zoneId].
  */
-fun Instant.toLocalDateTime(zoneId: ZoneId = ZoneId.systemDefault()): LocalDateTime {
-  return LocalDateTime.ofInstant(this, zoneId)
-}
+fun Instant.toLocalDateTime(zoneId: ZoneId = ZoneId.systemDefault()): LocalDateTime = LocalDateTime.ofInstant(this, zoneId)
 
 /**
  * Converts milliseconds to local time with provided [zoneId].
  */
-fun Long.toLocalTime(zoneId: ZoneId = ZoneId.systemDefault()): LocalTime {
-  return LocalDateTime.ofInstant(Instant.ofEpochMilli(this), zoneId).toLocalTime()
-}
+fun Long.toLocalTime(zoneId: ZoneId = ZoneId.systemDefault()): LocalTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(this), zoneId).toLocalTime()
 
 /**
  * Formats [LocalTime] as localized time. For example, "8:00 AM"
  */
-fun LocalTime.formatHours(context: Context): String {
-  return if (Build.VERSION.SDK_INT >= 26 || !DateFormat.is24HourFormat(context)) {
-    DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(this)
-  } else {
-    DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault()).format(this)
-  }
+fun LocalTime.formatHours(context: Context): String = if (Build.VERSION.SDK_INT >= 26 || !DateFormat.is24HourFormat(context)) {
+  DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(this)
+} else {
+  DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault()).format(this)
 }
 
 /**

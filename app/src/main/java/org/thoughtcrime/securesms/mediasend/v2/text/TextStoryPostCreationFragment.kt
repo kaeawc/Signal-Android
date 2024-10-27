@@ -36,7 +36,10 @@ import org.thoughtcrime.securesms.util.activitySavedStateViewModel
 import org.thoughtcrime.securesms.util.visible
 import java.util.Optional
 
-class TextStoryPostCreationFragment : Fragment(R.layout.stories_text_post_creation_fragment), TextStoryPostTextEntryFragment.Callback, SafetyNumberBottomSheet.Callbacks {
+class TextStoryPostCreationFragment :
+  Fragment(R.layout.stories_text_post_creation_fragment),
+  TextStoryPostTextEntryFragment.Callback,
+  SafetyNumberBottomSheet.Callbacks {
 
   private var _binding: StoriesTextPostCreationFragmentBinding? = null
   private val binding: StoriesTextPostCreationFragmentBinding get() = _binding!!

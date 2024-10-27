@@ -59,8 +59,6 @@ internal class ContactLinkRebuildMigrationJob(parameters: Parameters = Parameter
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<ContactLinkRebuildMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): ContactLinkRebuildMigrationJob {
-      return ContactLinkRebuildMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): ContactLinkRebuildMigrationJob = ContactLinkRebuildMigrationJob(parameters)
   }
 }

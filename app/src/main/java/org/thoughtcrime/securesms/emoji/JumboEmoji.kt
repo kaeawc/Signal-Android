@@ -70,9 +70,7 @@ object JumboEmoji {
 
   @JvmStatic
   @MainThread
-  fun hasJumboEmoji(drawInfo: EmojiDrawInfo): Boolean {
-    return downloadedJumbos.contains(drawInfo.jumboSheet)
-  }
+  fun hasJumboEmoji(drawInfo: EmojiDrawInfo): Boolean = downloadedJumbos.contains(drawInfo.jumboSheet)
 
   @Suppress("FoldInitializerAndIfToElvis")
   @JvmStatic

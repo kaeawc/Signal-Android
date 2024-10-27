@@ -20,21 +20,15 @@ data class ConversationData(
   val groupMemberAcis: List<ServiceId>
 ) {
 
-  fun shouldJumpToMessage(): Boolean {
-    return jumpToPosition >= 0
-  }
+  fun shouldJumpToMessage(): Boolean = jumpToPosition >= 0
 
-  fun shouldScrollToLastSeen(): Boolean {
-    return lastSeenPosition > 0
-  }
+  fun shouldScrollToLastSeen(): Boolean = lastSeenPosition > 0
 
-  fun getStartPosition(): Int {
-    return when {
-      shouldJumpToMessage() -> jumpToPosition
-      messageRequestData.isMessageRequestAccepted && shouldScrollToLastSeen() -> lastSeenPosition
-      messageRequestData.isMessageRequestAccepted -> lastScrolledPosition
-      else -> threadSize
-    }
+  fun getStartPosition(): Int = when {
+    shouldJumpToMessage() -> jumpToPosition
+    messageRequestData.isMessageRequestAccepted && shouldScrollToLastSeen() -> lastSeenPosition
+    messageRequestData.isMessageRequestAccepted -> lastScrolledPosition
+    else -> threadSize
   }
 
   data class MessageRequestData @JvmOverloads constructor(
@@ -44,8 +38,6 @@ data class ConversationData(
     val isGroup: Boolean = false
   ) {
 
-    fun includeWarningUpdateMessage(): Boolean {
-      return !isMessageRequestAccepted && !groupsInCommon && !isHidden
-    }
+    fun includeWarningUpdateMessage(): Boolean = !isMessageRequestAccepted && !groupsInCommon && !isHidden
   }
 }

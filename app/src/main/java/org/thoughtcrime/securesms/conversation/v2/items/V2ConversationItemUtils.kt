@@ -22,9 +22,7 @@ import org.thoughtcrime.securesms.util.hasOnlyThumbnail
  */
 object V2ConversationItemUtils {
 
-  fun MessageRecord.isThumbnailAtBottomOfBubble(context: Context): Boolean {
-    return hasOnlyThumbnail(context) && isDisplayBodyEmpty(context)
-  }
+  fun MessageRecord.isThumbnailAtBottomOfBubble(context: Context): Boolean = hasOnlyThumbnail(context) && isDisplayBodyEmpty(context)
 
   @JvmStatic
   fun linkifyUrlLinks(messageBody: Spannable, shouldLinkifyAllLinks: Boolean, urlClickHandler: UrlClickHandler) {

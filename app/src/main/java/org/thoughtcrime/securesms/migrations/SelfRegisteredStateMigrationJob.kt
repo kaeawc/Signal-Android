@@ -42,8 +42,6 @@ internal class SelfRegisteredStateMigrationJob(
   override fun shouldRetry(e: Exception): Boolean = false
 
   class Factory : Job.Factory<SelfRegisteredStateMigrationJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): SelfRegisteredStateMigrationJob {
-      return SelfRegisteredStateMigrationJob(parameters)
-    }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): SelfRegisteredStateMigrationJob = SelfRegisteredStateMigrationJob(parameters)
   }
 }

@@ -19,27 +19,23 @@ import org.thoughtcrime.securesms.sms.MessageSender
  */
 object StoryGroupReplySender {
 
-  fun sendReply(context: Context, storyId: Long, body: CharSequence, mentions: List<Mention>, bodyRanges: BodyRangeList?): Completable {
-    return sendInternal(
-      context = context,
-      storyId = storyId,
-      body = body,
-      mentions = mentions,
-      bodyRanges = bodyRanges,
-      isReaction = false
-    )
-  }
+  fun sendReply(context: Context, storyId: Long, body: CharSequence, mentions: List<Mention>, bodyRanges: BodyRangeList?): Completable = sendInternal(
+    context = context,
+    storyId = storyId,
+    body = body,
+    mentions = mentions,
+    bodyRanges = bodyRanges,
+    isReaction = false
+  )
 
-  fun sendReaction(context: Context, storyId: Long, emoji: String): Completable {
-    return sendInternal(
-      context = context,
-      storyId = storyId,
-      body = emoji,
-      mentions = emptyList(),
-      bodyRanges = null,
-      isReaction = true
-    )
-  }
+  fun sendReaction(context: Context, storyId: Long, emoji: String): Completable = sendInternal(
+    context = context,
+    storyId = storyId,
+    body = emoji,
+    mentions = emptyList(),
+    bodyRanges = null,
+    isReaction = true
+  )
 
   private fun sendInternal(context: Context, storyId: Long, body: CharSequence, mentions: List<Mention>, bodyRanges: BodyRangeList?, isReaction: Boolean): Completable {
     val messageAndRecipient = Single.fromCallable {

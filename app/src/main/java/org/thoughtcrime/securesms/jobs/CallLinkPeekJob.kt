@@ -56,15 +56,11 @@ internal class CallLinkPeekJob private constructor(
 
   override fun onShouldRetry(e: Exception): Boolean = false
 
-  override fun serialize(): ByteArray? {
-    return JsonJobData.Builder()
-      .putString(KEY_CALL_LINK_RECIPIENT_ID, callLinkRecipientId.serialize())
-      .serialize()
-  }
+  override fun serialize(): ByteArray? = JsonJobData.Builder()
+    .putString(KEY_CALL_LINK_RECIPIENT_ID, callLinkRecipientId.serialize())
+    .serialize()
 
-  override fun getFactoryKey(): String {
-    return KEY
-  }
+  override fun getFactoryKey(): String = KEY
 
   override fun onFailure() = Unit
 

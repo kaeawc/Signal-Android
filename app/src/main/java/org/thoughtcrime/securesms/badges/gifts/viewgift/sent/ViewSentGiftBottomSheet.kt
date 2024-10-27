@@ -62,36 +62,34 @@ class ViewSentGiftBottomSheet : DSLSettingsBottomSheetFragment() {
     }
   }
 
-  private fun getConfiguration(state: ViewSentGiftState): DSLConfiguration {
-    return configure {
+  private fun getConfiguration(state: ViewSentGiftState): DSLConfiguration = configure {
+    noPadTextPref(
+      title = DSLSettingsText.from(
+        stringId = R.string.ViewSentGiftBottomSheet__thanks_for_your_support,
+        DSLSettingsText.CenterModifier,
+        DSLSettingsText.TitleLargeModifier
+      )
+    )
+
+    space(DimensionUnit.DP.toPixels(8f).toInt())
+
+    if (state.recipient != null) {
       noPadTextPref(
         title = DSLSettingsText.from(
-          stringId = R.string.ViewSentGiftBottomSheet__thanks_for_your_support,
-          DSLSettingsText.CenterModifier,
-          DSLSettingsText.TitleLargeModifier
+          charSequence = getString(R.string.ViewSentGiftBottomSheet__youve_made_a_donation_to_signal, state.recipient.getDisplayName(requireContext())),
+          DSLSettingsText.CenterModifier
         )
       )
 
-      space(DimensionUnit.DP.toPixels(8f).toInt())
+      space(DimensionUnit.DP.toPixels(30f).toInt())
+    }
 
-      if (state.recipient != null) {
-        noPadTextPref(
-          title = DSLSettingsText.from(
-            charSequence = getString(R.string.ViewSentGiftBottomSheet__youve_made_a_donation_to_signal, state.recipient.getDisplayName(requireContext())),
-            DSLSettingsText.CenterModifier
-          )
+    if (state.badge != null) {
+      customPref(
+        BadgeDisplay112.Model(
+          badge = state.badge
         )
-
-        space(DimensionUnit.DP.toPixels(30f).toInt())
-      }
-
-      if (state.badge != null) {
-        customPref(
-          BadgeDisplay112.Model(
-            badge = state.badge
-          )
-        )
-      }
+      )
     }
   }
 }

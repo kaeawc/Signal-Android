@@ -166,9 +166,7 @@ open class StickerKeyboardPageFragment :
     val shortTrip = abs(currentPosition - position) < 40
     if (shortTrip) {
       val smoothScroller: SmoothScroller = object : LinearSmoothScroller(context) {
-        override fun getVerticalSnapPreference(): Int {
-          return SNAP_TO_START
-        }
+        override fun getVerticalSnapPreference(): Int = SNAP_TO_START
       }
       smoothScroller.targetPosition = position
       layoutManager.startSmoothScroll(smoothScroller)

@@ -67,17 +67,13 @@ class EncryptedBackupReader(
     next = read()
   }
 
-  override fun getHeader(): BackupInfo? {
-    return backupInfo
-  }
+  override fun getHeader(): BackupInfo? = backupInfo
 
   override fun getBytesRead() = countingStream.count
 
   override fun getStreamLength() = length
 
-  override fun hasNext(): Boolean {
-    return next != null
-  }
+  override fun hasNext(): Boolean = next != null
 
   override fun next(): Frame {
     next?.let { out ->

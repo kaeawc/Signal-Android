@@ -379,13 +379,9 @@ class SignalBluetoothManager(
     PERMISSION_DENIED,
     ERROR;
 
-    fun shouldUpdate(): Boolean {
-      return this == AVAILABLE || this == UNAVAILABLE || this == DISCONNECTING
-    }
+    fun shouldUpdate(): Boolean = this == AVAILABLE || this == UNAVAILABLE || this == DISCONNECTING
 
-    fun hasDevice(): Boolean {
-      return this == CONNECTED || this == CONNECTING || this == AVAILABLE
-    }
+    fun hasDevice(): Boolean = this == CONNECTED || this == CONNECTING || this == AVAILABLE
   }
 
   companion object {
@@ -395,16 +391,14 @@ class SignalBluetoothManager(
   }
 }
 
-private fun Int.toStateString(): String {
-  return when (this) {
-    BluetoothAdapter.STATE_DISCONNECTED -> "DISCONNECTED"
-    BluetoothAdapter.STATE_CONNECTED -> "CONNECTED"
-    BluetoothAdapter.STATE_CONNECTING -> "CONNECTING"
-    BluetoothAdapter.STATE_DISCONNECTING -> "DISCONNECTING"
-    BluetoothAdapter.STATE_OFF -> "OFF"
-    BluetoothAdapter.STATE_ON -> "ON"
-    BluetoothAdapter.STATE_TURNING_OFF -> "TURNING_OFF"
-    BluetoothAdapter.STATE_TURNING_ON -> "TURNING_ON"
-    else -> "UNKNOWN"
-  }
+private fun Int.toStateString(): String = when (this) {
+  BluetoothAdapter.STATE_DISCONNECTED -> "DISCONNECTED"
+  BluetoothAdapter.STATE_CONNECTED -> "CONNECTED"
+  BluetoothAdapter.STATE_CONNECTING -> "CONNECTING"
+  BluetoothAdapter.STATE_DISCONNECTING -> "DISCONNECTING"
+  BluetoothAdapter.STATE_OFF -> "OFF"
+  BluetoothAdapter.STATE_ON -> "ON"
+  BluetoothAdapter.STATE_TURNING_OFF -> "TURNING_OFF"
+  BluetoothAdapter.STATE_TURNING_ON -> "TURNING_ON"
+  else -> "UNKNOWN"
 }

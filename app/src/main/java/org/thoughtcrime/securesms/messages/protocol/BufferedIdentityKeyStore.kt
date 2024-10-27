@@ -22,13 +22,9 @@ class BufferedIdentityKeyStore(
   /** All of the keys that have been created or updated during operation. */
   private val updatedKeys: MutableMap<SignalProtocolAddress, IdentityKey> = mutableMapOf()
 
-  override fun getIdentityKeyPair(): IdentityKeyPair {
-    return selfIdentityKeyPair
-  }
+  override fun getIdentityKeyPair(): IdentityKeyPair = selfIdentityKeyPair
 
-  override fun getLocalRegistrationId(): Int {
-    return selfRegistrationId
-  }
+  override fun getLocalRegistrationId(): Int = selfRegistrationId
 
   override fun saveIdentity(address: SignalProtocolAddress, identityKey: IdentityKey): Boolean {
     val existing: IdentityKey? = getIdentity(address)

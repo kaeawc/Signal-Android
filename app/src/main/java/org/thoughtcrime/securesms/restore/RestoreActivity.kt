@@ -64,26 +64,20 @@ class RestoreActivity : BaseActivity() {
       LOCAL_RESTORE(2);
 
       companion object {
-        fun deserialize(value: Int): NavTarget {
-          return values().firstOrNull { it.value == value } ?: NONE
-        }
+        fun deserialize(value: Int): NavTarget = values().firstOrNull { it.value == value } ?: NONE
       }
     }
 
     private const val EXTRA_NAV_TARGET = "nav_target"
 
     @JvmStatic
-    fun getIntentForTransfer(context: Context): Intent {
-      return Intent(context, RestoreActivity::class.java).apply {
-        putExtra(EXTRA_NAV_TARGET, NavTarget.TRANSFER.value)
-      }
+    fun getIntentForTransfer(context: Context): Intent = Intent(context, RestoreActivity::class.java).apply {
+      putExtra(EXTRA_NAV_TARGET, NavTarget.TRANSFER.value)
     }
 
     @JvmStatic
-    fun getIntentForLocalRestore(context: Context): Intent {
-      return Intent(context, RestoreActivity::class.java).apply {
-        putExtra(EXTRA_NAV_TARGET, NavTarget.LOCAL_RESTORE.value)
-      }
+    fun getIntentForLocalRestore(context: Context): Intent = Intent(context, RestoreActivity::class.java).apply {
+      putExtra(EXTRA_NAV_TARGET, NavTarget.LOCAL_RESTORE.value)
     }
 
     @JvmStatic

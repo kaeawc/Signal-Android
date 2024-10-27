@@ -114,23 +114,21 @@ class InternalDonorErrorConfigurationViewModel : ViewModel() {
     return clearErrorState().andThen(saveState)
   }
 
-  fun clearErrorState(): Completable {
-    return Completable.fromAction {
-      synchronized(InAppPaymentSubscriberRecord.Type.DONATION) {
-        SignalStore.inAppPayments.setExpiredBadge(null)
-        SignalStore.inAppPayments.setExpiredGiftBadge(null)
-        SignalStore.inAppPayments.unexpectedSubscriptionCancelationReason = null
-        SignalStore.inAppPayments.unexpectedSubscriptionCancelationTimestamp = 0L
-        SignalStore.inAppPayments.setUnexpectedSubscriptionCancelationChargeFailure(null)
-      }
+  fun clearErrorState(): Completable = Completable.fromAction {
+    synchronized(InAppPaymentSubscriberRecord.Type.DONATION) {
+      SignalStore.inAppPayments.setExpiredBadge(null)
+      SignalStore.inAppPayments.setExpiredGiftBadge(null)
+      SignalStore.inAppPayments.unexpectedSubscriptionCancelationReason = null
+      SignalStore.inAppPayments.unexpectedSubscriptionCancelationTimestamp = 0L
+      SignalStore.inAppPayments.setUnexpectedSubscriptionCancelationChargeFailure(null)
+    }
 
-      store.update {
-        it.copy(
-          selectedStripeDeclineCode = null,
-          selectedUnexpectedSubscriptionCancellation = null,
-          selectedBadge = null
-        )
-      }
+    store.update {
+      it.copy(
+        selectedStripeDeclineCode = null,
+        selectedUnexpectedSubscriptionCancellation = null,
+        selectedBadge = null
+      )
     }
   }
 

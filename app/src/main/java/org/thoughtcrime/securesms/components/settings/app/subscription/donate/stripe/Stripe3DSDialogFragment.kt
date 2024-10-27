@@ -124,9 +124,7 @@ class Stripe3DSDialogFragment : DialogFragment(R.layout.donation_webview_fragmen
 
   private inner class Stripe3DSWebClient : WebViewClient() {
 
-    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-      return ExternalNavigationHelper.maybeLaunchExternalNavigationIntent(requireContext(), request?.url, this@Stripe3DSDialogFragment::handleLaunchExternal)
-    }
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean = ExternalNavigationHelper.maybeLaunchExternalNavigationIntent(requireContext(), request?.url, this@Stripe3DSDialogFragment::handleLaunchExternal)
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
       binding.progress.visible = true

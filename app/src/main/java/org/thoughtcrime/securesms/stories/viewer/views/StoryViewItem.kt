@@ -30,16 +30,12 @@ object StoryViewItem {
     val goToChat: (Model) -> Unit,
     val removeFromStory: (Model) -> Unit
   ) : PreferenceModel<Model>() {
-    override fun areItemsTheSame(newItem: Model): Boolean {
-      return storyViewItemData.recipient == newItem.storyViewItemData.recipient
-    }
+    override fun areItemsTheSame(newItem: Model): Boolean = storyViewItemData.recipient == newItem.storyViewItemData.recipient
 
-    override fun areContentsTheSame(newItem: Model): Boolean {
-      return storyViewItemData == newItem.storyViewItemData &&
-        storyViewItemData.recipient.hasSameContent(newItem.storyViewItemData.recipient) &&
-        canRemoveMember == newItem.canRemoveMember &&
-        super.areContentsTheSame(newItem)
-    }
+    override fun areContentsTheSame(newItem: Model): Boolean = storyViewItemData == newItem.storyViewItemData &&
+      storyViewItemData.recipient.hasSameContent(newItem.storyViewItemData.recipient) &&
+      canRemoveMember == newItem.canRemoveMember &&
+      super.areContentsTheSame(newItem)
   }
 
   private class ViewHolder(itemView: View) : MappingViewHolder<Model>(itemView) {
@@ -58,9 +54,7 @@ object StoryViewItem {
       }
     }
 
-    private fun formatDate(dateInMilliseconds: Long): String {
-      return DateUtils.formatDateWithDayOfWeek(Locale.getDefault(), dateInMilliseconds)
-    }
+    private fun formatDate(dateInMilliseconds: Long): String = DateUtils.formatDateWithDayOfWeek(Locale.getDefault(), dateInMilliseconds)
 
     private fun showContextMenu(model: Model) {
       itemView.isSelected = true

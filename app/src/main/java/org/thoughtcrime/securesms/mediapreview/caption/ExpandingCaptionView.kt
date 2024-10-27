@@ -65,9 +65,7 @@ class ExpandingCaptionView @JvmOverloads constructor(
     }
   }
 
-  private fun isExpandable(): Boolean {
-    return fullCaptionText.length > CHAR_LIMIT_MESSAGE_PREVIEW
-  }
+  private fun isExpandable(): Boolean = fullCaptionText.length > CHAR_LIMIT_MESSAGE_PREVIEW
 
   companion object {
     const val CHAR_LIMIT_MESSAGE_PREVIEW = 280

@@ -25,44 +25,38 @@ import java.util.Locale
  */
 class GiftFlowRepository {
 
-  fun insertInAppPayment(context: Context, giftSnapshot: GiftFlowState): Single<InAppPaymentTable.InAppPayment> {
-    return Single.fromCallable {
-      SignalDatabase.inAppPayments.insert(
-        type = InAppPaymentType.ONE_TIME_GIFT,
-        state = InAppPaymentTable.State.CREATED,
-        subscriberId = null,
-        endOfPeriod = null,
-        inAppPaymentData = InAppPaymentData(
-          badge = Badges.toDatabaseBadge(giftSnapshot.giftBadge!!),
-          label = context.getString(R.string.preferences__one_time),
-          amount = giftSnapshot.giftPrices[giftSnapshot.currency]!!.toFiatValue(),
-          level = giftSnapshot.giftLevel!!,
-          recipientId = giftSnapshot.recipient!!.id.serialize(),
-          additionalMessage = giftSnapshot.additionalMessage?.toString()
-        )
+  fun insertInAppPayment(context: Context, giftSnapshot: GiftFlowState): Single<InAppPaymentTable.InAppPayment> = Single.fromCallable {
+    SignalDatabase.inAppPayments.insert(
+      type = InAppPaymentType.ONE_TIME_GIFT,
+      state = InAppPaymentTable.State.CREATED,
+      subscriberId = null,
+      endOfPeriod = null,
+      inAppPaymentData = InAppPaymentData(
+        badge = Badges.toDatabaseBadge(giftSnapshot.giftBadge!!),
+        label = context.getString(R.string.preferences__one_time),
+        amount = giftSnapshot.giftPrices[giftSnapshot.currency]!!.toFiatValue(),
+        level = giftSnapshot.giftLevel!!,
+        recipientId = giftSnapshot.recipient!!.id.serialize(),
+        additionalMessage = giftSnapshot.additionalMessage?.toString()
       )
-    }.flatMap { InAppPaymentsRepository.requireInAppPayment(it) }.subscribeOn(Schedulers.io())
-  }
+    )
+  }.flatMap { InAppPaymentsRepository.requireInAppPayment(it) }.subscribeOn(Schedulers.io())
 
-  fun getGiftBadge(): Single<Pair<Int, Badge>> {
-    return Single
-      .fromCallable {
-        AppDependencies.donationsService
-          .getDonationsConfiguration(Locale.getDefault())
-      }
-      .flatMap { it.flattenResult() }
-      .map { SubscriptionsConfiguration.GIFT_LEVEL to it.getGiftBadges().first() }
-      .subscribeOn(Schedulers.io())
-  }
+  fun getGiftBadge(): Single<Pair<Int, Badge>> = Single
+    .fromCallable {
+      AppDependencies.donationsService
+        .getDonationsConfiguration(Locale.getDefault())
+    }
+    .flatMap { it.flattenResult() }
+    .map { SubscriptionsConfiguration.GIFT_LEVEL to it.getGiftBadges().first() }
+    .subscribeOn(Schedulers.io())
 
-  fun getGiftPricing(): Single<Map<Currency, FiatMoney>> {
-    return Single
-      .fromCallable {
-        AppDependencies.donationsService
-          .getDonationsConfiguration(Locale.getDefault())
-      }
-      .subscribeOn(Schedulers.io())
-      .flatMap { it.flattenResult() }
-      .map { it.getGiftBadgeAmounts() }
-  }
+  fun getGiftPricing(): Single<Map<Currency, FiatMoney>> = Single
+    .fromCallable {
+      AppDependencies.donationsService
+        .getDonationsConfiguration(Locale.getDefault())
+    }
+    .subscribeOn(Schedulers.io())
+    .flatMap { it.flattenResult() }
+    .map { it.getGiftBadgeAmounts() }
 }

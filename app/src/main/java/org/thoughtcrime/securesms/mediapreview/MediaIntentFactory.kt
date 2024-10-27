@@ -45,18 +45,14 @@ object MediaIntentFactory {
     val sharedElementArgs: SharedElementArgs = SharedElementArgs(),
     val skipSharedElementTransition: Boolean
   ) : Parcelable {
-    fun skipSharedElementTransition(skipSharedElementTransition: Boolean): MediaPreviewArgs {
-      return copy(skipSharedElementTransition = skipSharedElementTransition)
-    }
+    fun skipSharedElementTransition(skipSharedElementTransition: Boolean): MediaPreviewArgs = copy(skipSharedElementTransition = skipSharedElementTransition)
   }
 
   @JvmStatic
   fun requireArguments(bundle: Bundle): MediaPreviewArgs = bundle.getParcelableCompat(ARGS_KEY, MediaPreviewArgs::class.java)!!
 
   @JvmStatic
-  fun create(context: Context, args: MediaPreviewArgs): Intent {
-    return Intent(context, MediaPreviewV2Activity::class.java).putExtra(ARGS_KEY, args)
-  }
+  fun create(context: Context, args: MediaPreviewArgs): Intent = Intent(context, MediaPreviewV2Activity::class.java).putExtra(ARGS_KEY, args)
 
   fun intentFromMediaRecord(
     context: Context,

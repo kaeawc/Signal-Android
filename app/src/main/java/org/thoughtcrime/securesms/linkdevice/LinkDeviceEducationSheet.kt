@@ -50,40 +50,38 @@ class LinkDeviceEducationSheet : ComposeBottomSheetDialogFragment() {
 }
 
 @Composable
-private fun DeviceEducationSheet(onClick: () -> Unit) {
-  return Column(
-    horizontalAlignment = Alignment.CenterHorizontally,
-    modifier = Modifier.fillMaxWidth()
+private fun DeviceEducationSheet(onClick: () -> Unit) = Column(
+  horizontalAlignment = Alignment.CenterHorizontally,
+  modifier = Modifier.fillMaxWidth()
+) {
+  BottomSheets.Handle()
+  Icon(
+    painter = painterResource(R.drawable.ic_phone_lock),
+    contentDescription = null,
+    tint = Color.Unspecified,
+    modifier = Modifier.padding(top = 24.dp)
+  )
+
+  Text(
+    text = stringResource(R.string.LinkDeviceFragment__before_linking),
+    style = MaterialTheme.typography.titleLarge,
+    textAlign = TextAlign.Center,
+    modifier = Modifier.padding(top = 20.dp, bottom = 8.dp),
+    color = MaterialTheme.colorScheme.onSurface
+  )
+  Text(
+    text = stringResource(R.string.LinkDeviceFragment__tap_continue_and_enter_phone),
+    textAlign = TextAlign.Center,
+    style = MaterialTheme.typography.bodyLarge,
+    modifier = Modifier.padding(horizontal = 44.dp),
+    color = MaterialTheme.colorScheme.onSurfaceVariant
+  )
+
+  Buttons.LargeTonal(
+    onClick = onClick,
+    modifier = Modifier.defaultMinSize(minWidth = 220.dp).padding(top = 28.dp, bottom = 56.dp)
   ) {
-    BottomSheets.Handle()
-    Icon(
-      painter = painterResource(R.drawable.ic_phone_lock),
-      contentDescription = null,
-      tint = Color.Unspecified,
-      modifier = Modifier.padding(top = 24.dp)
-    )
-
-    Text(
-      text = stringResource(R.string.LinkDeviceFragment__before_linking),
-      style = MaterialTheme.typography.titleLarge,
-      textAlign = TextAlign.Center,
-      modifier = Modifier.padding(top = 20.dp, bottom = 8.dp),
-      color = MaterialTheme.colorScheme.onSurface
-    )
-    Text(
-      text = stringResource(R.string.LinkDeviceFragment__tap_continue_and_enter_phone),
-      textAlign = TextAlign.Center,
-      style = MaterialTheme.typography.bodyLarge,
-      modifier = Modifier.padding(horizontal = 44.dp),
-      color = MaterialTheme.colorScheme.onSurfaceVariant
-    )
-
-    Buttons.LargeTonal(
-      onClick = onClick,
-      modifier = Modifier.defaultMinSize(minWidth = 220.dp).padding(top = 28.dp, bottom = 56.dp)
-    ) {
-      Text(stringResource(id = R.string.LinkDeviceFragment__continue))
-    }
+    Text(stringResource(id = R.string.LinkDeviceFragment__continue))
   }
 }
 

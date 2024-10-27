@@ -47,9 +47,7 @@ class MiscellaneousValues internal constructor(store: KeyValueStore) : SignalSto
     putBoolean(NEEDS_USERNAME_RESTORE, true)
   }
 
-  public override fun getKeysToIncludeInBackup(): List<String> {
-    return emptyList()
-  }
+  public override fun getKeysToIncludeInBackup(): List<String> = emptyList()
 
   /**
    * Represents the last time a _full_ prekey refreshed finished. That means signed+one-time prekeys for both ACI and PNI.

@@ -5,12 +5,14 @@
 
 package org.thoughtcrime.securesms.service.webrtc
 
+import android.Manifest
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.net.ConnectivityManager
 import android.os.Build
@@ -18,6 +20,7 @@ import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
 import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.os.bundleOf
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -186,6 +189,11 @@ class ActiveCallManager(
 
     if (type == CallNotificationBuilder.TYPE_INCOMING_RINGING || type == CallNotificationBuilder.TYPE_INCOMING_CONNECTING) {
       val notification = CallNotificationBuilder.getCallInProgressNotification(application, type, Recipient.resolved(recipientId), isVideoCall, requiresAsyncNotificationLoad)
+      if (ActivityCompat.checkSelfPermission(application, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        // TODO: Consider calling how we might bubble up a permissions request to the current Activity
+        //   Otherwise this will swallow the lack of permission and not notify the user of an incoming call.
+        return
+      }
       NotificationManagerCompat.from(application).notify(notificationId, notification)
 
       if (requiresAsyncNotificationLoad) {
@@ -194,6 +202,11 @@ class ActiveCallManager(
           .observeOn(AndroidSchedulers.mainThread())
           .subscribeBy { asyncNotification ->
             if (NotificationManagerCompat.from(application).activeNotifications.any { n -> n.id == notificationId }) {
+              if (ActivityCompat.checkSelfPermission(application, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling how we might bubble up a permissions request to the current Activity
+                //   Otherwise this will swallow the lack of permission and not notify the user of an incoming call.
+                return@subscribeBy
+              }
               NotificationManagerCompat.from(application).notify(notificationId, asyncNotification)
             }
           }
@@ -282,9 +295,7 @@ class ActiveCallManager(
         }
       }
 
-      fun stop(context: Context): Boolean {
-        return SafeForegroundService.stop(context, ActiveCallForegroundService::class.java)
-      }
+      fun stop(context: Context): Boolean = SafeForegroundService.stop(context, ActiveCallForegroundService::class.java)
     }
 
     override val tag: String
@@ -372,15 +383,13 @@ class ActiveCallManager(
       return createNotification(type, recipient, isVideoCall, skipAvatarLoad = requiresAsyncNotificationLoad)
     }
 
-    private fun createNotification(type: Int, recipient: Recipient, isVideoCall: Boolean, skipAvatarLoad: Boolean): Notification {
-      return CallNotificationBuilder.getCallInProgressNotification(
-        this,
-        type,
-        recipient,
-        isVideoCall,
-        skipAvatarLoad
-      )
-    }
+    private fun createNotification(type: Int, recipient: Recipient, isVideoCall: Boolean, skipAvatarLoad: Boolean): Notification = CallNotificationBuilder.getCallInProgressNotification(
+      this,
+      type,
+      recipient,
+      isVideoCall,
+      skipAvatarLoad
+    )
 
     @Suppress("deprecation")
     private class HangUpRtcOnPstnCallAnsweredListener : PhoneStateListener() {

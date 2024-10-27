@@ -41,9 +41,7 @@ class EditNotificationProfileViewModel(private val profileId: Long, private val 
   }
 
   class Factory(private val profileId: Long) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(EditNotificationProfileViewModel(profileId, NotificationProfilesRepository()))!!
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(EditNotificationProfileViewModel(profileId, NotificationProfilesRepository()))!!
   }
 
   data class InitialState(

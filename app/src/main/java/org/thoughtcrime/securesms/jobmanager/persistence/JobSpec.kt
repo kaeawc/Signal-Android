@@ -18,17 +18,11 @@ data class JobSpec(
   val queuePriority: Int
 ) {
 
-  fun withNextBackoffInterval(updated: Long): JobSpec {
-    return copy(nextBackoffInterval = updated)
-  }
+  fun withNextBackoffInterval(updated: Long): JobSpec = copy(nextBackoffInterval = updated)
 
-  fun withData(updatedSerializedData: ByteArray?): JobSpec {
-    return copy(serializedData = updatedSerializedData)
-  }
+  fun withData(updatedSerializedData: ByteArray?): JobSpec = copy(serializedData = updatedSerializedData)
 
-  override fun toString(): String {
-    return "id: JOB::$id | factoryKey: $factoryKey | queueKey: $queueKey | createTime: $createTime | lastRunAttemptTime: $lastRunAttemptTime | nextBackoffInterval: $nextBackoffInterval | runAttempt: $runAttempt | maxAttempts: $maxAttempts | lifespan: $lifespan | isRunning: $isRunning | memoryOnly: $isMemoryOnly | globalPriority: $globalPriority | queuePriorty: $queuePriority"
-  }
+  override fun toString(): String = "id: JOB::$id | factoryKey: $factoryKey | queueKey: $queueKey | createTime: $createTime | lastRunAttemptTime: $lastRunAttemptTime | nextBackoffInterval: $nextBackoffInterval | runAttempt: $runAttempt | maxAttempts: $maxAttempts | lifespan: $lifespan | isRunning: $isRunning | memoryOnly: $isMemoryOnly | globalPriority: $globalPriority | queuePriorty: $queuePriority"
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true

@@ -45,12 +45,10 @@ class DeleteAccountProgressDialog private constructor(private val alertDialog: A
 
   companion object {
     @JvmStatic
-    fun show(context: Context): DeleteAccountProgressDialog {
-      return DeleteAccountProgressDialog(
-        MaterialAlertDialogBuilder(context)
-          .setView(R.layout.delete_account_progress_dialog)
-          .show()
-      )
-    }
+    fun show(context: Context): DeleteAccountProgressDialog = DeleteAccountProgressDialog(
+      MaterialAlertDialogBuilder(context)
+        .setView(R.layout.delete_account_progress_dialog)
+        .show()
+    )
   }
 }

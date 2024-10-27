@@ -196,8 +196,6 @@ class PayPalPaymentInProgressViewModel(
     private val payPalRepository: PayPalRepository = PayPalRepository(AppDependencies.donationsService),
     private val oneTimeInAppPaymentRepository: OneTimeInAppPaymentRepository = OneTimeInAppPaymentRepository(AppDependencies.donationsService)
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(PayPalPaymentInProgressViewModel(payPalRepository, oneTimeInAppPaymentRepository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(PayPalPaymentInProgressViewModel(payPalRepository, oneTimeInAppPaymentRepository)) as T
   }
 }

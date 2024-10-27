@@ -25,41 +25,37 @@ sealed class RegistrationSessionCreationResult(cause: Throwable?) : Registration
     private val TAG = Log.tag(RegistrationSessionResult::class.java)
 
     @JvmStatic
-    fun from(networkResult: NetworkResult<RegistrationSessionMetadataResponse>): RegistrationSessionCreationResult {
-      return when (networkResult) {
-        is NetworkResult.Success -> {
-          Success(networkResult.result)
-        }
+    fun from(networkResult: NetworkResult<RegistrationSessionMetadataResponse>): RegistrationSessionCreationResult = when (networkResult) {
+      is NetworkResult.Success -> {
+        Success(networkResult.result)
+      }
 
-        is NetworkResult.ApplicationError -> UnknownError(networkResult.throwable)
-        is NetworkResult.NetworkError -> UnknownError(networkResult.exception)
-        is NetworkResult.StatusCodeError -> {
-          when (val cause = networkResult.exception) {
-            is RateLimitException -> createRateLimitProcessor(cause)
-            is MalformedRequestException -> MalformedRequest(cause)
-            else -> if (networkResult.code == 422) {
-              ServerUnableToParse(cause)
-            } else {
-              UnknownError(cause)
-            }
+      is NetworkResult.ApplicationError -> UnknownError(networkResult.throwable)
+      is NetworkResult.NetworkError -> UnknownError(networkResult.exception)
+      is NetworkResult.StatusCodeError -> {
+        when (val cause = networkResult.exception) {
+          is RateLimitException -> createRateLimitProcessor(cause)
+          is MalformedRequestException -> MalformedRequest(cause)
+          else -> if (networkResult.code == 422) {
+            ServerUnableToParse(cause)
+          } else {
+            UnknownError(cause)
           }
         }
       }
     }
 
-    private fun createRateLimitProcessor(exception: RateLimitException): RegistrationSessionCreationResult {
-      return if (exception.retryAfterMilliseconds.isPresent) {
-        RateLimited(exception, exception.retryAfterMilliseconds.get())
-      } else {
-        AttemptsExhausted(exception)
-      }
+    private fun createRateLimitProcessor(exception: RateLimitException): RegistrationSessionCreationResult = if (exception.retryAfterMilliseconds.isPresent) {
+      RateLimited(exception, exception.retryAfterMilliseconds.get())
+    } else {
+      AttemptsExhausted(exception)
     }
   }
 
-  class Success(private val metadata: RegistrationSessionMetadataResponse) : RegistrationSessionCreationResult(null), SessionMetadataHolder {
-    override fun getMetadata(): RegistrationSessionMetadataResponse {
-      return metadata
-    }
+  class Success(private val metadata: RegistrationSessionMetadataResponse) :
+    RegistrationSessionCreationResult(null),
+    SessionMetadataHolder {
+    override fun getMetadata(): RegistrationSessionMetadataResponse = metadata
   }
 
   class RateLimited(cause: Throwable, val timeRemaining: Long) : RegistrationSessionCreationResult(cause)
@@ -71,28 +67,26 @@ sealed class RegistrationSessionCreationResult(cause: Throwable?) : Registration
 
 sealed class RegistrationSessionCheckResult(cause: Throwable?) : RegistrationSessionResult(cause) {
   companion object {
-    fun from(networkResult: NetworkResult<RegistrationSessionMetadataResponse>): RegistrationSessionCheckResult {
-      return when (networkResult) {
-        is NetworkResult.Success -> {
-          Success(networkResult.result)
-        }
+    fun from(networkResult: NetworkResult<RegistrationSessionMetadataResponse>): RegistrationSessionCheckResult = when (networkResult) {
+      is NetworkResult.Success -> {
+        Success(networkResult.result)
+      }
 
-        is NetworkResult.ApplicationError -> UnknownError(networkResult.throwable)
-        is NetworkResult.NetworkError -> UnknownError(networkResult.exception)
-        is NetworkResult.StatusCodeError -> {
-          when (val cause = networkResult.exception) {
-            is NoSuchSessionException, is NotFoundException -> SessionNotFound(cause)
-            else -> UnknownError(cause)
-          }
+      is NetworkResult.ApplicationError -> UnknownError(networkResult.throwable)
+      is NetworkResult.NetworkError -> UnknownError(networkResult.exception)
+      is NetworkResult.StatusCodeError -> {
+        when (val cause = networkResult.exception) {
+          is NoSuchSessionException, is NotFoundException -> SessionNotFound(cause)
+          else -> UnknownError(cause)
         }
       }
     }
   }
 
-  class Success(private val metadata: RegistrationSessionMetadataResponse) : RegistrationSessionCheckResult(null), SessionMetadataHolder {
-    override fun getMetadata(): RegistrationSessionMetadataResponse {
-      return metadata
-    }
+  class Success(private val metadata: RegistrationSessionMetadataResponse) :
+    RegistrationSessionCheckResult(null),
+    SessionMetadataHolder {
+    override fun getMetadata(): RegistrationSessionMetadataResponse = metadata
   }
 
   class SessionNotFound(cause: Throwable) : RegistrationSessionCheckResult(cause)

@@ -24,7 +24,9 @@ sealed class ContactSearchKey {
   open fun requireSelectedContact(): SelectedContact = error("This key cannot be converted into a SelectedContact")
 
   @Parcelize
-  data class RecipientSearchKey(val recipientId: RecipientId, val isStory: Boolean) : ContactSearchKey(), Parcelable {
+  data class RecipientSearchKey(val recipientId: RecipientId, val isStory: Boolean) :
+    ContactSearchKey(),
+    Parcelable {
     override fun requireRecipientSearchKey(): RecipientSearchKey = this
 
     override fun requireShareContact(): ShareContact = ShareContact(recipientId)
@@ -39,9 +41,7 @@ sealed class ContactSearchKey {
       else -> error("Unexpected section for unknown recipient: $sectionKey")
     }
 
-    override fun toString(): String {
-      return "UnknownRecipientKey(sectionKey=$sectionKey)"
-    }
+    override fun toString(): String = "UnknownRecipientKey(sectionKey=$sectionKey)"
   }
 
   /**
@@ -80,9 +80,7 @@ sealed class ContactSearchKey {
    * Search key for a ChatType
    */
   data class ChatTypeSearchKey(val chatType: ChatType) : ContactSearchKey() {
-    override fun requireSelectedContact(): SelectedContact {
-      return SelectedContact.forChatType(chatType)
-    }
+    override fun requireSelectedContact(): SelectedContact = SelectedContact.forChatType(chatType)
   }
 
   object Empty : ContactSearchKey()

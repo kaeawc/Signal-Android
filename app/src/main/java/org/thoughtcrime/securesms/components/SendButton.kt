@@ -13,7 +13,9 @@ import org.thoughtcrime.securesms.util.ViewUtil
  * The send button you see in a conversation.
  * Also encapsulates the long-press menu that allows users to switch [MessageSendType]s.
  */
-class SendButton(context: Context, attributeSet: AttributeSet?) : AppCompatImageButton(context, attributeSet), OnLongClickListener {
+class SendButton(context: Context, attributeSet: AttributeSet?) :
+  AppCompatImageButton(context, attributeSet),
+  OnLongClickListener {
 
   private var scheduledSendListener: ScheduledSendListener? = null
 

@@ -152,11 +152,7 @@ class InAppPaymentsBottomSheetDelegate(
     }
   }
 
-  private fun isUnexpectedCancellation(inAppPaymentState: InAppPaymentTable.State, inAppPaymentData: InAppPaymentData): Boolean {
-    return inAppPaymentState == InAppPaymentTable.State.END && inAppPaymentData.error != null && inAppPaymentData.cancellation != null && inAppPaymentData.cancellation.reason != InAppPaymentData.Cancellation.Reason.MANUAL
-  }
+  private fun isUnexpectedCancellation(inAppPaymentState: InAppPaymentTable.State, inAppPaymentData: InAppPaymentData): Boolean = inAppPaymentState == InAppPaymentTable.State.END && inAppPaymentData.error != null && inAppPaymentData.cancellation != null && inAppPaymentData.cancellation.reason != InAppPaymentData.Cancellation.Reason.MANUAL
 
-  private fun isPaymentProcessingError(inAppPaymentState: InAppPaymentTable.State, inAppPaymentData: InAppPaymentData): Boolean {
-    return inAppPaymentState == InAppPaymentTable.State.END && inAppPaymentData.error != null && (inAppPaymentData.error.type in inAppPaymentProcessingErrors)
-  }
+  private fun isPaymentProcessingError(inAppPaymentState: InAppPaymentTable.State, inAppPaymentData: InAppPaymentData): Boolean = inAppPaymentState == InAppPaymentTable.State.END && inAppPaymentData.error != null && (inAppPaymentData.error.type in inAppPaymentProcessingErrors)
 }

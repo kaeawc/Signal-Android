@@ -54,54 +54,46 @@ class KyberPreKeyTable(context: Context, databaseHelper: SignalDatabase) : Datab
     const val PNI_ACCOUNT_ID = "PNI"
   }
 
-  fun get(serviceId: ServiceId, keyId: Int): KyberPreKey? {
-    return readableDatabase
-      .select(LAST_RESORT, SERIALIZED)
-      .from("$TABLE_NAME INDEXED BY $INDEX_ACCOUNT_KEY")
-      .where("$ACCOUNT_ID = ? AND $KEY_ID = ?", serviceId.toAccountId(), keyId)
-      .run()
-      .readToSingleObject { cursor ->
-        KyberPreKey(
-          record = KyberPreKeyRecord(cursor.requireNonNullBlob(SERIALIZED)),
-          lastResort = cursor.requireBoolean(LAST_RESORT)
-        )
-      }
-  }
+  fun get(serviceId: ServiceId, keyId: Int): KyberPreKey? = readableDatabase
+    .select(LAST_RESORT, SERIALIZED)
+    .from("$TABLE_NAME INDEXED BY $INDEX_ACCOUNT_KEY")
+    .where("$ACCOUNT_ID = ? AND $KEY_ID = ?", serviceId.toAccountId(), keyId)
+    .run()
+    .readToSingleObject { cursor ->
+      KyberPreKey(
+        record = KyberPreKeyRecord(cursor.requireNonNullBlob(SERIALIZED)),
+        lastResort = cursor.requireBoolean(LAST_RESORT)
+      )
+    }
 
-  fun getAll(serviceId: ServiceId): List<KyberPreKey> {
-    return readableDatabase
-      .select(LAST_RESORT, SERIALIZED)
-      .from("$TABLE_NAME INDEXED BY $INDEX_ACCOUNT_KEY")
-      .where("$ACCOUNT_ID = ?", serviceId.toAccountId())
-      .run()
-      .readToList { cursor ->
-        KyberPreKey(
-          record = KyberPreKeyRecord(cursor.requireNonNullBlob(SERIALIZED)),
-          lastResort = cursor.requireBoolean(LAST_RESORT)
-        )
-      }
-  }
+  fun getAll(serviceId: ServiceId): List<KyberPreKey> = readableDatabase
+    .select(LAST_RESORT, SERIALIZED)
+    .from("$TABLE_NAME INDEXED BY $INDEX_ACCOUNT_KEY")
+    .where("$ACCOUNT_ID = ?", serviceId.toAccountId())
+    .run()
+    .readToList { cursor ->
+      KyberPreKey(
+        record = KyberPreKeyRecord(cursor.requireNonNullBlob(SERIALIZED)),
+        lastResort = cursor.requireBoolean(LAST_RESORT)
+      )
+    }
 
-  fun getAllLastResort(serviceId: ServiceId): List<KyberPreKey> {
-    return readableDatabase
-      .select(LAST_RESORT, SERIALIZED)
-      .from("$TABLE_NAME INDEXED BY $INDEX_ACCOUNT_KEY")
-      .where("$ACCOUNT_ID = ? AND $LAST_RESORT = ?", serviceId.toAccountId(), 1)
-      .run()
-      .readToList { cursor ->
-        KyberPreKey(
-          record = KyberPreKeyRecord(cursor.requireNonNullBlob(SERIALIZED)),
-          lastResort = cursor.requireBoolean(LAST_RESORT)
-        )
-      }
-  }
+  fun getAllLastResort(serviceId: ServiceId): List<KyberPreKey> = readableDatabase
+    .select(LAST_RESORT, SERIALIZED)
+    .from("$TABLE_NAME INDEXED BY $INDEX_ACCOUNT_KEY")
+    .where("$ACCOUNT_ID = ? AND $LAST_RESORT = ?", serviceId.toAccountId(), 1)
+    .run()
+    .readToList { cursor ->
+      KyberPreKey(
+        record = KyberPreKeyRecord(cursor.requireNonNullBlob(SERIALIZED)),
+        lastResort = cursor.requireBoolean(LAST_RESORT)
+      )
+    }
 
-  fun contains(serviceId: ServiceId, keyId: Int): Boolean {
-    return readableDatabase
-      .exists("$TABLE_NAME INDEXED BY $INDEX_ACCOUNT_KEY")
-      .where("$ACCOUNT_ID = ? AND $KEY_ID = ?", serviceId.toAccountId(), keyId)
-      .run()
-  }
+  fun contains(serviceId: ServiceId, keyId: Int): Boolean = readableDatabase
+    .exists("$TABLE_NAME INDEXED BY $INDEX_ACCOUNT_KEY")
+    .where("$ACCOUNT_ID = ? AND $KEY_ID = ?", serviceId.toAccountId(), keyId)
+    .run()
 
   fun insert(serviceId: ServiceId, keyId: Int, record: KyberPreKeyRecord, lastResort: Boolean) {
     writableDatabase
@@ -181,10 +173,8 @@ class KyberPreKeyTable(context: Context, databaseHelper: SignalDatabase) : Datab
     val lastResort: Boolean
   )
 
-  private fun ServiceId.toAccountId(): String {
-    return when (this) {
-      is ServiceId.ACI -> this.toString()
-      is ServiceId.PNI -> PNI_ACCOUNT_ID
-    }
+  private fun ServiceId.toAccountId(): String = when (this) {
+    is ServiceId.ACI -> this.toString()
+    is ServiceId.PNI -> PNI_ACCOUNT_ID
   }
 }

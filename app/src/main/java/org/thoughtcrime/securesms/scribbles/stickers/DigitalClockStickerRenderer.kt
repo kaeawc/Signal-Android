@@ -17,7 +17,9 @@ class DigitalClockStickerRenderer
 @JvmOverloads constructor(
   val time: Long,
   val style: DigitalClockStickerDrawable.Style = DigitalClockStickerDrawable.Style.LIGHT_NO_BG
-) : InvalidateableRenderer(), SelectableRenderer, TappableRenderer {
+) : InvalidateableRenderer(),
+  SelectableRenderer,
+  TappableRenderer {
 
   private val clockStickerDrawable = DigitalClockStickerDrawable(AppDependencies.application)
   private val insetBounds = Rect(
@@ -45,9 +47,7 @@ class DigitalClockStickerRenderer
     bounds.set(Bounds.FULL_BOUNDS)
   }
 
-  override fun describeContents(): Int {
-    return 0
-  }
+  override fun describeContents(): Int = 0
 
   override fun writeToParcel(dest: Parcel, flags: Int) {
     dest.writeLong(time)
@@ -58,20 +58,14 @@ class DigitalClockStickerRenderer
     clockStickerDrawable.draw(rendererContext.canvas)
   }
 
-  override fun hitTest(x: Float, y: Float): Boolean {
-    return Bounds.FULL_BOUNDS.contains(x, y)
-  }
+  override fun hitTest(x: Float, y: Float): Boolean = Bounds.FULL_BOUNDS.contains(x, y)
 
   companion object CREATOR : Parcelable.Creator<DigitalClockStickerRenderer> {
-    override fun createFromParcel(parcel: Parcel): DigitalClockStickerRenderer {
-      return DigitalClockStickerRenderer(
-        parcel.readLong(),
-        DigitalClockStickerDrawable.Style.fromType(parcel.readInt())
-      )
-    }
+    override fun createFromParcel(parcel: Parcel): DigitalClockStickerRenderer = DigitalClockStickerRenderer(
+      parcel.readLong(),
+      DigitalClockStickerDrawable.Style.fromType(parcel.readInt())
+    )
 
-    override fun newArray(size: Int): Array<DigitalClockStickerRenderer?> {
-      return arrayOfNulls(size)
-    }
+    override fun newArray(size: Int): Array<DigitalClockStickerRenderer?> = arrayOfNulls(size)
   }
 }

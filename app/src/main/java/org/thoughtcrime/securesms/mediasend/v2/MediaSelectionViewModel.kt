@@ -87,17 +87,15 @@ class MediaSelectionViewModel(
 
   private val disposables = CompositeDisposable()
 
-  fun watchAddAMessageCount(): Flowable<AddMessageCharacterCount> {
-    return addAMessageUpdatePublisher
-      .onBackpressureLatest()
-      .map {
-        val iterator = BreakIteratorCompat.getInstance()
-        iterator.setText(it)
-        AddMessageCharacterCount(iterator.countBreaks())
-      }
-      .subscribeOn(Schedulers.io())
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun watchAddAMessageCount(): Flowable<AddMessageCharacterCount> = addAMessageUpdatePublisher
+    .onBackpressureLatest()
+    .map {
+      val iterator = BreakIteratorCompat.getInstance()
+      iterator.setText(it)
+      AddMessageCharacterCount(iterator.countBreaks())
+    }
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
 
   fun updateAddAMessageCount(input: CharSequence?) {
     addAMessageUpdatePublisher.onNext(input ?: "")
@@ -167,13 +165,9 @@ class MediaSelectionViewModel(
     addMedia(setOf(media))
   }
 
-  fun isStory(): Boolean {
-    return store.state.isStory
-  }
+  fun isStory(): Boolean = store.state.isStory
 
-  fun getStorySendRequirements(): Stories.MediaTransform.SendRequirements {
-    return store.state.storySendRequirements
-  }
+  fun getStorySendRequirements(): Stories.MediaTransform.SendRequirements = store.state.storySendRequirements
 
   private fun addMedia(media: Set<Media>) {
     val newSelectionList: List<Media> = linkedSetOf<Media>().apply {
@@ -256,9 +250,7 @@ class MediaSelectionViewModel(
     return true
   }
 
-  fun isValidMediaDragPosition(position: Int): Boolean {
-    return position >= 0 && position < store.state.selectedMedia.size
-  }
+  fun isValidMediaDragPosition(position: Int): Boolean = position >= 0 && position < store.state.selectedMedia.size
 
   fun onMediaDragFinished() {
     lastMediaDrag = Pair(0, 0)
@@ -324,9 +316,7 @@ class MediaSelectionViewModel(
     }
   }
 
-  fun getMediaConstraints(): MediaConstraints {
-    return MediaConstraints.getPushMediaConstraints()
-  }
+  fun getMediaConstraints(): MediaConstraints = MediaConstraints.getPushMediaConstraints()
 
   fun setSentMediaQuality(sentMediaQuality: SentMediaQuality) {
     if (sentMediaQuality == store.state.quality) {
@@ -382,9 +372,7 @@ class MediaSelectionViewModel(
     }
   }
 
-  fun getEditorState(uri: Uri): Any? {
-    return store.state.editorStateMap[uri]
-  }
+  fun getEditorState(uri: Uri): Any? = store.state.editorStateMap[uri]
 
   fun setEditorState(uri: Uri, state: Any) {
     store.update {
@@ -400,28 +388,24 @@ class MediaSelectionViewModel(
   fun send(
     selectedContacts: List<ContactSearchKey.RecipientSearchKey> = emptyList(),
     scheduledDate: Long
-  ): Maybe<MediaSendActivityResult> {
-    return UntrustedRecords.checkForBadIdentityRecords(selectedContacts.toSet(), identityChangesSince).andThen(
-      repository.send(
-        selectedMedia = store.state.selectedMedia,
-        stateMap = store.state.editorStateMap,
-        quality = store.state.quality,
-        message = store.state.message,
-        isViewOnce = isViewOnceEnabled(),
-        singleContact = destination.getRecipientSearchKey(),
-        contacts = selectedContacts.ifEmpty { destination.getRecipientSearchKeyList() },
-        mentions = MentionAnnotation.getMentionsFromAnnotations(store.state.message),
-        bodyRanges = MessageStyler.getStyling(store.state.message),
-        sendType = store.state.sendType,
-        scheduledTime = scheduledDate
-      )
+  ): Maybe<MediaSendActivityResult> = UntrustedRecords.checkForBadIdentityRecords(selectedContacts.toSet(), identityChangesSince).andThen(
+    repository.send(
+      selectedMedia = store.state.selectedMedia,
+      stateMap = store.state.editorStateMap,
+      quality = store.state.quality,
+      message = store.state.message,
+      isViewOnce = isViewOnceEnabled(),
+      singleContact = destination.getRecipientSearchKey(),
+      contacts = selectedContacts.ifEmpty { destination.getRecipientSearchKeyList() },
+      mentions = MentionAnnotation.getMentionsFromAnnotations(store.state.message),
+      bodyRanges = MessageStyler.getStyling(store.state.message),
+      sendType = store.state.sendType,
+      scheduledTime = scheduledDate
     )
-  }
+  )
 
-  private fun isViewOnceEnabled(): Boolean {
-    return store.state.selectedMedia.size == 1 &&
-      store.state.viewOnceToggleState == MediaSelectionState.ViewOnceToggleState.ONCE
-  }
+  private fun isViewOnceEnabled(): Boolean = store.state.selectedMedia.size == 1 &&
+    store.state.viewOnceToggleState == MediaSelectionState.ViewOnceToggleState.ONCE
 
   private fun startUpload(media: List<Media>) {
     if (!store.state.isPreUploadEnabled) {
@@ -441,9 +425,7 @@ class MediaSelectionViewModel(
     repository.uploadRepository.cancelUpload(media)
   }
 
-  private fun shouldPreUpload(metered: Boolean, recipient: Recipient?): Boolean {
-    return !metered && !repository.isLocalSelfSend(recipient)
-  }
+  private fun shouldPreUpload(metered: Boolean, recipient: Recipient?): Boolean = !metered && !repository.isLocalSelfSend(recipient)
 
   fun onSaveState(outState: Bundle) {
     val snapshot = store.state
@@ -469,9 +451,7 @@ class MediaSelectionViewModel(
     }
   }
 
-  fun hasSelectedMedia(): Boolean {
-    return store.state.selectedMedia.isNotEmpty()
-  }
+  fun hasSelectedMedia(): Boolean = store.state.selectedMedia.isNotEmpty()
 
   fun clearMediaErrors() {
     mediaErrors.onNext(MediaValidator.FilterError.None)
@@ -537,25 +517,23 @@ class MediaSelectionViewModel(
     return key to value
   }
 
-  private fun Map.Entry<Uri, Any>.toBundleStateEntry(): Bundle {
-    return when (val value = this.value) {
-      is ImageEditorFragment.Data -> {
-        value.bundle.apply {
-          putParcelable(BUNDLE_URI, key)
-          putBoolean(BUNDLE_IS_IMAGE, true)
-        }
+  private fun Map.Entry<Uri, Any>.toBundleStateEntry(): Bundle = when (val value = this.value) {
+    is ImageEditorFragment.Data -> {
+      value.bundle.apply {
+        putParcelable(BUNDLE_URI, key)
+        putBoolean(BUNDLE_IS_IMAGE, true)
       }
+    }
 
-      is VideoTrimData -> {
-        value.toBundle().apply {
-          putParcelable(BUNDLE_URI, key)
-          putBoolean(BUNDLE_IS_IMAGE, false)
-        }
+    is VideoTrimData -> {
+      value.toBundle().apply {
+        putParcelable(BUNDLE_URI, key)
+        putBoolean(BUNDLE_IS_IMAGE, false)
       }
+    }
 
-      else -> {
-        throw IllegalStateException()
-      }
+    else -> {
+      throw IllegalStateException()
     }
   }
 
@@ -603,8 +581,6 @@ class MediaSelectionViewModel(
     private val isAddToGroupStoryFlow: Boolean,
     private val repository: MediaSelectionRepository
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return requireNotNull(modelClass.cast(MediaSelectionViewModel(destination, sendType, initialMedia, initialMessage, isReply, isStory, isAddToGroupStoryFlow, repository)))
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = requireNotNull(modelClass.cast(MediaSelectionViewModel(destination, sendType, initialMedia, initialMessage, isReply, isStory, isAddToGroupStoryFlow, repository)))
   }
 }

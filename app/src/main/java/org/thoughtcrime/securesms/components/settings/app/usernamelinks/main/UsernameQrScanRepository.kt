@@ -25,18 +25,16 @@ object UsernameQrScanRepository {
   /**
    * Given a URL, will attempt to lookup the username, coercing it to a standard set of [QrScanResult]s.
    */
-  fun lookupUsernameUrl(url: String): Single<QrScanResult> {
-    return UsernameRepository.fetchUsernameAndAciFromLink(url)
-      .map { result ->
-        when (result) {
-          is UsernameRepository.UsernameLinkConversionResult.Success -> QrScanResult.Success(Recipient.externalUsername(result.aci, result.username.toString()))
-          is UsernameRepository.UsernameLinkConversionResult.Invalid -> QrScanResult.InvalidData
-          is UsernameRepository.UsernameLinkConversionResult.NotFound -> QrScanResult.NotFound(result.username?.toString())
-          is UsernameRepository.UsernameLinkConversionResult.NetworkError -> QrScanResult.NetworkError
-        }
+  fun lookupUsernameUrl(url: String): Single<QrScanResult> = UsernameRepository.fetchUsernameAndAciFromLink(url)
+    .map { result ->
+      when (result) {
+        is UsernameRepository.UsernameLinkConversionResult.Success -> QrScanResult.Success(Recipient.externalUsername(result.aci, result.username.toString()))
+        is UsernameRepository.UsernameLinkConversionResult.Invalid -> QrScanResult.InvalidData
+        is UsernameRepository.UsernameLinkConversionResult.NotFound -> QrScanResult.NotFound(result.username?.toString())
+        is UsernameRepository.UsernameLinkConversionResult.NetworkError -> QrScanResult.NetworkError
       }
-      .subscribeOn(Schedulers.io())
-  }
+    }
+    .subscribeOn(Schedulers.io())
 
   /**
    * Given a URI pointing to an image that may contain a username QR code, this will attempt to lookup the username, coercing it to a standard set of [QrScanResult]s.

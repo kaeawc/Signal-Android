@@ -46,9 +46,7 @@ class ViewBadgeBottomSheetDialogFragment : FixedRoundedCornerBottomSheetDialogFr
 
   private val binding by ViewBinderDelegate(ViewBadgeBottomSheetDialogFragmentBinding::bind)
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.view_badge_bottom_sheet_dialog_fragment, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.view_badge_bottom_sheet_dialog_fragment, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     postponeEnterTransition()

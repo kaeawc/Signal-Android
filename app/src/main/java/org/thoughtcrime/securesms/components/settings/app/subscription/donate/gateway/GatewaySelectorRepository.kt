@@ -15,39 +15,35 @@ import java.util.Locale
 class GatewaySelectorRepository(
   private val donationsService: DonationsService
 ) {
-  fun getAvailableGatewayConfiguration(currencyCode: String): Single<GatewayConfiguration> {
-    return Single.fromCallable {
-      donationsService.getDonationsConfiguration(Locale.getDefault())
-    }.flatMap { it.flattenResult() }
-      .map { configuration ->
-        val available = configuration.getAvailablePaymentMethods(currencyCode).map {
-          when (it) {
-            SubscriptionsConfiguration.PAYPAL -> listOf(InAppPaymentData.PaymentMethodType.PAYPAL)
-            SubscriptionsConfiguration.CARD -> listOf(InAppPaymentData.PaymentMethodType.CARD, InAppPaymentData.PaymentMethodType.GOOGLE_PAY)
-            SubscriptionsConfiguration.SEPA_DEBIT -> listOf(InAppPaymentData.PaymentMethodType.SEPA_DEBIT)
-            SubscriptionsConfiguration.IDEAL -> listOf(InAppPaymentData.PaymentMethodType.IDEAL)
-            else -> listOf()
-          }
-        }.flatten().toSet()
+  fun getAvailableGatewayConfiguration(currencyCode: String): Single<GatewayConfiguration> = Single.fromCallable {
+    donationsService.getDonationsConfiguration(Locale.getDefault())
+  }.flatMap { it.flattenResult() }
+    .map { configuration ->
+      val available = configuration.getAvailablePaymentMethods(currencyCode).map {
+        when (it) {
+          SubscriptionsConfiguration.PAYPAL -> listOf(InAppPaymentData.PaymentMethodType.PAYPAL)
+          SubscriptionsConfiguration.CARD -> listOf(InAppPaymentData.PaymentMethodType.CARD, InAppPaymentData.PaymentMethodType.GOOGLE_PAY)
+          SubscriptionsConfiguration.SEPA_DEBIT -> listOf(InAppPaymentData.PaymentMethodType.SEPA_DEBIT)
+          SubscriptionsConfiguration.IDEAL -> listOf(InAppPaymentData.PaymentMethodType.IDEAL)
+          else -> listOf()
+        }
+      }.flatten().toSet()
 
-        GatewayConfiguration(
-          availableGateways = available,
-          sepaEuroMaximum = if (configuration.sepaMaximumEuros != null) FiatMoney(configuration.sepaMaximumEuros, CurrencyUtil.EURO) else null
-        )
-      }
-  }
+      GatewayConfiguration(
+        availableGateways = available,
+        sepaEuroMaximum = if (configuration.sepaMaximumEuros != null) FiatMoney(configuration.sepaMaximumEuros, CurrencyUtil.EURO) else null
+      )
+    }
 
-  fun setInAppPaymentMethodType(inAppPayment: InAppPaymentTable.InAppPayment, paymentMethodType: InAppPaymentData.PaymentMethodType): Single<InAppPaymentTable.InAppPayment> {
-    return Single.fromCallable {
-      SignalDatabase.inAppPayments.update(
-        inAppPayment.copy(
-          data = inAppPayment.data.copy(
-            paymentMethodType = paymentMethodType
-          )
+  fun setInAppPaymentMethodType(inAppPayment: InAppPaymentTable.InAppPayment, paymentMethodType: InAppPaymentData.PaymentMethodType): Single<InAppPaymentTable.InAppPayment> = Single.fromCallable {
+    SignalDatabase.inAppPayments.update(
+      inAppPayment.copy(
+        data = inAppPayment.data.copy(
+          paymentMethodType = paymentMethodType
         )
       )
-    }.flatMap { InAppPaymentsRepository.requireInAppPayment(inAppPayment.id) }
-  }
+    )
+  }.flatMap { InAppPaymentsRepository.requireInAppPayment(inAppPayment.id) }
 
   data class GatewayConfiguration(
     val availableGateways: Set<InAppPaymentData.PaymentMethodType>,

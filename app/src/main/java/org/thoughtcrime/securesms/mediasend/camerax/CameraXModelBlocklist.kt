@@ -11,7 +11,5 @@ import org.thoughtcrime.securesms.util.RemoteConfig
 object CameraXModelBlocklist {
 
   @JvmStatic
-  fun isBlocklisted(): Boolean {
-    return RemoteConfig.cameraXModelBlocklist.asListContains(Build.MODEL)
-  }
+  fun isBlocklisted(): Boolean = RemoteConfig.cameraXModelBlocklist.asListContains(Build.MODEL)
 }

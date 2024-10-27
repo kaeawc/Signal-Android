@@ -17,10 +17,8 @@ data class DistributionListRecord(
   val isUnknown: Boolean,
   val privacyMode: DistributionListPrivacyMode
 ) {
-  fun getMembersToSync(): List<RecipientId> {
-    return when (privacyMode) {
-      DistributionListPrivacyMode.ALL -> emptyList()
-      else -> rawMembers
-    }
+  fun getMembersToSync(): List<RecipientId> = when (privacyMode) {
+    DistributionListPrivacyMode.ALL -> emptyList()
+    else -> rawMembers
   }
 }

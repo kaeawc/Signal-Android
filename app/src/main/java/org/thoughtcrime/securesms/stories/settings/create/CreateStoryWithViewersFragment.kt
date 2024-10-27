@@ -27,10 +27,11 @@ import org.thoughtcrime.securesms.util.viewholders.RecipientViewHolder
 /**
  * Creates a new distribution list with the passed set of viewers and entered distribution label.
  */
-class CreateStoryWithViewersFragment : DSLSettingsFragment(
-  titleId = R.string.CreateStoryWithViewersFragment__name_story,
-  layoutId = R.layout.stories_create_with_recipients_fragment
-) {
+class CreateStoryWithViewersFragment :
+  DSLSettingsFragment(
+    titleId = R.string.CreateStoryWithViewersFragment__name_story,
+    layoutId = R.layout.stories_create_with_recipients_fragment
+  ) {
 
   companion object {
     const val REQUEST_KEY = "new-story"
@@ -100,28 +101,22 @@ class CreateStoryWithViewersFragment : DSLSettingsFragment(
     alpha = if (canPress) 1f else 0.5f
   }
 
-  override fun getMaterial3OnScrollHelper(toolbar: Toolbar?): Material3OnScrollHelper? {
-    return null
-  }
+  override fun getMaterial3OnScrollHelper(toolbar: Toolbar?): Material3OnScrollHelper? = null
 
-  private fun getConfiguration(): DSLConfiguration {
-    return configure {
-      dividerPref()
+  private fun getConfiguration(): DSLConfiguration = configure {
+    dividerPref()
 
-      sectionHeaderPref(R.string.CreateStoryWithViewersFragment__viewers)
+    sectionHeaderPref(R.string.CreateStoryWithViewersFragment__viewers)
 
-      recipientIds.forEach {
-        customPref(RecipientMappingModel.RecipientIdMappingModel(it))
-      }
+    recipientIds.forEach {
+      customPref(RecipientMappingModel.RecipientIdMappingModel(it))
     }
   }
 
-  private fun presentError(error: CreateStoryWithViewersState.NameError?): String? {
-    return when (error) {
-      CreateStoryWithViewersState.NameError.NO_LABEL -> getString(R.string.CreateStoryWithViewersFragment__this_field_is_required)
-      CreateStoryWithViewersState.NameError.DUPLICATE_LABEL -> getString(R.string.CreateStoryWithViewersFragment__there_is_already_a_story_with_this_name)
-      else -> null
-    }
+  private fun presentError(error: CreateStoryWithViewersState.NameError?): String? = when (error) {
+    CreateStoryWithViewersState.NameError.NO_LABEL -> getString(R.string.CreateStoryWithViewersFragment__this_field_is_required)
+    CreateStoryWithViewersState.NameError.DUPLICATE_LABEL -> getString(R.string.CreateStoryWithViewersFragment__there_is_already_a_story_with_this_name)
+    else -> null
   }
 
   private fun onDone(recipientId: RecipientId) {

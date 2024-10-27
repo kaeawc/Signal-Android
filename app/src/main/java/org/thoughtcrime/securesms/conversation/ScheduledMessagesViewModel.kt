@@ -12,10 +12,8 @@ class ScheduledMessagesViewModel @JvmOverloads constructor(
   private val repository: ScheduledMessagesRepository = ScheduledMessagesRepository()
 ) : ViewModel() {
 
-  fun getMessages(context: Context): Observable<List<ConversationMessage>> {
-    return repository.getScheduledMessages(context, threadId)
-      .observeOn(AndroidSchedulers.mainThread())
-  }
+  fun getMessages(context: Context): Observable<List<ConversationMessage>> = repository.getScheduledMessages(context, threadId)
+    .observeOn(AndroidSchedulers.mainThread())
 
   fun rescheduleMessage(messageId: Long, scheduleTime: Long) {
     repository.rescheduleMessage(threadId, messageId, scheduleTime)
@@ -26,8 +24,6 @@ class ScheduledMessagesViewModel @JvmOverloads constructor(
   }
 
   class Factory(private val threadId: Long) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(ScheduledMessagesViewModel(threadId)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(ScheduledMessagesViewModel(threadId)) as T
   }
 }

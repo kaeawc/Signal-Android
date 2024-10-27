@@ -54,9 +54,7 @@ class CustomExpireTimerSelectorView @JvmOverloads constructor(
       }
   }
 
-  fun getTimer(): Int {
-    return valuePicker.value * TimerUnit.get(unitPicker.value).valueMultiplier.toInt()
-  }
+  fun getTimer(): Int = valuePicker.value * TimerUnit.get(unitPicker.value).valueMultiplier.toInt()
 
   private fun unitChange(newValue: Int) {
     val timerUnit: TimerUnit = TimerUnit.values()[newValue]

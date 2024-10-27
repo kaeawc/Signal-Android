@@ -74,38 +74,36 @@ class GroupStorySettingsFragment : DSLSettingsFragment(menuId = R.menu.story_gro
     }
   }
 
-  private fun getConfiguration(state: GroupStorySettingsState): DSLConfiguration {
-    return configure {
-      sectionHeaderPref(R.string.GroupStorySettingsFragment__who_can_view_this_story)
+  private fun getConfiguration(state: GroupStorySettingsState): DSLConfiguration = configure {
+    sectionHeaderPref(R.string.GroupStorySettingsFragment__who_can_view_this_story)
 
-      state.members.forEach {
-        customPref(PrivateStoryItem.RecipientModel(it))
-      }
-
-      textPref(
-        title = DSLSettingsText.from(
-          getString(R.string.GroupStorySettingsFragment__members_of_the_group_s, state.name),
-          DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_BodyMedium),
-          DSLSettingsText.ColorModifier(ContextCompat.getColor(requireContext(), R.color.signal_colorOnSurfaceVariant))
-        )
-      )
-
-      dividerPref()
-
-      clickPref(
-        title = DSLSettingsText.from(
-          R.string.GroupStorySettingsFragment__remove_group_story,
-          DSLSettingsText.ColorModifier(ContextCompat.getColor(requireContext(), R.color.signal_colorError))
-        ),
-        onClick = {
-          StoryDialogs.removeGroupStory(
-            requireContext(),
-            viewModel.titleSnapshot
-          ) {
-            viewModel.doNotDisplayAsStory()
-          }
-        }
-      )
+    state.members.forEach {
+      customPref(PrivateStoryItem.RecipientModel(it))
     }
+
+    textPref(
+      title = DSLSettingsText.from(
+        getString(R.string.GroupStorySettingsFragment__members_of_the_group_s, state.name),
+        DSLSettingsText.TextAppearanceModifier(R.style.Signal_Text_BodyMedium),
+        DSLSettingsText.ColorModifier(ContextCompat.getColor(requireContext(), R.color.signal_colorOnSurfaceVariant))
+      )
+    )
+
+    dividerPref()
+
+    clickPref(
+      title = DSLSettingsText.from(
+        R.string.GroupStorySettingsFragment__remove_group_story,
+        DSLSettingsText.ColorModifier(ContextCompat.getColor(requireContext(), R.color.signal_colorError))
+      ),
+      onClick = {
+        StoryDialogs.removeGroupStory(
+          requireContext(),
+          viewModel.titleSnapshot
+        ) {
+          viewModel.doNotDisplayAsStory()
+        }
+      }
+    )
   }
 }

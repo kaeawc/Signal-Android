@@ -10,9 +10,7 @@ class GroupCapacityResult(
   private val selectionLimits: SelectionLimits,
   val isAnnouncementGroup: Boolean
 ) {
-  fun getMembers(): List<RecipientId?> {
-    return members
-  }
+  fun getMembers(): List<RecipientId?> = members
 
   fun getSelectionLimit(): Int {
     if (!selectionLimits.hasHardLimit()) {
@@ -31,9 +29,7 @@ class GroupCapacityResult(
     return selectionLimits.recommendedLimit - if (containsSelf) 1 else 0
   }
 
-  fun getRemainingCapacity(): Int {
-    return selectionLimits.hardLimit - members.size
-  }
+  fun getRemainingCapacity(): Int = selectionLimits.hardLimit - members.size
 
   fun getMembersWithoutSelf(): List<RecipientId> {
     val recipientIds = ArrayList<RecipientId>(members.size)

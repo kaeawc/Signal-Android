@@ -69,21 +69,17 @@ class DonateToSignalFragment :
 
   class Dialog : WrapperDialogFragment() {
 
-    override fun getWrappedFragment(): Fragment {
-      return CheckoutNavHostFragment.create(
-        requireArguments().getSerializableCompat(ARG, InAppPaymentType::class.java)!!
-      )
-    }
+    override fun getWrappedFragment(): Fragment = CheckoutNavHostFragment.create(
+      requireArguments().getSerializableCompat(ARG, InAppPaymentType::class.java)!!
+    )
 
     companion object {
 
       private const val ARG = "in_app_payment_type"
 
       @JvmStatic
-      fun create(inAppPaymentType: InAppPaymentType): DialogFragment {
-        return Dialog().apply {
-          arguments = bundleOf(ARG to inAppPaymentType)
-        }
+      fun create(inAppPaymentType: InAppPaymentType): DialogFragment = Dialog().apply {
+        arguments = bundleOf(ARG to inAppPaymentType)
       }
     }
   }
@@ -110,11 +106,9 @@ class DonateToSignalFragment :
     requireActivity().onBackPressedDispatcher.onBackPressed()
   }
 
-  override fun getMaterial3OnScrollHelper(toolbar: Toolbar?): Material3OnScrollHelper {
-    return object : Material3OnScrollHelper(requireActivity(), toolbar!!, viewLifecycleOwner) {
-      override val activeColorSet: ColorSet = ColorSet(R.color.transparent, R.color.signal_colorBackground)
-      override val inactiveColorSet: ColorSet = ColorSet(R.color.transparent, R.color.signal_colorBackground)
-    }
+  override fun getMaterial3OnScrollHelper(toolbar: Toolbar?): Material3OnScrollHelper = object : Material3OnScrollHelper(requireActivity(), toolbar!!, viewLifecycleOwner) {
+    override val activeColorSet: ColorSet = ColorSet(R.color.transparent, R.color.signal_colorBackground)
+    override val inactiveColorSet: ColorSet = ColorSet(R.color.transparent, R.color.signal_colorBackground)
   }
 
   override fun bindAdapter(adapter: MappingAdapter) {
@@ -222,123 +216,121 @@ class DonateToSignalFragment :
     }
   }
 
-  private fun getConfiguration(state: DonateToSignalState): DSLConfiguration {
-    return configure {
-      space(36.dp)
+  private fun getConfiguration(state: DonateToSignalState): DSLConfiguration = configure {
+    space(36.dp)
 
-      customPref(BadgePreview.BadgeModel.SubscriptionModel(state.badge))
+    customPref(BadgePreview.BadgeModel.SubscriptionModel(state.badge))
 
-      space(12.dp)
+    space(12.dp)
 
-      noPadTextPref(
-        title = DSLSettingsText.from(
-          R.string.DonateToSignalFragment__privacy_over_profit,
-          DSLSettingsText.CenterModifier,
-          DSLSettingsText.TitleLargeModifier
-        )
+    noPadTextPref(
+      title = DSLSettingsText.from(
+        R.string.DonateToSignalFragment__privacy_over_profit,
+        DSLSettingsText.CenterModifier,
+        DSLSettingsText.TitleLargeModifier
       )
+    )
 
-      space(8.dp)
+    space(8.dp)
 
-      noPadTextPref(
-        title = DSLSettingsText.from(supportTechSummary, DSLSettingsText.CenterModifier)
+    noPadTextPref(
+      title = DSLSettingsText.from(supportTechSummary, DSLSettingsText.CenterModifier)
+    )
+
+    space(24.dp)
+
+    customPref(
+      CurrencySelection.Model(
+        selectedCurrency = state.selectedCurrency,
+        isEnabled = state.canSetCurrency,
+        onClick = {
+          viewModel.requestChangeCurrency()
+        }
       )
+    )
 
-      space(24.dp)
+    space(16.dp)
 
-      customPref(
-        CurrencySelection.Model(
-          selectedCurrency = state.selectedCurrency,
-          isEnabled = state.canSetCurrency,
-          onClick = {
-            viewModel.requestChangeCurrency()
-          }
-        )
+    customPref(
+      DonationPillToggle.Model(
+        selected = state.inAppPaymentType,
+        onClick = {
+          viewModel.toggleDonationType()
+        }
       )
+    )
 
-      space(16.dp)
+    space(10.dp)
 
-      customPref(
-        DonationPillToggle.Model(
-          selected = state.inAppPaymentType,
-          onClick = {
-            viewModel.toggleDonationType()
-          }
-        )
-      )
+    when (state.inAppPaymentType) {
+      InAppPaymentType.ONE_TIME_DONATION -> displayOneTimeSelection(state.areFieldsEnabled, state.oneTimeDonationState)
+      InAppPaymentType.RECURRING_DONATION -> displayMonthlySelection(state.areFieldsEnabled, state.monthlyDonationState)
+      else -> error("This fragment does not support ${state.inAppPaymentType}.")
+    }
 
-      space(10.dp)
+    space(20.dp)
 
-      when (state.inAppPaymentType) {
-        InAppPaymentType.ONE_TIME_DONATION -> displayOneTimeSelection(state.areFieldsEnabled, state.oneTimeDonationState)
-        InAppPaymentType.RECURRING_DONATION -> displayMonthlySelection(state.areFieldsEnabled, state.monthlyDonationState)
-        else -> error("This fragment does not support ${state.inAppPaymentType}.")
-      }
-
-      space(20.dp)
-
-      if (state.inAppPaymentType == InAppPaymentType.RECURRING_DONATION && (state.monthlyDonationState.isSubscriptionActive || state.monthlyDonationState.isSubscriptionInProgress)) {
-        primaryButton(
-          text = DSLSettingsText.from(R.string.SubscribeFragment__update_subscription),
-          isEnabled = state.canUpdate,
-          onClick = {
-            if (state.monthlyDonationState.transactionState.isTransactionJobPending) {
-              showDonationPendingDialog(state)
-            } else {
-              MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.SubscribeFragment__update_subscription_question)
-                .setMessage(
-                  getString(
-                    R.string.SubscribeFragment__you_will_be_charged_the_full_amount_s_of,
-                    FiatMoneyUtil.format(
-                      requireContext().resources,
-                      viewModel.getSelectedSubscriptionCost(),
-                      FiatMoneyUtil.formatOptions().trimZerosAfterDecimal()
-                    )
+    if (state.inAppPaymentType == InAppPaymentType.RECURRING_DONATION && (state.monthlyDonationState.isSubscriptionActive || state.monthlyDonationState.isSubscriptionInProgress)) {
+      primaryButton(
+        text = DSLSettingsText.from(R.string.SubscribeFragment__update_subscription),
+        isEnabled = state.canUpdate,
+        onClick = {
+          if (state.monthlyDonationState.transactionState.isTransactionJobPending) {
+            showDonationPendingDialog(state)
+          } else {
+            MaterialAlertDialogBuilder(requireContext())
+              .setTitle(R.string.SubscribeFragment__update_subscription_question)
+              .setMessage(
+                getString(
+                  R.string.SubscribeFragment__you_will_be_charged_the_full_amount_s_of,
+                  FiatMoneyUtil.format(
+                    requireContext().resources,
+                    viewModel.getSelectedSubscriptionCost(),
+                    FiatMoneyUtil.formatOptions().trimZerosAfterDecimal()
                   )
                 )
-                .setPositiveButton(R.string.SubscribeFragment__update) { _, _ ->
-                  viewModel.updateSubscription()
-                }
-                .setNegativeButton(android.R.string.cancel) { _, _ -> }
-                .show()
-            }
+              )
+              .setPositiveButton(R.string.SubscribeFragment__update) { _, _ ->
+                viewModel.updateSubscription()
+              }
+              .setNegativeButton(android.R.string.cancel) { _, _ -> }
+              .show()
           }
-        )
+        }
+      )
 
-        space(4.dp)
+      space(4.dp)
 
-        secondaryButtonNoOutline(
-          text = DSLSettingsText.from(R.string.SubscribeFragment__cancel_subscription),
-          isEnabled = state.areFieldsEnabled,
-          onClick = {
-            if (state.monthlyDonationState.transactionState.isTransactionJobPending) {
-              showDonationPendingDialog(state)
-            } else {
-              MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.SubscribeFragment__confirm_cancellation)
-                .setMessage(R.string.SubscribeFragment__you_wont_be_charged_again)
-                .setPositiveButton(R.string.SubscribeFragment__confirm) { _, _ ->
-                  viewModel.cancelSubscription()
-                }
-                .setNegativeButton(R.string.SubscribeFragment__not_now) { _, _ -> }
-                .show()
-            }
+      secondaryButtonNoOutline(
+        text = DSLSettingsText.from(R.string.SubscribeFragment__cancel_subscription),
+        isEnabled = state.areFieldsEnabled,
+        onClick = {
+          if (state.monthlyDonationState.transactionState.isTransactionJobPending) {
+            showDonationPendingDialog(state)
+          } else {
+            MaterialAlertDialogBuilder(requireContext())
+              .setTitle(R.string.SubscribeFragment__confirm_cancellation)
+              .setMessage(R.string.SubscribeFragment__you_wont_be_charged_again)
+              .setPositiveButton(R.string.SubscribeFragment__confirm) { _, _ ->
+                viewModel.cancelSubscription()
+              }
+              .setNegativeButton(R.string.SubscribeFragment__not_now) { _, _ -> }
+              .show()
           }
-        )
-      } else {
-        primaryButton(
-          text = DSLSettingsText.from(R.string.DonateToSignalFragment__continue),
-          isEnabled = state.continueEnabled,
-          onClick = {
-            if (state.canContinue) {
-              viewModel.requestSelectGateway()
-            } else {
-              showDonationPendingDialog(state)
-            }
+        }
+      )
+    } else {
+      primaryButton(
+        text = DSLSettingsText.from(R.string.DonateToSignalFragment__continue),
+        isEnabled = state.continueEnabled,
+        onClick = {
+          if (state.canContinue) {
+            viewModel.requestSelectGateway()
+          } else {
+            showDonationPendingDialog(state)
           }
-        )
-      }
+        }
+      )
     }
   }
 
@@ -448,16 +440,14 @@ class DonateToSignalFragment :
     animationProjection.release()
   }
 
-  private fun getAnimationContainer(view: View): LottieAnimationView {
-    return when (view.id) {
-      R.id.boost_1 -> binding.boost1Animation
-      R.id.boost_2 -> binding.boost2Animation
-      R.id.boost_3 -> binding.boost3Animation
-      R.id.boost_4 -> binding.boost4Animation
-      R.id.boost_5 -> binding.boost5Animation
-      R.id.boost_6 -> binding.boost6Animation
-      else -> throw AssertionError()
-    }
+  private fun getAnimationContainer(view: View): LottieAnimationView = when (view.id) {
+    R.id.boost_1 -> binding.boost1Animation
+    R.id.boost_2 -> binding.boost2Animation
+    R.id.boost_3 -> binding.boost3Animation
+    R.id.boost_4 -> binding.boost4Animation
+    R.id.boost_5 -> binding.boost5Animation
+    R.id.boost_6 -> binding.boost6Animation
+    else -> throw AssertionError()
   }
 
   private fun showSepaEuroMaximumDialog(sepaEuroMaximum: FiatMoney) {

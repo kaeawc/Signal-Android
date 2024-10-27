@@ -10,9 +10,7 @@ data class MegaphoneText(@StringRes private val stringRes: Int = 0, private val 
   @get:JvmName("hasText")
   val hasText = stringRes != 0 || string != null
 
-  fun resolve(context: Context): String? {
-    return if (stringRes != 0) context.getString(stringRes) else string
-  }
+  fun resolve(context: Context): String? = if (stringRes != 0) context.getString(stringRes) else string
 
   companion object {
     @JvmStatic

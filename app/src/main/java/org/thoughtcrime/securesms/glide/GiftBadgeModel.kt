@@ -25,9 +25,7 @@ import java.util.Locale
  */
 data class GiftBadgeModel(val giftBadge: GiftBadge) : Key {
   class Loader(val client: OkHttpClient) : ModelLoader<GiftBadgeModel, InputStream> {
-    override fun buildLoadData(model: GiftBadgeModel, width: Int, height: Int, options: Options): ModelLoader.LoadData<InputStream>? {
-      return ModelLoader.LoadData(model, Fetcher(client, model))
-    }
+    override fun buildLoadData(model: GiftBadgeModel, width: Int, height: Int, options: Options): ModelLoader.LoadData<InputStream>? = ModelLoader.LoadData(model, Fetcher(client, model))
 
     override fun handles(model: GiftBadgeModel): Boolean = true
   }
@@ -71,27 +69,19 @@ data class GiftBadgeModel(val giftBadge: GiftBadge) : Key {
       okHttpStreamFetcher?.cancel()
     }
 
-    override fun getDataClass(): Class<InputStream> {
-      return InputStream::class.java
-    }
+    override fun getDataClass(): Class<InputStream> = InputStream::class.java
 
-    override fun getDataSource(): DataSource {
-      return DataSource.REMOTE
-    }
+    override fun getDataSource(): DataSource = DataSource.REMOTE
   }
 
   class Factory(private val client: OkHttpClient) : ModelLoaderFactory<GiftBadgeModel, InputStream> {
-    override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<GiftBadgeModel, InputStream> {
-      return Loader(client)
-    }
+    override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<GiftBadgeModel, InputStream> = Loader(client)
 
     override fun teardown() {}
   }
 
   companion object {
     @JvmStatic
-    fun createFactory(): Factory {
-      return Factory(AppDependencies.signalOkHttpClient)
-    }
+    fun createFactory(): Factory = Factory(AppDependencies.signalOkHttpClient)
   }
 }

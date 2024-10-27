@@ -17,10 +17,10 @@ import java.io.Closeable
  * Provides a nice iterable interface over a [RecipientTable] cursor, converting rows to [BackupRecipient]s.
  * Important: Because this is backed by a cursor, you must close it. It's recommended to use `.use()` or try-with-resources.
  */
-class CallLinkArchiveExporter(private val cursor: Cursor) : Iterator<ArchiveRecipient>, Closeable {
-  override fun hasNext(): Boolean {
-    return cursor.count > 0 && !cursor.isLast
-  }
+class CallLinkArchiveExporter(private val cursor: Cursor) :
+  Iterator<ArchiveRecipient>,
+  Closeable {
+  override fun hasNext(): Boolean = cursor.count > 0 && !cursor.isLast
 
   override fun next(): ArchiveRecipient {
     if (!cursor.moveToNext()) {
@@ -49,10 +49,8 @@ class CallLinkArchiveExporter(private val cursor: Cursor) : Iterator<ArchiveReci
   }
 }
 
-private fun CallLinkState.Restrictions.toRemote(): CallLink.Restrictions {
-  return when (this) {
-    CallLinkState.Restrictions.ADMIN_APPROVAL -> CallLink.Restrictions.ADMIN_APPROVAL
-    CallLinkState.Restrictions.NONE -> CallLink.Restrictions.NONE
-    CallLinkState.Restrictions.UNKNOWN -> CallLink.Restrictions.UNKNOWN
-  }
+private fun CallLinkState.Restrictions.toRemote(): CallLink.Restrictions = when (this) {
+  CallLinkState.Restrictions.ADMIN_APPROVAL -> CallLink.Restrictions.ADMIN_APPROVAL
+  CallLinkState.Restrictions.NONE -> CallLink.Restrictions.NONE
+  CallLinkState.Restrictions.UNKNOWN -> CallLink.Restrictions.UNKNOWN
 }

@@ -141,9 +141,7 @@ object SignalServiceProtoUtil {
       }
     }
 
-  fun Sent.isUnidentified(serviceId: ServiceId?): Boolean {
-    return serviceId != null && unidentifiedStatus.firstOrNull { ServiceId.parseOrNull(it.destinationServiceId) == serviceId }?.unidentified ?: false
-  }
+  fun Sent.isUnidentified(serviceId: ServiceId?): Boolean = serviceId != null && unidentifiedStatus.firstOrNull { ServiceId.parseOrNull(it.destinationServiceId) == serviceId }?.unidentified ?: false
 
   val Sent.serviceIdsToUnidentifiedStatus: Map<ServiceId, Boolean>
     get() {
@@ -170,30 +168,22 @@ object SignalServiceProtoUtil {
     }
   }
 
-  fun List<AttachmentPointer>.toPointersWithinLimit(): List<Attachment> {
-    return mapNotNull { it.toPointer() }.take(RemoteConfig.maxAttachmentCount)
-  }
+  fun List<AttachmentPointer>.toPointersWithinLimit(): List<Attachment> = mapNotNull { it.toPointer() }.take(RemoteConfig.maxAttachmentCount)
 
-  fun AttachmentPointer.toPointer(stickerLocator: StickerLocator? = null): Attachment? {
-    return try {
-      val pointer = PointerAttachment.forPointer(Optional.of(toSignalServiceAttachmentPointer()), stickerLocator).orNull()
-      if (pointer?.cdn != Cdn.S3) {
-        pointer
-      } else {
-        null
-      }
-    } catch (e: InvalidMessageStructureException) {
+  fun AttachmentPointer.toPointer(stickerLocator: StickerLocator? = null): Attachment? = try {
+    val pointer = PointerAttachment.forPointer(Optional.of(toSignalServiceAttachmentPointer()), stickerLocator).orNull()
+    if (pointer?.cdn != Cdn.S3) {
+      pointer
+    } else {
       null
     }
+  } catch (e: InvalidMessageStructureException) {
+    null
   }
 
-  fun AttachmentPointer.toSignalServiceAttachmentPointer(): SignalServiceAttachmentPointer {
-    return AttachmentPointerUtil.createSignalAttachmentPointer(this)
-  }
+  fun AttachmentPointer.toSignalServiceAttachmentPointer(): SignalServiceAttachmentPointer = AttachmentPointerUtil.createSignalAttachmentPointer(this)
 
-  fun Long.toMobileCoinMoney(): Money {
-    return Money.picoMobileCoin(this)
-  }
+  fun Long.toMobileCoinMoney(): Money = Money.picoMobileCoin(this)
 
   fun SyncMessage.Builder.pad(length: Int = 512): SyncMessage.Builder {
     padding(Util.getRandomLengthSecretBytes(length).toByteString())

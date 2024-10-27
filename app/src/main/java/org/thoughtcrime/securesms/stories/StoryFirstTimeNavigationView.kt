@@ -92,14 +92,12 @@ class StoryFirstTimeNavigationView @JvmOverloads constructor(
     Glide.with(this)
       .load(blurHash)
       .addListener(object : RequestListener<Drawable> {
-        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
           setBlurHash(null)
           return false
         }
 
-        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-          return false
-        }
+        override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>?, dataSource: DataSource, isFirstResource: Boolean): Boolean = false
       })
       .into(blurHashView)
   }
@@ -157,9 +155,7 @@ class StoryFirstTimeNavigationView @JvmOverloads constructor(
     isPlayingAnimations = false
   }
 
-  private fun isRenderEffectSupported(): Boolean {
-    return Build.VERSION.SDK_INT >= 31
-  }
+  private fun isRenderEffectSupported(): Boolean = Build.VERSION.SDK_INT >= 31
 
   interface Callback {
     fun userHasSeenFirstNavigationView(): Boolean

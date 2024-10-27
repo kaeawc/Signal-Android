@@ -46,9 +46,7 @@ class BackfillDigestJob private constructor(
       .build()
   )
 
-  override fun serialize(): ByteArray {
-    return BackfillDigestJobData(attachmentId = attachmentId.id).encode()
-  }
+  override fun serialize(): ByteArray = BackfillDigestJobData(attachmentId = attachmentId.id).encode()
 
   override fun getFactoryKey(): String = KEY
 

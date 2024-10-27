@@ -46,7 +46,9 @@ import org.thoughtcrime.securesms.util.visible
 import java.util.Optional
 import java.util.concurrent.TimeUnit
 
-class ShareActivity : PassphraseRequiredActivity(), MultiselectForwardFragment.Callback {
+class ShareActivity :
+  PassphraseRequiredActivity(),
+  MultiselectForwardFragment.Callback {
 
   companion object {
     private val TAG = Log.tag(ShareActivity::class.java)
@@ -54,13 +56,11 @@ class ShareActivity : PassphraseRequiredActivity(), MultiselectForwardFragment.C
     private const val EXTRA_TITLE = "ShareActivity.extra.title"
     private const val EXTRA_NAVIGATION = "ShareActivity.extra.navigation"
 
-    fun sendSimpleText(context: Context, text: String): Intent {
-      return Intent(context, ShareActivity::class.java)
-        .setAction(Intent.ACTION_SEND)
-        .putExtra(Intent.EXTRA_TEXT, text)
-        .putExtra(EXTRA_TITLE, R.string.MediaReviewFragment__send_to)
-        .putExtra(EXTRA_NAVIGATION, true)
-    }
+    fun sendSimpleText(context: Context, text: String): Intent = Intent(context, ShareActivity::class.java)
+      .setAction(Intent.ACTION_SEND)
+      .putExtra(Intent.EXTRA_TEXT, text)
+      .putExtra(EXTRA_TITLE, R.string.MediaReviewFragment__send_to)
+      .putExtra(EXTRA_NAVIGATION, true)
   }
 
   private val dynamicTheme = DynamicNoActionBarTheme()
@@ -193,55 +193,51 @@ class ShareActivity : PassphraseRequiredActivity(), MultiselectForwardFragment.C
 
   override fun getDialogBackgroundColor(): Int = ContextCompat.getColor(this, R.color.signal_background_primary)
 
-  private fun getUnresolvedShareData(): Result<UnresolvedShareData, IntentError> {
-    return when {
-      intent.action == Intent.ACTION_SEND_MULTIPLE && intent.hasExtra(Intent.EXTRA_TEXT) -> {
-        intent.getCharSequenceArrayListExtra(Intent.EXTRA_TEXT)?.let { list ->
-          val stringBuilder = SpannableStringBuilder()
-          list.forEachIndexed { index, text ->
-            stringBuilder.append(text)
+  private fun getUnresolvedShareData(): Result<UnresolvedShareData, IntentError> = when {
+    intent.action == Intent.ACTION_SEND_MULTIPLE && intent.hasExtra(Intent.EXTRA_TEXT) -> {
+      intent.getCharSequenceArrayListExtra(Intent.EXTRA_TEXT)?.let { list ->
+        val stringBuilder = SpannableStringBuilder()
+        list.forEachIndexed { index, text ->
+          stringBuilder.append(text)
 
-            if (index != list.lastIndex) {
-              stringBuilder.append("\n")
-            }
+          if (index != list.lastIndex) {
+            stringBuilder.append("\n")
           }
-
-          Result.success(UnresolvedShareData.ExternalPrimitiveShare(stringBuilder))
-        } ?: Result.failure(IntentError.SEND_MULTIPLE_TEXT)
-      }
-
-      intent.action == Intent.ACTION_SEND_MULTIPLE && intent.hasExtra(Intent.EXTRA_STREAM) -> {
-        intent.getParcelableArrayListExtraCompat(Intent.EXTRA_STREAM, Uri::class.java)?.let {
-          Result.success(UnresolvedShareData.ExternalMultiShare(it))
-        } ?: Result.failure(IntentError.SEND_MULTIPLE_STREAM)
-      }
-
-      intent.action == Intent.ACTION_SEND && intent.hasExtra(Intent.EXTRA_STREAM) -> {
-        val uri: Uri? = intent.getParcelableExtraCompat(Intent.EXTRA_STREAM, Uri::class.java)
-        if (uri == null) {
-          extractSingleExtraTextFromIntent(IntentError.SEND_STREAM)
-        } else {
-          val text: CharSequence? = if (intent.hasExtra(Intent.EXTRA_TEXT)) intent.getCharSequenceExtra(Intent.EXTRA_TEXT) else null
-          Result.success(UnresolvedShareData.ExternalSingleShare(uri, intent.type, text))
         }
-      }
 
-      intent.action == Intent.ACTION_SEND && intent.hasExtra(Intent.EXTRA_TEXT) -> {
-        extractSingleExtraTextFromIntent()
-      }
-
-      else -> null
-    } ?: Result.failure(IntentError.UNKNOWN)
-  }
-
-  private fun extractSingleExtraTextFromIntent(fallbackError: IntentError = IntentError.UNKNOWN): Result<UnresolvedShareData, IntentError> {
-    return if (intent.hasExtra(Intent.EXTRA_TEXT)) {
-      intent.getCharSequenceExtra(Intent.EXTRA_TEXT)?.let {
-        Result.success(UnresolvedShareData.ExternalPrimitiveShare(it))
-      } ?: Result.failure(IntentError.SEND_TEXT)
-    } else {
-      Result.failure(fallbackError)
+        Result.success(UnresolvedShareData.ExternalPrimitiveShare(stringBuilder))
+      } ?: Result.failure(IntentError.SEND_MULTIPLE_TEXT)
     }
+
+    intent.action == Intent.ACTION_SEND_MULTIPLE && intent.hasExtra(Intent.EXTRA_STREAM) -> {
+      intent.getParcelableArrayListExtraCompat(Intent.EXTRA_STREAM, Uri::class.java)?.let {
+        Result.success(UnresolvedShareData.ExternalMultiShare(it))
+      } ?: Result.failure(IntentError.SEND_MULTIPLE_STREAM)
+    }
+
+    intent.action == Intent.ACTION_SEND && intent.hasExtra(Intent.EXTRA_STREAM) -> {
+      val uri: Uri? = intent.getParcelableExtraCompat(Intent.EXTRA_STREAM, Uri::class.java)
+      if (uri == null) {
+        extractSingleExtraTextFromIntent(IntentError.SEND_STREAM)
+      } else {
+        val text: CharSequence? = if (intent.hasExtra(Intent.EXTRA_TEXT)) intent.getCharSequenceExtra(Intent.EXTRA_TEXT) else null
+        Result.success(UnresolvedShareData.ExternalSingleShare(uri, intent.type, text))
+      }
+    }
+
+    intent.action == Intent.ACTION_SEND && intent.hasExtra(Intent.EXTRA_TEXT) -> {
+      extractSingleExtraTextFromIntent()
+    }
+
+    else -> null
+  } ?: Result.failure(IntentError.UNKNOWN)
+
+  private fun extractSingleExtraTextFromIntent(fallbackError: IntentError = IntentError.UNKNOWN): Result<UnresolvedShareData, IntentError> = if (intent.hasExtra(Intent.EXTRA_TEXT)) {
+    intent.getCharSequenceExtra(Intent.EXTRA_TEXT)?.let {
+      Result.success(UnresolvedShareData.ExternalPrimitiveShare(it))
+    } ?: Result.failure(IntentError.SEND_TEXT)
+  } else {
+    Result.failure(fallbackError)
   }
 
   private fun ensureFragment(resolvedShareData: ResolvedShareData) {
@@ -354,9 +350,7 @@ class ShareActivity : PassphraseRequiredActivity(), MultiselectForwardFragment.C
     Toast.makeText(this, R.string.ShareActivity__could_not_get_share_data_from_intent, Toast.LENGTH_LONG).show()
   }
 
-  private fun getTitleFromExtras(): Int {
-    return intent?.getIntExtra(EXTRA_TITLE, R.string.MultiselectForwardFragment__share_with) ?: R.string.MultiselectForwardFragment__share_with
-  }
+  private fun getTitleFromExtras(): Int = intent?.getIntExtra(EXTRA_TITLE, R.string.MultiselectForwardFragment__share_with) ?: R.string.MultiselectForwardFragment__share_with
 
   /**
    * Represents an error with the intent when trying to extract the unresolved share data.

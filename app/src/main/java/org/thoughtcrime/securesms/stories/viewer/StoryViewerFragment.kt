@@ -215,11 +215,9 @@ class StoryViewerFragment :
     private const val ARGS = "args"
     private const val HIDDEN = "hidden"
 
-    fun create(storyViewerArgs: StoryViewerArgs): Fragment {
-      return StoryViewerFragment().apply {
-        arguments = Bundle().apply {
-          putParcelable(ARGS, storyViewerArgs)
-        }
+    fun create(storyViewerArgs: StoryViewerArgs): Fragment = StoryViewerFragment().apply {
+      arguments = Bundle().apply {
+        putParcelable(ARGS, storyViewerArgs)
       }
     }
   }

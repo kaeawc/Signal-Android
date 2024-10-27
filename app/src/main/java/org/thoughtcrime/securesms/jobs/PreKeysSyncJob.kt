@@ -69,9 +69,7 @@ class PreKeysSyncJob private constructor(
      */
     @JvmOverloads
     @JvmStatic
-    fun create(forceRotationRequested: Boolean = false): PreKeysSyncJob {
-      return PreKeysSyncJob(forceRotationRequested)
-    }
+    fun create(forceRotationRequested: Boolean = false): PreKeysSyncJob = PreKeysSyncJob(forceRotationRequested)
 
     @JvmStatic
     fun enqueue() {
@@ -116,9 +114,7 @@ class PreKeysSyncJob private constructor(
 
   override fun getFactoryKey(): String = KEY
 
-  override fun serialize(): ByteArray {
-    return PreKeysSyncJobData(forceRotationRequested).encode()
-  }
+  override fun serialize(): ByteArray = PreKeysSyncJobData(forceRotationRequested).encode()
 
   override fun onRun() {
     if (!SignalStore.account.isRegistered || SignalStore.account.aci == null || SignalStore.account.pni == null) {
@@ -290,12 +286,10 @@ class PreKeysSyncJob private constructor(
     }
   }
 
-  override fun onShouldRetry(e: Exception): Boolean {
-    return when (e) {
-      is NonSuccessfulResponseCodeException -> false
-      is PushNetworkException -> true
-      else -> false
-    }
+  override fun onShouldRetry(e: Exception): Boolean = when (e) {
+    is NonSuccessfulResponseCodeException -> false
+    is PushNetworkException -> true
+    else -> false
   }
 
   override fun onFailure() {
@@ -308,16 +302,14 @@ class PreKeysSyncJob private constructor(
   }
 
   class Factory : Job.Factory<PreKeysSyncJob> {
-    override fun create(parameters: Parameters, serializedData: ByteArray?): PreKeysSyncJob {
-      return try {
-        serializedData?.let {
-          val data = PreKeysSyncJobData.ADAPTER.decode(serializedData)
-          PreKeysSyncJob(parameters, data.forceRefreshRequested)
-        } ?: PreKeysSyncJob(parameters, forceRotationRequested = false)
-      } catch (e: IOException) {
-        Log.w(TAG, "Error deserializing PreKeysSyncJob", e)
-        PreKeysSyncJob(parameters, forceRotationRequested = false)
-      }
+    override fun create(parameters: Parameters, serializedData: ByteArray?): PreKeysSyncJob = try {
+      serializedData?.let {
+        val data = PreKeysSyncJobData.ADAPTER.decode(serializedData)
+        PreKeysSyncJob(parameters, data.forceRefreshRequested)
+      } ?: PreKeysSyncJob(parameters, forceRotationRequested = false)
+    } catch (e: IOException) {
+      Log.w(TAG, "Error deserializing PreKeysSyncJob", e)
+      PreKeysSyncJob(parameters, forceRotationRequested = false)
     }
   }
 }

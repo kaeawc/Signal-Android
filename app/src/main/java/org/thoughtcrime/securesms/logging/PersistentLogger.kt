@@ -152,9 +152,7 @@ class PersistentLogger(
       return out
     }
 
-    fun formatBody(threadString: String, date: Date, level: String, tag: String, message: String?): String {
-      return "[${BuildConfig.VERSION_NAME}] [$threadString] ${dateFormat.format(date)} $level $tag: ${Scrubber.scrub(message ?: "")}"
-    }
+    fun formatBody(threadString: String, date: Date, level: String, tag: String, message: String?): String = "[${BuildConfig.VERSION_NAME}] [$threadString] ${dateFormat.format(date)} $level $tag: ${Scrubber.scrub(message ?: "")}"
   }
 
   private class LogRequests {

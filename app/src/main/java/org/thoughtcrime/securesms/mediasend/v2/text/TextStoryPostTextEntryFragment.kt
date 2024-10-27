@@ -44,9 +44,10 @@ import java.util.Locale
 /**
  * Allows user to enter and style the text of a text-based story post
  */
-class TextStoryPostTextEntryFragment : KeyboardEntryDialogFragment(
-  contentLayoutId = R.layout.stories_text_post_text_entry_fragment
-) {
+class TextStoryPostTextEntryFragment :
+  KeyboardEntryDialogFragment(
+    contentLayoutId = R.layout.stories_text_post_text_entry_fragment
+  ) {
 
   private val viewModel: TextStoryPostCreationViewModel by viewModels(
     ownerProducer = {

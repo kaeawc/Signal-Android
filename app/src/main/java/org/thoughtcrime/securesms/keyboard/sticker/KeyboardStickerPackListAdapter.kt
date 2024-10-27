@@ -24,13 +24,9 @@ class KeyboardStickerPackListAdapter(private val requestManager: RequestManager,
     val uri: DecryptableUri? = packRecord.coverUri?.let { DecryptableUri(packRecord.coverUri) }
     val iconResource: Int = packRecord.coverResource ?: 0
 
-    override fun areItemsTheSame(newItem: StickerPack): Boolean {
-      return packRecord.packId == newItem.packRecord.packId
-    }
+    override fun areItemsTheSame(newItem: StickerPack): Boolean = packRecord.packId == newItem.packRecord.packId
 
-    override fun areContentsTheSame(newItem: StickerPack): Boolean {
-      return areItemsTheSame(newItem) && selected == newItem.selected
-    }
+    override fun areContentsTheSame(newItem: StickerPack): Boolean = areItemsTheSame(newItem) && selected == newItem.selected
   }
 
   private inner class StickerPackViewHolder(itemView: View) : MappingViewHolder<StickerPack>(itemView) {

@@ -407,15 +407,13 @@ object GroupsV2UpdateMessageConverter {
     }
   }
 
-  private fun translateGv2AccessLevel(accessRequired: AccessRequired): GroupV2AccessLevel {
-    return when (accessRequired) {
-      AccessRequired.ANY -> GroupV2AccessLevel.ANY
-      AccessRequired.MEMBER -> GroupV2AccessLevel.MEMBER
-      AccessRequired.ADMINISTRATOR -> GroupV2AccessLevel.ADMINISTRATOR
-      AccessRequired.UNSATISFIABLE -> GroupV2AccessLevel.UNSATISFIABLE
-      AccessRequired.UNKNOWN -> GroupV2AccessLevel.UNKNOWN
-      else -> GroupV2AccessLevel.UNKNOWN
-    }
+  private fun translateGv2AccessLevel(accessRequired: AccessRequired): GroupV2AccessLevel = when (accessRequired) {
+    AccessRequired.ANY -> GroupV2AccessLevel.ANY
+    AccessRequired.MEMBER -> GroupV2AccessLevel.MEMBER
+    AccessRequired.ADMINISTRATOR -> GroupV2AccessLevel.ADMINISTRATOR
+    AccessRequired.UNSATISFIABLE -> GroupV2AccessLevel.UNSATISFIABLE
+    AccessRequired.UNKNOWN -> GroupV2AccessLevel.UNKNOWN
+    else -> GroupV2AccessLevel.UNKNOWN
   }
 
   @JvmStatic

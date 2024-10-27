@@ -11,29 +11,21 @@ class BatteryNotLowConstraint private constructor() : Constraint {
   companion object {
     const val KEY: String = "BatteryNotLowConstraint"
 
-    fun isMet(): Boolean {
-      return ChargingAndBatteryIsNotLowConstraintObserver.isCharging() || ChargingAndBatteryIsNotLowConstraintObserver.isBatteryNotLow()
-    }
+    fun isMet(): Boolean = ChargingAndBatteryIsNotLowConstraintObserver.isCharging() || ChargingAndBatteryIsNotLowConstraintObserver.isBatteryNotLow()
   }
 
   override fun getFactoryKey(): String = KEY
 
-  override fun isMet(): Boolean {
-    return Companion.isMet()
-  }
+  override fun isMet(): Boolean = Companion.isMet()
 
   @RequiresApi(26)
   override fun applyToJobInfo(jobInfoBuilder: JobInfo.Builder) {
     jobInfoBuilder.setRequiresBatteryNotLow(true)
   }
 
-  override fun getJobSchedulerKeyPart(): String? {
-    return "BATTERY_NOT_LOW"
-  }
+  override fun getJobSchedulerKeyPart(): String? = "BATTERY_NOT_LOW"
 
   class Factory : Constraint.Factory<BatteryNotLowConstraint?> {
-    override fun create(): BatteryNotLowConstraint {
-      return BatteryNotLowConstraint()
-    }
+    override fun create(): BatteryNotLowConstraint = BatteryNotLowConstraint()
   }
 }

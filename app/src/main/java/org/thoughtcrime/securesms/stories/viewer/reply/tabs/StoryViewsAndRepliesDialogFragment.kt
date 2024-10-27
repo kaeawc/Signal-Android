@@ -33,7 +33,10 @@ import kotlin.math.roundToInt
 /**
  * Tab based host for Views and Replies
  */
-class StoryViewsAndRepliesDialogFragment : FixedRoundedCornerBottomSheetDialogFragment(), StoryViewsAndRepliesPagerParent, StoryGroupReplyFragment.Callback {
+class StoryViewsAndRepliesDialogFragment :
+  FixedRoundedCornerBottomSheetDialogFragment(),
+  StoryViewsAndRepliesPagerParent,
+  StoryGroupReplyFragment.Callback {
 
   override val themeResId: Int
     get() = R.style.Widget_Signal_FixedRoundedCorners_Stories
@@ -72,9 +75,7 @@ class StoryViewsAndRepliesDialogFragment : FixedRoundedCornerBottomSheetDialogFr
 
   private lateinit var reactionView: OnReactionSentView
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.stories_views_and_replies_fragment, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.stories_views_and_replies_fragment, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     pager = view.findViewById(R.id.pager)
@@ -190,15 +191,13 @@ class StoryViewsAndRepliesDialogFragment : FixedRoundedCornerBottomSheetDialogFr
     private const val ARG_IS_FROM_NOTIFICATION = "is_from_notification"
     private const val ARG_GROUP_REPLY_START_POSITION = "group_reply_start_position"
 
-    fun create(storyId: Long, groupRecipientId: RecipientId, startPage: StartPage, isFromNotification: Boolean, groupReplyStartPosition: Int): DialogFragment {
-      return StoryViewsAndRepliesDialogFragment().apply {
-        arguments = Bundle().apply {
-          putLong(ARG_STORY_ID, storyId)
-          putInt(ARG_START_PAGE, startPage.index)
-          putParcelable(ARG_GROUP_RECIPIENT_ID, groupRecipientId)
-          putBoolean(ARG_IS_FROM_NOTIFICATION, isFromNotification)
-          putInt(ARG_GROUP_REPLY_START_POSITION, groupReplyStartPosition)
-        }
+    fun create(storyId: Long, groupRecipientId: RecipientId, startPage: StartPage, isFromNotification: Boolean, groupReplyStartPosition: Int): DialogFragment = StoryViewsAndRepliesDialogFragment().apply {
+      arguments = Bundle().apply {
+        putLong(ARG_STORY_ID, storyId)
+        putInt(ARG_START_PAGE, startPage.index)
+        putParcelable(ARG_GROUP_RECIPIENT_ID, groupRecipientId)
+        putBoolean(ARG_IS_FROM_NOTIFICATION, isFromNotification)
+        putInt(ARG_GROUP_REPLY_START_POSITION, groupReplyStartPosition)
       }
     }
   }

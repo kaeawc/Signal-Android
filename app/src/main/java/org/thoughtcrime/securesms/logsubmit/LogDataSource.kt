@@ -15,14 +15,11 @@ class LogDataSource(
   application: Application,
   private val prefixLines: List<LogLine>,
   private val untilTime: Long
-) :
-  PagedDataSource<Long, LogLine> {
+) : PagedDataSource<Long, LogLine> {
 
   val logDatabase = LogDatabase.getInstance(application)
 
-  override fun size(): Int {
-    return prefixLines.size + logDatabase.logs.getLogCountBeforeTime(untilTime)
-  }
+  override fun size(): Int = prefixLines.size + logDatabase.logs.getLogCountBeforeTime(untilTime)
 
   override fun load(start: Int, length: Int, totalSize: Int, cancellationSignal: PagedDataSource.CancellationSignal): List<LogLine> {
     if (start + length < prefixLines.size) {
@@ -35,13 +32,9 @@ class LogDataSource(
     }
   }
 
-  override fun load(key: Long?): LogLine? {
-    throw UnsupportedOperationException("Not implemented!")
-  }
+  override fun load(key: Long?): LogLine? = throw UnsupportedOperationException("Not implemented!")
 
-  override fun getKey(data: LogLine): Long {
-    return data.id
-  }
+  override fun getKey(data: LogLine): Long = data.id
 
   private fun convertToLogLine(raw: String): LogLine {
     val scrubbed: String = Scrubber.scrub(raw).toString()

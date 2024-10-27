@@ -19,7 +19,9 @@ import kotlin.math.roundToInt
  * Animatable drawable of an analog clock. You can set a time, or start the animation to animate
  * the current time.
  */
-class AnalogClockStickerDrawable(val context: Context) : Drawable(), Animatable {
+class AnalogClockStickerDrawable(val context: Context) :
+  Drawable(),
+  Animatable {
 
   private var clockFace: Drawable = AppCompatResources.getDrawable(context, R.drawable.clock_face_1)!!
   private var minuteHand: Drawable = AppCompatResources.getDrawable(context, R.drawable.clock_minute_hand_1)!!
@@ -76,9 +78,7 @@ class AnalogClockStickerDrawable(val context: Context) : Drawable(), Animatable 
     onBoundsChange(bounds)
   }
 
-  fun getStyle(): Style {
-    return displayStyle
-  }
+  fun getStyle(): Style = displayStyle
 
   fun setTime(newTime: Long?) {
     time = newTime
@@ -129,9 +129,7 @@ class AnalogClockStickerDrawable(val context: Context) : Drawable(), Animatable 
 
   override fun setColorFilter(colorFilter: ColorFilter?) = Unit
 
-  override fun getOpacity(): Int {
-    return PixelFormat.TRANSLUCENT
-  }
+  override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
   override fun onBoundsChange(bounds: Rect) {
     val dimen = min(bounds.width(), bounds.height())
@@ -166,13 +164,9 @@ class AnalogClockStickerDrawable(val context: Context) : Drawable(), Animatable 
     }
   }
 
-  override fun getIntrinsicWidth(): Int {
-    return clockFace.intrinsicWidth
-  }
+  override fun getIntrinsicWidth(): Int = clockFace.intrinsicWidth
 
-  override fun getIntrinsicHeight(): Int {
-    return clockFace.intrinsicHeight
-  }
+  override fun getIntrinsicHeight(): Int = clockFace.intrinsicHeight
 
   override fun start() {
     animating = true
@@ -184,9 +178,7 @@ class AnalogClockStickerDrawable(val context: Context) : Drawable(), Animatable 
     unscheduleSelf(this::invalidateSelf)
   }
 
-  override fun isRunning(): Boolean {
-    return animating
-  }
+  override fun isRunning(): Boolean = animating
 
   private fun computeHourRotationDeg(localDateTime: LocalDateTime): Float {
     val hour = localDateTime.hour % 12

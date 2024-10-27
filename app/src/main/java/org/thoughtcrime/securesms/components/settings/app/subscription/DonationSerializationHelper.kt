@@ -23,48 +23,38 @@ object DonationSerializationHelper {
     badge: Badge,
     paymentSourceType: PaymentSourceType,
     amount: FiatMoney
-  ): PendingOneTimeDonation {
-    return PendingOneTimeDonation(
-      badge = Badges.toDatabaseBadge(badge),
-      paymentMethodType = when (paymentSourceType) {
-        PaymentSourceType.GooglePlayBilling -> error("Unsupported payment source.")
-        PaymentSourceType.PayPal -> PendingOneTimeDonation.PaymentMethodType.PAYPAL
-        PaymentSourceType.Stripe.CreditCard, PaymentSourceType.Stripe.GooglePay, PaymentSourceType.Unknown -> PendingOneTimeDonation.PaymentMethodType.CARD
-        PaymentSourceType.Stripe.SEPADebit -> PendingOneTimeDonation.PaymentMethodType.SEPA_DEBIT
-        PaymentSourceType.Stripe.IDEAL -> PendingOneTimeDonation.PaymentMethodType.IDEAL
-      },
-      amount = amount.toFiatValue(),
-      timestamp = System.currentTimeMillis()
-    )
-  }
+  ): PendingOneTimeDonation = PendingOneTimeDonation(
+    badge = Badges.toDatabaseBadge(badge),
+    paymentMethodType = when (paymentSourceType) {
+      PaymentSourceType.GooglePlayBilling -> error("Unsupported payment source.")
+      PaymentSourceType.PayPal -> PendingOneTimeDonation.PaymentMethodType.PAYPAL
+      PaymentSourceType.Stripe.CreditCard, PaymentSourceType.Stripe.GooglePay, PaymentSourceType.Unknown -> PendingOneTimeDonation.PaymentMethodType.CARD
+      PaymentSourceType.Stripe.SEPADebit -> PendingOneTimeDonation.PaymentMethodType.SEPA_DEBIT
+      PaymentSourceType.Stripe.IDEAL -> PendingOneTimeDonation.PaymentMethodType.IDEAL
+    },
+    amount = amount.toFiatValue(),
+    timestamp = System.currentTimeMillis()
+  )
 
-  fun FiatValue.toFiatMoney(): FiatMoney {
-    return FiatMoney(
-      amount!!.toBigDecimal(),
-      Currency.getInstance(currencyCode)
-    )
-  }
+  fun FiatValue.toFiatMoney(): FiatMoney = FiatMoney(
+    amount!!.toBigDecimal(),
+    Currency.getInstance(currencyCode)
+  )
 
-  fun DecimalValue.toBigDecimal(): BigDecimal {
-    return BigDecimal(
-      BigInteger(value_.toByteArray()),
-      scale,
-      MathContext(precision)
-    )
-  }
+  fun DecimalValue.toBigDecimal(): BigDecimal = BigDecimal(
+    BigInteger(value_.toByteArray()),
+    scale,
+    MathContext(precision)
+  )
 
-  fun FiatMoney.toFiatValue(): FiatValue {
-    return FiatValue(
-      currencyCode = currency.currencyCode,
-      amount = amount.toDecimalValue()
-    )
-  }
+  fun FiatMoney.toFiatValue(): FiatValue = FiatValue(
+    currencyCode = currency.currencyCode,
+    amount = amount.toDecimalValue()
+  )
 
-  fun BigDecimal.toDecimalValue(): DecimalValue {
-    return DecimalValue(
-      scale = scale(),
-      precision = precision(),
-      value_ = ByteString.of(*this.unscaledValue().toByteArray())
-    )
-  }
+  fun BigDecimal.toDecimalValue(): DecimalValue = DecimalValue(
+    scale = scale(),
+    precision = precision(),
+    value_ = ByteString.of(*this.unscaledValue().toByteArray())
+  )
 }

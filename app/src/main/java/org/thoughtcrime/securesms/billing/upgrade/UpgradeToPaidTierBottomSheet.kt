@@ -28,7 +28,9 @@ import org.thoughtcrime.securesms.util.viewModel
 /**
  * BottomSheet that encapsulates the common logic for updating someone to paid tier.
  */
-abstract class UpgradeToPaidTierBottomSheet : ComposeBottomSheetDialogFragment(), InAppPaymentCheckoutDelegate.ErrorHandlerCallback {
+abstract class UpgradeToPaidTierBottomSheet :
+  ComposeBottomSheetDialogFragment(),
+  InAppPaymentCheckoutDelegate.ErrorHandlerCallback {
 
   companion object {
     const val RESULT_KEY = "UpgradeToPaidTierBottomSheet.RESULT_KEY"

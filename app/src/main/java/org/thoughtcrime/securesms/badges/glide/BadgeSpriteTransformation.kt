@@ -22,13 +22,9 @@ class BadgeSpriteTransformation(
     messageDigest.update(id.toByteArray(CHARSET))
   }
 
-  override fun equals(other: Any?): Boolean {
-    return (other as? BadgeSpriteTransformation)?.id == id
-  }
+  override fun equals(other: Any?): Boolean = (other as? BadgeSpriteTransformation)?.id == id
 
-  override fun hashCode(): Int {
-    return id.hashCode()
-  }
+  override fun hashCode(): Int = id.hashCode()
 
   override fun transform(pool: BitmapPool, toTransform: Bitmap, outWidth: Int, outHeight: Int): Bitmap {
     val outBitmap = pool.get(outWidth, outHeight, Bitmap.Config.ARGB_8888)
@@ -148,16 +144,14 @@ class BadgeSpriteTransformation(
     abstract val frameMap: Map<Density, FrameSet>
 
     companion object {
-      fun fromInteger(integer: Int): Size {
-        return when (integer) {
-          0 -> SMALL
-          1 -> MEDIUM
-          2 -> LARGE
-          3 -> XLARGE
-          4 -> BADGE_64
-          5 -> BADGE_112
-          else -> LARGE
-        }
+      fun fromInteger(integer: Int): Size = when (integer) {
+        0 -> SMALL
+        1 -> MEDIUM
+        2 -> LARGE
+        3 -> XLARGE
+        4 -> BADGE_64
+        5 -> BADGE_112
+        else -> LARGE
       }
     }
   }
@@ -179,9 +173,7 @@ class BadgeSpriteTransformation(
     val width: Int,
     val height: Int
   ) {
-    fun toBounds(): Rect {
-      return Rect(x, y, x + width, y + height)
-    }
+    fun toBounds(): Rect = Rect(x, y, x + width, y + height)
   }
 
   companion object {
@@ -189,17 +181,13 @@ class BadgeSpriteTransformation(
 
     private val TAG = Log.tag(BadgeSpriteTransformation::class.java)
 
-    private fun getDensity(density: String): Density {
-      return Density.values().first { it.density == density }
-    }
+    private fun getDensity(density: String): Density = Density.values().first { it.density == density }
 
     private fun getFrame(size: Size, density: Density, isDarkTheme: Boolean): Frame {
       val frameSet: FrameSet = size.frameMap[density]!!
       return if (isDarkTheme) frameSet.dark else frameSet.light
     }
 
-    private fun getInBounds(density: String, size: Size, isDarkTheme: Boolean): Rect {
-      return getFrame(size, getDensity(density), isDarkTheme).toBounds()
-    }
+    private fun getInBounds(density: String, size: Size, isDarkTheme: Boolean): Rect = getFrame(size, getDensity(density), isDarkTheme).toBounds()
   }
 }

@@ -61,12 +61,10 @@ class ChooseBackupFragment : LoggingFragment(R.layout.fragment_choose_backup) {
   }
 
   private class BackupFileContract : ActivityResultContracts.GetContent() {
-    override fun createIntent(context: Context, input: String): Intent {
-      return super.createIntent(context, input).apply {
-        putExtra(Intent.EXTRA_LOCAL_ONLY, true)
-        if (Build.VERSION.SDK_INT >= 26) {
-          putExtra(DocumentsContract.EXTRA_INITIAL_URI, SignalStore.settings.latestSignalBackupDirectory)
-        }
+    override fun createIntent(context: Context, input: String): Intent = super.createIntent(context, input).apply {
+      putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+      if (Build.VERSION.SDK_INT >= 26) {
+        putExtra(DocumentsContract.EXTRA_INITIAL_URI, SignalStore.settings.latestSignalBackupDirectory)
       }
     }
   }

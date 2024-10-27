@@ -19,12 +19,8 @@ enum class MessageBackupTier(val value: Int) {
   PAID(1);
 
   companion object Serializer : LongSerializer<MessageBackupTier?> {
-    override fun serialize(data: MessageBackupTier?): Long {
-      return data?.value?.toLong() ?: -1
-    }
+    override fun serialize(data: MessageBackupTier?): Long = data?.value?.toLong() ?: -1
 
-    override fun deserialize(data: Long): MessageBackupTier? {
-      return entries.firstOrNull { it.value == data.toInt() }
-    }
+    override fun deserialize(data: Long): MessageBackupTier? = entries.firstOrNull { it.value == data.toInt() }
   }
 }

@@ -13,7 +13,5 @@ data class ControlAndInfoState(
   val callLink: CallLinkTable.CallLink? = null,
   val resetScrollState: Long = 0
 ) {
-  fun isSelfAdmin(): Boolean {
-    return callLink?.credentials?.adminPassBytes != null
-  }
+  fun isSelfAdmin(): Boolean = callLink?.credentials?.adminPassBytes != null
 }

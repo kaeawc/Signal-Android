@@ -49,11 +49,9 @@ data class CallLinkCredentials(
     /**
      * Generate a new call link credential for creating a new call.
      */
-    fun generate(): CallLinkCredentials {
-      return CallLinkCredentials(
-        CallLinkRootKey.generate().keyBytes,
-        CallLinkRootKey.generateAdminPasskey()
-      )
-    }
+    fun generate(): CallLinkCredentials = CallLinkCredentials(
+      CallLinkRootKey.generate().keyBytes,
+      CallLinkRootKey.generateAdminPasskey()
+    )
   }
 }

@@ -768,14 +768,12 @@ class ChatItemArchiveImporter(
     this.addPaymentTombstoneNoMetadata(chatItem.paymentNotification)
   }
 
-  private fun PaymentNotification.TransactionDetails.MobileCoinTxoIdentification.toLocal(): PaymentMetaData {
-    return PaymentMetaData(
-      mobileCoinTxoIdentification = PaymentMetaData.MobileCoinTxoIdentification(
-        publicKey = this.publicKey,
-        keyImages = this.keyImages
-      )
+  private fun PaymentNotification.TransactionDetails.MobileCoinTxoIdentification.toLocal(): PaymentMetaData = PaymentMetaData(
+    mobileCoinTxoIdentification = PaymentMetaData.MobileCoinTxoIdentification(
+      publicKey = this.publicKey,
+      keyImages = this.keyImages
     )
-  }
+  )
 
   private fun ContentValues.addFailedPaymentNotification(chatItem: ChatItem, amount: Money, fee: Money, chatRecipientId: RecipientId) {
     val uuid = SignalDatabase.payments.restoreFromBackup(
@@ -802,12 +800,10 @@ class ChatItemArchiveImporter(
     }
   }
 
-  private fun PaymentNotification.TransactionDetails.FailedTransaction.FailureReason.toLocalPaymentFailureReason(): FailureReason {
-    return when (this) {
-      PaymentNotification.TransactionDetails.FailedTransaction.FailureReason.GENERIC -> FailureReason.UNKNOWN
-      PaymentNotification.TransactionDetails.FailedTransaction.FailureReason.NETWORK -> FailureReason.NETWORK
-      PaymentNotification.TransactionDetails.FailedTransaction.FailureReason.INSUFFICIENT_FUNDS -> FailureReason.INSUFFICIENT_FUNDS
-    }
+  private fun PaymentNotification.TransactionDetails.FailedTransaction.FailureReason.toLocalPaymentFailureReason(): FailureReason = when (this) {
+    PaymentNotification.TransactionDetails.FailedTransaction.FailureReason.GENERIC -> FailureReason.UNKNOWN
+    PaymentNotification.TransactionDetails.FailedTransaction.FailureReason.NETWORK -> FailureReason.NETWORK
+    PaymentNotification.TransactionDetails.FailedTransaction.FailureReason.INSUFFICIENT_FUNDS -> FailureReason.INSUFFICIENT_FUNDS
   }
 
   private fun ContentValues.addPaymentTombstoneNoAmount() {
@@ -882,21 +878,17 @@ class ChatItemArchiveImporter(
     this.put(MessageTable.QUOTE_MISSING, (quote.targetSentTimestamp == null).toInt())
   }
 
-  private fun PaymentNotification.TransactionDetails.Transaction.Status?.toLocalStatus(): State {
-    return when (this) {
-      PaymentNotification.TransactionDetails.Transaction.Status.INITIAL -> State.INITIAL
-      PaymentNotification.TransactionDetails.Transaction.Status.SUBMITTED -> State.SUBMITTED
-      PaymentNotification.TransactionDetails.Transaction.Status.SUCCESSFUL -> State.SUCCESSFUL
-      else -> State.INITIAL
-    }
+  private fun PaymentNotification.TransactionDetails.Transaction.Status?.toLocalStatus(): State = when (this) {
+    PaymentNotification.TransactionDetails.Transaction.Status.INITIAL -> State.INITIAL
+    PaymentNotification.TransactionDetails.Transaction.Status.SUBMITTED -> State.SUBMITTED
+    PaymentNotification.TransactionDetails.Transaction.Status.SUCCESSFUL -> State.SUCCESSFUL
+    else -> State.INITIAL
   }
 
-  private fun Quote.Type.toLocalQuoteType(): Int {
-    return when (this) {
-      Quote.Type.UNKNOWN -> QuoteModel.Type.NORMAL.code
-      Quote.Type.NORMAL -> QuoteModel.Type.NORMAL.code
-      Quote.Type.GIFTBADGE -> QuoteModel.Type.GIFT_BADGE.code
-    }
+  private fun Quote.Type.toLocalQuoteType(): Int = when (this) {
+    Quote.Type.UNKNOWN -> QuoteModel.Type.NORMAL.code
+    Quote.Type.NORMAL -> QuoteModel.Type.NORMAL.code
+    Quote.Type.GIFTBADGE -> QuoteModel.Type.GIFT_BADGE.code
   }
 
   private fun ContentValues.addNetworkFailures(chatItem: ChatItem, importState: ImportState) {
@@ -957,17 +949,15 @@ class ChatItemArchiveImporter(
     )
   }
 
-  private fun SendStatus.toLocalSendStatus(): Int {
-    return when {
-      this.pending != null -> GroupReceiptTable.STATUS_UNKNOWN
-      this.sent != null -> GroupReceiptTable.STATUS_UNDELIVERED
-      this.delivered != null -> GroupReceiptTable.STATUS_DELIVERED
-      this.read != null -> GroupReceiptTable.STATUS_READ
-      this.viewed != null -> GroupReceiptTable.STATUS_VIEWED
-      this.skipped != null -> GroupReceiptTable.STATUS_SKIPPED
-      this.failed != null -> GroupReceiptTable.STATUS_UNKNOWN
-      else -> GroupReceiptTable.STATUS_UNKNOWN
-    }
+  private fun SendStatus.toLocalSendStatus(): Int = when {
+    this.pending != null -> GroupReceiptTable.STATUS_UNKNOWN
+    this.sent != null -> GroupReceiptTable.STATUS_UNDELIVERED
+    this.delivered != null -> GroupReceiptTable.STATUS_DELIVERED
+    this.read != null -> GroupReceiptTable.STATUS_READ
+    this.viewed != null -> GroupReceiptTable.STATUS_VIEWED
+    this.skipped != null -> GroupReceiptTable.STATUS_SKIPPED
+    this.failed != null -> GroupReceiptTable.STATUS_UNKNOWN
+    else -> GroupReceiptTable.STATUS_UNKNOWN
   }
 
   private val SendStatus.sealedSender: Boolean
@@ -1017,63 +1007,51 @@ class ChatItemArchiveImporter(
     )
   }
 
-  private fun LinkPreview.toLocalLinkPreview(): org.thoughtcrime.securesms.linkpreview.LinkPreview {
-    return org.thoughtcrime.securesms.linkpreview.LinkPreview(
-      this.url,
-      this.title ?: "",
-      this.description ?: "",
-      this.date ?: 0,
-      Optional.ofNullable(this.image?.toLocalAttachment(importState = importState, voiceNote = false, borderless = false, gif = false, wasDownloaded = true))
-    )
+  private fun LinkPreview.toLocalLinkPreview(): org.thoughtcrime.securesms.linkpreview.LinkPreview = org.thoughtcrime.securesms.linkpreview.LinkPreview(
+    this.url,
+    this.title ?: "",
+    this.description ?: "",
+    this.date ?: 0,
+    Optional.ofNullable(this.image?.toLocalAttachment(importState = importState, voiceNote = false, borderless = false, gif = false, wasDownloaded = true))
+  )
+
+  private fun MessageAttachment.toLocalAttachment(): Attachment? = pointer?.toLocalAttachment(
+    importState = importState,
+    voiceNote = flag == MessageAttachment.Flag.VOICE_MESSAGE,
+    gif = flag == MessageAttachment.Flag.GIF,
+    borderless = flag == MessageAttachment.Flag.BORDERLESS,
+    wasDownloaded = wasDownloaded,
+    contentType = pointer.contentType,
+    fileName = pointer.fileName,
+    uuid = clientUuid
+  )
+
+  private fun ContactAttachment.Name?.toLocal(): Contact.Name = Contact.Name(this?.givenName, this?.familyName, this?.prefix, this?.suffix, this?.middleName, this?.nickname)
+
+  private fun ContactAttachment.Phone.Type?.toLocal(): Contact.Phone.Type = when (this) {
+    ContactAttachment.Phone.Type.HOME -> Contact.Phone.Type.HOME
+    ContactAttachment.Phone.Type.MOBILE -> Contact.Phone.Type.MOBILE
+    ContactAttachment.Phone.Type.WORK -> Contact.Phone.Type.WORK
+    ContactAttachment.Phone.Type.CUSTOM,
+    ContactAttachment.Phone.Type.UNKNOWN,
+    null -> Contact.Phone.Type.CUSTOM
   }
 
-  private fun MessageAttachment.toLocalAttachment(): Attachment? {
-    return pointer?.toLocalAttachment(
-      importState = importState,
-      voiceNote = flag == MessageAttachment.Flag.VOICE_MESSAGE,
-      gif = flag == MessageAttachment.Flag.GIF,
-      borderless = flag == MessageAttachment.Flag.BORDERLESS,
-      wasDownloaded = wasDownloaded,
-      contentType = pointer.contentType,
-      fileName = pointer.fileName,
-      uuid = clientUuid
-    )
+  private fun ContactAttachment.Email.Type?.toLocal(): Contact.Email.Type = when (this) {
+    ContactAttachment.Email.Type.HOME -> Contact.Email.Type.HOME
+    ContactAttachment.Email.Type.MOBILE -> Contact.Email.Type.MOBILE
+    ContactAttachment.Email.Type.WORK -> Contact.Email.Type.WORK
+    ContactAttachment.Email.Type.CUSTOM,
+    ContactAttachment.Email.Type.UNKNOWN,
+    null -> Contact.Email.Type.CUSTOM
   }
 
-  private fun ContactAttachment.Name?.toLocal(): Contact.Name {
-    return Contact.Name(this?.givenName, this?.familyName, this?.prefix, this?.suffix, this?.middleName, this?.nickname)
-  }
-
-  private fun ContactAttachment.Phone.Type?.toLocal(): Contact.Phone.Type {
-    return when (this) {
-      ContactAttachment.Phone.Type.HOME -> Contact.Phone.Type.HOME
-      ContactAttachment.Phone.Type.MOBILE -> Contact.Phone.Type.MOBILE
-      ContactAttachment.Phone.Type.WORK -> Contact.Phone.Type.WORK
-      ContactAttachment.Phone.Type.CUSTOM,
-      ContactAttachment.Phone.Type.UNKNOWN,
-      null -> Contact.Phone.Type.CUSTOM
-    }
-  }
-
-  private fun ContactAttachment.Email.Type?.toLocal(): Contact.Email.Type {
-    return when (this) {
-      ContactAttachment.Email.Type.HOME -> Contact.Email.Type.HOME
-      ContactAttachment.Email.Type.MOBILE -> Contact.Email.Type.MOBILE
-      ContactAttachment.Email.Type.WORK -> Contact.Email.Type.WORK
-      ContactAttachment.Email.Type.CUSTOM,
-      ContactAttachment.Email.Type.UNKNOWN,
-      null -> Contact.Email.Type.CUSTOM
-    }
-  }
-
-  private fun ContactAttachment.PostalAddress.Type?.toLocal(): Contact.PostalAddress.Type {
-    return when (this) {
-      ContactAttachment.PostalAddress.Type.HOME -> Contact.PostalAddress.Type.HOME
-      ContactAttachment.PostalAddress.Type.WORK -> Contact.PostalAddress.Type.WORK
-      ContactAttachment.PostalAddress.Type.CUSTOM,
-      ContactAttachment.PostalAddress.Type.UNKNOWN,
-      null -> Contact.PostalAddress.Type.CUSTOM
-    }
+  private fun ContactAttachment.PostalAddress.Type?.toLocal(): Contact.PostalAddress.Type = when (this) {
+    ContactAttachment.PostalAddress.Type.HOME -> Contact.PostalAddress.Type.HOME
+    ContactAttachment.PostalAddress.Type.WORK -> Contact.PostalAddress.Type.WORK
+    ContactAttachment.PostalAddress.Type.CUSTOM,
+    ContactAttachment.PostalAddress.Type.UNKNOWN,
+    null -> Contact.PostalAddress.Type.CUSTOM
   }
 
   private class MessageInsert(

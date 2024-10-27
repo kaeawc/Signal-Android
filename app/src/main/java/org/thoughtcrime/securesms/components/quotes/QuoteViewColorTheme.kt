@@ -37,15 +37,13 @@ enum class QuoteViewColorTheme(
 
   companion object {
     @JvmStatic
-    fun resolveTheme(isOutgoing: Boolean, isPreview: Boolean, hasWallpaper: Boolean): QuoteViewColorTheme {
-      return when {
-        isPreview && hasWallpaper -> INCOMING_WALLPAPER
-        isPreview && !hasWallpaper -> INCOMING_NORMAL
-        isOutgoing && hasWallpaper -> OUTGOING_WALLPAPER
-        !isOutgoing && hasWallpaper -> INCOMING_WALLPAPER
-        isOutgoing && !hasWallpaper -> OUTGOING_NORMAL
-        else -> INCOMING_NORMAL
-      }
+    fun resolveTheme(isOutgoing: Boolean, isPreview: Boolean, hasWallpaper: Boolean): QuoteViewColorTheme = when {
+      isPreview && hasWallpaper -> INCOMING_WALLPAPER
+      isPreview && !hasWallpaper -> INCOMING_NORMAL
+      isOutgoing && hasWallpaper -> OUTGOING_WALLPAPER
+      !isOutgoing && hasWallpaper -> INCOMING_WALLPAPER
+      isOutgoing && !hasWallpaper -> OUTGOING_NORMAL
+      else -> INCOMING_NORMAL
     }
   }
 }

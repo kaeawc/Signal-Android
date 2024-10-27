@@ -74,7 +74,9 @@ class PayPalConfirmationDialogFragment : DialogFragment(R.layout.donation_webvie
     setFragmentResult(REQUEST_KEY, result ?: Bundle())
   }
 
-  private inner class PayPalWebClient : WebViewClient(), DefaultLifecycleObserver {
+  private inner class PayPalWebClient :
+    WebViewClient(),
+    DefaultLifecycleObserver {
 
     private var isDestroyed = false
 

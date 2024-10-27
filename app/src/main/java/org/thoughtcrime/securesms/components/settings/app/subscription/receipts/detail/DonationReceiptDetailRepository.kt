@@ -9,22 +9,18 @@ import org.thoughtcrime.securesms.dependencies.AppDependencies
 import java.util.Locale
 
 class DonationReceiptDetailRepository {
-  fun getSubscriptionLevelName(subscriptionLevel: Int): Single<String> {
-    return Single
-      .fromCallable {
-        AppDependencies
-          .donationsService
-          .getDonationsConfiguration(Locale.getDefault())
-      }
-      .flatMap { it.flattenResult() }
-      .map { it.getSubscriptionLevels()[subscriptionLevel] ?: throw Exception("Subscription level $subscriptionLevel not found") }
-      .map { it.name }
-      .subscribeOn(Schedulers.io())
-  }
+  fun getSubscriptionLevelName(subscriptionLevel: Int): Single<String> = Single
+    .fromCallable {
+      AppDependencies
+        .donationsService
+        .getDonationsConfiguration(Locale.getDefault())
+    }
+    .flatMap { it.flattenResult() }
+    .map { it.getSubscriptionLevels()[subscriptionLevel] ?: throw Exception("Subscription level $subscriptionLevel not found") }
+    .map { it.name }
+    .subscribeOn(Schedulers.io())
 
-  fun getDonationReceiptRecord(id: Long): Single<InAppPaymentReceiptRecord> {
-    return Single.fromCallable<InAppPaymentReceiptRecord> {
-      SignalDatabase.donationReceipts.getReceipt(id)!!
-    }.subscribeOn(Schedulers.io())
-  }
+  fun getDonationReceiptRecord(id: Long): Single<InAppPaymentReceiptRecord> = Single.fromCallable<InAppPaymentReceiptRecord> {
+    SignalDatabase.donationReceipts.getReceipt(id)!!
+  }.subscribeOn(Schedulers.io())
 }

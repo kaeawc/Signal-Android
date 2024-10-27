@@ -243,102 +243,98 @@ class StoriesLandingFragment : DSLSettingsFragment(layoutId = R.layout.stories_l
     })
   }
 
-  private fun getConfiguration(state: StoriesLandingState): DSLConfiguration {
-    return configure {
-      val (stories, hidden) = state.storiesLandingItems.filter {
-        if (state.searchQuery.isNotEmpty()) {
-          val storyRecipientName = it.storyRecipient.getDisplayName(requireContext())
-          val individualRecipientName = it.individualRecipient.getDisplayName(requireContext())
+  private fun getConfiguration(state: StoriesLandingState): DSLConfiguration = configure {
+    val (stories, hidden) = state.storiesLandingItems.filter {
+      if (state.searchQuery.isNotEmpty()) {
+        val storyRecipientName = it.storyRecipient.getDisplayName(requireContext())
+        val individualRecipientName = it.individualRecipient.getDisplayName(requireContext())
 
-          storyRecipientName.contains(state.searchQuery, ignoreCase = true) || individualRecipientName.contains(state.searchQuery, ignoreCase = true)
-        } else {
-          true
-        }
-      }.map {
-        createStoryLandingItem(it)
-      }.partition {
-        !it.data.isHidden
+        storyRecipientName.contains(state.searchQuery, ignoreCase = true) || individualRecipientName.contains(state.searchQuery, ignoreCase = true)
+      } else {
+        true
       }
+    }.map {
+      createStoryLandingItem(it)
+    }.partition {
+      !it.data.isHidden
+    }
 
-      if (state.displayMyStoryItem) {
-        customPref(
-          MyStoriesItem.Model(
-            onClick = {
-              cameraFab.performClick()
-            }
-          )
+    if (state.displayMyStoryItem) {
+      customPref(
+        MyStoriesItem.Model(
+          onClick = {
+            cameraFab.performClick()
+          }
         )
-      }
+      )
+    }
 
-      stories.forEach { item ->
+    stories.forEach { item ->
+      customPref(item)
+    }
+
+    if (hidden.isNotEmpty()) {
+      customPref(
+        ExpandHeader.Model(
+          title = DSLSettingsText.from(R.string.StoriesLandingFragment__hidden_stories),
+          isExpanded = state.isHiddenContentVisible,
+          onClick = { viewModel.setHiddenContentVisible(it) }
+        )
+      )
+    }
+
+    if (state.isHiddenContentVisible) {
+      hidden.forEach { item ->
         customPref(item)
-      }
-
-      if (hidden.isNotEmpty()) {
-        customPref(
-          ExpandHeader.Model(
-            title = DSLSettingsText.from(R.string.StoriesLandingFragment__hidden_stories),
-            isExpanded = state.isHiddenContentVisible,
-            onClick = { viewModel.setHiddenContentVisible(it) }
-          )
-        )
-      }
-
-      if (state.isHiddenContentVisible) {
-        hidden.forEach { item ->
-          customPref(item)
-        }
       }
     }
   }
 
-  private fun createStoryLandingItem(data: StoriesLandingItemData): StoriesLandingItem.Model {
-    return StoriesLandingItem.Model(
-      data = data,
-      onRowClick = { model, preview ->
-        openStoryViewer(model, preview, false)
-      },
-      onForwardStory = {
-        MultiselectForwardFragmentArgs.create(requireContext(), it.data.primaryStory.multiselectCollection.toSet()) { args ->
-          MultiselectForwardFragment.showBottomSheet(childFragmentManager, args)
-        }
-      },
-      onGoToChat = { model ->
-        lifecycleDisposable += ConversationIntents.createBuilder(requireContext(), model.data.storyRecipient.id, -1L)
-          .subscribeBy {
-            startActivityIfAble(it.build())
-          }
-      },
-      onHideStory = {
-        if (!it.data.isHidden) {
-          handleHideStory(it)
-        } else {
-          lifecycleDisposable += viewModel.setHideStory(it.data.storyRecipient, !it.data.isHidden).subscribe()
-        }
-      },
-      onShareStory = {
-        StoryContextMenu.share(this@StoriesLandingFragment, it.data.primaryStory.messageRecord as MmsMessageRecord)
-      },
-      onSave = {
-        StoryContextMenu.save(requireContext(), it.data.primaryStory.messageRecord)
-      },
-      onDeleteStory = {
-        handleDeleteStory(it)
-      },
-      onInfo = { model, preview ->
-        openStoryViewer(model, preview, true)
-      },
-      onAvatarClick = {
-        cameraFab.performClick()
-      },
-      onLockList = {
-        recyclerView?.suppressLayout(true)
-      },
-      onUnlockList = {
-        recyclerView?.suppressLayout(false)
+  private fun createStoryLandingItem(data: StoriesLandingItemData): StoriesLandingItem.Model = StoriesLandingItem.Model(
+    data = data,
+    onRowClick = { model, preview ->
+      openStoryViewer(model, preview, false)
+    },
+    onForwardStory = {
+      MultiselectForwardFragmentArgs.create(requireContext(), it.data.primaryStory.multiselectCollection.toSet()) { args ->
+        MultiselectForwardFragment.showBottomSheet(childFragmentManager, args)
       }
-    )
-  }
+    },
+    onGoToChat = { model ->
+      lifecycleDisposable += ConversationIntents.createBuilder(requireContext(), model.data.storyRecipient.id, -1L)
+        .subscribeBy {
+          startActivityIfAble(it.build())
+        }
+    },
+    onHideStory = {
+      if (!it.data.isHidden) {
+        handleHideStory(it)
+      } else {
+        lifecycleDisposable += viewModel.setHideStory(it.data.storyRecipient, !it.data.isHidden).subscribe()
+      }
+    },
+    onShareStory = {
+      StoryContextMenu.share(this@StoriesLandingFragment, it.data.primaryStory.messageRecord as MmsMessageRecord)
+    },
+    onSave = {
+      StoryContextMenu.save(requireContext(), it.data.primaryStory.messageRecord)
+    },
+    onDeleteStory = {
+      handleDeleteStory(it)
+    },
+    onInfo = { model, preview ->
+      openStoryViewer(model, preview, true)
+    },
+    onAvatarClick = {
+      cameraFab.performClick()
+    },
+    onLockList = {
+      recyclerView?.suppressLayout(true)
+    },
+    onUnlockList = {
+      recyclerView?.suppressLayout(false)
+    }
+  )
 
   private fun openStoryViewer(model: StoriesLandingItem.Model, preview: View, isFromInfoContextMenuAction: Boolean) {
     if (model.data.storyRecipient.isMyStory) {
@@ -397,13 +393,11 @@ class StoriesLandingFragment : DSLSettingsFragment(layoutId = R.layout.stories_l
     }
   }
 
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return if (item.itemId == R.id.action_settings) {
-      startActivityIfAble(StorySettingsActivity.getIntent(requireContext()))
-      true
-    } else {
-      false
-    }
+  override fun onOptionsItemSelected(item: MenuItem): Boolean = if (item.itemId == R.id.action_settings) {
+    startActivityIfAble(StorySettingsActivity.getIntent(requireContext()))
+    true
+  } else {
+    false
   }
 
   override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -419,13 +413,9 @@ class StoriesLandingFragment : DSLSettingsFragment(layoutId = R.layout.stories_l
     startActivity(intent, options)
   }
 
-  private fun isSearchOpen(): Boolean {
-    return isSearchVisible()
-  }
+  private fun isSearchOpen(): Boolean = isSearchVisible()
 
-  private fun isSearchVisible(): Boolean {
-    return requreSearchBinder().getSearchToolbar().resolved() && requreSearchBinder().getSearchToolbar().get().getVisibility() == View.VISIBLE
-  }
+  private fun isSearchVisible(): Boolean = requreSearchBinder().getSearchToolbar().resolved() && requreSearchBinder().getSearchToolbar().get().getVisibility() == View.VISIBLE
 
   private fun closeSearchIfOpen(): Boolean {
     if (isSearchOpen()) {
@@ -436,7 +426,5 @@ class StoriesLandingFragment : DSLSettingsFragment(layoutId = R.layout.stories_l
     return false
   }
 
-  private fun requreSearchBinder(): SearchBinder {
-    return requireListener()
-  }
+  private fun requreSearchBinder(): SearchBinder = requireListener()
 }

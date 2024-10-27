@@ -24,7 +24,8 @@ import kotlin.reflect.KProperty
 class StoriesSharedElementCrossFaderView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null
-) : MaterialCardView(context, attrs), CrossfaderTransition.Crossfadeable {
+) : MaterialCardView(context, attrs),
+  CrossfaderTransition.Crossfadeable {
 
   companion object {
     val CORNER_RADIUS_START = DimensionUnit.DP.toPixels(12f)
@@ -186,12 +187,12 @@ class StoriesSharedElementCrossFaderView @JvmOverloads constructor(
   }
 
   private class OnReadyListener(private val onReady: () -> Unit) : RequestListener<Drawable> {
-    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
       onReady()
       return false
     }
 
-    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+    override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>?, dataSource: DataSource, isFirstResource: Boolean): Boolean {
       onReady()
       return false
     }
@@ -235,9 +236,7 @@ class StoriesSharedElementCrossFaderView @JvmOverloads constructor(
   }
 
   private inner class NotifyIfReadyDelegate(var value: Boolean) {
-    operator fun getValue(storiesSharedElementCrossFaderView: StoriesSharedElementCrossFaderView, property: KProperty<*>): Boolean {
-      return value
-    }
+    operator fun getValue(storiesSharedElementCrossFaderView: StoriesSharedElementCrossFaderView, property: KProperty<*>): Boolean = value
 
     operator fun setValue(storiesSharedElementCrossFaderView: StoriesSharedElementCrossFaderView, property: KProperty<*>, b: Boolean) {
       value = b

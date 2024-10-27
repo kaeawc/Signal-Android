@@ -17,9 +17,7 @@ class NotificationProfileValues(store: KeyValueStore) : SignalStoreValues(store)
 
   public override fun onFirstEverAppLaunch() = Unit
 
-  public override fun getKeysToIncludeInBackup(): MutableList<String> {
-    return mutableListOf(KEY_SEEN_TOOLTIP)
-  }
+  public override fun getKeysToIncludeInBackup(): MutableList<String> = mutableListOf(KEY_SEEN_TOOLTIP)
 
   var manuallyEnabledProfile: Long by longValue(KEY_MANUALLY_ENABLED_PROFILE, 0L)
   var manuallyEnabledUntil: Long by longValue(KEY_MANUALLY_ENABLED_UNTIL, 0L)

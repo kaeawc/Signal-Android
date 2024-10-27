@@ -21,13 +21,11 @@ data class VideoTrimData(
 
   fun getDuration(): Duration = (endTimeUs - startTimeUs).microseconds
 
-  fun toBundle(): Bundle {
-    return Bundle().apply {
-      putByte(KEY_EDITED, (if (isDurationEdited) 1 else 0).toByte())
-      putLong(KEY_TOTAL, totalInputDurationUs)
-      putLong(KEY_START, startTimeUs)
-      putLong(KEY_END, endTimeUs)
-    }
+  fun toBundle(): Bundle = Bundle().apply {
+    putByte(KEY_EDITED, (if (isDurationEdited) 1 else 0).toByte())
+    putLong(KEY_TOTAL, totalInputDurationUs)
+    putLong(KEY_START, startTimeUs)
+    putLong(KEY_END, endTimeUs)
   }
 
   companion object {
@@ -36,13 +34,11 @@ data class VideoTrimData(
     private const val KEY_START = "START"
     private const val KEY_END = "END"
 
-    fun fromBundle(bundle: Bundle): VideoTrimData {
-      return VideoTrimData(
-        isDurationEdited = bundle.getByte(KEY_EDITED) == 1.toByte(),
-        totalInputDurationUs = bundle.getLong(KEY_TOTAL),
-        startTimeUs = bundle.getLong(KEY_START),
-        endTimeUs = bundle.getLong(KEY_END)
-      )
-    }
+    fun fromBundle(bundle: Bundle): VideoTrimData = VideoTrimData(
+      isDurationEdited = bundle.getByte(KEY_EDITED) == 1.toByte(),
+      totalInputDurationUs = bundle.getLong(KEY_TOTAL),
+      startTimeUs = bundle.getLong(KEY_START),
+      endTimeUs = bundle.getLong(KEY_END)
+    )
   }
 }

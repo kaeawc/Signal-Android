@@ -123,25 +123,21 @@ object ApkUpdateInstaller {
     session.commit(installerPendingIntent.intentSender)
   }
 
-  private fun getDownloadedApkInputStream(context: Context, downloadId: Long): InputStream? {
-    return try {
-      FileInputStream(context.getDownloadManager().openDownloadedFile(downloadId).fileDescriptor)
-    } catch (e: IOException) {
-      Log.w(TAG, e)
-      null
-    }
+  private fun getDownloadedApkInputStream(context: Context, downloadId: Long): InputStream? = try {
+    FileInputStream(context.getDownloadManager().openDownloadedFile(downloadId).fileDescriptor)
+  } catch (e: IOException) {
+    Log.w(TAG, e)
+    null
   }
 
-  private fun isMatchingDigest(context: Context, downloadId: Long, expectedDigest: ByteArray): Boolean {
-    return try {
-      FileInputStream(context.getDownloadManager().openDownloadedFile(downloadId).fileDescriptor).use { stream ->
-        val digest = FileUtils.getFileDigest(stream)
-        MessageDigest.isEqual(digest, expectedDigest)
-      }
-    } catch (e: IOException) {
-      Log.w(TAG, e)
-      false
+  private fun isMatchingDigest(context: Context, downloadId: Long, expectedDigest: ByteArray): Boolean = try {
+    FileInputStream(context.getDownloadManager().openDownloadedFile(downloadId).fileDescriptor).use { stream ->
+      val digest = FileUtils.getFileDigest(stream)
+      MessageDigest.isEqual(digest, expectedDigest)
     }
+  } catch (e: IOException) {
+    Log.w(TAG, e)
+    false
   }
 
   private fun shouldAutoUpdate(): Boolean {

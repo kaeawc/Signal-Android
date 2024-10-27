@@ -68,35 +68,31 @@ class SenderKeyTable internal constructor(context: Context?, databaseHelper: Sig
     }
   }
 
-  fun load(address: SignalProtocolAddress, distributionId: DistributionId): SenderKeyRecord? {
-    return readableDatabase
-      .select(RECORD)
-      .from(TABLE_NAME)
-      .where("$ADDRESS = ? AND $DEVICE = ? AND $DISTRIBUTION_ID = ?", address.name, address.deviceId, distributionId)
-      .run()
-      .firstOrNull { cursor ->
-        try {
-          SenderKeyRecord(CursorUtil.requireBlob(cursor, RECORD))
-        } catch (e: InvalidMessageException) {
-          Log.w(TAG, e)
-          null
-        }
+  fun load(address: SignalProtocolAddress, distributionId: DistributionId): SenderKeyRecord? = readableDatabase
+    .select(RECORD)
+    .from(TABLE_NAME)
+    .where("$ADDRESS = ? AND $DEVICE = ? AND $DISTRIBUTION_ID = ?", address.name, address.deviceId, distributionId)
+    .run()
+    .firstOrNull { cursor ->
+      try {
+        SenderKeyRecord(CursorUtil.requireBlob(cursor, RECORD))
+      } catch (e: InvalidMessageException) {
+        Log.w(TAG, e)
+        null
       }
-  }
+    }
 
   /**
    * Gets when the sender key session was created, or -1 if it doesn't exist.
    */
-  fun getCreatedTime(address: SignalProtocolAddress, distributionId: DistributionId): Long {
-    return readableDatabase
-      .select(CREATED_AT)
-      .from(TABLE_NAME)
-      .where("$ADDRESS = ? AND $DEVICE = ? AND $DISTRIBUTION_ID = ?", address.name, address.deviceId, distributionId)
-      .run()
-      .firstOrNull { cursor ->
-        cursor.requireLong(CREATED_AT)
-      } ?: -1
-  }
+  fun getCreatedTime(address: SignalProtocolAddress, distributionId: DistributionId): Long = readableDatabase
+    .select(CREATED_AT)
+    .from(TABLE_NAME)
+    .where("$ADDRESS = ? AND $DEVICE = ? AND $DISTRIBUTION_ID = ?", address.name, address.deviceId, distributionId)
+    .run()
+    .firstOrNull { cursor ->
+      cursor.requireLong(CREATED_AT)
+    } ?: -1
 
   /**
    * Removes all sender key session state for all devices for the provided recipient-distributionId pair.
@@ -111,14 +107,12 @@ class SenderKeyTable internal constructor(context: Context?, databaseHelper: Sig
   /**
    * Get metadata for all sender keys created by the local user. Used for debugging.
    */
-  fun getAllCreatedBySelf(): Cursor {
-    return readableDatabase
-      .select(ID, DISTRIBUTION_ID, CREATED_AT)
-      .from(TABLE_NAME)
-      .where("$ADDRESS = ?", SignalStore.account.requireAci())
-      .orderBy("$CREATED_AT DESC")
-      .run()
-  }
+  fun getAllCreatedBySelf(): Cursor = readableDatabase
+    .select(ID, DISTRIBUTION_ID, CREATED_AT)
+    .from(TABLE_NAME)
+    .where("$ADDRESS = ?", SignalStore.account.requireAci())
+    .orderBy("$CREATED_AT DESC")
+    .run()
 
   /**
    * Deletes all database state.

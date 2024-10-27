@@ -23,7 +23,9 @@ import org.whispersystems.signalservice.api.push.DistributionId
  * 1. Only send a single copy of each story to a given recipient, while
  * 2. Knowing which people would have gotten duplicate copies.
  */
-class StorySendTable(context: Context, databaseHelper: SignalDatabase) : DatabaseTable(context, databaseHelper), RecipientIdDatabaseReference {
+class StorySendTable(context: Context, databaseHelper: SignalDatabase) :
+  DatabaseTable(context, databaseHelper),
+  RecipientIdDatabaseReference {
 
   companion object {
     const val TABLE_NAME = "story_sends"
@@ -75,17 +77,15 @@ class StorySendTable(context: Context, databaseHelper: SignalDatabase) : Databas
     }
   }
 
-  fun getRecipientsForDistributionId(messageId: Long, distributionId: DistributionId): Set<RecipientId> {
-    return readableDatabase
-      .select(RECIPIENT_ID)
-      .from(TABLE_NAME)
-      .where("$MESSAGE_ID = ? AND $DISTRIBUTION_ID = ?", messageId, distributionId.toString())
-      .run()
-      .readToList { cursor ->
-        RecipientId.from(cursor.requireLong(RECIPIENT_ID))
-      }
-      .toSet()
-  }
+  fun getRecipientsForDistributionId(messageId: Long, distributionId: DistributionId): Set<RecipientId> = readableDatabase
+    .select(RECIPIENT_ID)
+    .from(TABLE_NAME)
+    .where("$MESSAGE_ID = ? AND $DISTRIBUTION_ID = ?", messageId, distributionId.toString())
+    .run()
+    .readToList { cursor ->
+      RecipientId.from(cursor.requireLong(RECIPIENT_ID))
+    }
+    .toSet()
 
   fun getRecipientsToSendTo(messageId: Long, sentTimestamp: Long, allowsReplies: Boolean): List<RecipientId> {
     val recipientIds = mutableListOf<RecipientId>()

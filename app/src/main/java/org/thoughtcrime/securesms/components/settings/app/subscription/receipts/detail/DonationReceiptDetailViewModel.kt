@@ -63,8 +63,6 @@ class DonationReceiptDetailViewModel(id: Long, private val repository: DonationR
   }
 
   class Factory(private val id: Long, private val repository: DonationReceiptDetailRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(DonationReceiptDetailViewModel(id, repository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(DonationReceiptDetailViewModel(id, repository)) as T
   }
 }

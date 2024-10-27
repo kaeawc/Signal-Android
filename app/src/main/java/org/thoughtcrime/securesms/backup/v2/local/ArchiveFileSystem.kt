@@ -60,13 +60,9 @@ class ArchiveFileSystem private constructor(private val context: Context, root: 
      *
      * Should likely only be called on < API29.
      */
-    fun fromFile(context: Context, backupDirectory: File): ArchiveFileSystem {
-      return ArchiveFileSystem(context, DocumentFile.fromFile(backupDirectory))
-    }
+    fun fromFile(context: Context, backupDirectory: File): ArchiveFileSystem = ArchiveFileSystem(context, DocumentFile.fromFile(backupDirectory))
 
-    fun openInputStream(context: Context, uri: Uri): InputStream? {
-      return context.contentResolver.openInputStream(uri)
-    }
+    fun openInputStream(context: Context, uri: Uri): InputStream? = context.contentResolver.openInputStream(uri)
   }
 
   private val signalBackups: DocumentFile
@@ -141,20 +137,18 @@ class ArchiveFileSystem private constructor(private val context: Context, root: 
   /**
    * List all snapshots found in this directory sorted by creation timestamp, newest first.
    */
-  fun listSnapshots(): List<SnapshotInfo> {
-    return signalBackups
-      .listFiles()
-      .asSequence()
-      .filter { it.isDirectory }
-      .mapNotNull { f -> f.name?.let { it to f } }
-      .filter { (name, _) -> name.startsWith(BACKUP_DIRECTORY_PREFIX) }
-      .map { (name, file) ->
-        val timestamp = name.replace(BACKUP_DIRECTORY_PREFIX, "").toMilliseconds()
-        SnapshotInfo(timestamp, name, file)
-      }
-      .sortedByDescending { it.timestamp }
-      .toList()
-  }
+  fun listSnapshots(): List<SnapshotInfo> = signalBackups
+    .listFiles()
+    .asSequence()
+    .filter { it.isDirectory }
+    .mapNotNull { f -> f.name?.let { it to f } }
+    .filter { (name, _) -> name.startsWith(BACKUP_DIRECTORY_PREFIX) }
+    .map { (name, file) ->
+      val timestamp = name.replace(BACKUP_DIRECTORY_PREFIX, "").toMilliseconds()
+      SnapshotInfo(timestamp, name, file)
+    }
+    .sortedByDescending { it.timestamp }
+    .toList()
 
   /**
    * Clean up unused files in the shared files directory leveraged across all current snapshots. A file
@@ -202,9 +196,7 @@ class SnapshotFileSystem(private val context: Context, private val snapshotDirec
     /**
      * Get the files metadata file directly for a snapshot.
      */
-    fun filesInputStream(context: Context, snapshotDirectory: DocumentFile): InputStream? {
-      return snapshotDirectory.findFile(FILES_NAME)?.inputStream(context)
-    }
+    fun filesInputStream(context: Context, snapshotDirectory: DocumentFile): InputStream? = snapshotDirectory.findFile(FILES_NAME)?.inputStream(context)
   }
 
   /**
@@ -212,29 +204,17 @@ class SnapshotFileSystem(private val context: Context, private val snapshotDirec
    */
   constructor(context: Context, root: DocumentFile) : this(context, "", "", root)
 
-  fun mainOutputStream(): OutputStream? {
-    return root.newFile(MAIN_NAME)?.outputStream(context)
-  }
+  fun mainOutputStream(): OutputStream? = root.newFile(MAIN_NAME)?.outputStream(context)
 
-  fun mainInputStream(): InputStream? {
-    return root.findFile(MAIN_NAME)?.inputStream(context)
-  }
+  fun mainInputStream(): InputStream? = root.findFile(MAIN_NAME)?.inputStream(context)
 
-  fun mainLength(): Long? {
-    return root.findFile(MAIN_NAME)?.length()
-  }
+  fun mainLength(): Long? = root.findFile(MAIN_NAME)?.length()
 
-  fun metadataOutputStream(): OutputStream? {
-    return root.newFile(METADATA_NAME)?.outputStream(context)
-  }
+  fun metadataOutputStream(): OutputStream? = root.newFile(METADATA_NAME)?.outputStream(context)
 
-  fun metadataInputStream(): InputStream? {
-    return root.findFile(METADATA_NAME)?.inputStream(context)
-  }
+  fun metadataInputStream(): InputStream? = root.findFile(METADATA_NAME)?.inputStream(context)
 
-  fun filesOutputStream(): OutputStream? {
-    return root.newFile(FILES_NAME)?.outputStream(context)
-  }
+  fun filesOutputStream(): OutputStream? = root.newFile(FILES_NAME)?.outputStream(context)
 
   /**
    * Rename the snapshot from the working temporary name to final name.
@@ -298,13 +278,9 @@ class FilesFileSystem(private val context: Context, private val root: DocumentFi
    *
    * @return true if deleted, false if not, null if not found
    */
-  fun delete(mediaName: MediaName): Boolean? {
-    return subFileDirectoryFor(mediaName).delete(context, mediaName.name)
-  }
+  fun delete(mediaName: MediaName): Boolean? = subFileDirectoryFor(mediaName).delete(context, mediaName.name)
 
-  private fun subFileDirectoryFor(mediaName: MediaName): DocumentFile {
-    return subFolders[mediaName.name.substring(0..1)]!!
-  }
+  private fun subFileDirectoryFor(mediaName: MediaName): DocumentFile = subFolders[mediaName.name.substring(0..1)]!!
 }
 
 private fun String.toMilliseconds(): Long {

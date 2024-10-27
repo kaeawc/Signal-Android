@@ -305,14 +305,12 @@ object V185_MessageRecipientsAndEditMessageMigration : SignalDatabaseMigration {
     }
   }
 
-  private fun getAllDependentItems(db: SQLiteDatabase, tableName: String): List<SqlItem> {
-    return db.rawQuery("SELECT type, name, sql FROM sqlite_schema WHERE tbl_name='$tableName' AND type != 'table'").readToList { cursor ->
-      SqlItem(
-        type = cursor.requireNonNullString("type"),
-        name = cursor.requireNonNullString("name"),
-        createStatement = cursor.requireNonNullString("sql")
-      )
-    }
+  private fun getAllDependentItems(db: SQLiteDatabase, tableName: String): List<SqlItem> = db.rawQuery("SELECT type, name, sql FROM sqlite_schema WHERE tbl_name='$tableName' AND type != 'table'").readToList { cursor ->
+    SqlItem(
+      type = cursor.requireNonNullString("type"),
+      name = cursor.requireNonNullString("name"),
+      createStatement = cursor.requireNonNullString("sql")
+    )
   }
 
   data class SqlItem(

@@ -43,14 +43,12 @@ class FontTypefaceProvider : RendererContext.TypefaceProvider {
 //    }
   }
 
-  private fun getTypeface(): Typeface {
-    return if (Build.VERSION.SDK_INT < 26) {
-      Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-    } else {
-      Typeface.Builder("")
-        .setFallback("sans-serif")
-        .setWeight(900)
-        .build()
-    }
+  private fun getTypeface(): Typeface = if (Build.VERSION.SDK_INT < 26) {
+    Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+  } else {
+    Typeface.Builder("")
+      .setFallback("sans-serif")
+      .setWeight(900)
+      .build()
   }
 }

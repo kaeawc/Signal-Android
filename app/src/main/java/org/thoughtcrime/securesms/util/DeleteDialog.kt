@@ -72,9 +72,7 @@ object DeleteDialog {
     builder.show()
   }
 
-  private fun isNoteToSelfDelete(messageRecords: Set<MessageRecord>): Boolean {
-    return messageRecords.all { messageRecord: MessageRecord -> messageRecord.isOutgoing && messageRecord.toRecipient.isSelf }
-  }
+  private fun isNoteToSelfDelete(messageRecords: Set<MessageRecord>): Boolean = messageRecords.all { messageRecord: MessageRecord -> messageRecord.isOutgoing && messageRecord.toRecipient.isSelf }
 
   private fun handleDeleteForEveryone(context: Context, messageRecords: Set<MessageRecord>, emitter: SingleEmitter<Pair<Boolean, Boolean>>) {
     if (SignalStore.uiHints.hasConfirmedDeleteForEveryoneOnce()) {

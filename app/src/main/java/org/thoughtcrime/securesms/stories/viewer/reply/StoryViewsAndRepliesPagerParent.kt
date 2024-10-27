@@ -12,12 +12,10 @@ interface StoryViewsAndRepliesPagerParent {
     REPLIES;
 
     companion object {
-      fun forIndex(index: Int): Child {
-        return when (index) {
-          0 -> VIEWS
-          1 -> REPLIES
-          else -> throw IllegalArgumentException()
-        }
+      fun forIndex(index: Int): Child = when (index) {
+        0 -> VIEWS
+        1 -> REPLIES
+        else -> throw IllegalArgumentException()
       }
     }
   }

@@ -246,22 +246,18 @@ class GenericForegroundService : Service() {
     val progress: Int,
     val indeterminate: Boolean
   ) {
-    override fun toString(): String {
-      return "ChannelId: $channelId, ID: $id, Progress: $progress/$progressMax ${if (indeterminate) "indeterminate" else "determinate"}"
-    }
+    override fun toString(): String = "ChannelId: $channelId, ID: $id, Progress: $progress/$progressMax ${if (indeterminate) "indeterminate" else "determinate"}"
 
     companion object {
-      fun fromIntent(intent: Intent): Entry {
-        return Entry(
-          title = intent.getStringExtra(EXTRA_TITLE) ?: DEFAULT_ENTRY.title,
-          channelId = intent.getStringExtra(EXTRA_CHANNEL_ID) ?: DEFAULT_ENTRY.channelId,
-          iconRes = intent.getIntExtra(EXTRA_ICON_RES, DEFAULT_ENTRY.iconRes),
-          id = intent.getIntExtra(EXTRA_ID, DEFAULT_ENTRY.id),
-          progressMax = intent.getIntExtra(EXTRA_PROGRESS_MAX, DEFAULT_ENTRY.progressMax),
-          progress = intent.getIntExtra(EXTRA_PROGRESS, DEFAULT_ENTRY.progress),
-          indeterminate = intent.getBooleanExtra(EXTRA_PROGRESS_INDETERMINATE, DEFAULT_ENTRY.indeterminate)
-        )
-      }
+      fun fromIntent(intent: Intent): Entry = Entry(
+        title = intent.getStringExtra(EXTRA_TITLE) ?: DEFAULT_ENTRY.title,
+        channelId = intent.getStringExtra(EXTRA_CHANNEL_ID) ?: DEFAULT_ENTRY.channelId,
+        iconRes = intent.getIntExtra(EXTRA_ICON_RES, DEFAULT_ENTRY.iconRes),
+        id = intent.getIntExtra(EXTRA_ID, DEFAULT_ENTRY.id),
+        progressMax = intent.getIntExtra(EXTRA_PROGRESS_MAX, DEFAULT_ENTRY.progressMax),
+        progress = intent.getIntExtra(EXTRA_PROGRESS, DEFAULT_ENTRY.progress),
+        indeterminate = intent.getBooleanExtra(EXTRA_PROGRESS_INDETERMINATE, DEFAULT_ENTRY.indeterminate)
+      )
     }
   }
 

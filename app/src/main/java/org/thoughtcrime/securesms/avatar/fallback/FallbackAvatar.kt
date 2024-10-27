@@ -49,12 +49,10 @@ sealed interface FallbackAvatar {
      * Local user
      */
     data class Local(override val color: AvatarColor) : Resource {
-      override fun getIconBySize(size: Size): Int {
-        return when (size) {
-          Size.SMALL -> R.drawable.symbol_note_compact_16
-          Size.MEDIUM -> R.drawable.symbol_note_24
-          Size.LARGE -> R.drawable.symbol_note_display_bold_40
-        }
+      override fun getIconBySize(size: Size): Int = when (size) {
+        Size.SMALL -> R.drawable.symbol_note_compact_16
+        Size.MEDIUM -> R.drawable.symbol_note_24
+        Size.LARGE -> R.drawable.symbol_note_display_bold_40
       }
     }
 
@@ -62,12 +60,10 @@ sealed interface FallbackAvatar {
      * Individual user without a display name.
      */
     data class Person(override val color: AvatarColor) : Resource {
-      override fun getIconBySize(size: Size): Int {
-        return when (size) {
-          Size.SMALL -> R.drawable.symbol_person_compact_16
-          Size.MEDIUM -> R.drawable.symbol_person_24
-          Size.LARGE -> R.drawable.symbol_person_display_bold_40
-        }
+      override fun getIconBySize(size: Size): Int = when (size) {
+        Size.SMALL -> R.drawable.symbol_person_compact_16
+        Size.MEDIUM -> R.drawable.symbol_person_24
+        Size.LARGE -> R.drawable.symbol_person_display_bold_40
       }
     }
 
@@ -75,12 +71,10 @@ sealed interface FallbackAvatar {
      * A group
      */
     data class Group(override val color: AvatarColor) : Resource {
-      override fun getIconBySize(size: Size): Int {
-        return when (size) {
-          Size.SMALL -> R.drawable.symbol_group_compact_16
-          Size.MEDIUM -> R.drawable.symbol_group_24
-          Size.LARGE -> R.drawable.symbol_group_display_bold_40
-        }
+      override fun getIconBySize(size: Size): Int = when (size) {
+        Size.SMALL -> R.drawable.symbol_group_compact_16
+        Size.MEDIUM -> R.drawable.symbol_group_24
+        Size.LARGE -> R.drawable.symbol_group_display_bold_40
       }
     }
 
@@ -88,12 +82,10 @@ sealed interface FallbackAvatar {
      * Story distribution lists
      */
     data class DistributionList(override val color: AvatarColor) : Resource {
-      override fun getIconBySize(size: Size): Int {
-        return when (size) {
-          Size.SMALL -> R.drawable.symbol_stories_compact_16
-          Size.MEDIUM -> R.drawable.symbol_stories_24
-          Size.LARGE -> R.drawable.symbol_stories_display_bold_40
-        }
+      override fun getIconBySize(size: Size): Int = when (size) {
+        Size.SMALL -> R.drawable.symbol_stories_compact_16
+        Size.MEDIUM -> R.drawable.symbol_stories_24
+        Size.LARGE -> R.drawable.symbol_stories_display_bold_40
       }
     }
 
@@ -101,12 +93,10 @@ sealed interface FallbackAvatar {
      * Call Links
      */
     data class CallLink(override val color: AvatarColor) : Resource {
-      override fun getIconBySize(size: Size): Int {
-        return when (size) {
-          Size.SMALL -> R.drawable.symbol_video_compact_16
-          Size.MEDIUM -> R.drawable.symbol_video_24
-          Size.LARGE -> R.drawable.symbol_video_display_bold_40
-        }
+      override fun getIconBySize(size: Size): Int = when (size) {
+        Size.SMALL -> R.drawable.symbol_video_compact_16
+        Size.MEDIUM -> R.drawable.symbol_video_24
+        Size.LARGE -> R.drawable.symbol_video_display_bold_40
       }
     }
   }
@@ -142,9 +132,7 @@ sealed interface FallbackAvatar {
       }
     }
 
-    fun getSizeByPx(@Px px: Int): Size {
-      return getSizeByDp(DimensionUnit.PIXELS.toDp(px.toFloat()).dp)
-    }
+    fun getSizeByPx(@Px px: Int): Size = getSizeByDp(DimensionUnit.PIXELS.toDp(px.toFloat()).dp)
 
     fun getSizeByDp(dp: Dp): Size {
       val rawDp = dp.value

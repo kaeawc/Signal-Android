@@ -28,7 +28,10 @@ import java.io.IOException
 import kotlin.time.Duration.Companion.microseconds
 import kotlin.time.Duration.Companion.milliseconds
 
-class VideoEditorFragment : Fragment(), PositionDragListener, MediaSendPageFragment {
+class VideoEditorFragment :
+  Fragment(),
+  PositionDragListener,
+  MediaSendPageFragment {
   private val sharedViewModel: MediaSelectionViewModel by viewModels(ownerProducer = { requireActivity() })
   private val videoScanThrottle = Throttler(150)
   private val handler = Handler(Looper.getMainLooper())
@@ -67,9 +70,7 @@ class VideoEditorFragment : Fragment(), PositionDragListener, MediaSendPageFragm
     }
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.mediasend_video_fragment, container, false)
-  }
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.mediasend_video_fragment, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
@@ -233,9 +234,7 @@ class VideoEditorFragment : Fragment(), PositionDragListener, MediaSendPageFragm
     this.uri = uri
   }
 
-  override fun getUri(): Uri {
-    return uri
-  }
+  override fun getUri(): Uri = uri
 
   override fun saveState(): Any = Unit
 

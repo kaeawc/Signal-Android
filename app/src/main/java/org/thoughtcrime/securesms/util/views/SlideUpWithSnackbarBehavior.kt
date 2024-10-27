@@ -14,7 +14,5 @@ class SlideUpWithSnackbarBehavior(context: Context, attributeSet: AttributeSet?)
     parent: CoordinatorLayout,
     child: View,
     dependency: View
-  ): Boolean {
-    return dependency is SnackbarLayout
-  }
+  ): Boolean = dependency is SnackbarLayout
 }

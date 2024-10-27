@@ -62,15 +62,11 @@ class ScreenshotController {
     }
   }
 
-  fun screenshot(): Bitmap? {
-    return screenshotCallback?.invoke()
-  }
+  fun screenshot(): Bitmap? = screenshotCallback?.invoke()
 }
 
-fun LayoutCoordinates.getScreenshotBounds(): Rect {
-  return if (Build.VERSION.SDK_INT >= 26) {
-    this.boundsInWindow()
-  } else {
-    this.boundsInRoot()
-  }
+fun LayoutCoordinates.getScreenshotBounds(): Rect = if (Build.VERSION.SDK_INT >= 26) {
+  this.boundsInWindow()
+} else {
+  this.boundsInRoot()
 }

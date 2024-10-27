@@ -307,47 +307,39 @@ class AttachmentTable(
   }
 
   @Throws(IOException::class)
-  fun getAttachmentStream(attachmentId: AttachmentId, offset: Long): InputStream {
-    return try {
-      getDataStream(attachmentId, offset)
-    } catch (e: FileNotFoundException) {
-      throw IOException("No stream for: $attachmentId", e)
-    } ?: throw IOException("No stream for: $attachmentId")
-  }
+  fun getAttachmentStream(attachmentId: AttachmentId, offset: Long): InputStream = try {
+    getDataStream(attachmentId, offset)
+  } catch (e: FileNotFoundException) {
+    throw IOException("No stream for: $attachmentId", e)
+  } ?: throw IOException("No stream for: $attachmentId")
 
   @Throws(IOException::class)
-  fun getAttachmentStream(localArchivableAttachment: LocalArchivableAttachment): InputStream {
-    return try {
-      getDataStream(localArchivableAttachment.file, localArchivableAttachment.random, 0)
-    } catch (e: FileNotFoundException) {
-      throw IOException("No stream for: ${localArchivableAttachment.file}", e)
-    } ?: throw IOException("No stream for: ${localArchivableAttachment.file}")
-  }
+  fun getAttachmentStream(localArchivableAttachment: LocalArchivableAttachment): InputStream = try {
+    getDataStream(localArchivableAttachment.file, localArchivableAttachment.random, 0)
+  } catch (e: FileNotFoundException) {
+    throw IOException("No stream for: ${localArchivableAttachment.file}", e)
+  } ?: throw IOException("No stream for: ${localArchivableAttachment.file}")
 
   @Throws(IOException::class)
-  fun getAttachmentThumbnailStream(attachmentId: AttachmentId, offset: Long): InputStream {
-    return try {
-      getThumbnailStream(attachmentId, offset)
-    } catch (e: FileNotFoundException) {
-      throw IOException("No stream for: $attachmentId", e)
-    } ?: throw IOException("No stream for: $attachmentId")
-  }
+  fun getAttachmentThumbnailStream(attachmentId: AttachmentId, offset: Long): InputStream = try {
+    getThumbnailStream(attachmentId, offset)
+  } catch (e: FileNotFoundException) {
+    throw IOException("No stream for: $attachmentId", e)
+  } ?: throw IOException("No stream for: $attachmentId")
 
   /**
    * Returns a [File] for an attachment that has no [DATA_HASH_END] and is in the [TRANSFER_PROGRESS_DONE] state, if present.
    */
-  fun getUnhashedDataFile(): Pair<File, AttachmentId>? {
-    return readableDatabase
-      .select(ID, DATA_FILE)
-      .from(TABLE_NAME)
-      .where("$DATA_FILE NOT NULL AND $DATA_HASH_END IS NULL AND $TRANSFER_STATE = $TRANSFER_PROGRESS_DONE")
-      .orderBy("$ID DESC")
-      .limit(1)
-      .run()
-      .readToSingleObject {
-        File(it.requireNonNullString(DATA_FILE)) to AttachmentId(it.requireLong(ID))
-      }
-  }
+  fun getUnhashedDataFile(): Pair<File, AttachmentId>? = readableDatabase
+    .select(ID, DATA_FILE)
+    .from(TABLE_NAME)
+    .where("$DATA_FILE NOT NULL AND $DATA_HASH_END IS NULL AND $TRANSFER_STATE = $TRANSFER_PROGRESS_DONE")
+    .orderBy("$ID DESC")
+    .limit(1)
+    .run()
+    .readToSingleObject {
+      File(it.requireNonNullString(DATA_FILE)) to AttachmentId(it.requireLong(ID))
+    }
 
   /**
    * Sets the [DATA_HASH_END] for a given file. This is used to backfill the hash for attachments that were created before we started hashing them.
@@ -407,27 +399,23 @@ class AttachmentTable(
     }
   }
 
-  fun getAttachment(attachmentId: AttachmentId): DatabaseAttachment? {
-    return readableDatabase
-      .select(*PROJECTION)
-      .from(TABLE_NAME)
-      .where("$ID = ?", attachmentId.id)
-      .run()
-      .readToList { it.readAttachments() }
-      .flatten()
-      .firstOrNull()
-  }
+  fun getAttachment(attachmentId: AttachmentId): DatabaseAttachment? = readableDatabase
+    .select(*PROJECTION)
+    .from(TABLE_NAME)
+    .where("$ID = ?", attachmentId.id)
+    .run()
+    .readToList { it.readAttachments() }
+    .flatten()
+    .firstOrNull()
 
-  fun getAttachmentsForMessage(mmsId: Long): List<DatabaseAttachment> {
-    return readableDatabase
-      .select(*PROJECTION)
-      .from(TABLE_NAME)
-      .where("$MESSAGE_ID = ?", mmsId)
-      .orderBy("$ID ASC")
-      .run()
-      .readToList { it.readAttachments() }
-      .flatten()
-  }
+  fun getAttachmentsForMessage(mmsId: Long): List<DatabaseAttachment> = readableDatabase
+    .select(*PROJECTION)
+    .from(TABLE_NAME)
+    .where("$MESSAGE_ID = ?", mmsId)
+    .orderBy("$ID ASC")
+    .run()
+    .readToList { it.readAttachments() }
+    .flatten()
 
   fun getAttachmentsForMessages(mmsIds: Collection<Long?>): Map<Long, List<DatabaseAttachment>> {
     if (mmsIds.isEmpty()) {
@@ -448,125 +436,107 @@ class AttachmentTable(
       }
   }
 
-  fun getMostRecentValidAttachmentUsingDataFile(dataFile: String): DatabaseAttachment? {
-    return readableDatabase
-      .select(*PROJECTION)
-      .from(TABLE_NAME)
-      .where("$DATA_FILE = ? AND $TRANSFER_STATE = $TRANSFER_PROGRESS_DONE", dataFile)
-      .orderBy("$ID DESC")
-      .limit(1)
-      .run()
-      .readToSingleObject { it.readAttachment() }
-  }
+  fun getMostRecentValidAttachmentUsingDataFile(dataFile: String): DatabaseAttachment? = readableDatabase
+    .select(*PROJECTION)
+    .from(TABLE_NAME)
+    .where("$DATA_FILE = ? AND $TRANSFER_STATE = $TRANSFER_PROGRESS_DONE", dataFile)
+    .orderBy("$ID DESC")
+    .limit(1)
+    .run()
+    .readToSingleObject { it.readAttachment() }
 
-  fun hasAttachment(id: AttachmentId): Boolean {
-    return readableDatabase
-      .exists(TABLE_NAME)
-      .where("$ID = ?", id.id)
-      .run()
-  }
+  fun hasAttachment(id: AttachmentId): Boolean = readableDatabase
+    .exists(TABLE_NAME)
+    .where("$ID = ?", id.id)
+    .run()
 
   /**
    * Takes a list of attachment IDs and confirms they exist in the database.
    */
-  fun hasAttachments(ids: List<AttachmentId>): Boolean {
-    return ids.size == SqlUtil.buildCollectionQuery(ID, ids.map { it.id }).sumOf { query ->
-      readableDatabase
-        .count()
-        .from(TABLE_NAME)
-        .where(query.where, query.whereArgs)
-        .run()
-        .readToSingleInt(defaultValue = 0)
+  fun hasAttachments(ids: List<AttachmentId>): Boolean = ids.size == SqlUtil.buildCollectionQuery(ID, ids.map { it.id }).sumOf { query ->
+    readableDatabase
+      .count()
+      .from(TABLE_NAME)
+      .where(query.where, query.whereArgs)
+      .run()
+      .readToSingleInt(defaultValue = 0)
+  }
+
+  fun getPendingAttachments(): List<DatabaseAttachment> = readableDatabase
+    .select(*PROJECTION)
+    .from(TABLE_NAME)
+    .where("$TRANSFER_STATE = ?", TRANSFER_PROGRESS_STARTED.toString())
+    .run()
+    .readToList { it.readAttachments() }
+    .flatten()
+
+  fun getLocalArchivableAttachments(): List<LocalArchivableAttachment> = readableDatabase
+    .select(*PROJECTION)
+    .from(TABLE_NAME)
+    .where("$REMOTE_KEY IS NOT NULL AND $REMOTE_DIGEST IS NOT NULL AND $REMOTE_IV IS NOT NULL AND $DATA_FILE IS NOT NULL")
+    .orderBy("$ID DESC")
+    .run()
+    .readToList {
+      LocalArchivableAttachment(
+        file = File(it.requireNonNullString(DATA_FILE)),
+        random = it.requireNonNullBlob(DATA_RANDOM),
+        size = it.requireLong(DATA_SIZE),
+        remoteDigest = it.requireBlob(REMOTE_DIGEST)!!,
+        remoteKey = it.requireBlob(REMOTE_KEY)!!,
+        remoteIv = it.requireBlob(REMOTE_IV)!!
+      )
     }
-  }
 
-  fun getPendingAttachments(): List<DatabaseAttachment> {
-    return readableDatabase
-      .select(*PROJECTION)
-      .from(TABLE_NAME)
-      .where("$TRANSFER_STATE = ?", TRANSFER_PROGRESS_STARTED.toString())
-      .run()
-      .readToList { it.readAttachments() }
-      .flatten()
-  }
+  fun getRestorableAttachments(batchSize: Int): List<RestorableAttachment> = readableDatabase
+    .select(ID, MESSAGE_ID, DATA_SIZE, REMOTE_DIGEST, REMOTE_KEY)
+    .from(TABLE_NAME)
+    .where("$TRANSFER_STATE = ?", TRANSFER_NEEDS_RESTORE)
+    .limit(batchSize)
+    .orderBy("$ID DESC")
+    .run()
+    .readToList {
+      RestorableAttachment(
+        attachmentId = AttachmentId(it.requireLong(ID)),
+        mmsId = it.requireLong(MESSAGE_ID),
+        size = it.requireLong(DATA_SIZE),
+        remoteDigest = it.requireBlob(REMOTE_DIGEST),
+        remoteKey = it.requireBlob(REMOTE_KEY)
+      )
+    }
 
-  fun getLocalArchivableAttachments(): List<LocalArchivableAttachment> {
-    return readableDatabase
-      .select(*PROJECTION)
-      .from(TABLE_NAME)
-      .where("$REMOTE_KEY IS NOT NULL AND $REMOTE_DIGEST IS NOT NULL AND $REMOTE_IV IS NOT NULL AND $DATA_FILE IS NOT NULL")
-      .orderBy("$ID DESC")
-      .run()
-      .readToList {
-        LocalArchivableAttachment(
-          file = File(it.requireNonNullString(DATA_FILE)),
-          random = it.requireNonNullBlob(DATA_RANDOM),
-          size = it.requireLong(DATA_SIZE),
-          remoteDigest = it.requireBlob(REMOTE_DIGEST)!!,
-          remoteKey = it.requireBlob(REMOTE_KEY)!!,
-          remoteIv = it.requireBlob(REMOTE_IV)!!
-        )
-      }
-  }
+  fun getRestorableOptimizedAttachments(): List<RestorableAttachment> = readableDatabase
+    .select(ID, MESSAGE_ID, DATA_SIZE, REMOTE_DIGEST, REMOTE_KEY)
+    .from(TABLE_NAME)
+    .where("$TRANSFER_STATE = ?", TRANSFER_RESTORE_OFFLOADED)
+    .orderBy("$ID DESC")
+    .run()
+    .readToList {
+      RestorableAttachment(
+        attachmentId = AttachmentId(it.requireLong(ID)),
+        mmsId = it.requireLong(MESSAGE_ID),
+        size = it.requireLong(DATA_SIZE),
+        remoteDigest = it.requireBlob(REMOTE_DIGEST),
+        remoteKey = it.requireBlob(REMOTE_KEY)
+      )
+    }
 
-  fun getRestorableAttachments(batchSize: Int): List<RestorableAttachment> {
-    return readableDatabase
-      .select(ID, MESSAGE_ID, DATA_SIZE, REMOTE_DIGEST, REMOTE_KEY)
-      .from(TABLE_NAME)
-      .where("$TRANSFER_STATE = ?", TRANSFER_NEEDS_RESTORE)
-      .limit(batchSize)
-      .orderBy("$ID DESC")
-      .run()
-      .readToList {
-        RestorableAttachment(
-          attachmentId = AttachmentId(it.requireLong(ID)),
-          mmsId = it.requireLong(MESSAGE_ID),
-          size = it.requireLong(DATA_SIZE),
-          remoteDigest = it.requireBlob(REMOTE_DIGEST),
-          remoteKey = it.requireBlob(REMOTE_KEY)
-        )
-      }
-  }
-
-  fun getRestorableOptimizedAttachments(): List<RestorableAttachment> {
-    return readableDatabase
-      .select(ID, MESSAGE_ID, DATA_SIZE, REMOTE_DIGEST, REMOTE_KEY)
-      .from(TABLE_NAME)
-      .where("$TRANSFER_STATE = ?", TRANSFER_RESTORE_OFFLOADED)
-      .orderBy("$ID DESC")
-      .run()
-      .readToList {
-        RestorableAttachment(
-          attachmentId = AttachmentId(it.requireLong(ID)),
-          mmsId = it.requireLong(MESSAGE_ID),
-          size = it.requireLong(DATA_SIZE),
-          remoteDigest = it.requireBlob(REMOTE_DIGEST),
-          remoteKey = it.requireBlob(REMOTE_KEY)
-        )
-      }
-  }
-
-  fun getRemainingRestorableAttachmentSize(): Long {
-    return readableDatabase
-      .select("SUM($DATA_SIZE)")
-      .from(TABLE_NAME)
-      .where("$TRANSFER_STATE = ? OR $TRANSFER_STATE = ?", TRANSFER_NEEDS_RESTORE, TRANSFER_RESTORE_IN_PROGRESS)
-      .run()
-      .readToSingleLong()
-  }
+  fun getRemainingRestorableAttachmentSize(): Long = readableDatabase
+    .select("SUM($DATA_SIZE)")
+    .from(TABLE_NAME)
+    .where("$TRANSFER_STATE = ? OR $TRANSFER_STATE = ?", TRANSFER_NEEDS_RESTORE, TRANSFER_RESTORE_IN_PROGRESS)
+    .run()
+    .readToSingleLong()
 
   /**
    * Finds all of the attachmentIds of attachments that need to be uploaded to the archive cdn.
    */
-  fun getAttachmentsThatNeedArchiveUpload(): List<AttachmentId> {
-    return readableDatabase
-      .select(ID)
-      .from(TABLE_NAME)
-      .where("$ARCHIVE_TRANSFER_STATE = ? AND $DATA_FILE NOT NULL AND $TRANSFER_STATE = $TRANSFER_PROGRESS_DONE", ArchiveTransferState.NONE.value)
-      .orderBy("$ID DESC")
-      .run()
-      .readToList { AttachmentId(it.requireLong(ID)) }
-  }
+  fun getAttachmentsThatNeedArchiveUpload(): List<AttachmentId> = readableDatabase
+    .select(ID)
+    .from(TABLE_NAME)
+    .where("$ARCHIVE_TRANSFER_STATE = ? AND $DATA_FILE NOT NULL AND $TRANSFER_STATE = $TRANSFER_PROGRESS_DONE", ArchiveTransferState.NONE.value)
+    .orderBy("$ID DESC")
+    .run()
+    .readToList { AttachmentId(it.requireLong(ID)) }
 
   /**
    * At archive creation time, we need to ensure that all relevant attachments have populated (key, iv, digest) tuples.
@@ -624,24 +594,20 @@ class AttachmentTable(
   /**
    * Similar to [getAttachmentsThatNeedArchiveUpload], but returns if the list would be non-null in a more efficient way.
    */
-  fun doAnyAttachmentsNeedArchiveUpload(): Boolean {
-    return readableDatabase
-      .exists(TABLE_NAME)
-      .where("$ARCHIVE_TRANSFER_STATE = ? AND $DATA_FILE NOT NULL AND $TRANSFER_STATE = $TRANSFER_PROGRESS_DONE", ArchiveTransferState.NONE.value)
-      .run()
-  }
+  fun doAnyAttachmentsNeedArchiveUpload(): Boolean = readableDatabase
+    .exists(TABLE_NAME)
+    .where("$ARCHIVE_TRANSFER_STATE = ? AND $DATA_FILE NOT NULL AND $TRANSFER_STATE = $TRANSFER_PROGRESS_DONE", ArchiveTransferState.NONE.value)
+    .run()
 
   /**
    * Returns the current archive transfer state, if the attachment can be found.
    */
-  fun getArchiveTransferState(id: AttachmentId): ArchiveTransferState? {
-    return readableDatabase
-      .select(ARCHIVE_TRANSFER_STATE)
-      .from(TABLE_NAME)
-      .where("$ID = ?", id.id)
-      .run()
-      .readToSingleObject { ArchiveTransferState.deserialize(it.requireInt(ARCHIVE_TRANSFER_STATE)) }
-  }
+  fun getArchiveTransferState(id: AttachmentId): ArchiveTransferState? = readableDatabase
+    .select(ARCHIVE_TRANSFER_STATE)
+    .from(TABLE_NAME)
+    .where("$ID = ?", id.id)
+    .run()
+    .readToSingleObject { ArchiveTransferState.deserialize(it.requireInt(ARCHIVE_TRANSFER_STATE)) }
 
   /**
    * Sets the archive transfer state for the given attachment and all other attachments that share the same data file.
@@ -712,14 +678,12 @@ class AttachmentTable(
   /**
    * Returns the number of attachments that are in pending upload states to the archive cdn.
    */
-  fun getPendingArchiveUploadCount(): Long {
-    return readableDatabase
-      .count()
-      .from(TABLE_NAME)
-      .where("$ARCHIVE_TRANSFER_STATE IN (${ArchiveTransferState.UPLOAD_IN_PROGRESS.value}, ${ArchiveTransferState.COPY_PENDING.value})")
-      .run()
-      .readToSingleLong()
-  }
+  fun getPendingArchiveUploadCount(): Long = readableDatabase
+    .count()
+    .from(TABLE_NAME)
+    .where("$ARCHIVE_TRANSFER_STATE IN (${ArchiveTransferState.UPLOAD_IN_PROGRESS.value}, ${ArchiveTransferState.COPY_PENDING.value})")
+    .run()
+    .readToSingleLong()
 
   fun deleteAttachmentsForMessage(mmsId: Long): Boolean {
     Log.d(TAG, "[deleteAttachmentsForMessage] mmsId: $mmsId")
@@ -1425,30 +1389,27 @@ class AttachmentTable(
    * A query for a specific migration. Retrieves attachments that we'd need to create a new digest for.
    * This is basically all attachments that have data and are finished downloading.
    */
-  fun getAttachmentsThatNeedNewDigests(): List<AttachmentId> {
-    return readableDatabase
-      .select(ID)
-      .from(TABLE_NAME)
-      .where(
-        """
+  fun getAttachmentsThatNeedNewDigests(): List<AttachmentId> = readableDatabase
+    .select(ID)
+    .from(TABLE_NAME)
+    .where(
+      """
         $TRANSFER_STATE = $TRANSFER_PROGRESS_DONE AND 
         $DATA_FILE NOT NULL
         """
-      )
-      .run()
-      .readToList { AttachmentId(it.requireLong(ID)) }
-  }
+    )
+    .run()
+    .readToList { AttachmentId(it.requireLong(ID)) }
 
   /**
    * A query for a specific migration. Retrieves attachments that we'd need to create a new digest for.
    * This is basically all attachments that have data and are finished downloading.
    */
-  fun getDataFilesWithMultipleValidAttachments(): List<String> {
-    return readableDatabase
-      .select("DISTINCT(a1.$DATA_FILE)")
-      .from("$TABLE_NAME a1 INDEXED BY $DATA_FILE_INDEX")
-      .where(
-        """
+  fun getDataFilesWithMultipleValidAttachments(): List<String> = readableDatabase
+    .select("DISTINCT(a1.$DATA_FILE)")
+    .from("$TABLE_NAME a1 INDEXED BY $DATA_FILE_INDEX")
+    .where(
+      """
         a1.$DATA_FILE NOT NULL AND
         a1.$TRANSFER_STATE = $TRANSFER_PROGRESS_DONE AND EXISTS (
           SELECT 1
@@ -1459,10 +1420,9 @@ class AttachmentTable(
             a2.$ID != a1.$ID
         )
         """
-      )
-      .run()
-      .readToList { it.requireNonNullString(DATA_FILE) }
-  }
+    )
+    .run()
+    .readToList { it.requireNonNullString(DATA_FILE) }
 
   /**
    * As part of the digest backfill process, this updates the (key, IV, digest) tuple for an attachment.
@@ -1700,42 +1660,34 @@ class AttachmentTable(
     return transferFile
   }
 
-  fun createArchiveThumbnailTransferFile(): File {
-    return newTransferFile()
-  }
+  fun createArchiveThumbnailTransferFile(): File = newTransferFile()
 
-  fun getDataFileInfo(attachmentId: AttachmentId): DataFileInfo? {
-    return readableDatabase
-      .select(ID, DATA_FILE, DATA_SIZE, DATA_RANDOM, DATA_HASH_START, DATA_HASH_END, TRANSFORM_PROPERTIES, UPLOAD_TIMESTAMP, ARCHIVE_CDN, ARCHIVE_MEDIA_NAME, ARCHIVE_MEDIA_ID)
-      .from(TABLE_NAME)
-      .where("$ID = ?", attachmentId.id)
-      .run()
-      .readToSingleObject { cursor -> cursor.readDataFileInfo() }
-  }
+  fun getDataFileInfo(attachmentId: AttachmentId): DataFileInfo? = readableDatabase
+    .select(ID, DATA_FILE, DATA_SIZE, DATA_RANDOM, DATA_HASH_START, DATA_HASH_END, TRANSFORM_PROPERTIES, UPLOAD_TIMESTAMP, ARCHIVE_CDN, ARCHIVE_MEDIA_NAME, ARCHIVE_MEDIA_ID)
+    .from(TABLE_NAME)
+    .where("$ID = ?", attachmentId.id)
+    .run()
+    .readToSingleObject { cursor -> cursor.readDataFileInfo() }
 
-  fun getThumbnailFileInfo(attachmentId: AttachmentId): ThumbnailFileInfo? {
-    return readableDatabase
-      .select(ID, THUMBNAIL_FILE, THUMBNAIL_RANDOM)
-      .from(TABLE_NAME)
-      .where("$ID = ?", attachmentId.id)
-      .run()
-      .readToSingleObject { cursor ->
-        if (cursor.isNull(THUMBNAIL_FILE)) {
-          null
-        } else {
-          cursor.readThumbnailFileInfo()
-        }
+  fun getThumbnailFileInfo(attachmentId: AttachmentId): ThumbnailFileInfo? = readableDatabase
+    .select(ID, THUMBNAIL_FILE, THUMBNAIL_RANDOM)
+    .from(TABLE_NAME)
+    .where("$ID = ?", attachmentId.id)
+    .run()
+    .readToSingleObject { cursor ->
+      if (cursor.isNull(THUMBNAIL_FILE)) {
+        null
+      } else {
+        cursor.readThumbnailFileInfo()
       }
-  }
+    }
 
-  fun getDataFilePath(attachmentId: AttachmentId): String? {
-    return readableDatabase
-      .select(DATA_FILE)
-      .from(TABLE_NAME)
-      .where("$ID = ?", attachmentId.id)
-      .run()
-      .readToSingleObject { it.requireString(DATA_FILE) }
-  }
+  fun getDataFilePath(attachmentId: AttachmentId): String? = readableDatabase
+    .select(DATA_FILE)
+    .from(TABLE_NAME)
+    .where("$ID = ?", attachmentId.id)
+    .run()
+    .readToSingleObject { it.requireString(DATA_FILE) }
 
   fun markAttachmentAsTransformed(attachmentId: AttachmentId, withFastStart: Boolean) {
     Log.i(TAG, "[markAttachmentAsTransformed] Marking $attachmentId as transformed. withFastStart: $withFastStart")
@@ -1797,16 +1749,14 @@ class AttachmentTable(
   /**
    * @return null if we fail to find the given attachmentId
    */
-  fun getTransformProperties(attachmentId: AttachmentId): TransformProperties? {
-    return readableDatabase
-      .select(TRANSFORM_PROPERTIES)
-      .from(TABLE_NAME)
-      .where("$ID = ?", attachmentId.id)
-      .run()
-      .readToSingleObject {
-        TransformProperties.parse(it.requireString(TRANSFORM_PROPERTIES))
-      }
-  }
+  fun getTransformProperties(attachmentId: AttachmentId): TransformProperties? = readableDatabase
+    .select(TRANSFORM_PROPERTIES)
+    .from(TABLE_NAME)
+    .where("$ID = ?", attachmentId.id)
+    .run()
+    .readToSingleObject {
+      TransformProperties.parse(it.requireString(TRANSFORM_PROPERTIES))
+    }
 
   fun markAttachmentUploaded(messageId: Long, attachment: Attachment) {
     writableDatabase
@@ -1926,18 +1876,14 @@ class AttachmentTable(
     }
   }
 
-  fun hasStickerAttachments(): Boolean {
-    return readableDatabase
-      .exists(TABLE_NAME)
-      .where("$STICKER_PACK_ID NOT NULL")
-      .run()
-  }
+  fun hasStickerAttachments(): Boolean = readableDatabase
+    .exists(TABLE_NAME)
+    .where("$STICKER_PACK_ID NOT NULL")
+    .run()
 
-  fun containsStickerPackId(stickerPackId: String): Boolean {
-    return readableDatabase.exists(TABLE_NAME)
-      .where("$STICKER_PACK_ID = ?", stickerPackId)
-      .run()
-  }
+  fun containsStickerPackId(stickerPackId: String): Boolean = readableDatabase.exists(TABLE_NAME)
+    .where("$STICKER_PACK_ID = ?", stickerPackId)
+    .run()
 
   fun getUnavailableStickerPacks(): Cursor {
     val query = """
@@ -1982,15 +1928,13 @@ class AttachmentTable(
     }
   }
 
-  fun updateArchiveCdnByMediaId(archiveMediaId: String, archiveCdn: Int): Int {
-    return writableDatabase.rawQuery(
-      "UPDATE $TABLE_NAME SET " +
-        "$ARCHIVE_CDN = CASE WHEN $ARCHIVE_MEDIA_ID = ? THEN ? ELSE $ARCHIVE_CDN END " +
-        "WHERE $ARCHIVE_MEDIA_ID = ? OR $ARCHIVE_THUMBNAIL_MEDIA_ID = ? " +
-        "RETURNING $ARCHIVE_CDN",
-      SqlUtil.buildArgs(archiveMediaId, archiveCdn, archiveMediaId, archiveMediaId)
-    ).count
-  }
+  fun updateArchiveCdnByMediaId(archiveMediaId: String, archiveCdn: Int): Int = writableDatabase.rawQuery(
+    "UPDATE $TABLE_NAME SET " +
+      "$ARCHIVE_CDN = CASE WHEN $ARCHIVE_MEDIA_ID = ? THEN ? ELSE $ARCHIVE_CDN END " +
+      "WHERE $ARCHIVE_MEDIA_ID = ? OR $ARCHIVE_THUMBNAIL_MEDIA_ID = ? " +
+      "RETURNING $ARCHIVE_CDN",
+    SqlUtil.buildArgs(archiveMediaId, archiveCdn, archiveMediaId, archiveMediaId)
+  ).count
 
   fun clearArchiveData(attachmentIds: List<AttachmentId>) {
     SqlUtil.buildCollectionQuery(ID, attachmentIds.map { it.id })
@@ -2019,13 +1963,9 @@ class AttachmentTable(
       .run()
   }
 
-  private fun calculateDigest(fileInfo: DataFileWriteResult, key: ByteArray, iv: ByteArray): ByteArray {
-    return calculateDigest(file = fileInfo.file, random = fileInfo.random, length = fileInfo.length, key = key, iv = iv)
-  }
+  private fun calculateDigest(fileInfo: DataFileWriteResult, key: ByteArray, iv: ByteArray): ByteArray = calculateDigest(file = fileInfo.file, random = fileInfo.random, length = fileInfo.length, key = key, iv = iv)
 
-  private fun calculateDigest(fileInfo: DataFileInfo, key: ByteArray, iv: ByteArray): ByteArray {
-    return calculateDigest(file = fileInfo.file, random = fileInfo.random, length = fileInfo.length, key = key, iv = iv)
-  }
+  private fun calculateDigest(fileInfo: DataFileInfo, key: ByteArray, iv: ByteArray): ByteArray = calculateDigest(file = fileInfo.file, random = fileInfo.random, length = fileInfo.length, key = key, iv = iv)
 
   private fun calculateDigest(file: File, random: ByteArray, length: Long, key: ByteArray, iv: ByteArray): ByteArray {
     val stream = PaddingInputStream(getDataStream(file, random, 0), length)
@@ -2140,39 +2080,37 @@ class AttachmentTable(
    * Reads the entire stream and saves to disk and returns a bunch of metadat about the write.
    */
   @Throws(MmsException::class, IllegalStateException::class)
-  private fun writeToDataFile(destination: File, inputStream: InputStream, transformProperties: TransformProperties, closeInputStream: Boolean = true): DataFileWriteResult {
-    return try {
-      // Sometimes the destination is a file that's already in use, sometimes it's not.
-      // To avoid writing to a file while it's in-use, we write to a temp file and then rename it to the destination file at the end.
-      val tempFile = newDataFile(context)
-      val messageDigest = MessageDigest.getInstance("SHA-256")
-      val digestInputStream = DigestInputStream(inputStream, messageDigest)
+  private fun writeToDataFile(destination: File, inputStream: InputStream, transformProperties: TransformProperties, closeInputStream: Boolean = true): DataFileWriteResult = try {
+    // Sometimes the destination is a file that's already in use, sometimes it's not.
+    // To avoid writing to a file while it's in-use, we write to a temp file and then rename it to the destination file at the end.
+    val tempFile = newDataFile(context)
+    val messageDigest = MessageDigest.getInstance("SHA-256")
+    val digestInputStream = DigestInputStream(inputStream, messageDigest)
 
-      val encryptingStreamData = ModernEncryptingPartOutputStream.createFor(attachmentSecret, tempFile, false)
-      val random = encryptingStreamData.first
-      val encryptingOutputStream = encryptingStreamData.second
+    val encryptingStreamData = ModernEncryptingPartOutputStream.createFor(attachmentSecret, tempFile, false)
+    val random = encryptingStreamData.first
+    val encryptingOutputStream = encryptingStreamData.second
 
-      val length = digestInputStream.copyTo(encryptingOutputStream, closeInputStream)
-      val hash = Base64.encodeWithPadding(digestInputStream.messageDigest.digest())
+    val length = digestInputStream.copyTo(encryptingOutputStream, closeInputStream)
+    val hash = Base64.encodeWithPadding(digestInputStream.messageDigest.digest())
 
-      if (!tempFile.renameTo(destination)) {
-        Log.w(TAG, "[writeToDataFile] Couldn't rename ${tempFile.path} to ${destination.path}")
-        tempFile.delete()
-        throw IllegalStateException("Couldn't rename ${tempFile.path} to ${destination.path}")
-      }
-
-      DataFileWriteResult(
-        file = destination,
-        length = length,
-        random = random,
-        hash = hash,
-        transformProperties = transformProperties
-      )
-    } catch (e: IOException) {
-      throw MmsException(e)
-    } catch (e: NoSuchAlgorithmException) {
-      throw MmsException(e)
+    if (!tempFile.renameTo(destination)) {
+      Log.w(TAG, "[writeToDataFile] Couldn't rename ${tempFile.path} to ${destination.path}")
+      tempFile.delete()
+      throw IllegalStateException("Couldn't rename ${tempFile.path} to ${destination.path}")
     }
+
+    DataFileWriteResult(
+      file = destination,
+      length = length,
+      random = random,
+      hash = hash,
+      transformProperties = transformProperties
+    )
+  } catch (e: IOException) {
+    throw MmsException(e)
+  } catch (e: NoSuchAlgorithmException) {
+    throw MmsException(e)
   }
 
   private fun areTransformationsCompatible(
@@ -2481,44 +2419,36 @@ class AttachmentTable(
     return attachmentId
   }
 
-  fun insertWallpaper(dataStream: InputStream): AttachmentId {
-    return insertAttachmentWithData(WALLPAPER_MESSAGE_ID, dataStream, WallpaperAttachment(), quote = false).also { id ->
-      createKeyIvIfNecessary(id)
+  fun insertWallpaper(dataStream: InputStream): AttachmentId = insertAttachmentWithData(WALLPAPER_MESSAGE_ID, dataStream, WallpaperAttachment(), quote = false).also { id ->
+    createKeyIvIfNecessary(id)
+  }
+
+  fun getAllWallpapers(): List<AttachmentId> = readableDatabase
+    .select(ID)
+    .from(TABLE_NAME)
+    .where("$MESSAGE_ID = $WALLPAPER_MESSAGE_ID")
+    .run()
+    .readToList { AttachmentId(it.requireLong(ID)) }
+
+  private fun getTransferFile(db: SQLiteDatabase, attachmentId: AttachmentId): File? = db
+    .select(TRANSFER_FILE)
+    .from(TABLE_NAME)
+    .where("$ID = ?", attachmentId.id)
+    .limit(1)
+    .run()
+    .readToSingleObject { cursor ->
+      cursor.requireString(TRANSFER_FILE)?.let { File(it) }
     }
-  }
 
-  fun getAllWallpapers(): List<AttachmentId> {
-    return readableDatabase
-      .select(ID)
-      .from(TABLE_NAME)
-      .where("$MESSAGE_ID = $WALLPAPER_MESSAGE_ID")
-      .run()
-      .readToList { AttachmentId(it.requireLong(ID)) }
-  }
-
-  private fun getTransferFile(db: SQLiteDatabase, attachmentId: AttachmentId): File? {
-    return db
-      .select(TRANSFER_FILE)
-      .from(TABLE_NAME)
-      .where("$ID = ?", attachmentId.id)
-      .limit(1)
-      .run()
-      .readToSingleObject { cursor ->
-        cursor.requireString(TRANSFER_FILE)?.let { File(it) }
-      }
-  }
-
-  private fun getArchiveTransferFile(db: SQLiteDatabase, attachmentId: AttachmentId): File? {
-    return db
-      .select(ARCHIVE_TRANSFER_FILE)
-      .from(TABLE_NAME)
-      .where("$ID = ?", attachmentId.id)
-      .limit(1)
-      .run()
-      .readToSingleObject { cursor ->
-        cursor.requireString(ARCHIVE_TRANSFER_FILE)?.let { File(it) }
-      }
-  }
+  private fun getArchiveTransferFile(db: SQLiteDatabase, attachmentId: AttachmentId): File? = db
+    .select(ARCHIVE_TRANSFER_FILE)
+    .from(TABLE_NAME)
+    .where("$ID = ?", attachmentId.id)
+    .limit(1)
+    .run()
+    .readToSingleObject { cursor ->
+      cursor.requireString(ARCHIVE_TRANSFER_FILE)?.let { File(it) }
+    }
 
   private fun getAttachment(cursor: Cursor): DatabaseAttachment {
     val contentType = cursor.requireString(CONTENT_TYPE)
@@ -2564,13 +2494,9 @@ class AttachmentTable(
     )
   }
 
-  private fun Cursor.readAttachments(): List<DatabaseAttachment> {
-    return getAttachments(this)
-  }
+  private fun Cursor.readAttachments(): List<DatabaseAttachment> = getAttachments(this)
 
-  private fun Cursor.readAttachment(): DatabaseAttachment {
-    return getAttachment(this)
-  }
+  private fun Cursor.readAttachment(): DatabaseAttachment = getAttachment(this)
 
   private fun Cursor.readDataFileInfo(): DataFileInfo? {
     val filePath: String = this.requireString(DATA_FILE) ?: return null
@@ -2591,47 +2517,39 @@ class AttachmentTable(
     )
   }
 
-  private fun Cursor.readThumbnailFileInfo(): ThumbnailFileInfo {
-    return ThumbnailFileInfo(
-      id = AttachmentId(this.requireLong(ID)),
-      file = File(this.requireNonNullString(THUMBNAIL_FILE)),
-      random = this.requireNonNullBlob(THUMBNAIL_RANDOM)
+  private fun Cursor.readThumbnailFileInfo(): ThumbnailFileInfo = ThumbnailFileInfo(
+    id = AttachmentId(this.requireLong(ID)),
+    file = File(this.requireNonNullString(THUMBNAIL_FILE)),
+    random = this.requireNonNullBlob(THUMBNAIL_RANDOM)
+  )
+
+  private fun Cursor.readStickerLocator(): StickerLocator? = if (this.requireInt(STICKER_ID) >= 0) {
+    StickerLocator(
+      packId = this.requireNonNullString(STICKER_PACK_ID),
+      packKey = this.requireNonNullString(STICKER_PACK_KEY),
+      stickerId = this.requireInt(STICKER_ID),
+      emoji = this.requireString(STICKER_EMOJI)
     )
+  } else {
+    null
   }
 
-  private fun Cursor.readStickerLocator(): StickerLocator? {
-    return if (this.requireInt(STICKER_ID) >= 0) {
-      StickerLocator(
-        packId = this.requireNonNullString(STICKER_PACK_ID),
-        packKey = this.requireNonNullString(STICKER_PACK_KEY),
-        stickerId = this.requireInt(STICKER_ID),
-        emoji = this.requireString(STICKER_EMOJI)
-      )
-    } else {
-      null
-    }
+  private fun Attachment?.getVisualHashStringOrNull(): String? = when {
+    this == null -> null
+    this.blurHash != null -> this.blurHash.hash
+    this.audioHash != null -> this.audioHash.hash
+    else -> null
   }
 
-  private fun Attachment?.getVisualHashStringOrNull(): String? {
-    return when {
-      this == null -> null
-      this.blurHash != null -> this.blurHash.hash
-      this.audioHash != null -> this.audioHash.hash
-      else -> null
-    }
-  }
-
-  fun debugGetLatestAttachments(): List<DatabaseAttachment> {
-    return readableDatabase
-      .select(*PROJECTION)
-      .from(TABLE_NAME)
-      .where("$REMOTE_LOCATION IS NOT NULL AND $REMOTE_KEY IS NOT NULL")
-      .orderBy("$ID DESC")
-      .limit(30)
-      .run()
-      .readToList { it.readAttachments() }
-      .flatten()
-  }
+  fun debugGetLatestAttachments(): List<DatabaseAttachment> = readableDatabase
+    .select(*PROJECTION)
+    .from(TABLE_NAME)
+    .where("$REMOTE_LOCATION IS NOT NULL AND $REMOTE_KEY IS NOT NULL")
+    .orderBy("$ID DESC")
+    .limit(30)
+    .run()
+    .readToList { it.readAttachments() }
+    .flatten()
 
   class DataFileWriteResult(
     val file: File,
@@ -2689,64 +2607,50 @@ class AttachmentTable(
     @JvmField
     val mp4FastStart: Boolean = false
   ) : Parcelable {
-    fun shouldSkipTransform(): Boolean {
-      return skipTransform
-    }
+    fun shouldSkipTransform(): Boolean = skipTransform
 
     @IgnoredOnParcel
     @JsonProperty("videoEdited")
     val videoEdited: Boolean = videoTrim
 
-    fun withSkipTransform(): TransformProperties {
-      return this.copy(
-        skipTransform = true
-      )
-    }
+    fun withSkipTransform(): TransformProperties = this.copy(
+      skipTransform = true
+    )
 
-    fun withMp4FastStart(): TransformProperties {
-      return this.copy(mp4FastStart = true)
-    }
+    fun withMp4FastStart(): TransformProperties = this.copy(mp4FastStart = true)
 
-    fun serialize(): String {
-      return JsonUtil.toJson(this)
-    }
+    fun serialize(): String = JsonUtil.toJson(this)
 
     companion object {
       private val DEFAULT_MEDIA_QUALITY = SentMediaQuality.STANDARD.code
 
       @JvmStatic
-      fun empty(): TransformProperties {
-        return TransformProperties(
-          skipTransform = false,
-          videoTrim = false,
-          videoTrimStartTimeUs = 0,
-          videoTrimEndTimeUs = 0,
-          sentMediaQuality = DEFAULT_MEDIA_QUALITY,
-          mp4FastStart = false
-        )
-      }
+      fun empty(): TransformProperties = TransformProperties(
+        skipTransform = false,
+        videoTrim = false,
+        videoTrimStartTimeUs = 0,
+        videoTrimEndTimeUs = 0,
+        sentMediaQuality = DEFAULT_MEDIA_QUALITY,
+        mp4FastStart = false
+      )
 
-      fun forSkipTransform(): TransformProperties {
-        return TransformProperties(
-          skipTransform = true,
-          videoTrim = false,
-          videoTrimStartTimeUs = 0,
-          videoTrimEndTimeUs = 0,
-          sentMediaQuality = DEFAULT_MEDIA_QUALITY,
-          mp4FastStart = false
-        )
-      }
+      fun forSkipTransform(): TransformProperties = TransformProperties(
+        skipTransform = true,
+        videoTrim = false,
+        videoTrimStartTimeUs = 0,
+        videoTrimEndTimeUs = 0,
+        sentMediaQuality = DEFAULT_MEDIA_QUALITY,
+        mp4FastStart = false
+      )
 
-      fun forVideoTrim(videoTrimStartTimeUs: Long, videoTrimEndTimeUs: Long): TransformProperties {
-        return TransformProperties(
-          skipTransform = false,
-          videoTrim = true,
-          videoTrimStartTimeUs = videoTrimStartTimeUs,
-          videoTrimEndTimeUs = videoTrimEndTimeUs,
-          sentMediaQuality = DEFAULT_MEDIA_QUALITY,
-          mp4FastStart = false
-        )
-      }
+      fun forVideoTrim(videoTrimStartTimeUs: Long, videoTrimEndTimeUs: Long): TransformProperties = TransformProperties(
+        skipTransform = false,
+        videoTrim = true,
+        videoTrimStartTimeUs = videoTrimStartTimeUs,
+        videoTrimEndTimeUs = videoTrimEndTimeUs,
+        sentMediaQuality = DEFAULT_MEDIA_QUALITY,
+        mp4FastStart = false
+      )
 
       @JvmStatic
       fun forSentMediaQuality(currentProperties: Optional<TransformProperties>, sentMediaQuality: SentMediaQuality): TransformProperties {
@@ -2755,21 +2659,17 @@ class AttachmentTable(
       }
 
       @JvmStatic
-      fun forSentMediaQuality(sentMediaQuality: Int): TransformProperties {
-        return TransformProperties(sentMediaQuality = sentMediaQuality)
-      }
+      fun forSentMediaQuality(sentMediaQuality: Int): TransformProperties = TransformProperties(sentMediaQuality = sentMediaQuality)
 
       @JvmStatic
-      fun parse(serialized: String?): TransformProperties {
-        return if (serialized == null) {
+      fun parse(serialized: String?): TransformProperties = if (serialized == null) {
+        empty()
+      } else {
+        try {
+          JsonUtil.fromJson(serialized, TransformProperties::class.java)
+        } catch (e: IOException) {
+          Log.w(TAG, "Failed to parse TransformProperties!", e)
           empty()
-        } else {
-          try {
-            JsonUtil.fromJson(serialized, TransformProperties::class.java)
-          } catch (e: IOException) {
-            Log.w(TAG, "Failed to parse TransformProperties!", e)
-            empty()
-          }
         }
       }
     }
@@ -2792,9 +2692,7 @@ class AttachmentTable(
     PERMANENT_FAILURE(4);
 
     companion object {
-      fun deserialize(value: Int): ThumbnailRestoreState {
-        return values().firstOrNull { it.value == value } ?: NONE
-      }
+      fun deserialize(value: Int): ThumbnailRestoreState = values().firstOrNull { it.value == value } ?: NONE
     }
   }
 
@@ -2832,9 +2730,7 @@ class AttachmentTable(
     TEMPORARY_FAILURE(5);
 
     companion object {
-      fun deserialize(value: Int): ArchiveTransferState {
-        return values().firstOrNull { it.value == value } ?: NONE
-      }
+      fun deserialize(value: Int): ArchiveTransferState = values().firstOrNull { it.value == value } ?: NONE
     }
   }
 
@@ -2858,12 +2754,8 @@ class AttachmentTable(
     val remoteDigest: ByteArray?,
     val remoteKey: ByteArray?
   ) {
-    override fun equals(other: Any?): Boolean {
-      return this === other || attachmentId == (other as? RestorableAttachment)?.attachmentId
-    }
+    override fun equals(other: Any?): Boolean = this === other || attachmentId == (other as? RestorableAttachment)?.attachmentId
 
-    override fun hashCode(): Int {
-      return attachmentId.hashCode()
-    }
+    override fun hashCode(): Int = attachmentId.hashCode()
   }
 }

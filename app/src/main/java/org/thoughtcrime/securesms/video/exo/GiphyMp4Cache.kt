@@ -116,9 +116,7 @@ class GiphyMp4Cache(private val maxSize: Long) {
     }
   }
 
-  private fun calculateTotalSize(data: Map<Uri, Entry>): Long {
-    return data.values.map { e -> e.size }.reduceOrNull { sum, size -> sum + size } ?: 0
-  }
+  private fun calculateTotalSize(data: Map<Uri, Entry>): Long = data.values.map { e -> e.size }.reduceOrNull { sum, size -> sum + size } ?: 0
 
   fun interface Lease {
     fun release()

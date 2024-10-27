@@ -1,12 +1,16 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 buildscript {
   dependencies {
     classpath(libs.agp)
     classpath(libs.kgp)
-    classpath(libs.plugins.androidx.navigation.safe.args)
-    classpath(libs.plugins.protobuf)
-    classpath(libs.plugins.ktlint)
-    classpath(libs.plugins.exhaustive)
-    classpath(libs.plugins.wire)
+    classpath(libs.androidx.navigation.safe.args)
+    classpath(libs.protobuf)
+    classpath(libs.ktlint.gradle)
+    classpath(libs.compose.compiler)
+    classpath(libs.wire)
 //    {
 //      exclude(group = "com.squareup.wire", module = "wire-swift-generator")
 //      exclude(group = "com.squareup.wire", module = "wire-grpc-client")
@@ -14,16 +18,14 @@ buildscript {
 //      exclude(group = "com.squareup.wire", module = "wire-grpc-server-generator")
 //      exclude(group = "io.outfoxx", module = "swiftpoet")
 //    }
-    classpath(libs.plugins.androidx.benchmark)
+    classpath(libs.androidx.benchmark)
     classpath(files("$rootDir/wire-handler/wire-handler-1.0.0.jar"))
-    classpath(libs.plugins.ksp)
+    classpath(libs.ksp)
   }
 }
 
 plugins {
   `version-catalog`
-  // alias(libs.plugins.spotless)
-  // alias(libs.plugins.doctor)
   alias(libs.plugins.dependencyAnalysis)
   alias(libs.plugins.kotlin.android) apply false
   alias(libs.plugins.android.library) apply false
@@ -34,9 +36,27 @@ tasks.withType<Wrapper> {
   distributionType = Wrapper.DistributionType.ALL
 }
 
-apply(from = "${rootDir}/constants.gradle.kts")
-
 subprojects {
+
+  tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+      languageVersion.set(
+        KotlinVersion.valueOf(
+          "KOTLIN_${libs.versions.build.kotlin.language.get().replace(".", "_")}"))
+      jvmTarget.set(JvmTarget.valueOf("JVM_${libs.versions.build.java.target.get()}"))
+      freeCompilerArgs.addAll(
+        listOf(
+          "-opt-in=kotlin.time.ExperimentalTime,kotlin.RequiresOptIn",
+          "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+          "-opt-in=kotlin.ExperimentalUnsignedTypes",
+          "-opt-in=kotlin.time.ExperimentalTime",
+          "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+          "-opt-in=kotlinx.coroutines.FlowPreview",
+          "-Xcontext-receivers",
+        ))
+    }
+  }
+
   if (JavaVersion.current().isJava8Compatible) {
     allprojects {
       tasks.withType<Javadoc> {
@@ -51,7 +71,11 @@ subprojects {
     tasks.register("qa") {
       group = "Verification"
       description = "Quality Assurance. Run before pushing"
-      dependsOn("clean", "testReleaseUnitTest", "lintRelease")
+      dependsOn(
+        // "clean",
+        "testReleaseUnitTest",
+        "lintRelease"
+      )
     }
   }
 }
@@ -70,7 +94,7 @@ tasks.register("qa") {
   group = "Verification"
   description = "Quality Assurance. Run before pushing."
   dependsOn(
-    "clean",
+//    "clean",
     "buildQa",
     ":Signal-Android:testPlayProdReleaseUnitTest",
     ":Signal-Android:lintPlayProdRelease",

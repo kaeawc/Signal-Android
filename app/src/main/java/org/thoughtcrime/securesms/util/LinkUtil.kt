@@ -64,9 +64,7 @@ object LinkUtil {
    * A URL is legal if it has all valid URL characters.
    */
   @JvmStatic
-  fun isLegalUrl(url: String): Boolean {
-    return isLegalUrlInternal(url).isLegal
-  }
+  fun isLegalUrl(url: String): Boolean = isLegalUrlInternal(url).isLegal
 
   private fun isLegalUrlInternal(url: String): LegalCharactersResult {
     if (ILLEGAL_CHARACTERS_PATTERN.matcher(url).find()) {
@@ -92,16 +90,14 @@ object LinkUtil {
   }
 
   @JvmStatic
-  private fun isValidURI(linkUri: String?): Boolean {
-    return if (linkUri == null) {
+  private fun isValidURI(linkUri: String?): Boolean = if (linkUri == null) {
+    false
+  } else {
+    try {
+      val ignored = URI(linkUri)
+      true
+    } catch (e: URISyntaxException) {
       false
-    } else {
-      try {
-        val ignored = URI(linkUri)
-        true
-      } catch (e: URISyntaxException) {
-        false
-      }
     }
   }
 

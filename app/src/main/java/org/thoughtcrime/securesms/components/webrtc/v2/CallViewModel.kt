@@ -349,23 +349,19 @@ class CallViewModel(
   }
 
   @StringRes
-  private fun getStatusFromHangupType(hangupType: HangupMessage.Type): Int {
-    return when (hangupType) {
-      HangupMessage.Type.NORMAL, HangupMessage.Type.NEED_PERMISSION -> R.string.RedPhone_ending_call
-      HangupMessage.Type.ACCEPTED -> R.string.WebRtcCallActivity__answered_on_a_linked_device
-      HangupMessage.Type.DECLINED -> R.string.WebRtcCallActivity__declined_on_a_linked_device
-      HangupMessage.Type.BUSY -> R.string.WebRtcCallActivity__busy_on_a_linked_device
-    }
+  private fun getStatusFromHangupType(hangupType: HangupMessage.Type): Int = when (hangupType) {
+    HangupMessage.Type.NORMAL, HangupMessage.Type.NEED_PERMISSION -> R.string.RedPhone_ending_call
+    HangupMessage.Type.ACCEPTED -> R.string.WebRtcCallActivity__answered_on_a_linked_device
+    HangupMessage.Type.DECLINED -> R.string.WebRtcCallActivity__declined_on_a_linked_device
+    HangupMessage.Type.BUSY -> R.string.WebRtcCallActivity__busy_on_a_linked_device
   }
 
-  private fun getStatusFromGroupState(groupState: WebRtcViewModel.GroupCallState): CallString? {
-    return when (groupState) {
-      WebRtcViewModel.GroupCallState.DISCONNECTED -> CallString.ResourceString(R.string.WebRtcCallView__disconnected)
-      WebRtcViewModel.GroupCallState.RECONNECTING -> CallString.ResourceString(R.string.WebRtcCallView__reconnecting)
-      WebRtcViewModel.GroupCallState.CONNECTED_AND_PENDING -> CallString.ResourceString(R.string.WebRtcCallView__joining)
-      WebRtcViewModel.GroupCallState.CONNECTED_AND_JOINING -> CallString.ResourceString(R.string.WebRtcCallView__waiting_to_be_let_in)
-      else -> null
-    }
+  private fun getStatusFromGroupState(groupState: WebRtcViewModel.GroupCallState): CallString? = when (groupState) {
+    WebRtcViewModel.GroupCallState.DISCONNECTED -> CallString.ResourceString(R.string.WebRtcCallView__disconnected)
+    WebRtcViewModel.GroupCallState.RECONNECTING -> CallString.ResourceString(R.string.WebRtcCallView__reconnecting)
+    WebRtcViewModel.GroupCallState.CONNECTED_AND_PENDING -> CallString.ResourceString(R.string.WebRtcCallView__joining)
+    WebRtcViewModel.GroupCallState.CONNECTED_AND_JOINING -> CallString.ResourceString(R.string.WebRtcCallView__waiting_to_be_let_in)
+    else -> null
   }
 
   fun onAudioDeviceSheetDisplayChanged(displayed: Boolean) {

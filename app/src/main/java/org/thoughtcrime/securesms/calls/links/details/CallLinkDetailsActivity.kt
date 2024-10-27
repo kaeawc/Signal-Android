@@ -20,9 +20,7 @@ class CallLinkDetailsActivity : FragmentWrapperActivity() {
 
     private const val BUNDLE = "bundle"
 
-    fun createIntent(context: Context, callLinkRoomId: CallLinkRoomId): Intent {
-      return Intent(context, CallLinkDetailsActivity::class.java)
-        .putExtra(BUNDLE, CallLinkDetailsFragmentArgs.Builder(callLinkRoomId).build().toBundle())
-    }
+    fun createIntent(context: Context, callLinkRoomId: CallLinkRoomId): Intent = Intent(context, CallLinkDetailsActivity::class.java)
+      .putExtra(BUNDLE, CallLinkDetailsFragmentArgs.Builder(callLinkRoomId).build().toBundle())
   }
 }

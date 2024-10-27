@@ -112,13 +112,11 @@ class WebRtcReactionsItemAnimator : RecyclerView.ItemAnimator() {
     return true
   }
 
-  override fun animatePersistence(viewHolder: RecyclerView.ViewHolder, preLayoutInfo: ItemHolderInfo, postLayoutInfo: ItemHolderInfo): Boolean {
-    return if (pendingAnimations.contains(viewHolder) || activeAnimations.containsKey(viewHolder)) {
-      dispatchAnimationFinished(viewHolder)
-      false
-    } else {
-      animateSlideIn(viewHolder, preLayoutInfo, postLayoutInfo)
-    }
+  override fun animatePersistence(viewHolder: RecyclerView.ViewHolder, preLayoutInfo: ItemHolderInfo, postLayoutInfo: ItemHolderInfo): Boolean = if (pendingAnimations.contains(viewHolder) || activeAnimations.containsKey(viewHolder)) {
+    dispatchAnimationFinished(viewHolder)
+    false
+  } else {
+    animateSlideIn(viewHolder, preLayoutInfo, postLayoutInfo)
   }
 
   override fun animateChange(oldHolder: RecyclerView.ViewHolder, newHolder: RecyclerView.ViewHolder, preLayoutInfo: ItemHolderInfo, postLayoutInfo: ItemHolderInfo): Boolean {
@@ -198,9 +196,7 @@ class WebRtcReactionsItemAnimator : RecyclerView.ItemAnimator() {
     dispatchAnimationsFinished()
   }
 
-  override fun isRunning(): Boolean {
-    return activeAnimations.values.any { it.sharedAnimator.isRunning }
-  }
+  override fun isRunning(): Boolean = activeAnimations.values.any { it.sharedAnimator.isRunning }
 
   override fun onAnimationFinished(viewHolder: RecyclerView.ViewHolder) {
     val parent = (viewHolder.itemView.parent as? RecyclerView)
@@ -224,9 +220,7 @@ class WebRtcReactionsItemAnimator : RecyclerView.ItemAnimator() {
     }
   }
 
-  private fun activeAnimationsByAnimator(it: Animator): Map<RecyclerView.ViewHolder, AnimationInfo> {
-    return activeAnimations.filterValues { animationInfo: AnimationInfo -> animationInfo.sharedAnimator == it }
-  }
+  private fun activeAnimationsByAnimator(it: Animator): Map<RecyclerView.ViewHolder, AnimationInfo> = activeAnimations.filterValues { animationInfo: AnimationInfo -> animationInfo.sharedAnimator == it }
 
   companion object {
     private val TAG = Log.tag(WebRtcReactionsItemAnimator::class.java)

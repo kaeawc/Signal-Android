@@ -177,9 +177,7 @@ class DonateToSignalViewModel(
     store.update { it.copy(oneTimeDonationState = it.oneTimeDonationState.copy(customAmount = FiatMoney(bigDecimalAmount, it.oneTimeDonationState.customAmount.currency))) }
   }
 
-  fun getSelectedSubscriptionCost(): FiatMoney {
-    return store.state.monthlyDonationState.selectedSubscription!!.prices.first { it.currency == store.state.selectedCurrency }
-  }
+  fun getSelectedSubscriptionCost(): FiatMoney = store.state.monthlyDonationState.selectedSubscription!!.prices.first { it.currency == store.state.selectedCurrency }
 
   fun refreshActiveSubscription() {
     RecurringInAppPaymentRepository
@@ -222,20 +220,16 @@ class DonateToSignalViewModel(
     }
   }
 
-  private fun getAmount(snapshot: DonateToSignalState): FiatMoney {
-    return when (snapshot.inAppPaymentType) {
-      InAppPaymentType.ONE_TIME_DONATION -> getOneTimeAmount(snapshot.oneTimeDonationState)
-      InAppPaymentType.RECURRING_DONATION -> getSelectedSubscriptionCost()
-      else -> error("This ViewModel does not support ${snapshot.inAppPaymentType}.")
-    }
+  private fun getAmount(snapshot: DonateToSignalState): FiatMoney = when (snapshot.inAppPaymentType) {
+    InAppPaymentType.ONE_TIME_DONATION -> getOneTimeAmount(snapshot.oneTimeDonationState)
+    InAppPaymentType.RECURRING_DONATION -> getSelectedSubscriptionCost()
+    else -> error("This ViewModel does not support ${snapshot.inAppPaymentType}.")
   }
 
-  private fun getOneTimeAmount(snapshot: DonateToSignalState.OneTimeDonationState): FiatMoney {
-    return if (snapshot.isCustomAmountFocused) {
-      snapshot.customAmount
-    } else {
-      snapshot.selectedBoost!!.price
-    }
+  private fun getOneTimeAmount(snapshot: DonateToSignalState.OneTimeDonationState): FiatMoney = if (snapshot.isCustomAmountFocused) {
+    snapshot.customAmount
+  } else {
+    snapshot.selectedBoost!!.price
   }
 
   private fun initializeOneTimeDonationState(oneTimeInAppPaymentRepository: OneTimeInAppPaymentRepository) {
@@ -376,12 +370,10 @@ class DonateToSignalViewModel(
     )
   }
 
-  private fun resolveSelectedSubscription(activeSubscription: ActiveSubscription, subscriptions: List<Subscription>): Subscription? {
-    return if (activeSubscription.isActive) {
-      subscriptions.firstOrNull { it.level == activeSubscription.activeSubscription.level }
-    } else {
-      subscriptions.firstOrNull()
-    }
+  private fun resolveSelectedSubscription(activeSubscription: ActiveSubscription, subscriptions: List<Subscription>): Subscription? = if (activeSubscription.isActive) {
+    subscriptions.firstOrNull { it.level == activeSubscription.activeSubscription.level }
+  } else {
+    subscriptions.firstOrNull()
   }
 
   private fun ensureValidSubscriptionCurrency(allSubscriptions: Single<List<Subscription>>) {
@@ -431,8 +423,6 @@ class DonateToSignalViewModel(
     private val startType: InAppPaymentType,
     private val oneTimeInAppPaymentRepository: OneTimeInAppPaymentRepository = OneTimeInAppPaymentRepository(AppDependencies.donationsService)
   ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return modelClass.cast(DonateToSignalViewModel(startType, oneTimeInAppPaymentRepository)) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = modelClass.cast(DonateToSignalViewModel(startType, oneTimeInAppPaymentRepository)) as T
   }
 }

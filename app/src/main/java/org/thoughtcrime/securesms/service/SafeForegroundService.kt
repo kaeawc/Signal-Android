@@ -163,13 +163,9 @@ abstract class SafeForegroundService : Service() {
       }
     }
 
-    fun isStopping(intent: Intent): Boolean {
-      return intent.action == ACTION_STOP
-    }
+    fun isStopping(intent: Intent): Boolean = intent.action == ACTION_STOP
 
-    private fun currentState(clazz: Class<out SafeForegroundService>): State {
-      return states.getOrPut(clazz) { State.STOPPED }
-    }
+    private fun currentState(clazz: Class<out SafeForegroundService>): State = states.getOrPut(clazz) { State.STOPPED }
   }
 
   override fun onCreate() {

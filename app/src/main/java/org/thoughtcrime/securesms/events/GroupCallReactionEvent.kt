@@ -13,9 +13,7 @@ import java.util.concurrent.TimeUnit
  * compared across Rx streams.
  */
 data class GroupCallReactionEvent(val sender: Recipient, val reaction: String, val timestamp: Long) {
-  fun getExpirationTimestamp(): Long {
-    return timestamp + TimeUnit.SECONDS.toMillis(LIFESPAN_SECONDS)
-  }
+  fun getExpirationTimestamp(): Long = timestamp + TimeUnit.SECONDS.toMillis(LIFESPAN_SECONDS)
 
   companion object {
     const val LIFESPAN_SECONDS = 4L

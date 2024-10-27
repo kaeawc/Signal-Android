@@ -1,36 +1,36 @@
-import org.gradle.kotlin.dsl.extra
-
 plugins {
   `kotlin-dsl`
-  `version-catalog`
-  alias(libs.kgp)
-  alias(libs.plugins.ktlint)
+  id("kotlin")
   id("groovy-gradle-plugin")
+  id("org.jlleitschuh.gradle.ktlint")
 }
 
-val signalJavaVersion: JavaVersion by rootProject.extra
-val signalKotlinJvmTarget: String by rootProject.extra
+group = "co.hinge.gradle"
+version = "1.0.0-SNAPSHOT"
+
+repositories {
+  gradlePluginPortal()
+  google()
+  mavenCentral()
+  maven {
+    url = uri("https://plugins.gradle.org/m2/")
+  }
+}
 
 java {
-  sourceCompatibility = signalJavaVersion
-  targetCompatibility = signalJavaVersion
-}
-
-kotlinDslPluginOptions {
-  jvmTarget.set(signalKotlinJvmTarget)
+  sourceCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
+  targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
 }
 
 dependencies {
   implementation(libs.kgp)
-  implementation(libs.plugins.android.library)
-  implementation(libs.plugins.android.application)
+  implementation(libs.android.library)
+  implementation(libs.android.application)
   implementation(project(":tools"))
-  implementation(libs.plugins.ktlint)
+  implementation(libs.ktlint.gradle)
+  implementation(libs.compose.compiler)
 
-  // These allow us to reference the dependency catalog inside of our compiled plugins
-  // TODO: fix build logic class path with workaround
-//  implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
-//  implementation(files(testLibs.javaClass.superclass.protectionDomain.codeSource.location))
+  implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 }
 
 ktlint {

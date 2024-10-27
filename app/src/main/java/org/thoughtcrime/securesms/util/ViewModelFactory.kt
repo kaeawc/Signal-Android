@@ -22,14 +22,10 @@ import androidx.savedstate.SavedStateRegistryOwner
  */
 class ViewModelFactory<MODEL : ViewModel>(private val create: () -> MODEL) : ViewModelProvider.Factory {
   @Suppress("UNCHECKED_CAST")
-  override fun <T : ViewModel> create(modelClass: Class<T>): T {
-    return create() as T
-  }
+  override fun <T : ViewModel> create(modelClass: Class<T>): T = create() as T
 
   companion object {
-    fun <MODEL : ViewModel> factoryProducer(create: () -> MODEL): () -> ViewModelProvider.Factory {
-      return { ViewModelFactory(create) }
-    }
+    fun <MODEL : ViewModel> factoryProducer(create: () -> MODEL): () -> ViewModelProvider.Factory = { ViewModelFactory(create) }
   }
 }
 
@@ -38,76 +34,58 @@ class SavedStateViewModelFactory<MODEL : ViewModel>(
   registryOwner: SavedStateRegistryOwner
 ) : AbstractSavedStateViewModelFactory(registryOwner, null) {
   @Suppress("UNCHECKED_CAST")
-  override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
-    return create(handle) as T
-  }
+  override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T = create(handle) as T
 
   companion object {
     fun <MODEL : ViewModel> factoryProducer(
       create: (SavedStateHandle) -> MODEL,
       registryOwnerProducer: () -> SavedStateRegistryOwner
-    ): () -> ViewModelProvider.Factory {
-      return { SavedStateViewModelFactory(create, registryOwnerProducer()) }
-    }
+    ): () -> ViewModelProvider.Factory = { SavedStateViewModelFactory(create, registryOwnerProducer()) }
   }
 }
 
 @MainThread
 inline fun <reified VM : ViewModel> ComponentActivity.viewModel(
   noinline create: () -> VM
-): Lazy<VM> {
-  return viewModels(
-    factoryProducer = ViewModelFactory.factoryProducer(create)
-  )
-}
+): Lazy<VM> = viewModels(
+  factoryProducer = ViewModelFactory.factoryProducer(create)
+)
 
 @MainThread
 inline fun <reified VM : ViewModel> Fragment.viewModel(
   noinline create: () -> VM
-): Lazy<VM> {
-  return viewModels(
-    factoryProducer = ViewModelFactory.factoryProducer(create)
-  )
-}
+): Lazy<VM> = viewModels(
+  factoryProducer = ViewModelFactory.factoryProducer(create)
+)
 
 @MainThread
 inline fun <reified VM : ViewModel> Fragment.savedStateViewModel(
   noinline create: (SavedStateHandle) -> VM
-): Lazy<VM> {
-  return viewModels(
-    factoryProducer = SavedStateViewModelFactory.factoryProducer(create) { this }
-  )
-}
+): Lazy<VM> = viewModels(
+  factoryProducer = SavedStateViewModelFactory.factoryProducer(create) { this }
+)
 
 @MainThread
 inline fun <reified VM : ViewModel> Fragment.activitySavedStateViewModel(
   noinline create: (SavedStateHandle) -> VM
-): Lazy<VM> {
-  return activityViewModels(
-    factoryProducer = SavedStateViewModelFactory.factoryProducer(create) { requireActivity() }
-  )
-}
+): Lazy<VM> = activityViewModels(
+  factoryProducer = SavedStateViewModelFactory.factoryProducer(create) { requireActivity() }
+)
 
 @MainThread
 inline fun <reified VM : ViewModel> ComponentActivity.savedStateViewModel(
   noinline create: (SavedStateHandle) -> VM
-): Lazy<VM> {
-  return viewModels(
-    factoryProducer = SavedStateViewModelFactory.factoryProducer(create) { this }
-  )
-}
+): Lazy<VM> = viewModels(
+  factoryProducer = SavedStateViewModelFactory.factoryProducer(create) { this }
+)
 
 @MainThread
 inline fun <reified VM : ViewModel> Fragment.activityViewModel(
   noinline create: () -> VM
-): Lazy<VM> {
-  return activityViewModels(
-    factoryProducer = ViewModelFactory.factoryProducer(create)
-  )
-}
+): Lazy<VM> = activityViewModels(
+  factoryProducer = ViewModelFactory.factoryProducer(create)
+)
 
 @Suppress("ReplaceGetOrSet")
 @MainThread
-inline fun <reified VM : ViewModel> Fragment.createActivityViewModel(noinline create: () -> VM): VM {
-  return ViewModelProvider(requireActivity().viewModelStore, ViewModelFactory { create() }).get(VM::class.java)
-}
+inline fun <reified VM : ViewModel> Fragment.createActivityViewModel(noinline create: () -> VM): VM = ViewModelProvider(requireActivity().viewModelStore, ViewModelFactory { create() }).get(VM::class.java)

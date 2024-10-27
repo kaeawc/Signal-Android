@@ -86,23 +86,17 @@ object BioTextPreference {
       }
     }
 
-    override fun getSubhead1Text(context: Context): String? {
-      return if (recipient.isReleaseNotes) {
-        context.getString(R.string.ReleaseNotes__signal_release_notes_and_news)
-      } else {
-        recipient.combinedAboutAndEmoji
-      }
+    override fun getSubhead1Text(context: Context): String? = if (recipient.isReleaseNotes) {
+      context.getString(R.string.ReleaseNotes__signal_release_notes_and_news)
+    } else {
+      recipient.combinedAboutAndEmoji
     }
 
     override fun getSubhead2Text(): String? = null
 
-    override fun areContentsTheSame(newItem: RecipientModel): Boolean {
-      return super.areContentsTheSame(newItem) && newItem.recipient.hasSameContent(recipient)
-    }
+    override fun areContentsTheSame(newItem: RecipientModel): Boolean = super.areContentsTheSame(newItem) && newItem.recipient.hasSameContent(recipient)
 
-    override fun areItemsTheSame(newItem: RecipientModel): Boolean {
-      return newItem.recipient.id == recipient.id
-    }
+    override fun areItemsTheSame(newItem: RecipientModel): Boolean = newItem.recipient.id == recipient.id
   }
 
   class GroupModel(
@@ -115,15 +109,11 @@ object BioTextPreference {
 
     override fun getSubhead2Text(): String? = null
 
-    override fun areContentsTheSame(newItem: GroupModel): Boolean {
-      return super.areContentsTheSame(newItem) &&
-        groupTitle == newItem.groupTitle &&
-        groupMembershipDescription == newItem.groupMembershipDescription
-    }
+    override fun areContentsTheSame(newItem: GroupModel): Boolean = super.areContentsTheSame(newItem) &&
+      groupTitle == newItem.groupTitle &&
+      groupMembershipDescription == newItem.groupMembershipDescription
 
-    override fun areItemsTheSame(newItem: GroupModel): Boolean {
-      return true
-    }
+    override fun areItemsTheSame(newItem: GroupModel): Boolean = true
   }
 
   private abstract class BioTextViewHolder<T : BioTextPreferenceModel<T>>(itemView: View) : MappingViewHolder<T>(itemView) {

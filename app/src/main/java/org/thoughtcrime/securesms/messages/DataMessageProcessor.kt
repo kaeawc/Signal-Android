@@ -1048,20 +1048,18 @@ object DataMessageProcessor {
     }
   }
 
-  fun getMentions(mentionBodyRanges: List<BodyRange>): List<Mention> {
-    return mentionBodyRanges
-      .filter { it.mentionAci != null && it.start != null && it.length != null }
-      .mapNotNull {
-        val aci = ACI.parseOrNull(it.mentionAci)
+  fun getMentions(mentionBodyRanges: List<BodyRange>): List<Mention> = mentionBodyRanges
+    .filter { it.mentionAci != null && it.start != null && it.length != null }
+    .mapNotNull {
+      val aci = ACI.parseOrNull(it.mentionAci)
 
-        if (aci != null && !aci.isUnknown) {
-          val id = Recipient.externalPush(aci).id
-          Mention(id, it.start!!, it.length!!)
-        } else {
-          null
-        }
+      if (aci != null && !aci.isUnknown) {
+        val id = Recipient.externalPush(aci).id
+        Mention(id, it.start!!, it.length!!)
+      } else {
+        null
       }
-  }
+    }
 
   private fun insertPlaceholder(sender: RecipientId, timestamp: Long, groupId: GroupId?): InsertResult? {
     val textMessage = IncomingMessage(
@@ -1144,9 +1142,7 @@ object DataMessageProcessor {
     )
   }
 
-  fun getContacts(message: DataMessage): List<Contact> {
-    return message.contact.map { ContactModelMapper.remoteToLocal(it) }
-  }
+  fun getContacts(message: DataMessage): List<Contact> = message.contact.map { ContactModelMapper.remoteToLocal(it) }
 
   fun getLinkPreviews(previews: List<Preview>, body: String, isStoryEmbed: Boolean): List<LinkPreview> {
     if (previews.isEmpty()) {
