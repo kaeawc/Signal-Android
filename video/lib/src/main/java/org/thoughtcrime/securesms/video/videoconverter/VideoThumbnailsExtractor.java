@@ -15,7 +15,19 @@ import org.thoughtcrime.securesms.video.interfaces.MediaInput;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-@RequiresApi(api = 23)
+import android.graphics.Bitmap;
+import android.media.MediaCodec;
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
+import android.opengl.GLES20;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 final class VideoThumbnailsExtractor {
 
   private static final String TAG = Log.tag(VideoThumbnailsExtractor.class);
@@ -40,8 +52,7 @@ final class VideoThumbnailsExtractor {
       extractor = input.createExtractor();
       MediaFormat mediaFormat = null;
       for (int index = 0; index < extractor.getTrackCount(); ++index) {
-        final String mimeType = extractor.getTrackFormat(index).getString(MediaFormat.KEY_MIME);
-        if (mimeType != null && mimeType.startsWith("video/")) {
+        if (extractor.getTrackFormat(index).getString(MediaFormat.KEY_MIME).startsWith("video/")) {
           extractor.selectTrack(index);
           mediaFormat = extractor.getTrackFormat(index);
           break;
@@ -49,10 +60,6 @@ final class VideoThumbnailsExtractor {
       }
       if (mediaFormat != null) {
         final String mime     = mediaFormat.getString(MediaFormat.KEY_MIME);
-        if (mime == null) {
-          throw new IllegalArgumentException("Mime type for MediaFormat was null: \t" + mediaFormat);
-        }
-
         final int    rotation = mediaFormat.containsKey(MediaFormat.KEY_ROTATION) ? mediaFormat.getInteger(MediaFormat.KEY_ROTATION) : 0;
         final int    width    = mediaFormat.getInteger(MediaFormat.KEY_WIDTH);
         final int    height   = mediaFormat.getInteger(MediaFormat.KEY_HEIGHT);
@@ -80,7 +87,7 @@ final class VideoThumbnailsExtractor {
           outputHeightRotated = outputHeight;
         }
 
-        Log.i(TAG, "video :" + width + "x" + height + " " + rotation);
+        Log.i(TAG, "video: " + width + "x" + height + " " + rotation);
         Log.i(TAG, "output: " + outputWidthRotated + "x" + outputHeightRotated);
 
         outputSurface = new OutputSurface(outputWidthRotated, outputHeightRotated, true);
@@ -89,33 +96,20 @@ final class VideoThumbnailsExtractor {
         decoder.configure(mediaFormat, outputSurface.getSurface(), null, 0);
         decoder.start();
 
-        long duration = 0;
-
-        if (mediaFormat.containsKey(MediaFormat.KEY_DURATION)) {
-          duration = mediaFormat.getLong(MediaFormat.KEY_DURATION);
-        } else {
-          Log.w(TAG, "Video is missing duration!");
-        }
-
+        long duration = mediaFormat.getLong(MediaFormat.KEY_DURATION);
         callback.durationKnown(duration);
 
         doExtract(extractor, decoder, outputSurface, outputWidthRotated, outputHeightRotated, duration, thumbnailCount, callback);
       }
-    } catch (Throwable t) {
-      Log.w(TAG, t);
+    } catch (IOException | TranscodingException e) {
+      Log.w(TAG, e);
       callback.failed();
     } finally {
       if (outputSurface != null) {
         outputSurface.release();
       }
       if (decoder != null) {
-        try {
-          decoder.stop();
-        } catch (MediaCodec.CodecException codecException) {
-          Log.w(TAG, "Decoder stop failed: " + codecException.getDiagnosticInfo(), codecException);
-        } catch (IllegalStateException ise) {
-          Log.w(TAG, "Decoder stop failed", ise);
-        }
+        decoder.stop();
         decoder.release();
       }
       if (extractor != null) {
@@ -129,7 +123,7 @@ final class VideoThumbnailsExtractor {
                                 final @NonNull OutputSurface outputSurface,
                                 final int outputWidth, int outputHeight, long duration, int thumbnailCount,
                                 final @NonNull Callback callback)
-    throws TranscodingException
+      throws TranscodingException
   {
 
     final int                   TIMEOUT_USEC        = 10000;
@@ -165,14 +159,7 @@ final class VideoThumbnailsExtractor {
         }
       }
 
-      final int outputBufIndex;
-      try {
-        outputBufIndex = decoder.dequeueOutputBuffer(info, TIMEOUT_USEC);
-      } catch (IllegalStateException e) {
-        Log.w(TAG, "Decoder not in the Executing state, or codec is configured in asynchronous mode.", e);
-        throw new TranscodingException("Decoder not in the Executing state, or codec is configured in asynchronous mode.", e);
-      }
-
+      int outputBufIndex = decoder.dequeueOutputBuffer(info, TIMEOUT_USEC);
       if (outputBufIndex >= 0) {
         if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
           outputDone = true;

@@ -12,6 +12,7 @@ import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.documentfile.provider.DocumentFile
@@ -208,6 +209,7 @@ class TranscodeWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(
     }
   }
 
+  @RequiresApi(23)
   private class WorkerMediaDataSource(private val file: File) : InputStreamMediaDataSource() {
 
     private val size = file.length()

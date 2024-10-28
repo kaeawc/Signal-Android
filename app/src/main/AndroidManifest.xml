@@ -78,7 +78,8 @@
 
     <uses-permission android:name="android.permission.MANAGE_OWN_CALLS"/>
 
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"
+        tools:ignore="ProtectedPermissions" />
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
@@ -598,22 +599,36 @@
             <data android:scheme="https" android:host="signaldonations.org" android:pathPrefix="/stripe/return/ideal"/>
         </intent-filter>
 
-        <intent-filter android:autoVerify="true">
+        <intent-filter android:autoVerify="true"
+            tools:targetApi="m">
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="https"
-                  android:host="signal.tube" />
-            <data android:scheme="sgnl"
-                  android:host="signal.tube" />
+                android:host="signal.tube" />
         </intent-filter>
 
         <intent-filter android:autoVerify="true">
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="sgnl"
+                android:host="signal.tube" />
+        </intent-filter>
+
+        <intent-filter android:autoVerify="true"
+            tools:targetApi="m">
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="https"
                 android:host="signal.me" />
+        </intent-filter>
+
+        <intent-filter android:autoVerify="true">
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="sgnl"
                 android:host="signal.me" />
         </intent-filter>
@@ -1155,7 +1170,8 @@
         android:name=".service.webrtc.AndroidCallConnectionService"
         android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE"
         android:foregroundServiceType="phoneCall"
-        android:exported="true">
+        android:exported="true"
+        tools:targetApi="26">
         <intent-filter>
             <action android:name="android.telecom.ConnectionService" />
         </intent-filter>

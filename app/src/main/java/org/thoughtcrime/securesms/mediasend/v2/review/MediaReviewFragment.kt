@@ -18,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import android.widget.ViewSwitcher
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -76,6 +77,7 @@ import kotlin.math.roundToInt
 /**
  * Allows the user to view and edit selected media.
  */
+@RequiresApi(api = 23)
 class MediaReviewFragment :
   Fragment(R.layout.v2_media_review_fragment),
   ScheduleMessageTimePickerBottomSheet.ScheduleCallback,

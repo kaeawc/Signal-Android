@@ -3,9 +3,11 @@ package org.thoughtcrime.securesms.jobs;
 
 import android.annotation.SuppressLint;
 import android.net.Uri;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.documentfile.provider.DocumentFile;
 
 import org.greenrobot.eventbus.EventBus;
@@ -66,6 +68,7 @@ public final class LocalBackupJobApi29 extends BaseJob {
   }
 
   @Override
+  @RequiresApi(api = 29)
   public void onRun() throws IOException {
     Log.i(TAG, "Executing backup job...");
 
