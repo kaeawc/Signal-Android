@@ -3,7 +3,7 @@ name: Android CI
 on:
   push:
     branches:
-      - '*'
+      - '**'
 
 permissions:
   contents: read # to fetch code (actions/checkout)
