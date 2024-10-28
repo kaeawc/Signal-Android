@@ -15,12 +15,6 @@ java {
   targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
 }
 
-kotlin {
-  jvmToolchain {
-//    languageVersion = JavaLanguageVersion.of(signalKotlinJvmTarget)
-  }
-}
-
 afterEvaluate {
   listOf(
     "runKtlintCheckOverMainSourceSet",

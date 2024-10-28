@@ -36,8 +36,7 @@ tasks.withType<Wrapper> {
   distributionType = Wrapper.DistributionType.ALL
 }
 
-subprojects {
-
+allprojects {
   tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
       languageVersion.set(
@@ -52,11 +51,14 @@ subprojects {
           "-opt-in=kotlin.time.ExperimentalTime",
           "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
           "-opt-in=kotlinx.coroutines.FlowPreview",
+          "-Xjvm-default=all",
           "-Xcontext-receivers",
         ))
     }
   }
+}
 
+subprojects {
   if (JavaVersion.current().isJava8Compatible) {
     allprojects {
       tasks.withType<Javadoc> {

@@ -66,7 +66,7 @@ wire {
 }
 
 ktlint {
-  version.set("1.2.1")
+  version.set(libs.versions.ktlint.get())
 }
 
 android {
@@ -81,11 +81,6 @@ android {
   testBuildType = "instrumentation"
 
   android.bundle.language.enableSplit = false
-
-  kotlinOptions {
-    // jvmTarget = signalKotlinJvmTarget
-    freeCompilerArgs = listOf("-Xjvm-default=all")
-  }
 
   keystores["debug"]?.let { properties ->
     signingConfigs.getByName("debug").apply {

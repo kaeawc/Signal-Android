@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+
 plugins {
   id("com.android.library")
   id("androidx.benchmark")
@@ -15,10 +18,6 @@ android {
     isCoreLibraryDesugaringEnabled = true
     sourceCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
     targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
-  }
-
-  kotlinOptions {
-    // jvmTarget = signalKotlinJvmTarget
   }
 
   defaultConfig {

@@ -42,6 +42,7 @@ libsignal-client = "0.58.2" #0.59.0
 mp4parser = "1.9.56"
 accompanist = "0.36.0"
 nanohttpd = "2.3.1"
+ktlint = "1.2.1"
 
 
 test-androidx-junit = "1.2.1"

@@ -12,7 +12,7 @@ java {
 // NOTE: For now, in order to run ktlint on this project, you have to manually run ./gradlew :build-logic:tools:ktlintFormat
 //       Gotta figure out how to get it auto-included in the normal ./gradlew ktlintFormat
 ktlint {
-  version.set("1.2.1")
+  version.set(libs.versions.ktlint.get())
 }
 
 dependencies {

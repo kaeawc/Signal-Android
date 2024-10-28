@@ -34,9 +34,6 @@ android {
     sourceCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
     targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
   }
-  kotlinOptions {
-//    jvmTarget = signalKotlinJvmTarget
-  }
   packaging {
     resources {
       excludes += "/META-INF/{AL2.0,LGPL2.1}"

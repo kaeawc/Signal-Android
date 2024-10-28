@@ -23,12 +23,6 @@ java {
   targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
 }
 
-tasks.withType<KotlinCompile>().configureEach {
-  kotlinOptions {
-//    jvmTarget = signalKotlinJvmTarget
-  }
-}
-
 afterEvaluate {
   listOf(
     "runKtlintCheckOverMainSourceSet",
@@ -42,7 +36,7 @@ afterEvaluate {
 }
 
 ktlint {
-  version.set("1.2.1")
+  version.set(libs.versions.ktlint.get())
 
   filter {
     exclude { entry ->
