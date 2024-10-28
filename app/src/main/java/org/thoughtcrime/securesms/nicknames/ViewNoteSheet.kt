@@ -5,6 +5,7 @@
 
 package org.thoughtcrime.securesms.nicknames
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.text.util.Linkify
 import androidx.activity.result.ActivityResultLauncher
@@ -96,7 +97,8 @@ class ViewNoteSheet : ComposeBottomSheetDialogFragment() {
   }
 }
 
-@Preview
+@Preview(name = "Light Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun ViewNoteBottomSheetContentPreview() {
   Previews.Preview {

@@ -5,6 +5,7 @@
 
 package org.thoughtcrime.securesms.components.settings.app.internal
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Surface
@@ -45,7 +46,8 @@ class InternalTerminalDonationConfigurationFragment : ComposeFragment() {
   }
 }
 
-@Preview
+@Preview(name = "Light Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun InternalTerminalDonationConfigurationContentPreview() {
   SignalTheme {

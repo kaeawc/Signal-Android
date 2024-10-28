@@ -5,6 +5,7 @@
 
 package org.thoughtcrime.securesms.backup.v2.ui.subscription
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -134,7 +135,8 @@ fun MessageBackupsEducationScreen(
   }
 }
 
-@Preview
+@Preview(name = "Light Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun MessageBackupsEducationSheetPreview() {
   Previews.Preview {
@@ -146,7 +148,8 @@ private fun MessageBackupsEducationSheetPreview() {
   }
 }
 
-@Preview
+@Preview(name = "Light Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun NotableFeatureRowPreview() {
   Previews.Preview {

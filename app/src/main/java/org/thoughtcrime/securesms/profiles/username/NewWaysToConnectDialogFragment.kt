@@ -5,6 +5,7 @@
 
 package org.thoughtcrime.securesms.profiles.username
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -58,7 +59,8 @@ class NewWaysToConnectDialogFragment : ComposeDialogFragment() {
   }
 }
 
-@Preview
+@Preview(name = "Light Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewNewWaysToConnectDialogContent() {
   Previews.Preview {
@@ -149,7 +151,8 @@ private fun NewWaysToConnectDialogContent(
   }
 }
 
-@Preview
+@Preview(name = "Light Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewNewWaysToConnectRowItem() {
   Previews.Preview {

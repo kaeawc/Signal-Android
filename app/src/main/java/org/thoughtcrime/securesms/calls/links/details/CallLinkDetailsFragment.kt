@@ -7,6 +7,7 @@ package org.thoughtcrime.securesms.calls.links.details
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -204,7 +205,8 @@ private interface CallLinkDetailsCallback {
   fun onApproveAllMembersChanged(checked: Boolean)
 }
 
-@Preview
+@Preview(name = "Light Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun CallLinkDetailsPreview() {
   val callLink = remember {
@@ -226,7 +228,7 @@ private fun CallLinkDetailsPreview() {
     )
   }
 
-  SignalTheme(false) {
+  SignalTheme {
     CallLinkDetails(
       CallLinkDetailsState(
         false,

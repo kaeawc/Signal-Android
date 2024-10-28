@@ -5,6 +5,7 @@
 
 package org.thoughtcrime.securesms.components.settings.app.internal.svr
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -116,28 +117,15 @@ fun SvrPlaygroundScreen(
   }
 }
 
-@Preview
+@Preview(name = "Light Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun SvrPlaygroundScreenLightTheme() {
-  SignalTheme(isDarkMode = false) {
+fun SvrPlaygroundScreen() {
+  SignalTheme {
     Surface {
       SvrPlaygroundScreen(
         state = InternalSvrPlaygroundState(
           options = persistentListOf(SvrImplementation.SVR2)
-        )
-      )
-    }
-  }
-}
-
-@Preview
-@Composable
-fun SvrPlaygroundScreenDarkTheme() {
-  SignalTheme(isDarkMode = true) {
-    Surface {
-      SvrPlaygroundScreen(
-        state = InternalSvrPlaygroundState(
-          options = persistentListOf(SvrImplementation.SVR2, SvrImplementation.SVR3)
         )
       )
     }

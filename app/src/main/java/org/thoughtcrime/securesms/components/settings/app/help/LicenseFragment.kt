@@ -5,6 +5,7 @@
 
 package org.thoughtcrime.securesms.components.settings.app.help
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +24,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.signal.core.ui.Scaffolds
+import org.signal.core.ui.theme.SignalTheme
 import org.signal.core.util.logging.Log
 import org.thoughtcrime.securesms.R
 import org.thoughtcrime.securesms.compose.ComposeFragment
@@ -70,10 +72,13 @@ fun LicenseScreen(licenseTextLines: List<String>, modifier: Modifier = Modifier)
   }
 }
 
-@Preview
+@Preview(name = "Light Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun LicenseFragmentPreview() {
-  LicenseScreen(listOf("Lorem ipsum", "Delor"))
+  SignalTheme {
+    LicenseScreen(listOf("Lorem ipsum", "Delor"))
+  }
 }
 
 private fun InputStream.readToLines(): List<String> = this.bufferedReader().use { it.readText().split("\n") }
