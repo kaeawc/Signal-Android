@@ -573,7 +573,8 @@
     <activity android:name=".deeplinks.DeepLinkEntryActivity"
               android:exported="true"
               android:noHistory="true"
-              android:theme="@style/Signal.Transparent">
+              android:theme="@style/Signal.Transparent"
+              tools:ignore="AppLinkUrlError">
 
         <intent-filter android:autoVerify="true">
             <action android:name="android.intent.action.VIEW" />
@@ -640,6 +641,15 @@
             <category android:name="android.intent.category.BROWSABLE" />
 
             <data android:scheme="sgnl" />
+            <data android:host="signal.link" />
+        </intent-filter>
+
+        <intent-filter android:autoVerify="true">
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
             <data android:scheme="https" />
             <data android:host="signal.link" />
         </intent-filter>
