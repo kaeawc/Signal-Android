@@ -203,7 +203,7 @@ google-zxing-android-integration = { module = "com.google.zxing:android-integrat
 google-zxing-core = { module = "com.google.zxing:core", version = "3.4.1" }
 google-ez-vcard = { module = "com.googlecode.ez-vcard:ez-vcard", version = "0.9.11" }
 google-jsr305 = { module = "com.google.code.findbugs:jsr305", version = "3.0.2" }
-google-guava-android = { module = "com.google.guava:guava", version = "33.0.0-android" }
+google-guava-android = { module = "com.google.guava:guava", version = "30.0-android" }
 google-flexbox = { module = "com.google.android.flexbox:flexbox", version = "3.0.0" }
 
 
