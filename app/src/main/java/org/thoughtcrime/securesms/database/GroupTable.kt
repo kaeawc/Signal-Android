@@ -964,7 +964,13 @@ class GroupTable(context: Context?, databaseHelper: SignalDatabase?) :
       return null
     }
 
-    return getGroupSendFullToken(threadRecipient.requireGroupId().requireV2(), recipientId)
+    val groupId = try {
+      threadRecipient.requireGroupId().requireV2()
+    } catch (error: AssertionError) {
+      return null
+    }
+
+    return getGroupSendFullToken(groupId, recipientId)
   }
 
   fun getGroupSendFullToken(groupId: GroupId.V2, recipientId: RecipientId): GroupSendFullToken? {
