@@ -24,6 +24,7 @@ import org.thoughtcrime.securesms.util.ViewUtil;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+@RequiresApi(api = 23)
 public final class VideoThumbnailsRangeSelectorView extends VideoThumbnailsView {
 
   private static final String TAG = Log.tag(VideoThumbnailsRangeSelectorView.class);

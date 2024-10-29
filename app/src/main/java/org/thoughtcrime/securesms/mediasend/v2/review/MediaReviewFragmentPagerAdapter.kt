@@ -1,5 +1,6 @@
 package org.thoughtcrime.securesms.mediasend.v2.review
 
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ import org.thoughtcrime.securesms.mediasend.v2.videos.MediaReviewVideoPageFragme
 import org.thoughtcrime.securesms.util.MediaUtil
 import java.util.LinkedList
 
+@RequiresApi(api = 23)
 class MediaReviewFragmentPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
   private val mediaList: MutableList<Media> = mutableListOf()

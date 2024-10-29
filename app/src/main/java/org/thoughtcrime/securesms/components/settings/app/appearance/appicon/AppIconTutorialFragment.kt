@@ -55,66 +55,66 @@ class AppIconTutorialFragment : ComposeFragment() {
   // TODO: Fix missing background?
   @Composable
   fun TutorialScreen(modifier: Modifier = Modifier) {
-      Box(modifier = modifier) {
-        Column(
-          modifier = Modifier
-            .padding(horizontal = 24.dp)
-            .align(Alignment.Center)
-            .verticalScroll(rememberScrollState()),
-          horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-          val borderShape = RoundedCornerShape(12.dp)
+    Box(modifier = modifier) {
+      Column(
+        modifier = Modifier
+          .padding(horizontal = 24.dp)
+          .align(Alignment.Center)
+          .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+      ) {
+        val borderShape = RoundedCornerShape(12.dp)
 
-          Text(
-            text = stringResource(R.string.preferences__app_icon_warning),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Start,
+        Text(
+          text = stringResource(R.string.preferences__app_icon_warning),
+          style = MaterialTheme.typography.bodyLarge,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          textAlign = TextAlign.Start,
+          modifier = Modifier
+            .padding(vertical = 20.dp)
+            .fillMaxWidth()
+        )
+        Box(
+          contentAlignment = Alignment.Center,
+          modifier = Modifier
+            .fillMaxWidth()
+            .clip(borderShape)
+            .border(1.dp, MaterialTheme.colorScheme.outline, shape = borderShape)
+        ) {
+          Image(
+            painter = painterResource(R.drawable.app_icon_tutorial_apps_homescreen),
+            contentDescription = stringResource(R.string.preferences__graphic_illustrating_where_the_replacement_app_icon_will_be_visible),
+            contentScale = ContentScale.FillWidth,
             modifier = Modifier
-              .padding(vertical = 20.dp)
-              .fillMaxWidth()
+              .widthIn(max = 328.dp)
           )
-          Box(
-            contentAlignment = Alignment.Center,
+        }
+        Text(
+          text = stringResource(id = R.string.preferences__app_icon_notification_warning),
+          style = MaterialTheme.typography.bodyLarge,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          textAlign = TextAlign.Start,
+          modifier = Modifier
+            .padding(vertical = 20.dp)
+            .fillMaxWidth()
+        )
+        Box(
+          contentAlignment = Alignment.Center,
+          modifier = Modifier
+            .fillMaxWidth()
+            .clip(borderShape)
+            .border(1.dp, MaterialTheme.colorScheme.outline, shape = borderShape)
+        ) {
+          Image(
+            painter = painterResource(R.drawable.app_icon_tutorial_notification),
+            contentDescription = stringResource(R.string.preferences__graphic_illustrating_where_the_replacement_app_icon_will_be_visible),
+            contentScale = ContentScale.FillWidth,
             modifier = Modifier
-              .fillMaxWidth()
-              .clip(borderShape)
-              .border(1.dp, MaterialTheme.colorScheme.outline, shape = borderShape)
-          ) {
-            Image(
-              painter = painterResource(R.drawable.app_icon_tutorial_apps_homescreen),
-              contentDescription = stringResource(R.string.preferences__graphic_illustrating_where_the_replacement_app_icon_will_be_visible),
-              contentScale = ContentScale.FillWidth,
-              modifier = Modifier
-                .widthIn(max = 328.dp)
-            )
-          }
-          Text(
-            text = stringResource(id = R.string.preferences__app_icon_notification_warning),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Start,
-            modifier = Modifier
-              .padding(vertical = 20.dp)
-              .fillMaxWidth()
+              .widthIn(max = 328.dp)
           )
-          Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-              .fillMaxWidth()
-              .clip(borderShape)
-              .border(1.dp, MaterialTheme.colorScheme.outline, shape = borderShape)
-          ) {
-            Image(
-              painter = painterResource(R.drawable.app_icon_tutorial_notification),
-              contentDescription = stringResource(R.string.preferences__graphic_illustrating_where_the_replacement_app_icon_will_be_visible),
-              contentScale = ContentScale.FillWidth,
-              modifier = Modifier
-                .widthIn(max = 328.dp)
-            )
-          }
         }
       }
+    }
   }
 
   @Preview(name = "Light Theme", group = "ShortName", uiMode = Configuration.UI_MODE_NIGHT_NO)

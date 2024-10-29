@@ -28,6 +28,7 @@ import java.io.IOException
 import kotlin.time.Duration.Companion.microseconds
 import kotlin.time.Duration.Companion.milliseconds
 
+@RequiresApi(api = 23)
 class VideoEditorFragment :
   Fragment(),
   PositionDragListener,

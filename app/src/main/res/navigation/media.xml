@@ -31,7 +31,8 @@
         android:id="@+id/mediaReviewFragment"
         android:name="org.thoughtcrime.securesms.mediasend.v2.review.MediaReviewFragment"
         android:label="media_review_fragment"
-        tools:layout="@layout/v2_media_review_fragment">
+        tools:layout="@layout/v2_media_review_fragment"
+        tools:targetApi="m">
 
         <action
             android:id="@+id/action_mediaReviewFragment_to_mediaGalleryFragment"

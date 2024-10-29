@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@RequiresApi(api = 23)
 abstract public class VideoThumbnailsView extends View {
 
   private static final String TAG           = Log.tag(VideoThumbnailsView.class);

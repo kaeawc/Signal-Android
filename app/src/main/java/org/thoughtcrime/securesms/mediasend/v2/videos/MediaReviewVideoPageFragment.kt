@@ -3,6 +3,7 @@ package org.thoughtcrime.securesms.mediasend.v2.videos
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import org.signal.core.util.getParcelableCompat
@@ -17,6 +18,7 @@ private const val VIDEO_EDITOR_TAG = "video.editor.fragment"
  * Page fragment which displays a single editable video (non-gif) to the user. Has an embedded MediaSendVideoFragment
  * and adds some extra support for saving and restoring state, as well as saving a video to disk.
  */
+@RequiresApi(api = 23)
 class MediaReviewVideoPageFragment :
   Fragment(R.layout.fragment_container),
   VideoEditorFragment.Controller {
