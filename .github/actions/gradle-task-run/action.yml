@@ -159,7 +159,7 @@ runs:
         /home/runner/.config/.android/cache
       key: v2-${{ runner.os }}-android-platform-tools
 
-  - name: "Run Unit Tests via Gradle"
+  - name: "Run Gradle Tasks"
     shell: ${{ inputs.shell }}
     run: |
       export GRADLE_FLAGS=$(cat /tmp/gradle_flags.txt)
@@ -174,7 +174,7 @@ runs:
 
   - name: "Publish Test Report"
     uses: mikepenz/action-junit-report@v4
-    if: steps.junit-reports-exist.outputs.files_exists == 'true'
+    if: always() && steps.junit-reports-exist.outputs.files_exists == 'true'
     with:
       report_paths: '**/build/test-results/**/TEST-*.xml'
 
