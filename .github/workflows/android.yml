@@ -31,8 +31,7 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew qa
 
-    - name: "Rename Configuration Cache HTML Report"
-      shell: ${{ inputs.shell }}
+    - name: "Find Verification Metadata Report"
       run: |
         mkdir -p build/reports/dependency-verification
         html_file=$(find build/reports/dependency-verification -type f -name "*.html" | head -n 1)
