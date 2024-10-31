@@ -31,9 +31,18 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew qa
 
+    - name: "Rename Configuration Cache HTML Report"
+      shell: ${{ inputs.shell }}
+      run: |
+        mkdir -p build/reports/dependency-verification
+        html_file=$(find build/reports/dependency-verification -type f -name "*.html" | head -n 1)
+        if [[ -n "$html_file" ]]; then
+        mv "$html_file" build/reports/dependency-verification/dependency-verification-report.html
+        fi
+
     - name: Archive reports for failed build
       if: ${{ failure() }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: reports
-        path: '*/build/reports'
+        path: 'build/reports/dependency-verification/dependency-verification-report.html'
