@@ -19,6 +19,12 @@ android {
   defaultConfig {
     minSdk = libs.versions.build.android.minSdk.get().toInt()
     targetSdk = libs.versions.build.android.targetSdk.get().toInt()
+//    testOptions.targetSdk = libs.versions.build.android.targetSdk.get().toInt()
+//    lint.targetSdk = libs.versions.build.android.targetSdk.get().toInt()
+  }
+
+  testOptions {
+    targetSdk = libs.versions.build.android.targetSdk.get().toInt()
   }
 
   compileOptions {
@@ -27,12 +33,9 @@ android {
     targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
   }
 
-  kotlinOptions {
-    // jvmTarget.set(JvmTarget.valueOf("JVM_${libs.versions.build.java.target.get()}"))
-  }
-
   lint {
     disable += "InvalidVectorPath"
+    targetSdk = libs.versions.build.android.targetSdk.get().toInt()
   }
 }
 
