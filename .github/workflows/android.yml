@@ -7,42 +7,20 @@ on:
 
 permissions:
   contents: read # to fetch code (actions/checkout)
+  checks: write
+  security-events: write
+  pull-requests: write
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
+    - name: "Git Checkout"
+      uses: actions/checkout@v4
       with:
           submodules: true
 
-    - name: set up JDK 17
-      uses: actions/setup-java@v3
+    - uses: ./.github/actions/gradle-task-run
       with:
-        distribution: temurin
-        java-version: 17
-        cache: gradle
-
-    - name: Validate Gradle Wrapper
-      uses: gradle/wrapper-validation-action@v1
-
-    - name: Build with Gradle
-      run: ./gradlew qa
-
-    - name: "Find Verification Metadata Report"
-      if: ${{ failure() }}
-      run: |
-        mkdir -p build/reports/dependency-verification
-        html_file=$(find build/reports/dependency-verification -type f -name "*.html" | head -n 1)
-        if [[ -n "$html_file" ]]; then
-        mv "$html_file" build/reports/dependency-verification/dependency-verification-report.html
-        fi
-
-    - name: Archive reports for failed build
-      if: ${{ failure() }}
-      uses: actions/upload-artifact@v4
-      with:
-        name: reports
-        path: 'build/reports/dependency-verification/dependency-verification-report.html'
+        gradle-tasks: "qa"
+        reuse-configuration-cache: true
