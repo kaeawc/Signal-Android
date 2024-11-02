@@ -32,10 +32,6 @@ android {
     targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
   }
 
-  kotlinOptions {
-//    jvmTarget.set(JvmTarget.valueOf("JVM_${libs.versions.build.java.target.get()}"))
-  }
-
   buildFeatures {
     compose = true
   }
