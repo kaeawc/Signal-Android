@@ -128,6 +128,7 @@ ktlint-twitter-compose = { module = "com.twitter.compose.rules:ktlint", version 
 
 # Accompanist
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
+accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanist" }
 
 # Desugaring
 android-tools-desugar = { module = "com.android.tools:desugar_jdk_libs", version.ref = "build-android-desugar" }
