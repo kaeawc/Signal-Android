@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("java-library")
@@ -7,6 +10,12 @@ plugins {
 java {
   sourceCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
   targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
+}
+
+tasks.withType<KotlinCompile> {
+  compilerOptions {
+    jvmTarget.set(JvmTarget.valueOf("JVM_${libs.versions.build.java.target.get()}"))
+  }
 }
 
 // NOTE: For now, in order to run ktlint on this project, you have to manually run ./gradlew :build-logic:tools:ktlintFormat

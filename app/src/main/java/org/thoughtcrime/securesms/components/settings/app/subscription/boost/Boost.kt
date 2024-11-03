@@ -293,7 +293,7 @@ data class Boost(
         val value = s.toString().toDoubleOrNull()
 
         if (value != null) {
-          val formatted = formatter.format(value)
+          val formatted = formatter.format(value).replace("\u00A0", "") // Remove non-breaking spaces
 
           text?.removeTextChangedListener(this)
 

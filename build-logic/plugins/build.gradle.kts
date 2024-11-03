@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
   `kotlin-dsl`
   id("kotlin")
@@ -20,6 +23,12 @@ repositories {
 java {
   sourceCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
   targetCompatibility = JavaVersion.toVersion(libs.versions.build.java.target.get())
+}
+
+tasks.withType<KotlinCompile> {
+  compilerOptions {
+    jvmTarget.set(JvmTarget.valueOf("JVM_${libs.versions.build.java.target.get()}"))
+  }
 }
 
 dependencies {
