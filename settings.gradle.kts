@@ -7,9 +7,6 @@ pluginManagement {
     gradlePluginPortal()
     maven {
       url = uri("https://plugins.gradle.org/m2/")
-//      content {
-//        includeGroupByRegex("org\\.jlleitschuh\\.gradle.*")
-//      }
     }
   }
 }
