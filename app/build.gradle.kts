@@ -398,6 +398,8 @@ android {
   lint {
     abortOnError = true
     baseline = file("lint-baseline.xml")
+    sarifOutput = file("${layout.buildDirectory.get()}/reports/lint-results.sarif")
+    htmlOutput = file("${layout.buildDirectory.get()}/reports/lint-results.html")
     checkReleaseBuilds = false
     disable += "LintError"
   }

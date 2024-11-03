@@ -115,7 +115,7 @@ jobs:
         uses: actions/upload-artifact@v4.4.0
         with:
           name: apk
-          path: app/build/outputs/apk/release/play/prod/app-play-prod-release.apk
+          path: app/build/outputs/apk/playProd/release/Signal-Android-play-prod-universal-release-unsigned.apk
 
   build-base-apk:
     name: "Build Base APK"
@@ -143,13 +143,13 @@ jobs:
       - name: "Change APK file name"
         shell: "bash"
         run: |
-          mv app/build/outputs/apk/release/play/prod/app-play-prod.apk app/build/outputs/apk/release/play/prod/app-base-play-prod-release.apk
+          mv app/build/outputs/apk/playProd/release/Signal-Android-play-prod-universal-release-unsigned.apk app/build/outputs/apk/playProd/release/Signal-Android-base-play-prod-universal-release-unsigned.apk
 
       - name: "Store Base APK"
         uses: actions/upload-artifact@v4.4.0
         with:
           name: base-apk
-          path: app/build/outputs/apk/release/play/prod/app-base-play-prod-release.apk
+          path: app/build/outputs/apk/playProd/release/Signal-Android-base-play-prod-universal-release-unsigned.apk
 
   build-test-apk:
     name: "Build Test APK"
@@ -194,8 +194,8 @@ jobs:
       - id: diffuse
         uses: usefulness/diffuse-action@v1
         with:
-          old-file-path: app-base-play-prod-release.apk
-          new-file-path: app-play-prod-release.apk
+          old-file-path: Signal-Android-play-prod-universal-release-unsigned.apk
+          new-file-path: Signal-Android-base-play-prod-universal-release-unsigned.apk
 
       - uses: peter-evans/find-comment@v3
         id: find-comment
