@@ -24,3 +24,4 @@ jobs:
       with:
         gradle-tasks: "qa"
         reuse-configuration-cache: true
+        gradle-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
