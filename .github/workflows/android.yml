@@ -173,7 +173,7 @@ jobs:
         uses: actions/upload-artifact@v4.4.0
         with:
           name: test-apk
-          path: app/build/outputs/apk/androidTest/release/play/prod/app-release-play-prod-androidTest.apk
+          path: app/build/outputs/apk/androidTest/playProd/instrumentation/Signal-Android-play-prod-instrumentation-androidTest.apk
 
   diff-apk-from-base:
     name: "Diff APK from Base"
