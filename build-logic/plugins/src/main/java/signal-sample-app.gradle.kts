@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-import gradle.kotlin.dsl.accessors._9bb551205081e602fd4404de0d660bf4.implementation
+import gradle.kotlin.dsl.accessors._f752ed5b16f2f63cd0a1de3c80846837.implementation
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.JavaVersion
 
